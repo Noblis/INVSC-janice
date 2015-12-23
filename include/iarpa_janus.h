@@ -44,9 +44,7 @@ extern "C" {
  * iarpa_janus.h     | \ref janus     | **Yes**                | \copybrief janus
  * iarpa_janus_io.h  | \ref janus_io  | No (Provided)          | \copybrief janus_io
  *
- * - [<b>Source Code</b>](https://github.com/biometrics/janus) [github.com]
- * - [<b>Program Homepage</b>]
- *          (http://www.iarpa.gov/index.php/research-programs/janus) [iarpa.gov]
+ * - [<b>Source Code</b>](https://github.com/Noblis/janice) [github.com]
  *
  * \subsection about About
  * Intelligence analysts often rely on facial images to assist in establishing
@@ -126,13 +124,13 @@ extern "C" {
  * A Janus application begins with a call to \ref janus_initialize.
  * New templates are constructed with \ref janus_allocate_template and provided
  * image data with \ref janus_detect followed by \ref janus_augment.
- * Templates are finalized prior to comparison with \ref janus_flatten_template,
+ * Templates are finalized prior to comparison with \ref janus_finalize_template,
  * and freed after finalization with \ref janus_free_template.
  *
  * Finalized templates can be used for verification with \ref janus_verify, or
  * search with \ref janus_search.
- * Galleries are managed with \ref janus_write_gallery, \ref janus_open_gallery
- * and \ref janus_close_gallery.
+ * Galleries are managed with \ref janus_allocate_gallery, \ref janus_enroll,
+ * \ref janus_remove_template and \ref janus_free_template.
  *
  * A Janus application ends with a call to \ref janus_finalize.
  *
@@ -423,6 +421,38 @@ typedef struct janus_attributes
 } janus_attributes;
 
 /*!
+ * \brief Call once at the start of the application, before making any other
+ * calls to the API.
+ *
+ * \param[in] sdk_path Path to the \em read-only directory containing the
+ *                     janus-compliant SDK as provided by the implementer.
+ * \param[in] temp_path Path to an existing empty \em read-write directory for
+ *                      use as temporary file storage by the implementation.
+ *                      This path is guaranteed until \ref janus_finalize.
+ * \param[in] algorithm An empty string indicating the default algorithm, or an
+ *                      implementation-defined string indicating an alternative
+ *                      configuration.
+ * \param[in] gpu_index An integer index indicating to the implementer what GPU
+ *                      should be used. The index will be 0 or greater if a GPU
+ *                      is available, and negative otherwise. Implementers who
+ *                      do not require a GPU can ignore this value.
+ * \remark This function is \ref thread_unsafe and should only be called once.
+ * \see janus_finalize
+ */
+JANUS_EXPORT janus_error janus_initialize(const char *sdk_path,
+                                          const char *temp_path,
+                                          const char *algorithm,
+                                          const int gpu_index);
+
+/*!
+ * \brief Call once at the end of the application, after making all other calls
+ * to the API.
+ * \remark This function is \ref thread_unsafe and should only be called once.
+ * \see janus_initialize
+ */
+JANUS_EXPORT janus_error janus_finalize();
+
+/*!
  * \brief Detect objects in a #janus_image.
  *
  * Each object is represented by a #janus_attributes. In the case that the
@@ -467,33 +497,6 @@ JANUS_EXPORT janus_error janus_detect(const janus_image image,
                                       size_t *num_actual);
 
 /*!
- * \brief Call once at the start of the application, before making any other
- * calls to the API.
- *
- * \param[in] sdk_path Path to the \em read-only directory containing the
- *                     janus-compliant SDK as provided by the implementer.
- * \param[in] temp_path Path to an existing empty \em read-write directory for
- *                      use as temporary file storage by the implementation.
- *                      This path is guaranteed until \ref janus_finalize.
- * \param[in] algorithm An empty string indicating the default algorithm, or an
- *                      implementation-defined string indicating an alternative
- *                      configuration.
- * \remark This function is \ref thread_unsafe and should only be called once.
- * \see janus_finalize
- */
-JANUS_EXPORT janus_error janus_initialize(const char *sdk_path,
-                                          const char *temp_path,
-                                          const char *algorithm);
-
-/*!
- * \brief Call once at the end of the application, after making all other calls
- * to the API.
- * \remark This function is \ref thread_unsafe and should only be called once.
- * \see janus_initialize
- */
-JANUS_EXPORT janus_error janus_finalize();
-
-/*!
  * \brief Contains the recognition information for an object.
  *
  * Create a new template with \ref janus_allocate_template.
@@ -521,22 +524,26 @@ typedef struct janus_template_type *janus_template;
 JANUS_EXPORT janus_error janus_allocate_template(janus_template *template_);
 
 /*!
+ * \brief The maximum number of images that can be
+ *        enrolled to a single template.
+ *
+ * If there is no limit on the number of images
+ * that can be enrolled to a template, this function
+ * should return -1.
+ * \remark This function is \ref thread_safe.
+ */
+JANUS_EXPORT size_t janus_max_images_per_template();
+
+/*!
  * \brief Add an image to the template.
  *
  * The \p attributes should be provided from a prior call to \ref janus_detect.
- * As a special case, if janus_attributes::frame_rate is greater than zero, the
- * \p image should be treated as the first frame in a video sequence. Subsequent
- * calls to this function may then pass \c NULL for \p attributes, in which case
- * the implementation should use the \p attributes from a previous call to this
- * function as the seed for tracking, or as a prior for localizing the object
- * in the current frame. In this way, \ref janus_detect need only be called once
- * for videos, at the start of the frame sequence.
  *
  * This function may write to \p attributes, reflecting additional information
  * gained during augmentation.
  *
- * Augmented templates can then be passed to \ref janus_flatten_template for
- * verification or \ref janus_write_gallery for gallery construction.
+ * Augmented templates should be passed to \ref janus_finalize_template when
+ * no more imagery needs to be added.
  *
  * \param[in] image The image containing the detected object to be recognized.
  * \param[in,out] attributes Location and metadata associated with a single
@@ -550,6 +557,56 @@ JANUS_EXPORT janus_error janus_augment(const janus_image image,
                                        janus_template template_);
 
 /*!
+ * \brief Create a finalized template representation for \ref janus_verify,
+ *        \ref janus_write_gallery or \ref janus_search.
+ *
+ * After this function is called no more images will be added or removed
+ * from the template.
+ * \param[in, out] template_ The template to finalize.
+ * \remark This function is \ref reentrant.
+ */
+JANUS_EXPORT janus_error janus_finalize_template(janus_template template_);
+
+/*!
+ * \brief Templates are represented in persistent storage as files on disk.
+ *
+ * A \ref janus_template_path is the path to the template folder.
+ * Templates are written by \ref janus_write_template and read with
+ * \ref janus_read_template. Templates are only written after a call
+ * to \ref janus_finalize_template.
+ */
+typedef const char *janus_template_path;
+
+/*!
+ * \brief Write a template to disk.
+ *
+ * Templates can be read using \ref janus_read_template. Templates are
+ * only written after being finalized with \ref janus_finalize_template
+ * \param[in] template_ The template to write to disk
+ * \param[in] template_path The location of a file on disk to write the
+ *                          template to.
+ * \remark This function is \ref reentrant
+ * \see janus_read_template
+ */
+JANUS_EXPORT janus_error janus_write_template(const janus_template template_,
+                                              janus_template_path template_path);
+
+/*!
+ * \brief Read a template from disk.
+ *
+ * Templates are written using \ref janus_write_template. Templates that
+ * are loaded have already been finalized. The template is already allocated
+ * using \ref janus_allocate_template.
+ * \param[in] template_ An initialized template
+ * \param[in] template_path The location of a file on disk to load the
+ *                          template from.
+ * \remark This function is \ref reentrant
+ * \see janus_write_template
+ */
+JANUS_EXPORT janus_error janus_read_template(janus_template template_,
+                                             janus_template_path template_path);
+
+/*!
  * \brief Free memory for a template previously allocated by
  * \ref janus_allocate_template.
  *
@@ -561,43 +618,7 @@ JANUS_EXPORT janus_error janus_augment(const janus_image image,
  JANUS_EXPORT janus_error janus_free_template(janus_template template_);
 
 /*!
- * \brief A finalized representation of a template suitable for comparison.
- *
- * Ideally the comparison should occur without a memory copy.
- * Alternatively, the implementation may temporarily unmarshall this buffer into
- * a more suitable data structure.
- * \see janus_template
- */
-typedef janus_data *janus_flat_template;
-
-/*!
- * \brief The maximum size of templates generated by
- *        \ref janus_flatten_template.
- *
- * Should be less than or equal to 32 MB.
- * \remark This function is \ref thread_safe.
- */
-JANUS_EXPORT size_t janus_max_template_size();
-
-/*!
- * \brief Create a finalized template representation for \ref janus_verify,
- *        \ref janus_write_gallery or \ref janus_search.
- * \param[in] template_ The recognition information to construct the
- *                      finalized template from.
- * \param[in,out] flat_template A pre-allocated buffer provided by the calling
- *                              application no smaller than
- *                              \ref janus_max_template_size to contain the
- *                              finalized template.
- * \param[out] bytes Size of the buffer actually used to store the template.
- * \remark This function is \ref reentrant.
- */
-JANUS_EXPORT janus_error janus_flatten_template(const janus_template template_,
-                                                janus_flat_template
-                                                                  flat_template,
-                                                size_t *bytes);
-
-/*!
- * \brief Return a similarity score for two templates.
+ * \brief Return a similarity score for two finalized templates.
  *
  * Higher scores indicate greater similarity.
  *
@@ -605,61 +626,23 @@ JANUS_EXPORT janus_error janus_flatten_template(const janus_template template_,
  * the order of \p a and \p b will not change \p similarity.
  *
  * \param[in] a The first template to compare.
- * \param[in] a_bytes Size of template a.
  * \param[in] b The second template to compare.
- * \param[in] b_bytes Size of template b.
  * \param[out] similarity Higher values indicate greater similarity.
  * \remark This function is \ref thread_safe.
  * \see janus_search
  */
-JANUS_EXPORT janus_error janus_verify(const janus_flat_template a,
-                                      const size_t a_bytes,
-                                      const janus_flat_template b,
-                                      const size_t b_bytes,
+JANUS_EXPORT janus_error janus_verify(const janus_template a,
+                                      const janus_template b,
                                       float *similarity);
 
 /*!
- * \brief Unique identifier for a \ref janus_flat_template.
+ * \brief Unique identifier for a \ref janus_template.
  *
  * Associate a template with a unique identifier during
  * \ref janus_write_gallery.
  * Retrieve the unique identifier from \ref janus_search and \ref janus_cluster.
  */
 typedef size_t janus_template_id;
-
-/*!
- * \brief Galleries are represented in persistent storage as folders on disk.
- *
- * A \ref janus_gallery_path is the path to the gallery folder.
- * Galleries are created by \ref janus_write_gallery and accessed by
- * \ref janus_open_gallery.
- */
-typedef const char *janus_gallery_path;
-
-/*!
- * \brief Construct a gallery on disk.
- *
- * Access the constructed gallery with \ref janus_open_gallery.
- *
- * \note The caller is advised to memory map \p templates in the event that they
- * approach or exceed the available system memory.
- *
- * \param[in] templates Array of templates to comprise the gallery.
- * \param[in] templates_bytes Array of sizes for each template.
- * \param[in] template_ids Array of \ref janus_template_id for each template.
- * \param[in] num_templates Length of \p templates, \p templates_bytes, and
- *                          \p template_ids.
- * \param[in] gallery_path Path to an empty read-write folder to store the
- *                         gallery.
- * \remark This function is \ref reentrant.
- */
-JANUS_EXPORT janus_error janus_write_gallery(const janus_flat_template
-                                                                     *templates,
-                                             const size_t *templates_bytes,
-                                             const janus_template_id
-                                                                  *template_ids,
-                                             const size_t num_templates,
-                                             janus_gallery_path gallery_path);
 
 /*!
  * \brief An opaque reference to a read-only \ref janus_gallery_path.
@@ -672,28 +655,95 @@ JANUS_EXPORT janus_error janus_write_gallery(const janus_flat_template
 typedef struct janus_gallery_type *janus_gallery;
 
 /*!
- * \brief Initialize a gallery from a folder created in a previous call to
- *        \ref janus_write_gallery.
+ * \brief Allocate memory for an empty gallery.
  *
- * Janus galleries are stored as folders on disk and accessed using the opaque
- * \ref janus_gallery type.
- * Close the gallery when it is no longer needed with \ref janus_close_gallery.
+ * Memory is managed by the implementation and guaranteed until
+ * \ref janus_free_gallery.
  *
- * \param[in] gallery_path Read-only folder populated by a previous call to
- *                         \ref janus_write_gallery.
- * \param[out] gallery Pointer to an uninitialized gallery.
+ * Add templates to the gallery with \ref janus_enroll.
+ * Remove templates from the gallery with \ref janus_remove_template.
+ *
+ * \code
+ * janus_gallery gallery;
+ * janus_error error = janus_allocate_gallery(&gallery);
+ * assert(!error);
+ * \endcode
+ *
+ * \param[in] gallery An uninitialized gallery.
  * \remark This function is \ref reentrant.
  */
-JANUS_EXPORT janus_error janus_open_gallery(janus_gallery_path gallery_path,
-                                            janus_gallery *gallery);
+JANUS_EXPORT janus_error janus_allocate_gallery(janus_gallery *gallery);
 
 /*!
- * \brief Free a gallery previously initialized by \ref janus_open_gallery.
+ * \brief Add a template to the gallery.
  *
- * \param[in] gallery The gallery to close.
+ * The \p template_ will be finalized before being added to the gallery.
+ *
+ * \param[in] template_ The finalized template with recognition information
+ * \param[in] template_id The unique id for the template.
+ * \param[in,out] gallery The gallery to add the template to
+ * \remark This function is \ref reentrant.
+ * \see janus_remove_template
+ */
+JANUS_EXPORT janus_error janus_enroll(const janus_template template_,
+                                      const janus_template_id template_id,
+                                      janus_gallery gallery);
+
+/*!
+ * \brief Remove a template from a gallery
+ *
+ * The template to remove is identified by its unique \p template_id
+ * \param[in] template_id The unique id of the template to be removed
+ * \param[in,out] gallery The gallery to remove the template from
+ * \remark This function is \ref reentrant
+ * \see janus_enroll
+ */
+JANUS_EXPORT janus_error janus_remove_template(const janus_template_id,
+                                               janus_gallery gallery);
+/*!
+ * \brief Galleries are represented in persistent storage as folders on disk.
+ *
+ * A \ref janus_gallery_path is the path to the gallery folder.
+ * Galleries are created by \ref janus_write_gallery and accessed by
+ * \ref janus_read_gallery.
+ */
+typedef const char *janus_gallery_path;
+
+/*!
+ * \brief Write a gallery to a directory on disk.
+ *
+ * Access the constructed gallery with \ref janus_read_gallery.
+ *
+ * \param[in] gallery Initialized gallery
+ * \param[in] gallery_path Path to an empty read-write folder to store the
+ *                         gallery.
+ * \remark This function is \ref reentrant.
+ * \see janus_read_gallery
+ */
+JANUS_EXPORT janus_error janus_write_gallery(const janus_gallery gallery,
+                                             janus_gallery_path gallery_path);
+
+/*!
+ * \brief Read a gallery from a directory on disk.
+ *
+ * Read a gallery constructed with \ref janus_write_gallery. The gallery
+ * has been inititialized with \ref janus_allocate_gallery.
+ *
+ * \param[in] gallery Initialized gallery
+ * \param[in] gallery_path Path to folder containing stored gallery.
+ * \remark This function is \ref reentrant.
+ * \see janus_write_gallery
+ */
+JANUS_EXPORT janus_error janus_read_gallery(janus_gallery gallery,
+                                            janus_gallery_path gallery_path);
+
+/*!
+ * \brief Free a gallery previously initialized by \ref janus_allocate_gallery.
+ *
+ * \param[in] gallery The gallery to free.
  * \remark This function is \ref reentrant.
  */
- JANUS_EXPORT janus_error janus_close_gallery(janus_gallery gallery);
+ JANUS_EXPORT janus_error janus_free_gallery(janus_gallery gallery);
 
 /*!
  * \brief Ranked search for a template against a gallery.
@@ -709,7 +759,6 @@ JANUS_EXPORT janus_error janus_open_gallery(janus_gallery_path gallery_path,
  * be comparable.
  *
  * \param[in] probe Probe to search for.
- * \param[in] probe_bytes Size of probe.
  * \param[in] gallery Gallery to search against.
  * \param[in] num_requested_returns The desired number of returned results.
  * \param[out] template_ids Buffer to contain the \ref janus_template_id of the
@@ -722,8 +771,7 @@ JANUS_EXPORT janus_error janus_open_gallery(janus_gallery_path gallery_path,
  * \remark This function is \ref thread_safe.
  * \see janus_verify
  */
-JANUS_EXPORT janus_error janus_search(const janus_flat_template probe,
-                                      const size_t probe_bytes,
+JANUS_EXPORT janus_error janus_search(const janus_template probe,
                                       const janus_gallery gallery,
                                       const size_t num_requested_returns,
                                       janus_template_id *template_ids,
@@ -749,11 +797,8 @@ JANUS_EXPORT janus_error janus_search(const janus_flat_template probe,
  * - The suggested default value for \p hint is \c 0.
  *
  * \section gallery_size Gallery Size
- * The size of the gallery is number of templates passed to
- * \ref janus_write_gallery.
+ * The size of the gallery is the number of templates that have been enrolled
  *
- * \note The implementation of this function is optional, and may return
- *       #JANUS_NOT_IMPLEMENTED.
  *
  * \param[in] gallery The gallery to cluster.
  * \param[in] hint A hint to the clustering algorithm, see \ref clustering_hint.
