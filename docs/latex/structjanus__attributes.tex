@@ -1,0 +1,293 @@
+\hypertarget{structjanus__attributes}{}\section{janus\+\_\+attributes Struct Reference}
+\label{structjanus__attributes}\index{janus\+\_\+attributes@{janus\+\_\+attributes}}
+
+
+Attributes for a particular object in an image.  
+
+
+
+
+{\ttfamily \#include $<$iarpa\+\_\+janus.\+h$>$}
+
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{structjanus__attributes_abf95dbc8d5711e30b04a67c32ba478aa}{}double \hyperlink{structjanus__attributes_abf95dbc8d5711e30b04a67c32ba478aa}{detection\+\_\+confidence}\label{structjanus__attributes_abf95dbc8d5711e30b04a67c32ba478aa}
+
+\begin{DoxyCompactList}\small\item\em A higher value indicates greater detection confidence. \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_ae601c39225ae377dfa1728ef5b8b245b}{face\+\_\+x}
+\begin{DoxyCompactList}\small\item\em Horizontal offset to top-\/left corner of face (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_afc92218bb77128e6e2c10337d3413545}{face\+\_\+y}
+\begin{DoxyCompactList}\small\item\em Vertical offset to top-\/left corner of face (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_ad79876a2b52d6a1a5d1290a7d401e46a}{face\+\_\+width}
+\begin{DoxyCompactList}\small\item\em Face horizontal size (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_ad372c599888c24f3105f3a6010d84cb0}{face\+\_\+height}
+\begin{DoxyCompactList}\small\item\em Face vertical size (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_a2f683b4d1d832b31b6cb6a21c7288e57}{right\+\_\+eye\+\_\+x}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_aec075ed78bd9488a3be40968e303dbc1}{right\+\_\+eye\+\_\+y}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_a043531c626035ccc2685f8d97c83de6a}{left\+\_\+eye\+\_\+x}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_a4043fc12a8a499682eb19b6443191fd3}{left\+\_\+eye\+\_\+y}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_abadc5972a69fe84ae6ff9ef71af310dc}{nose\+\_\+base\+\_\+x}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_a293b37a1a04c09d26b23b8f60f3f1e57}{nose\+\_\+base\+\_\+y}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+\hypertarget{structjanus__attributes_ad2d7296926b116e6c5c1ba8a232d3404}{}double \hyperlink{structjanus__attributes_ad2d7296926b116e6c5c1ba8a232d3404}{face\+\_\+yaw}\label{structjanus__attributes_ad2d7296926b116e6c5c1ba8a232d3404}
+
+\begin{DoxyCompactList}\small\item\em Face yaw estimation (degrees). \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_a696065f9d8af60676c04f8bb4d5cdb08}{forehead\+\_\+visible}
+\begin{DoxyCompactList}\small\item\em Visibility of forehead. \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_af667c27d0c5f5a8f4af9230367afdbbe}{eyes\+\_\+visible}
+\begin{DoxyCompactList}\small\item\em Visibility of eyes. \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_a150d6d79cf9a71cc89086f71c7140691}{nose\+\_\+mouth\+\_\+visible}
+\begin{DoxyCompactList}\small\item\em Visibility of nose and mouth. \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_ad52579cc2667fea6e4e86f469a156791}{indoor}
+\begin{DoxyCompactList}\small\item\em Image was captured indoors. \end{DoxyCompactList}\item 
+\hypertarget{structjanus__attributes_acafb460080a4b9351418cdeff9a1c583}{}double \hyperlink{structjanus__attributes_acafb460080a4b9351418cdeff9a1c583}{gender}\label{structjanus__attributes_acafb460080a4b9351418cdeff9a1c583}
+
+\begin{DoxyCompactList}\small\item\em Gender of subject of interest, 1 for male, 0 for female. \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_a01a94401c6d970bae36256bd601417dc}{age}
+\begin{DoxyCompactList}\small\item\em Approximate age of subject (years) \end{DoxyCompactList}\item 
+double \hyperlink{structjanus__attributes_adb5a57d3ffd2d48c15daaf417da1a548}{skin\+\_\+tone}
+\begin{DoxyCompactList}\small\item\em Skin tone of subject. \end{DoxyCompactList}\item 
+\hypertarget{structjanus__attributes_a131779fc6f0017884cd80e7f5af87f72}{}double \hyperlink{structjanus__attributes_a131779fc6f0017884cd80e7f5af87f72}{frame\+\_\+rate}\label{structjanus__attributes_a131779fc6f0017884cd80e7f5af87f72}
+
+\begin{DoxyCompactList}\small\item\em Frames per second, or 0 for images. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Attributes for a particular object in an image. 
+
+Attributes associated with an object. Values of {\ttfamily Na\+N} (\href{http://www.cplusplus.com/reference/cmath/isnan/}{\tt isnan}) indicate that the attribute value is unknown.\hypertarget{group__janus_attribute_definitions}{}\subsection{Attribute Definitions}\label{group__janus_attribute_definitions}
+Attributes collected for images in the Janus program were annotated using crowd sourcing. As a result, attributes are defined in layman\textquotesingle{}s terms, instead of strict scientific definitions. Below are the instructions given to workers for each attribute, which should act as a de-\/facto definition of the attribute. In some cases instructions evolved slightly over time, reflecting lessons learned from communicating with the workers.
+
+As implementations of the Janus A\+P\+I leverage divergent algorithms and data sets, the precise semantics of each attribute may differ by implementation.\hypertarget{group__janus_face}{}\subsubsection{Face}\label{group__janus_face}
+\href{https://s3.amazonaws.com/TurkAnnotator/boundingboxesinstructions.html}{\tt Instructions with images.}
+
+We strongly prefer tight bounding boxes over loose ones. There\textquotesingle{}s a bit of leeway here, especially because it is also important to capture the whole head, but if the bounding boxes are too loose we will have to reject the work. For the case of people wearing hats or headgear, or who just have large hair, try to approximate where the head would be (it\textquotesingle{}s alright if you\textquotesingle{}re not exact). As a general rule of thumb, if you can see a feature on a face (an eye, nose, or mouth) or if you can tell it\textquotesingle{}s a forward facing head (but it\textquotesingle{}s too far away to make out individual features), box it! Please err on the side of boxing heads, the exceptions being heads that are completely facing away and heads that are blocked so you cannot see any features. It\textquotesingle{}s okay if boxes overlap! But, try to only box the parts of the head you can see. Non-\/living faces (portraits, faces on screens, etc.) are fair game, too! If they look realistic, box them. We understand that some images aren\textquotesingle{}t worth your time. In the case of image shown below, where there are many small, blurry heads in the background, just box the person in focus (or press \char`\"{}\+Not visible\char`\"{} if no one is in focus). In cases like this one, where many faces are distinguishable, please press the \char`\"{}\+Crowd\char`\"{} button. We ask that you only do this in cases where there truly are crowds -\/ at least 25 heads or so. These images will definitely be reviewed, and wrongly pressing this button will result in a rejection.\hypertarget{group__janus_right_eye}{}\subsubsection{Right Eye}\label{group__janus_right_eye}
+For this task, click on the middle of the right eye of the subject shown. Please note that the right eye of the subject will usually appear on the left. Also note that the middle of the eye is not necessarily the pupil, but rather the midpoint between outer edges of the eye. If the right eye is not visible or too blurry to identify, press \char`\"{}\+Not Visible\char`\"{} -\/ unless the eye is obscured by dark glasses, in which case we ask that you estimate where the eye would be.\hypertarget{group__janus_left_eye}{}\subsubsection{Left Eye}\label{group__janus_left_eye}
+For this task, click on the middle of the left eye of the subject shown. Please note that the left eye of the subject will usually appear on the right. Also note that the middle of the eye is not necessarily the pupil, but rather the midpoint between outer edges of the eye. If the left eye is not visible or too blurry to identify, press \char`\"{}\+Not Visible\char`\"{} -\/ unless the eye is obscured by dark glasses, in which case we ask that you estimate where the eye would be.\hypertarget{group__janus_nose_base}{}\subsubsection{Nose Base}\label{group__janus_nose_base}
+For this task, click on the middle of the nose base of the subject shown. This is considered to be the middle of where the nose meets the face. If the nose base is not visible or too blurry to identify, press "Not Visible”.\hypertarget{group__janus_forehead_visible}{}\subsubsection{Forehead Occlusion}\label{group__janus_forehead_visible}
+For this task, choose \char`\"{}\+Forehead Covered\char`\"{} when\+:
+\begin{DoxyItemize}
+\item A scarf, hat, or hair covers at least 25\% of the area between eyebrows and hairline.
+\item The area of the forehead is not contained in the image (because the edge of the image cuts off this area). Choose \char`\"{}\+Not Covered\char`\"{} when\+:
+\item More than 75\% of the area between eyebrows and hairline is visible.
+\item Another part of the person\textquotesingle{}s face is blocking part of the forehead (e.\+g. the person\textquotesingle{}s face is tilted upwards or to the side).
+\item The image is too blurry to see the forehead region well.
+\end{DoxyItemize}\hypertarget{group__janus_eyes_visible}{}\subsubsection{Eye Occlusion}\label{group__janus_eyes_visible}
+For this task, choose \char`\"{}\+Eyes Covered\char`\"{} when\+:
+\begin{DoxyItemize}
+\item Something is in front of either eye. This will often be glasses (even clear glasses) or hair, but can be anything in the image.
+\item The eye area is not contained in the image. Choose \char`\"{}\+Not Covered\char`\"{} when\+:
+\item Both eyes are uncovered (even if they are closed).
+\item Another part of the person\textquotesingle{}s face is blocking either eye (e.\+g. the person\textquotesingle{}s face is tilted upwards or turned to the side).
+\item The image is too blurry to see the eye region well
+\end{DoxyItemize}\hypertarget{group__janus_nose_mouth_visible}{}\subsubsection{Nose and Mouth Occlusion}\label{group__janus_nose_mouth_visible}
+For this task, choose \char`\"{}\+Covered\char`\"{} when\+:
+\begin{DoxyItemize}
+\item Something is in front of the nose or the mouth, or both. This is often a microphone or a hand, but can be anything in the image. If any type of glasses are over the lower part of the nose, this should be marked as \char`\"{}covered.\char`\"{}
+\item The area of the nose and mouth is not contained in the image (the edge of the image cuts off this area). Choose \char`\"{}\+Not Covered\char`\"{} when\+:
+\item Both the nose and mouth are uncovered (facial hair is not considered \textquotesingle{}covering\textquotesingle{}).
+\item Another part of the person\textquotesingle{}s face is blocking the nose or mouth (e.\+g. the person\textquotesingle{}s face is tilted downwards or turned to the side).
+\item The image is too blurry to see the nose and mouth region well.
+\end{DoxyItemize}\hypertarget{group__janus_indoor}{}\subsubsection{Indoor or Outdoor}\label{group__janus_indoor}
+For this task, choose \char`\"{}\+Indoor\char`\"{} when\+:
+\begin{DoxyItemize}
+\item The scene appears to be indoors, and is inside a building or other covered structure, including any vehicle with a roof.
+\item The scene might be indoors or outdoors, and there seems to be artificial light present. Choose \char`\"{}\+Outdoor\char`\"{} when\+:
+\item The scene appears to be outdoors, and is not under a roof or inside a building, vehicle or structure.
+\item The scene might be indoors or outdoors, and the photo appears to have only natural light (sunlight).
+\end{DoxyItemize}\hypertarget{group__janus_age}{}\subsubsection{Age}\label{group__janus_age}
+For this task, estimate the approximate age of the person shown. The age categories in years and corresponding values in the \hyperlink{group__janus__io_gaeddd0e276eebe8616d41808eed8dff16}{janus\+\_\+metadata} , are\+:
+
+\begin{TabularC}{6}
+\hline
+\rowcolor{lightgray}{\bf 0 -\/ 19 }&{\bf 20 -\/ 34 }&{\bf 35 -\/ 49 }&{\bf 50-\/64 }&{\bf 65+ }&{\bf Unknown  }\\\cline{1-6}
+1 &2 &3 &4 &5 &0 \\\cline{1-6}
+\end{TabularC}
+If image quality is low, please take your best guess.\hypertarget{group__janus_skin_tone}{}\subsubsection{Skin Tone}\label{group__janus_skin_tone}
+Skin tone is generalized into 6 categories described below, along with their corresponding values in the \hyperlink{group__janus__io_gaeddd0e276eebe8616d41808eed8dff16}{janus\+\_\+metadata}.
+
+\begin{TabularC}{6}
+\hline
+\rowcolor{lightgray}{\bf Light Pink }&{\bf Light Yellow }&{\bf Medium Pink/\+Brown }&{\bf Medium Yellow/\+Brown }&{\bf Medium-\/\+Dark Brown }&{\bf Dark Brown  }\\\cline{1-6}
+1 &2 &3 &4 &5 &6 \\\cline{1-6}
+\end{TabularC}
+\hypertarget{group__janus_facial_hair}{}\subsubsection{Facial Hair}\label{group__janus_facial_hair}
+For this task, there are four possible types of facial hair. Select the facial hair type that is closest to the description below. \begin{TabularC}{4}
+\hline
+\rowcolor{lightgray}{\bf No Facial Hair }&{\bf Moustache }&{\bf Goatee }&{\bf Beard  }\\\cline{1-4}
+0 &1 &2 &3 \\\cline{1-4}
+\end{TabularC}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{structjanus__attributes_a01a94401c6d970bae36256bd601417dc}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!age@{age}}
+\index{age@{age}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{age}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::age}\label{structjanus__attributes_a01a94401c6d970bae36256bd601417dc}
+
+
+Approximate age of subject (years) 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_age}{Age}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_af667c27d0c5f5a8f4af9230367afdbbe}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!eyes\+\_\+visible@{eyes\+\_\+visible}}
+\index{eyes\+\_\+visible@{eyes\+\_\+visible}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{eyes\+\_\+visible}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::eyes\+\_\+visible}\label{structjanus__attributes_af667c27d0c5f5a8f4af9230367afdbbe}
+
+
+Visibility of eyes. 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_eyes_visible}{Eye Occlusion}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_ad372c599888c24f3105f3a6010d84cb0}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!face\+\_\+height@{face\+\_\+height}}
+\index{face\+\_\+height@{face\+\_\+height}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{face\+\_\+height}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::face\+\_\+height}\label{structjanus__attributes_ad372c599888c24f3105f3a6010d84cb0}
+
+
+Face vertical size (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_face}{Face}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_ad79876a2b52d6a1a5d1290a7d401e46a}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!face\+\_\+width@{face\+\_\+width}}
+\index{face\+\_\+width@{face\+\_\+width}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{face\+\_\+width}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::face\+\_\+width}\label{structjanus__attributes_ad79876a2b52d6a1a5d1290a7d401e46a}
+
+
+Face horizontal size (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_face}{Face}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_ae601c39225ae377dfa1728ef5b8b245b}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!face\+\_\+x@{face\+\_\+x}}
+\index{face\+\_\+x@{face\+\_\+x}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{face\+\_\+x}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::face\+\_\+x}\label{structjanus__attributes_ae601c39225ae377dfa1728ef5b8b245b}
+
+
+Horizontal offset to top-\/left corner of face (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_face}{Face}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_afc92218bb77128e6e2c10337d3413545}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!face\+\_\+y@{face\+\_\+y}}
+\index{face\+\_\+y@{face\+\_\+y}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{face\+\_\+y}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::face\+\_\+y}\label{structjanus__attributes_afc92218bb77128e6e2c10337d3413545}
+
+
+Vertical offset to top-\/left corner of face (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_face}{Face}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_a696065f9d8af60676c04f8bb4d5cdb08}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!forehead\+\_\+visible@{forehead\+\_\+visible}}
+\index{forehead\+\_\+visible@{forehead\+\_\+visible}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{forehead\+\_\+visible}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::forehead\+\_\+visible}\label{structjanus__attributes_a696065f9d8af60676c04f8bb4d5cdb08}
+
+
+Visibility of forehead. 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{structjanus__attributes_a696065f9d8af60676c04f8bb4d5cdb08}{forehead\+\_\+visible}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_ad52579cc2667fea6e4e86f469a156791}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!indoor@{indoor}}
+\index{indoor@{indoor}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{indoor}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::indoor}\label{structjanus__attributes_ad52579cc2667fea6e4e86f469a156791}
+
+
+Image was captured indoors. 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_indoor}{Indoor or Outdoor}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_a043531c626035ccc2685f8d97c83de6a}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!left\+\_\+eye\+\_\+x@{left\+\_\+eye\+\_\+x}}
+\index{left\+\_\+eye\+\_\+x@{left\+\_\+eye\+\_\+x}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{left\+\_\+eye\+\_\+x}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::left\+\_\+eye\+\_\+x}\label{structjanus__attributes_a043531c626035ccc2685f8d97c83de6a}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_left_eye}{Left Eye}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_a4043fc12a8a499682eb19b6443191fd3}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!left\+\_\+eye\+\_\+y@{left\+\_\+eye\+\_\+y}}
+\index{left\+\_\+eye\+\_\+y@{left\+\_\+eye\+\_\+y}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{left\+\_\+eye\+\_\+y}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::left\+\_\+eye\+\_\+y}\label{structjanus__attributes_a4043fc12a8a499682eb19b6443191fd3}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_left_eye}{Left Eye}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_abadc5972a69fe84ae6ff9ef71af310dc}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!nose\+\_\+base\+\_\+x@{nose\+\_\+base\+\_\+x}}
+\index{nose\+\_\+base\+\_\+x@{nose\+\_\+base\+\_\+x}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{nose\+\_\+base\+\_\+x}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::nose\+\_\+base\+\_\+x}\label{structjanus__attributes_abadc5972a69fe84ae6ff9ef71af310dc}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_nose_base}{Nose Base}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_a293b37a1a04c09d26b23b8f60f3f1e57}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!nose\+\_\+base\+\_\+y@{nose\+\_\+base\+\_\+y}}
+\index{nose\+\_\+base\+\_\+y@{nose\+\_\+base\+\_\+y}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{nose\+\_\+base\+\_\+y}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::nose\+\_\+base\+\_\+y}\label{structjanus__attributes_a293b37a1a04c09d26b23b8f60f3f1e57}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_nose_base}{Nose Base}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_a150d6d79cf9a71cc89086f71c7140691}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!nose\+\_\+mouth\+\_\+visible@{nose\+\_\+mouth\+\_\+visible}}
+\index{nose\+\_\+mouth\+\_\+visible@{nose\+\_\+mouth\+\_\+visible}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{nose\+\_\+mouth\+\_\+visible}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::nose\+\_\+mouth\+\_\+visible}\label{structjanus__attributes_a150d6d79cf9a71cc89086f71c7140691}
+
+
+Visibility of nose and mouth. 
+
+\begin{DoxySeeAlso}{See also}
+nouse\+\_\+mouth\+\_\+visible. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_a2f683b4d1d832b31b6cb6a21c7288e57}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!right\+\_\+eye\+\_\+x@{right\+\_\+eye\+\_\+x}}
+\index{right\+\_\+eye\+\_\+x@{right\+\_\+eye\+\_\+x}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{right\+\_\+eye\+\_\+x}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::right\+\_\+eye\+\_\+x}\label{structjanus__attributes_a2f683b4d1d832b31b6cb6a21c7288e57}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_right_eye}{Right Eye}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_aec075ed78bd9488a3be40968e303dbc1}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!right\+\_\+eye\+\_\+y@{right\+\_\+eye\+\_\+y}}
+\index{right\+\_\+eye\+\_\+y@{right\+\_\+eye\+\_\+y}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{right\+\_\+eye\+\_\+y}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::right\+\_\+eye\+\_\+y}\label{structjanus__attributes_aec075ed78bd9488a3be40968e303dbc1}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_right_eye}{Right Eye}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanus__attributes_adb5a57d3ffd2d48c15daaf417da1a548}{}\index{janus\+\_\+attributes@{janus\+\_\+attributes}!skin\+\_\+tone@{skin\+\_\+tone}}
+\index{skin\+\_\+tone@{skin\+\_\+tone}!janus\+\_\+attributes@{janus\+\_\+attributes}}
+\subsubsection[{skin\+\_\+tone}]{\setlength{\rightskip}{0pt plus 5cm}double janus\+\_\+attributes\+::skin\+\_\+tone}\label{structjanus__attributes_adb5a57d3ffd2d48c15daaf417da1a548}
+
+
+Skin tone of subject. 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janus_skin_tone}{Skin Tone}. 
+\end{DoxySeeAlso}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/code/janice/include/iarpa\+\_\+janus.\+h\end{DoxyCompactItemize}

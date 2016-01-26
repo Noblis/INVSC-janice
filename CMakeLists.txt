@@ -23,3 +23,8 @@ endif()
 
 include(CTest)
 add_subdirectory(src)
+
+# Janus API documentation
+add_subdirectory(doxygen)
+
+

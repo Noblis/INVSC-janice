@@ -16,8 +16,5 @@ if(${JANUS_BUILD_OPENCV_WRAPPER})
   endif()
 endif()
 
-# Janus API documentation
-add_subdirectory(doxygen)
-
 # Janus command line utilities
 add_subdirectory(utils)
