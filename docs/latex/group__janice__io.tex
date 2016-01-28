@@ -1,0 +1,257 @@
+\hypertarget{group__janice__io}{}\section{Jan\+I\+C\+E I/\+O}
+\label{group__janice__io}\index{Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}}
+
+
+Media decoding and evaluation harness.  
+
+
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{group__janice__io_ga39a97708cd80add78fa1fccf8b23c6f3}{J\+A\+N\+I\+C\+E\+\_\+\+A\+S\+S\+E\+R\+T}(E\+X\+P\+R\+E\+S\+S\+I\+O\+N)                                                                      
+\begin{DoxyCompactList}\small\item\em The {\ttfamily J\+A\+N\+I\+C\+E\+\_\+\+A\+S\+S\+E\+R\+T} macro provides a simple unrecoverable error handling mechanism. \end{DoxyCompactList}\item 
+\#define \hyperlink{group__janice__io_ga2d8bd9514bf7749699990e03827a2a07}{J\+A\+N\+I\+C\+E\+\_\+\+C\+H\+E\+C\+K}(E\+X\+P\+R\+E\+S\+S\+I\+O\+N)                      
+\begin{DoxyCompactList}\small\item\em The {\ttfamily J\+A\+N\+I\+C\+E\+\_\+\+C\+H\+E\+C\+K} macro provides a simple recoverable error handling mechanism. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{group__janice__io_ga01c80201c1ce11f8c7a52cf9493b3ee2}{}typedef struct janice\+\_\+video\+\_\+type $\ast$ \hyperlink{group__janice__io_ga01c80201c1ce11f8c7a52cf9493b3ee2}{janice\+\_\+video}\label{group__janice__io_ga01c80201c1ce11f8c7a52cf9493b3ee2}
+
+\begin{DoxyCompactList}\small\item\em Handle to a private video decoding type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+const char $\ast$ \hyperlink{group__janice__io_gaab03ac29fa90f0807739c6eecb82cf63}{janice\+\_\+error\+\_\+to\+\_\+string} (\hyperlink{group__janice_ga4873d49c1f9d6a6880dfbd485cf6ba72}{janice\+\_\+error} error)
+\begin{DoxyCompactList}\small\item\em \hyperlink{group__janice_gac9071fe2c752efef60aa3f932a290fda}{janice\+\_\+error} to string. \end{DoxyCompactList}\item 
+\hyperlink{group__janice_ga4873d49c1f9d6a6880dfbd485cf6ba72}{janice\+\_\+error} \hyperlink{group__janice__io_ga68c2c0091b2ca233b94197a50760c328}{janice\+\_\+error\+\_\+from\+\_\+string} (const char $\ast$error)
+\begin{DoxyCompactList}\small\item\em \hyperlink{group__janice_gac9071fe2c752efef60aa3f932a290fda}{janice\+\_\+error} from string. \end{DoxyCompactList}\item 
+\hyperlink{group__janice_ga4873d49c1f9d6a6880dfbd485cf6ba72}{janice\+\_\+error} \hyperlink{group__janice__io_gabaf8d4acd5f798a055b4c51bd4e3cfb6}{janice\+\_\+read\+\_\+image} (const char $\ast$file\+\_\+name, \hyperlink{structjanice__image}{janice\+\_\+image} $\ast$image)
+\begin{DoxyCompactList}\small\item\em Read an image from disk. \end{DoxyCompactList}\item 
+void \hyperlink{group__janice__io_gaf5c73401ec0b82d92c54794e9c809844}{janice\+\_\+free\+\_\+image} (\hyperlink{structjanice__image}{janice\+\_\+image} image)
+\begin{DoxyCompactList}\small\item\em Frees the memory previously allocated for a \hyperlink{structjanice__image}{janice\+\_\+image}. \end{DoxyCompactList}\item 
+\hyperlink{group__janice_ga4873d49c1f9d6a6880dfbd485cf6ba72}{janice\+\_\+error} \hyperlink{group__janice__io_ga279c7c207337e0cec2272090583668e0}{janice\+\_\+open\+\_\+video} (const char $\ast$file\+\_\+name, \hyperlink{group__janice__io_ga01c80201c1ce11f8c7a52cf9493b3ee2}{janice\+\_\+video} $\ast$video)
+\begin{DoxyCompactList}\small\item\em Returns a video ready for reading. \end{DoxyCompactList}\item 
+\hyperlink{group__janice_ga4873d49c1f9d6a6880dfbd485cf6ba72}{janice\+\_\+error} \hyperlink{group__janice__io_gae0bc9ecbd8d16aa8e9c8483844b64140}{janice\+\_\+read\+\_\+frame} (\hyperlink{group__janice__io_ga01c80201c1ce11f8c7a52cf9493b3ee2}{janice\+\_\+video} video, \hyperlink{structjanice__image}{janice\+\_\+image} $\ast$image)
+\begin{DoxyCompactList}\small\item\em Returns the current frame and advances the video to the next frame. \end{DoxyCompactList}\item 
+void \hyperlink{group__janice__io_ga48b8438cfe4cfe35a3b2978c01c6df6e}{janice\+\_\+close\+\_\+video} (\hyperlink{group__janice__io_ga01c80201c1ce11f8c7a52cf9493b3ee2}{janice\+\_\+video} video)
+\begin{DoxyCompactList}\small\item\em Closes a video previously opened by \hyperlink{group__janice__io_ga279c7c207337e0cec2272090583668e0}{janice\+\_\+open\+\_\+video}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Media decoding and evaluation harness. 
+
+
+
+\subsection{Macro Definition Documentation}
+\hypertarget{group__janice__io_ga39a97708cd80add78fa1fccf8b23c6f3}{}\index{Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}!J\+A\+N\+I\+C\+E\+\_\+\+A\+S\+S\+E\+R\+T@{J\+A\+N\+I\+C\+E\+\_\+\+A\+S\+S\+E\+R\+T}}
+\index{J\+A\+N\+I\+C\+E\+\_\+\+A\+S\+S\+E\+R\+T@{J\+A\+N\+I\+C\+E\+\_\+\+A\+S\+S\+E\+R\+T}!Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}}
+\subsubsection[{J\+A\+N\+I\+C\+E\+\_\+\+A\+S\+S\+E\+R\+T}]{\setlength{\rightskip}{0pt plus 5cm}\#define J\+A\+N\+I\+C\+E\+\_\+\+A\+S\+S\+E\+R\+T(
+\begin{DoxyParamCaption}
+\item[{}]{E\+X\+P\+R\+E\+S\+S\+I\+O\+N}
+\end{DoxyParamCaption}
+)}\label{group__janice__io_ga39a97708cd80add78fa1fccf8b23c6f3}
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{                                                                    \(\backslash\)
+    const \hyperlink{group__janice_ga4873d49c1f9d6a6880dfbd485cf6ba72}{janice\_error} error = (EXPRESSION);                          \(\backslash\)
+    if (error != \hyperlink{group__janice_gga4873d49c1f9d6a6880dfbd485cf6ba72a7cd6c7d28583c2dfa4e19f8642a60f3e}{JANICE\_SUCCESS}) \{                                    \(\backslash\)
+        fprintf(stderr, \textcolor{stringliteral}{"Janice error: %s\(\backslash\)n\(\backslash\)tFile: %s\(\backslash\)n\(\backslash\)tLine: %d\(\backslash\)n"}, \(\backslash\)
+                \hyperlink{group__janice__io_gaab03ac29fa90f0807739c6eecb82cf63}{janice\_error\_to\_string}(error),                        \(\backslash\)
+                \_\_FILE\_\_,                                            \(\backslash\)
+                \_\_LINE\_\_);                                           \(\backslash\)
+        abort();                                                     \(\backslash\)
+    \}                                                                \(\backslash\)
+\}                                                                    \(\backslash\)
+\end{DoxyCode}
+
+
+The {\ttfamily J\+A\+N\+I\+C\+E\+\_\+\+A\+S\+S\+E\+R\+T} macro provides a simple unrecoverable error handling mechanism. 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janice__io_ga2d8bd9514bf7749699990e03827a2a07}{J\+A\+N\+I\+C\+E\+\_\+\+C\+H\+E\+C\+K} 
+\end{DoxySeeAlso}
+\hypertarget{group__janice__io_ga2d8bd9514bf7749699990e03827a2a07}{}\index{Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}!J\+A\+N\+I\+C\+E\+\_\+\+C\+H\+E\+C\+K@{J\+A\+N\+I\+C\+E\+\_\+\+C\+H\+E\+C\+K}}
+\index{J\+A\+N\+I\+C\+E\+\_\+\+C\+H\+E\+C\+K@{J\+A\+N\+I\+C\+E\+\_\+\+C\+H\+E\+C\+K}!Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}}
+\subsubsection[{J\+A\+N\+I\+C\+E\+\_\+\+C\+H\+E\+C\+K}]{\setlength{\rightskip}{0pt plus 5cm}\#define J\+A\+N\+I\+C\+E\+\_\+\+C\+H\+E\+C\+K(
+\begin{DoxyParamCaption}
+\item[{}]{E\+X\+P\+R\+E\+S\+S\+I\+O\+N}
+\end{DoxyParamCaption}
+)}\label{group__janice__io_ga2d8bd9514bf7749699990e03827a2a07}
+{\bfseries Value\+:}
+\begin{DoxyCode}
+\{                                           \(\backslash\)
+    const \hyperlink{group__janice_ga4873d49c1f9d6a6880dfbd485cf6ba72}{janice\_error} error = (EXPRESSION); \(\backslash\)
+    if (error != \hyperlink{group__janice_gga4873d49c1f9d6a6880dfbd485cf6ba72a7cd6c7d28583c2dfa4e19f8642a60f3e}{JANICE\_SUCCESS})             \(\backslash\)
+        return error;                       \(\backslash\)
+\}                                           \(\backslash\)
+\end{DoxyCode}
+
+
+The {\ttfamily J\+A\+N\+I\+C\+E\+\_\+\+C\+H\+E\+C\+K} macro provides a simple recoverable error handling mechanism. 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janice__io_ga39a97708cd80add78fa1fccf8b23c6f3}{J\+A\+N\+I\+C\+E\+\_\+\+A\+S\+S\+E\+R\+T} 
+\end{DoxySeeAlso}
+
+
+\subsection{Function Documentation}
+\hypertarget{group__janice__io_ga48b8438cfe4cfe35a3b2978c01c6df6e}{}\index{Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}!janice\+\_\+close\+\_\+video@{janice\+\_\+close\+\_\+video}}
+\index{janice\+\_\+close\+\_\+video@{janice\+\_\+close\+\_\+video}!Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}}
+\subsubsection[{janice\+\_\+close\+\_\+video}]{\setlength{\rightskip}{0pt plus 5cm}void janice\+\_\+close\+\_\+video (
+\begin{DoxyParamCaption}
+\item[{{\bf janice\+\_\+video}}]{video}
+\end{DoxyParamCaption}
+)}\label{group__janice__io_ga48b8438cfe4cfe35a3b2978c01c6df6e}
+
+
+Closes a video previously opened by \hyperlink{group__janice__io_ga279c7c207337e0cec2272090583668e0}{janice\+\_\+open\+\_\+video}. 
+
+Call this function to deallocate the memory allocated to decode the video after the desired frames have been read. 
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em video} & The video to close. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRemark}{Remarks}
+This function is \hyperlink{group__janice_reentrant}{reentrant}. 
+\end{DoxyRemark}
+\hypertarget{group__janice__io_ga68c2c0091b2ca233b94197a50760c328}{}\index{Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}!janice\+\_\+error\+\_\+from\+\_\+string@{janice\+\_\+error\+\_\+from\+\_\+string}}
+\index{janice\+\_\+error\+\_\+from\+\_\+string@{janice\+\_\+error\+\_\+from\+\_\+string}!Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}}
+\subsubsection[{janice\+\_\+error\+\_\+from\+\_\+string}]{\setlength{\rightskip}{0pt plus 5cm}{\bf janice\+\_\+error} janice\+\_\+error\+\_\+from\+\_\+string (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{error}
+\end{DoxyParamCaption}
+)}\label{group__janice__io_ga68c2c0091b2ca233b94197a50760c328}
+
+
+\hyperlink{group__janice_gac9071fe2c752efef60aa3f932a290fda}{janice\+\_\+error} from string. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em error} & String to decode. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRemark}{Remarks}
+This function is \hyperlink{group__janice_thread_safe}{thread\+\_\+safe}. 
+\end{DoxyRemark}
+\begin{DoxySeeAlso}{See also}
+janice\+\_\+enum 
+\end{DoxySeeAlso}
+\hypertarget{group__janice__io_gaab03ac29fa90f0807739c6eecb82cf63}{}\index{Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}!janice\+\_\+error\+\_\+to\+\_\+string@{janice\+\_\+error\+\_\+to\+\_\+string}}
+\index{janice\+\_\+error\+\_\+to\+\_\+string@{janice\+\_\+error\+\_\+to\+\_\+string}!Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}}
+\subsubsection[{janice\+\_\+error\+\_\+to\+\_\+string}]{\setlength{\rightskip}{0pt plus 5cm}const char$\ast$ janice\+\_\+error\+\_\+to\+\_\+string (
+\begin{DoxyParamCaption}
+\item[{{\bf janice\+\_\+error}}]{error}
+\end{DoxyParamCaption}
+)}\label{group__janice__io_gaab03ac29fa90f0807739c6eecb82cf63}
+
+
+\hyperlink{group__janice_gac9071fe2c752efef60aa3f932a290fda}{janice\+\_\+error} to string. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em error} & Error code to stringify. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Memory for the return value is static and should not be freed. 
+\end{DoxyNote}
+\begin{DoxyRemark}{Remarks}
+This function is \hyperlink{group__janice_thread_safe}{thread\+\_\+safe}. 
+\end{DoxyRemark}
+\hypertarget{group__janice__io_gaf5c73401ec0b82d92c54794e9c809844}{}\index{Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}!janice\+\_\+free\+\_\+image@{janice\+\_\+free\+\_\+image}}
+\index{janice\+\_\+free\+\_\+image@{janice\+\_\+free\+\_\+image}!Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}}
+\subsubsection[{janice\+\_\+free\+\_\+image}]{\setlength{\rightskip}{0pt plus 5cm}void janice\+\_\+free\+\_\+image (
+\begin{DoxyParamCaption}
+\item[{{\bf janice\+\_\+image}}]{image}
+\end{DoxyParamCaption}
+)}\label{group__janice__io_gaf5c73401ec0b82d92c54794e9c809844}
+
+
+Frees the memory previously allocated for a \hyperlink{structjanice__image}{janice\+\_\+image}. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em image} & \hyperlink{structjanice__image}{janice\+\_\+image} to free. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRemark}{Remarks}
+This function is \hyperlink{group__janice_reentrant}{reentrant}. 
+\end{DoxyRemark}
+\begin{DoxySeeAlso}{See also}
+janice\+\_\+allocate\+\_\+image 
+\end{DoxySeeAlso}
+\hypertarget{group__janice__io_ga279c7c207337e0cec2272090583668e0}{}\index{Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}!janice\+\_\+open\+\_\+video@{janice\+\_\+open\+\_\+video}}
+\index{janice\+\_\+open\+\_\+video@{janice\+\_\+open\+\_\+video}!Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}}
+\subsubsection[{janice\+\_\+open\+\_\+video}]{\setlength{\rightskip}{0pt plus 5cm}{\bf janice\+\_\+error} janice\+\_\+open\+\_\+video (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{file\+\_\+name, }
+\item[{{\bf janice\+\_\+video} $\ast$}]{video}
+\end{DoxyParamCaption}
+)}\label{group__janice__io_ga279c7c207337e0cec2272090583668e0}
+
+
+Returns a video ready for reading. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em file\+\_\+name} & Path to image file. \\
+\hline
+\mbox{\tt out}  & {\em video} & Address to store the allocated video. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRemark}{Remarks}
+This function is \hyperlink{group__janice_reentrant}{reentrant}. 
+\end{DoxyRemark}
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janice__io_gae0bc9ecbd8d16aa8e9c8483844b64140}{janice\+\_\+read\+\_\+frame} \hyperlink{group__janice__io_ga48b8438cfe4cfe35a3b2978c01c6df6e}{janice\+\_\+close\+\_\+video} 
+\end{DoxySeeAlso}
+\hypertarget{group__janice__io_gae0bc9ecbd8d16aa8e9c8483844b64140}{}\index{Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}!janice\+\_\+read\+\_\+frame@{janice\+\_\+read\+\_\+frame}}
+\index{janice\+\_\+read\+\_\+frame@{janice\+\_\+read\+\_\+frame}!Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}}
+\subsubsection[{janice\+\_\+read\+\_\+frame}]{\setlength{\rightskip}{0pt plus 5cm}{\bf janice\+\_\+error} janice\+\_\+read\+\_\+frame (
+\begin{DoxyParamCaption}
+\item[{{\bf janice\+\_\+video}}]{video, }
+\item[{{\bf janice\+\_\+image} $\ast$}]{image}
+\end{DoxyParamCaption}
+)}\label{group__janice__io_gae0bc9ecbd8d16aa8e9c8483844b64140}
+
+
+Returns the current frame and advances the video to the next frame. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em video} & Video to decode. \\
+\hline
+\mbox{\tt out}  & {\em image} & Address to store the allocated image. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRemark}{Remarks}
+This function is \hyperlink{group__janice_reentrant}{reentrant}. 
+\end{DoxyRemark}
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janice__io_ga279c7c207337e0cec2272090583668e0}{janice\+\_\+open\+\_\+video} \hyperlink{group__janice__io_gaf5c73401ec0b82d92c54794e9c809844}{janice\+\_\+free\+\_\+image} 
+\end{DoxySeeAlso}
+\hypertarget{group__janice__io_gabaf8d4acd5f798a055b4c51bd4e3cfb6}{}\index{Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}!janice\+\_\+read\+\_\+image@{janice\+\_\+read\+\_\+image}}
+\index{janice\+\_\+read\+\_\+image@{janice\+\_\+read\+\_\+image}!Jan\+I\+C\+E I/\+O@{Jan\+I\+C\+E I/\+O}}
+\subsubsection[{janice\+\_\+read\+\_\+image}]{\setlength{\rightskip}{0pt plus 5cm}{\bf janice\+\_\+error} janice\+\_\+read\+\_\+image (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{file\+\_\+name, }
+\item[{{\bf janice\+\_\+image} $\ast$}]{image}
+\end{DoxyParamCaption}
+)}\label{group__janice__io_gabaf8d4acd5f798a055b4c51bd4e3cfb6}
+
+
+Read an image from disk. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em file\+\_\+name} & Path to the image file. \\
+\hline
+\mbox{\tt out}  & {\em image} & Address to store the decoded image. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRemark}{Remarks}
+This function is \hyperlink{group__janice_reentrant}{reentrant}. 
+\end{DoxyRemark}
+\begin{DoxySeeAlso}{See also}
+\hyperlink{group__janice__io_gaf5c73401ec0b82d92c54794e9c809844}{janice\+\_\+free\+\_\+image} 
+\end{DoxySeeAlso}
