@@ -1,30 +1,27 @@
-project(janus)
+project(janice)
 cmake_minimum_required(VERSION 2.8.6)
 
-set(JANUS_NAME "Janus")
-set(JANUS_DESCRIPTION "IARPA Janus Program API")
+set(JANICE_NAME "JanICE")
+set(JANICE_DESCRIPTION "JanICE API")
 
 # Extract version info from header file
-macro(janus_get_version VAR)
-  file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/include/iarpa_janus.h LINE
+macro(janice_get_version VAR)
+  file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/include/janice.h LINE
        REGEX "#define[ ]+${VAR}[ ]+[0-9]+")
   string(REGEX MATCH "[0-9]+" ${VAR} ${LINE})
-endmacro(janus_get_version)
-janus_get_version(JANUS_VERSION_MAJOR)
-janus_get_version(JANUS_VERSION_MINOR)
-janus_get_version(JANUS_VERSION_PATCH)
-configure_file(include/iarpa_janus.h ${CMAKE_CURRENT_BINARY_DIR}/refreshes_version_when_changed)
-set(JANUS_VERSION ${JANUS_VERSION_MAJOR}.${JANUS_VERSION_MINOR}.${JANUS_VERSION_PATCH})
+endmacro(janice_get_version)
+janice_get_version(JANICE_VERSION_MAJOR)
+janice_get_version(JANICE_VERSION_MINOR)
+janice_get_version(JANICE_VERSION_PATCH)
+configure_file(include/janice.h ${CMAKE_CURRENT_BINARY_DIR}/janice.h)
+set(JANICE_VERSION ${JANICE_VERSION_MAJOR}.${JANICE_VERSION_MINOR}.${JANICE_VERSION_PATCH})
 
 if(UNIX)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -fvisibility=hidden")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fvisibility=hidden")
 endif()
 
-include(CTest)
-add_subdirectory(src)
-
-# Janus API documentation
+# Janice API documentation
 add_subdirectory(doxygen)
 
 
