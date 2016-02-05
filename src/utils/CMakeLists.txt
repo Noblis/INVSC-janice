@@ -1,0 +1,7 @@
+file(GLOB UTILS *.cpp)
+foreach(UTIL ${UTILS})
+  get_filename_component(UTIL_NAME ${UTIL} NAME_WE)
+  add_executable(${UTIL_NAME} ${UTIL} ${JANICE_HEADERS})
+  target_link_libraries(${UTIL_NAME} ${JANICE_IMPLEMENTATION_LIBS} ${JANICE_IO_IMPLEMENTATION_LIBS})
+  install(TARGETS ${UTIL_NAME} RUNTIME DESTINATION bin)
+endforeach()

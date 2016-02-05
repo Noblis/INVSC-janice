@@ -508,7 +508,7 @@ JANICE_EXPORT janice_error janice_allocate_gallery(janice_gallery *gallery);
  * \see janice_remove_template
  */
 JANICE_EXPORT janice_error janice_enroll(const janice_template template_,
-                                         janice_template_id *template_id,
+                                         const janice_template_id template_id,
                                          janice_gallery gallery);
 
 /*!

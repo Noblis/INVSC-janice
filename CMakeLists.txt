@@ -24,4 +24,13 @@ endif()
 # Janice API documentation
 add_subdirectory(doxygen)
 
+set(JANICE_IMPLEMENTATION_PATH ${JANICE_IMPLEMENTATION_PATH} "" CACHE STRING "Location of implementation of Janice functions")
+set(JANICE_IO_IMPLEMENTATION_PATH ${JANICE_IO_IMPLEMENTATION_PATH} src/opencv_io CACHE STRING "Location of implementation of Janice io functions")
+if (NOT ${JANICE_IMPLEMENTATIONS_PATH} STREQUAL "")
+  add_subdirectory(${JANICE_IMPLEMENTATIONS_PATH} ${CMAKE_BINARY_DIR}/janice)
+  add_subdirectory(${JANICE_IO_IMPLEMENTATION_PATH} ${CMAKE_BINARY_DIR}/janice_io)
+
+  # Janice test harness 
+  add_subdirectory(src/utils)
+endif()
 

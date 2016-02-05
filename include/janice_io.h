@@ -24,7 +24,7 @@
 #ifndef JANICE_IO_H
 #define JANICE_IO_H
 
-#include <janice.h>
+#include "janice.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -132,8 +132,116 @@ JANICE_EXPORT janice_error janice_read_frame(janice_video video, janice_image *i
  */
 JANICE_EXPORT void janice_close_video(janice_video video);
 
+/*!
+ * \brief File name for a Janice Metadata File
+ *
+ * A *Janice Metadata File* is a *Comma-Separated Value* (CSV) text file with the following format:
+ *
+\verbatim
+TEMPLATE_ID        , SUBJECT_ID, FILE_NAME, MEDIA_ID, FRAME, <janice_attribute>, <janice_attribute>, ..., <janice_attribute>
+<janice_template_id>, <int>     , <string> , <int>   , <int>, <double>         , <double>         , ..., <double>
+<janice_template_id>, <int>     , <string> , <int>   , <int>, <double>         , <double>         , ..., <double>
+...
+<janice_template_id>, <int>     , <string> , <int>   , <int>, <double>         , <double>         , ..., <double>
+\endverbatim
+ *
+ * Where:
+ * - [TEMPLATE_ID](\ref janice_template_id) is a unique integer identifier indicating rows that belong to the same template.
+ * - \c SUBJECT_ID is a unique integer identifier used to establish ground truth match/non-match.
+ *      For the purpose of experimentation, multiple \c TEMPLATE_ID may have the same \c SUBJECT_ID.
+ * - \c FILE_NAME is a path to the image or video file on disk.
+ * - \c MEDIA_ID is a unique integer identifier indicating rows that belong to the same piece of media (image or video clip).
+ * - \c FRAME is the video frame number and -1 (or empty string) for still images.
+ * - \a \<janice_attribute\> adheres to \ref janice_enum.
+ * - All rows associated with the same \c TEMPLATE_ID occur sequentially.
+ * - All rows associated with the same \c TEMPLATE_ID and \c FILE_NAME occur sequentially ordered by \c FRAME.
+ * - A cell is empty when no value is available for the specified #janice_attribute.
+ */
+typedef const char *janice_metadata;
+
+/*!
+ * \brief High-level function for enrolling templates from a metadata file and writing templates to disk.
+ * \param [in] data_path Prefix path to files in metadata.
+ * \param [in] metadata #janice_metadata to enroll.
+ * \param [in] output_prefix Prefix of a directory to save the templates into. Templates will be saved using their templateID
+ * \param [in] verbose Print information and warnings during gallery enrollment.
+ */
+JANICE_EXPORT janice_error janice_create_templates(const char *data_path, janice_metadata metadata, const char *output_prefix, int verbose);
+
+/*!
+ * \brief High-level function for enrolling a gallery from a metadata file.
+ * \param [in] data_path Prefix path to files in metadata.
+ * \param [in] metadata #janice_metadata to enroll.
+ * \param [in] gallery File to save the templates to.
+ * \param [in] verbose Print information and warnings during gallery enrollment.
+ */
+JANICE_EXPORT janice_error janice_create_gallery(const char *data_path, janice_metadata metadata, janice_gallery gallery, int verbose);
+
+/*!
+ * \brief A statistic.
+ * \see janice_metrics
+ */
+struct janice_metric
+{
+    size_t count;  /*!< \brief Number of samples. */
+    double mean;   /*!< \brief Sample average. */
+    double stddev; /*!< \brief Sample standard deviation. */
+};
+
+/*!
+ * \brief All statistics.
+ * \see janice_get_metrics
+ */
+struct janice_metrics
+{
+    struct janice_metric janice_initialize_template_speed; /*!< \brief ms */
+    struct janice_metric janice_detection_speed; /*!< \brief ms */
+    struct janice_metric janice_augment_speed; /*!< \brief ms */
+    struct janice_metric janice_finalize_template_speed; /*!< \brief ms */
+    struct janice_metric janice_read_image_speed; /*!< \brief ms */
+    struct janice_metric janice_free_image_speed; /*!< \brief ms */
+    struct janice_metric janice_verify_speed; /*!< \brief ms */
+    struct janice_metric janice_search_speed; /*!< \brief ms */
+    struct janice_metric janice_gallery_size_speed; /*!< \brief ms */
+    struct janice_metric janice_finalize_gallery_speed; /*!< \brief ms */
+    struct janice_metric janice_template_size; /*!< \brief KB */
+    int          janice_missing_attributes_count; /*!< \brief Count of \ref JANICE_MISSING_ATTRIBUTES */
+    int          janice_failure_to_detect_count; /*! \brief Count of \ref JANICE_FAILURE_TO_DETECT */
+    int          janice_failure_to_enroll_count; /*!< \brief Count of \ref JANICE_FAILURE_TO_ENROLL */
+    int          janice_other_errors_count; /*!< \brief Count of \ref janice_error excluding \ref JANICE_MISSING_ATTRIBUTES, \ref JANICE_FAILURE_TO_ENROLL, and \ref JANICE_SUCCESS */
+};
+
+/*! \brief Retrieve and reset performance metrics. */
+JANICE_EXPORT struct janice_metrics janice_get_metrics();
+
+/*!
+ * \brief Print metrics to stdout.
+ * \note Will only print metrics with count > 0 occurrences.
+ */
+JANICE_EXPORT void janice_print_metrics(struct janice_metrics metrics);
+
+/*! @}*/
+
+/*!
+ * \page janice_enum Enum Naming Convention
+ * #janice_attribute, #janice_color_space, #janice_error and enum values follow a
+ * \c CAPITAL_CASE naming convention. Functions #janice_attribute_to_string and
+ * #janice_error_to_string return a string for the corresponding enum by
+ * removing the leading \c janice_:
+ * \code
+ * janice_attribute_to_string(janice_RIGHT_EYE_X); // returns "RIGHT_EYE_X"
+ * \endcode
+ * Functions #janice_attribute_from_string and #janice_error_from_string provide
+ * the opposite functionality:
+ * \code
+ * janice_attribute_from_string("RIGHT_EYE_X"); // returns janice_RIGHT_EYE_X
+ * \endcode
+ * \note #janice_attribute_from_string is used to decode #janice_metadata
+ * files, so attribute column names should follow this naming convention.
+ */
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* IARPA_JANUS_IO_H */
+#endif /* IARPA_janice_IO_H */

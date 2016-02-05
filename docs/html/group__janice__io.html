@@ -46,6 +46,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -84,6 +85,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
@@ -95,6 +97,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Media decoding and evaluation harness.  
 <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structjanice__metric.html">janice_metric</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A statistic.  <a href="structjanice__metric.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structjanice__metrics.html">janice_metrics</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">All statistics.  <a href="structjanice__metrics.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:ga39a97708cd80add78fa1fccf8b23c6f3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__janice__io.html#ga39a97708cd80add78fa1fccf8b23c6f3">JANICE_ASSERT</a>(EXPRESSION)                                                                      </td></tr>
@@ -110,6 +121,9 @@ Typedefs</h2></td></tr>
 typedef struct janice_video_type *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__janice__io.html#ga01c80201c1ce11f8c7a52cf9493b3ee2">janice_video</a></td></tr>
 <tr class="memdesc:ga01c80201c1ce11f8c7a52cf9493b3ee2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle to a private video decoding type. <br /></td></tr>
 <tr class="separator:ga01c80201c1ce11f8c7a52cf9493b3ee2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga98fb8d1945016f13408aa772de4c3e64"><td class="memItemLeft" align="right" valign="top">typedef const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__janice__io.html#ga98fb8d1945016f13408aa772de4c3e64">janice_metadata</a></td></tr>
+<tr class="memdesc:ga98fb8d1945016f13408aa772de4c3e64"><td class="mdescLeft">&#160;</td><td class="mdescRight">File name for a Janice Metadata File.  <a href="#ga98fb8d1945016f13408aa772de4c3e64">More...</a><br /></td></tr>
+<tr class="separator:ga98fb8d1945016f13408aa772de4c3e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -134,6 +148,19 @@ Functions</h2></td></tr>
 <tr class="memitem:ga48b8438cfe4cfe35a3b2978c01c6df6e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__janice__io.html#ga48b8438cfe4cfe35a3b2978c01c6df6e">janice_close_video</a> (<a class="el" href="group__janice__io.html#ga01c80201c1ce11f8c7a52cf9493b3ee2">janice_video</a> video)</td></tr>
 <tr class="memdesc:ga48b8438cfe4cfe35a3b2978c01c6df6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Closes a video previously opened by <a class="el" href="group__janice__io.html#ga279c7c207337e0cec2272090583668e0">janice_open_video</a>.  <a href="#ga48b8438cfe4cfe35a3b2978c01c6df6e">More...</a><br /></td></tr>
 <tr class="separator:ga48b8438cfe4cfe35a3b2978c01c6df6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga21f06e1b6bab45273418901dd7300470"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__janice.html#ga4873d49c1f9d6a6880dfbd485cf6ba72">janice_error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__janice__io.html#ga21f06e1b6bab45273418901dd7300470">janice_create_templates</a> (const char *data_path, <a class="el" href="group__janice__io.html#ga98fb8d1945016f13408aa772de4c3e64">janice_metadata</a> metadata, const char *output_prefix, int verbose)</td></tr>
+<tr class="memdesc:ga21f06e1b6bab45273418901dd7300470"><td class="mdescLeft">&#160;</td><td class="mdescRight">High-level function for enrolling templates from a metadata file and writing templates to disk.  <a href="#ga21f06e1b6bab45273418901dd7300470">More...</a><br /></td></tr>
+<tr class="separator:ga21f06e1b6bab45273418901dd7300470"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga42bee619c1768885e1d939367e1e4259"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__janice.html#ga4873d49c1f9d6a6880dfbd485cf6ba72">janice_error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__janice__io.html#ga42bee619c1768885e1d939367e1e4259">janice_create_gallery</a> (const char *data_path, <a class="el" href="group__janice__io.html#ga98fb8d1945016f13408aa772de4c3e64">janice_metadata</a> metadata, <a class="el" href="group__janice.html#ga08feff1c2835b44332afeda80c3d0fb7">janice_gallery</a> gallery, int verbose)</td></tr>
+<tr class="memdesc:ga42bee619c1768885e1d939367e1e4259"><td class="mdescLeft">&#160;</td><td class="mdescRight">High-level function for enrolling a gallery from a metadata file.  <a href="#ga42bee619c1768885e1d939367e1e4259">More...</a><br /></td></tr>
+<tr class="separator:ga42bee619c1768885e1d939367e1e4259"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa6aa5fa8550b3066a0dad696d6368762"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa6aa5fa8550b3066a0dad696d6368762"></a>
+struct <a class="el" href="structjanice__metrics.html">janice_metrics</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__janice__io.html#gaa6aa5fa8550b3066a0dad696d6368762">janice_get_metrics</a> ()</td></tr>
+<tr class="memdesc:gaa6aa5fa8550b3066a0dad696d6368762"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve and reset performance metrics. <br /></td></tr>
+<tr class="separator:gaa6aa5fa8550b3066a0dad696d6368762"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga34184d56e2c5585facb11e1e6b734325"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__janice__io.html#ga34184d56e2c5585facb11e1e6b734325">janice_print_metrics</a> (struct <a class="el" href="structjanice__metrics.html">janice_metrics</a> metrics)</td></tr>
+<tr class="memdesc:ga34184d56e2c5585facb11e1e6b734325"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print metrics to stdout.  <a href="#ga34184d56e2c5585facb11e1e6b734325">More...</a><br /></td></tr>
+<tr class="separator:ga34184d56e2c5585facb11e1e6b734325"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Media decoding and evaluation harness. </p>
@@ -196,6 +223,38 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a class="anchor" id="ga98fb8d1945016f13408aa772de4c3e64"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef const char* <a class="el" href="group__janice__io.html#ga98fb8d1945016f13408aa772de4c3e64">janice_metadata</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>File name for a Janice Metadata File. </p>
+<p>A <em>Janice Metadata File</em> is a <em>Comma-Separated Value</em> (CSV) text file with the following format:</p>
+<pre class="fragment">TEMPLATE_ID        , SUBJECT_ID, FILE_NAME, MEDIA_ID, FRAME, &lt;janice_attribute&gt;, &lt;janice_attribute&gt;, ..., &lt;janice_attribute&gt;
+&lt;janice_template_id&gt;, &lt;int&gt;     , &lt;string&gt; , &lt;int&gt;   , &lt;int&gt;, &lt;double&gt;         , &lt;double&gt;         , ..., &lt;double&gt;
+&lt;janice_template_id&gt;, &lt;int&gt;     , &lt;string&gt; , &lt;int&gt;   , &lt;int&gt;, &lt;double&gt;         , &lt;double&gt;         , ..., &lt;double&gt;
+...
+&lt;janice_template_id&gt;, &lt;int&gt;     , &lt;string&gt; , &lt;int&gt;   , &lt;int&gt;, &lt;double&gt;         , &lt;double&gt;         , ..., &lt;double&gt;
+</pre><p>Where:</p><ul>
+<li><a class="el" href="group__janice.html#ga5ec62465fbbc7a92faadfefd3d20e25b">TEMPLATE_ID</a> is a unique integer identifier indicating rows that belong to the same template.</li>
+<li><code>SUBJECT_ID</code> is a unique integer identifier used to establish ground truth match/non-match. For the purpose of experimentation, multiple <code>TEMPLATE_ID</code> may have the same <code>SUBJECT_ID</code>.</li>
+<li><code>FILE_NAME</code> is a path to the image or video file on disk.</li>
+<li><code>MEDIA_ID</code> is a unique integer identifier indicating rows that belong to the same piece of media (image or video clip).</li>
+<li><code>FRAME</code> is the video frame number and -1 (or empty string) for still images.</li>
+<li><em>&lt;janice_attribute&gt;</em> adheres to <a class="el" href="janice_enum.html">Enum Naming Convention</a>.</li>
+<li>All rows associated with the same <code>TEMPLATE_ID</code> occur sequentially.</li>
+<li>All rows associated with the same <code>TEMPLATE_ID</code> and <code>FILE_NAME</code> occur sequentially ordered by <code>FRAME</code>.</li>
+<li>A cell is empty when no value is available for the specified #janice_attribute. </li>
+</ul>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="ga48b8438cfe4cfe35a3b2978c01c6df6e"></a>
 <div class="memitem">
@@ -219,6 +278,104 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section remark"><dt>Remarks</dt><dd>This function is <a class="el" href="group__janice.html#reentrant">reentrant</a>. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga42bee619c1768885e1d939367e1e4259"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__janice.html#ga4873d49c1f9d6a6880dfbd485cf6ba72">janice_error</a> janice_create_gallery </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>data_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__janice__io.html#ga98fb8d1945016f13408aa772de4c3e64">janice_metadata</a>&#160;</td>
+          <td class="paramname"><em>metadata</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__janice.html#ga08feff1c2835b44332afeda80c3d0fb7">janice_gallery</a>&#160;</td>
+          <td class="paramname"><em>gallery</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>verbose</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>High-level function for enrolling a gallery from a metadata file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">data_path</td><td>Prefix path to files in metadata. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">metadata</td><td><a class="el" href="group__janice__io.html#ga98fb8d1945016f13408aa772de4c3e64" title="File name for a Janice Metadata File. ">janice_metadata</a> to enroll. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">gallery</td><td>File to save the templates to. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">verbose</td><td>Print information and warnings during gallery enrollment. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ga21f06e1b6bab45273418901dd7300470"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__janice.html#ga4873d49c1f9d6a6880dfbd485cf6ba72">janice_error</a> janice_create_templates </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>data_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__janice__io.html#ga98fb8d1945016f13408aa772de4c3e64">janice_metadata</a>&#160;</td>
+          <td class="paramname"><em>metadata</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>output_prefix</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>verbose</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>High-level function for enrolling templates from a metadata file and writing templates to disk. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">data_path</td><td>Prefix path to files in metadata. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">metadata</td><td><a class="el" href="group__janice__io.html#ga98fb8d1945016f13408aa772de4c3e64" title="File name for a Janice Metadata File. ">janice_metadata</a> to enroll. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">output_prefix</td><td>Prefix of a directory to save the templates into. Templates will be saved using their templateID </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">verbose</td><td>Print information and warnings during gallery enrollment. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -337,6 +494,25 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga34184d56e2c5585facb11e1e6b734325"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void janice_print_metrics </td>
+          <td>(</td>
+          <td class="paramtype">struct <a class="el" href="structjanice__metrics.html">janice_metrics</a>&#160;</td>
+          <td class="paramname"><em>metrics</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Print metrics to stdout. </p>
+<dl class="section note"><dt>Note</dt><dd>Will only print metrics with count &gt; 0 occurrences. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="gae0bc9ecbd8d16aa8e9c8483844b64140"></a>
 <div class="memitem">
 <div class="memproto">
@@ -414,7 +590,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 28 2016 14:31:31 for JanICE by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Feb 5 2016 12:49:01 for JanICE by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

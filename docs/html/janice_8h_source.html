@@ -46,6 +46,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
@@ -251,8 +252,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;</div>
 <div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;JANICE_EXPORT <a class="code" href="group__janice.html#ga4873d49c1f9d6a6880dfbd485cf6ba72">janice_error</a> <a class="code" href="group__janice.html#gad17bd59e58177b5f29f32f418ce77f71">janice_allocate_gallery</a>(janice_gallery *gallery);</div>
 <div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;JANICE_EXPORT <a class="code" href="group__janice.html#ga4873d49c1f9d6a6880dfbd485cf6ba72">janice_error</a> <a class="code" href="group__janice.html#ga5ca354538d09d4abf4bd87d34222ecd1">janice_enroll</a>(<span class="keyword">const</span> janice_template template_,</div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;                                         janice_template_id *template_id,</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;JANICE_EXPORT <a class="code" href="group__janice.html#ga4873d49c1f9d6a6880dfbd485cf6ba72">janice_error</a> <a class="code" href="group__janice.html#gae853da58f37454ddc14316da24543565">janice_enroll</a>(<span class="keyword">const</span> janice_template template_,</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;                                         <span class="keyword">const</span> janice_template_id template_id,</div>
 <div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;                                         janice_gallery gallery);</div>
 <div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;</div>
 <div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;JANICE_EXPORT <a class="code" href="group__janice.html#ga4873d49c1f9d6a6880dfbd485cf6ba72">janice_error</a> <a class="code" href="group__janice.html#gaf84120b70a7b932ee02ca2f3b131ee54">janice_remove_template</a>(<span class="keyword">const</span> janice_template_id template_id,</div>
@@ -302,7 +303,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="structjanice__attributes_html_abfb4ea4edbb6530d890c3f6abe0bd272"><div class="ttname"><a href="structjanice__attributes.html#abfb4ea4edbb6530d890c3f6abe0bd272">janice_attributes::left_eye_y</a></div><div class="ttdeci">double left_eye_y</div><div class="ttdoc">Face landmark (pixels). </div><div class="ttdef"><b>Definition:</b> janice.h:232</div></div>
 <div class="ttc" id="group__janice_html_gga4040c8aa81857fc2102f27cf34cd973ea45503c486c3f4d472d838e5d8ba9e4f4"><div class="ttname"><a href="group__janice.html#gga4040c8aa81857fc2102f27cf34cd973ea45503c486c3f4d472d838e5d8ba9e4f4">JANICE_BGR24</a></div><div class="ttdoc">3 channel color (BGR order), 8-bit depth. </div><div class="ttdef"><b>Definition:</b> janice.h:171</div></div>
 <div class="ttc" id="group__janice_html_gace5b3f84daa9349c4557f4e0c8b23a13"><div class="ttname"><a href="group__janice.html#gace5b3f84daa9349c4557f4e0c8b23a13">janice_read_template</a></div><div class="ttdeci">janice_error janice_read_template(janice_template template_, janice_template_path template_path)</div><div class="ttdoc">Read a template from disk. </div></div>
-<div class="ttc" id="group__janice_html_ga5ca354538d09d4abf4bd87d34222ecd1"><div class="ttname"><a href="group__janice.html#ga5ca354538d09d4abf4bd87d34222ecd1">janice_enroll</a></div><div class="ttdeci">janice_error janice_enroll(const janice_template template_, janice_template_id *template_id, janice_gallery gallery)</div><div class="ttdoc">Add a template to the gallery. </div></div>
 <div class="ttc" id="group__janice_html_gga4873d49c1f9d6a6880dfbd485cf6ba72a0bc8ac360dae10e0e91b81fca82b3ace"><div class="ttname"><a href="group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a0bc8ac360dae10e0e91b81fca82b3ace">JANICE_INVALID_VIDEO</a></div><div class="ttdef"><b>Definition:</b> janice.h:145</div></div>
 <div class="ttc" id="group__janice_html_gad17bd59e58177b5f29f32f418ce77f71"><div class="ttname"><a href="group__janice.html#gad17bd59e58177b5f29f32f418ce77f71">janice_allocate_gallery</a></div><div class="ttdeci">janice_error janice_allocate_gallery(janice_gallery *gallery)</div><div class="ttdoc">Allocate memory for an empty gallery. </div></div>
 <div class="ttc" id="structjanice__attributes_html_a4a06eaa23cff3c4884b61e631e4e2447"><div class="ttname"><a href="structjanice__attributes.html#a4a06eaa23cff3c4884b61e631e4e2447">janice_attributes::face_yaw</a></div><div class="ttdeci">double face_yaw</div><div class="ttdoc">Face yaw estimation (degrees). </div><div class="ttdef"><b>Definition:</b> janice.h:235</div></div>
@@ -316,6 +316,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="group__janice_html_gga4873d49c1f9d6a6880dfbd485cf6ba72a3769c1a562e8b70e94b183cfeabc2d66"><div class="ttname"><a href="group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a3769c1a562e8b70e94b183cfeabc2d66">JANICE_MISSING_ATTRIBUTES</a></div><div class="ttdef"><b>Definition:</b> janice.h:149</div></div>
 <div class="ttc" id="structjanice__attributes_html_a5fcf5e4cc1b7ff175ca9dd067b845f7c"><div class="ttname"><a href="structjanice__attributes.html#a5fcf5e4cc1b7ff175ca9dd067b845f7c">janice_attributes::nose_base_x</a></div><div class="ttdeci">double nose_base_x</div><div class="ttdoc">Face landmark (pixels). </div><div class="ttdef"><b>Definition:</b> janice.h:233</div></div>
 <div class="ttc" id="group__janice_html_gaf4894cf8cd61aa1ec60541f11cdb6de8"><div class="ttname"><a href="group__janice.html#gaf4894cf8cd61aa1ec60541f11cdb6de8">janice_finalize_template</a></div><div class="ttdeci">janice_error janice_finalize_template(janice_template template_)</div><div class="ttdoc">Create a finalized template representation for janice_verify, janice_write_gallery or janice_search...</div></div>
+<div class="ttc" id="group__janice_html_gae853da58f37454ddc14316da24543565"><div class="ttname"><a href="group__janice.html#gae853da58f37454ddc14316da24543565">janice_enroll</a></div><div class="ttdeci">janice_error janice_enroll(const janice_template template_, const janice_template_id template_id, janice_gallery gallery)</div><div class="ttdoc">Add a template to the gallery. </div></div>
 <div class="ttc" id="structjanice__attributes_html"><div class="ttname"><a href="structjanice__attributes.html">janice_attributes</a></div><div class="ttdoc">Attributes for a particular object in an image. </div><div class="ttdef"><b>Definition:</b> janice.h:219</div></div>
 <div class="ttc" id="group__janice_html_gafdbbe1f5e6346e5e84be26192e4561ac"><div class="ttname"><a href="group__janice.html#gafdbbe1f5e6346e5e84be26192e4561ac">janice_verify</a></div><div class="ttdeci">janice_error janice_verify(const janice_template a, const janice_template b, float *similarity)</div><div class="ttdoc">Return a similarity score for two finalized templates. </div></div>
 <div class="ttc" id="group__janice_html_gga4873d49c1f9d6a6880dfbd485cf6ba72af7c4b93f7f45e47838e10bc04990d0e7"><div class="ttname"><a href="group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72af7c4b93f7f45e47838e10bc04990d0e7">JANICE_MISSING_TEMPLATE_ID</a></div><div class="ttdef"><b>Definition:</b> janice.h:146</div></div>
@@ -358,7 +359,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 28 2016 14:31:31 for JanICE by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Feb 5 2016 12:49:01 for JanICE by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>
