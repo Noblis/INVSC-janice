@@ -1,0 +1,202 @@
+\hypertarget{structjanice__attributes}{}\section{janice\+\_\+attributes Struct Reference}
+\label{structjanice__attributes}\index{janice\+\_\+attributes@{janice\+\_\+attributes}}
+
+
+Attributes for a particular object in an image.  
+
+
+
+
+{\ttfamily \#include $<$janice.\+h$>$}
+
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double \hyperlink{structjanice__attributes_a62f236e140165065156d71a5bebb427b}{face\+\_\+x}
+\begin{DoxyCompactList}\small\item\em Horizontal offset to top-\/left corner of face (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanice__attributes_a6d1095e735599b4cafb3b28aa674d15a}{face\+\_\+y}
+\begin{DoxyCompactList}\small\item\em Vertical offset to top-\/left corner of face (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanice__attributes_a52549e9e1e0c09dde986d91787e753ee}{face\+\_\+width}
+\begin{DoxyCompactList}\small\item\em Face horizontal size (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanice__attributes_ae770b1c0f27c613ac09e7794554caee4}{face\+\_\+height}
+\begin{DoxyCompactList}\small\item\em Face vertical size (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanice__attributes_aa768b24b50fec357c6b635cc2d8a6625}{right\+\_\+eye\+\_\+x}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanice__attributes_a5c443fe811706febc4839fead8acecb6}{right\+\_\+eye\+\_\+y}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanice__attributes_a3a5899c504858558a08e8cc4d12eb15d}{left\+\_\+eye\+\_\+x}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanice__attributes_abfb4ea4edbb6530d890c3f6abe0bd272}{left\+\_\+eye\+\_\+y}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanice__attributes_a5fcf5e4cc1b7ff175ca9dd067b845f7c}{nose\+\_\+base\+\_\+x}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+double \hyperlink{structjanice__attributes_afe1b9645e0d65b7a599931b3a887dce3}{nose\+\_\+base\+\_\+y}
+\begin{DoxyCompactList}\small\item\em Face landmark (pixels) \end{DoxyCompactList}\item 
+\hypertarget{structjanice__attributes_a4a06eaa23cff3c4884b61e631e4e2447}{}double \hyperlink{structjanice__attributes_a4a06eaa23cff3c4884b61e631e4e2447}{face\+\_\+yaw}\label{structjanice__attributes_a4a06eaa23cff3c4884b61e631e4e2447}
+
+\begin{DoxyCompactList}\small\item\em Face yaw estimation (degrees). \end{DoxyCompactList}\item 
+bool \hyperlink{structjanice__attributes_a1082879a8605238978f51c8ccc9bcbe9}{forehead\+\_\+visible}
+\begin{DoxyCompactList}\small\item\em Visibility of forehead. \end{DoxyCompactList}\item 
+bool \hyperlink{structjanice__attributes_a71a354e98dc2ac412ac310ac5f2ff490}{eyes\+\_\+visible}
+\begin{DoxyCompactList}\small\item\em Visibility of eyes. \end{DoxyCompactList}\item 
+bool \hyperlink{structjanice__attributes_a028b722cfc108c4f84a27b8f4423455d}{nose\+\_\+mouth\+\_\+visible}
+\begin{DoxyCompactList}\small\item\em Visibility of nose and mouth. \end{DoxyCompactList}\item 
+bool \hyperlink{structjanice__attributes_a9376c226f494d7e061fca55850094798}{indoor}
+\begin{DoxyCompactList}\small\item\em Image was captured indoors. \end{DoxyCompactList}\item 
+\hypertarget{structjanice__attributes_a641e8d247654bd494905562904f25b5b}{}double \hyperlink{structjanice__attributes_a641e8d247654bd494905562904f25b5b}{frame\+\_\+number}\label{structjanice__attributes_a641e8d247654bd494905562904f25b5b}
+
+\begin{DoxyCompactList}\small\item\em Frame number or -\/1 for images. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Attributes for a particular object in an image. 
+
+Attributes associated with an object. Values of {\ttfamily Na\+N} (\href{http://www.cplusplus.com/reference/cmath/isnan/}{\tt isnan}) indicate that the attribute value is unknown.\hypertarget{group__janice_Below}{}\subsection{is a list of attributes common to general facial recognition}\label{group__janice_Below}
+algorithms. Implementors can choose to use none, some or all, as they see fit. The only exception is the face location attributes which are required. These are enumerated in \hyperlink{group__janice_gafa4e88d39c9279d985b2e8f8d21e17dc}{janice\+\_\+detect}. The attributes list is subject to change until at least Version 2.\+3 of this A\+P\+I. If there is a particular field you would like to add please open a pull request on the \href{https://github.com/Noblis/janice/pulls}{\tt {\bfseries Github page}}. 
+
+\subsection{Member Data Documentation}
+\hypertarget{structjanice__attributes_a71a354e98dc2ac412ac310ac5f2ff490}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!eyes\+\_\+visible@{eyes\+\_\+visible}}
+\index{eyes\+\_\+visible@{eyes\+\_\+visible}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{eyes\+\_\+visible}]{\setlength{\rightskip}{0pt plus 5cm}bool janice\+\_\+attributes\+::eyes\+\_\+visible}\label{structjanice__attributes_a71a354e98dc2ac412ac310ac5f2ff490}
+
+
+Visibility of eyes. 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{structjanice__attributes_a71a354e98dc2ac412ac310ac5f2ff490}{eyes\+\_\+visible}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_ae770b1c0f27c613ac09e7794554caee4}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!face\+\_\+height@{face\+\_\+height}}
+\index{face\+\_\+height@{face\+\_\+height}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{face\+\_\+height}]{\setlength{\rightskip}{0pt plus 5cm}double janice\+\_\+attributes\+::face\+\_\+height}\label{structjanice__attributes_ae770b1c0f27c613ac09e7794554caee4}
+
+
+Face vertical size (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+face. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_a52549e9e1e0c09dde986d91787e753ee}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!face\+\_\+width@{face\+\_\+width}}
+\index{face\+\_\+width@{face\+\_\+width}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{face\+\_\+width}]{\setlength{\rightskip}{0pt plus 5cm}double janice\+\_\+attributes\+::face\+\_\+width}\label{structjanice__attributes_a52549e9e1e0c09dde986d91787e753ee}
+
+
+Face horizontal size (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+face. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_a62f236e140165065156d71a5bebb427b}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!face\+\_\+x@{face\+\_\+x}}
+\index{face\+\_\+x@{face\+\_\+x}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{face\+\_\+x}]{\setlength{\rightskip}{0pt plus 5cm}double janice\+\_\+attributes\+::face\+\_\+x}\label{structjanice__attributes_a62f236e140165065156d71a5bebb427b}
+
+
+Horizontal offset to top-\/left corner of face (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+face. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_a6d1095e735599b4cafb3b28aa674d15a}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!face\+\_\+y@{face\+\_\+y}}
+\index{face\+\_\+y@{face\+\_\+y}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{face\+\_\+y}]{\setlength{\rightskip}{0pt plus 5cm}double janice\+\_\+attributes\+::face\+\_\+y}\label{structjanice__attributes_a6d1095e735599b4cafb3b28aa674d15a}
+
+
+Vertical offset to top-\/left corner of face (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+face. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_a1082879a8605238978f51c8ccc9bcbe9}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!forehead\+\_\+visible@{forehead\+\_\+visible}}
+\index{forehead\+\_\+visible@{forehead\+\_\+visible}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{forehead\+\_\+visible}]{\setlength{\rightskip}{0pt plus 5cm}bool janice\+\_\+attributes\+::forehead\+\_\+visible}\label{structjanice__attributes_a1082879a8605238978f51c8ccc9bcbe9}
+
+
+Visibility of forehead. 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{structjanice__attributes_a1082879a8605238978f51c8ccc9bcbe9}{forehead\+\_\+visible}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_a9376c226f494d7e061fca55850094798}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!indoor@{indoor}}
+\index{indoor@{indoor}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{indoor}]{\setlength{\rightskip}{0pt plus 5cm}bool janice\+\_\+attributes\+::indoor}\label{structjanice__attributes_a9376c226f494d7e061fca55850094798}
+
+
+Image was captured indoors. 
+
+\begin{DoxySeeAlso}{See also}
+\hyperlink{structjanice__attributes_a9376c226f494d7e061fca55850094798}{indoor}. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_a3a5899c504858558a08e8cc4d12eb15d}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!left\+\_\+eye\+\_\+x@{left\+\_\+eye\+\_\+x}}
+\index{left\+\_\+eye\+\_\+x@{left\+\_\+eye\+\_\+x}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{left\+\_\+eye\+\_\+x}]{\setlength{\rightskip}{0pt plus 5cm}double janice\+\_\+attributes\+::left\+\_\+eye\+\_\+x}\label{structjanice__attributes_a3a5899c504858558a08e8cc4d12eb15d}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+left\+\_\+eye. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_abfb4ea4edbb6530d890c3f6abe0bd272}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!left\+\_\+eye\+\_\+y@{left\+\_\+eye\+\_\+y}}
+\index{left\+\_\+eye\+\_\+y@{left\+\_\+eye\+\_\+y}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{left\+\_\+eye\+\_\+y}]{\setlength{\rightskip}{0pt plus 5cm}double janice\+\_\+attributes\+::left\+\_\+eye\+\_\+y}\label{structjanice__attributes_abfb4ea4edbb6530d890c3f6abe0bd272}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+left\+\_\+eye. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_a5fcf5e4cc1b7ff175ca9dd067b845f7c}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!nose\+\_\+base\+\_\+x@{nose\+\_\+base\+\_\+x}}
+\index{nose\+\_\+base\+\_\+x@{nose\+\_\+base\+\_\+x}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{nose\+\_\+base\+\_\+x}]{\setlength{\rightskip}{0pt plus 5cm}double janice\+\_\+attributes\+::nose\+\_\+base\+\_\+x}\label{structjanice__attributes_a5fcf5e4cc1b7ff175ca9dd067b845f7c}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+nose\+\_\+base. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_afe1b9645e0d65b7a599931b3a887dce3}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!nose\+\_\+base\+\_\+y@{nose\+\_\+base\+\_\+y}}
+\index{nose\+\_\+base\+\_\+y@{nose\+\_\+base\+\_\+y}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{nose\+\_\+base\+\_\+y}]{\setlength{\rightskip}{0pt plus 5cm}double janice\+\_\+attributes\+::nose\+\_\+base\+\_\+y}\label{structjanice__attributes_afe1b9645e0d65b7a599931b3a887dce3}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+nose\+\_\+base. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_a028b722cfc108c4f84a27b8f4423455d}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!nose\+\_\+mouth\+\_\+visible@{nose\+\_\+mouth\+\_\+visible}}
+\index{nose\+\_\+mouth\+\_\+visible@{nose\+\_\+mouth\+\_\+visible}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{nose\+\_\+mouth\+\_\+visible}]{\setlength{\rightskip}{0pt plus 5cm}bool janice\+\_\+attributes\+::nose\+\_\+mouth\+\_\+visible}\label{structjanice__attributes_a028b722cfc108c4f84a27b8f4423455d}
+
+
+Visibility of nose and mouth. 
+
+\begin{DoxySeeAlso}{See also}
+nouse\+\_\+mouth\+\_\+visible. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_aa768b24b50fec357c6b635cc2d8a6625}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!right\+\_\+eye\+\_\+x@{right\+\_\+eye\+\_\+x}}
+\index{right\+\_\+eye\+\_\+x@{right\+\_\+eye\+\_\+x}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{right\+\_\+eye\+\_\+x}]{\setlength{\rightskip}{0pt plus 5cm}double janice\+\_\+attributes\+::right\+\_\+eye\+\_\+x}\label{structjanice__attributes_aa768b24b50fec357c6b635cc2d8a6625}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+right\+\_\+eye. 
+\end{DoxySeeAlso}
+\hypertarget{structjanice__attributes_a5c443fe811706febc4839fead8acecb6}{}\index{janice\+\_\+attributes@{janice\+\_\+attributes}!right\+\_\+eye\+\_\+y@{right\+\_\+eye\+\_\+y}}
+\index{right\+\_\+eye\+\_\+y@{right\+\_\+eye\+\_\+y}!janice\+\_\+attributes@{janice\+\_\+attributes}}
+\subsubsection[{right\+\_\+eye\+\_\+y}]{\setlength{\rightskip}{0pt plus 5cm}double janice\+\_\+attributes\+::right\+\_\+eye\+\_\+y}\label{structjanice__attributes_a5c443fe811706febc4839fead8acecb6}
+
+
+Face landmark (pixels) 
+
+\begin{DoxySeeAlso}{See also}
+right\+\_\+eye. 
+\end{DoxySeeAlso}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/code/janice/include/janice.\+h\end{DoxyCompactItemize}

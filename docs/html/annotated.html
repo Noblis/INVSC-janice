@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.9.1"/>
-<title>JanICE: Main Page</title>
+<title>JanICE: Class List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -45,9 +45,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </script>
   <div id="navrow1" class="tabs">
     <ul class="tablist">
-      <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
-      <li><a href="annotated.html"><span>Classes</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
@@ -67,6 +67,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li class="current"><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="classes.html"><span>Class&#160;Index</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
+    </ul>
+  </div>
 </div><!-- top -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -84,30 +91,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="headertitle">
-<div class="title">JanICE Documentation</div>  </div>
+<div class="title">Class List</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="overview"></a>
-Overview</h1>
-<p><em>libjanice</em> is a <em>C</em> API that makes integration easier between face recognition algorithms and agencies and entities that would like to use them. The API consists of two header files:</p>
-<table class="doxtable">
-<tr>
-<th>Header </th><th>Documentation </th><th>Required </th><th>Description  </th></tr>
-<tr>
-<td><a class="el" href="janice_8h_source.html">janice.h</a> </td><td><a class="el" href="group__janice.html">JanICE</a> </td><td><b>Yes</b> </td><td>Mandatory interface for the JanICE API. </td></tr>
-<tr>
-<td><a class="el" href="janice__io_8h_source.html">janice_io.h</a> </td><td><a class="el" href="group__janice__io.html">Janice I/O</a> </td><td>No (Provided) </td><td>Media decoding and evaluation harness. </td></tr>
+<div class="textblock">Here are the classes, structs, unions and interfaces with brief descriptions:</div><div class="directory">
+<table class="directory">
+<tr id="row_0_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structjanice__association.html" target="_self">janice_association</a></td><td class="desc">An association between a piece of media and metadata </td></tr>
+<tr id="row_1_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structjanice__attributes.html" target="_self">janice_attributes</a></td><td class="desc">Attributes for a particular object in an image </td></tr>
+<tr id="row_2_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structjanice__media.html" target="_self">janice_media</a></td><td class="desc">Common representation for still images and videos </td></tr>
+<tr id="row_3_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structjanice__metric.html" target="_self">janice_metric</a></td><td class="desc">A statistic </td></tr>
+<tr id="row_4_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structjanice__metrics.html" target="_self">janice_metrics</a></td><td class="desc">All statistics </td></tr>
+<tr id="row_5_"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structjanice__track.html" target="_self">janice_track</a></td><td class="desc">A list of <a class="el" href="structjanice__attributes.html" title="Attributes for a particular object in an image. ">janice_attributes</a> representing a single identity in a <a class="el" href="structjanice__media.html">janice_media</a> instance </td></tr>
 </table>
-<ul>
-<li><a href="https://github.com/Noblis/janice"><b>Source Code</b></a> [github.com]</li>
-</ul>
-<h2><a class="anchor" id="about"></a>
-About</h2>
-<p>Facial recognition has emerged as a key technology for government agencies to efficiently triage and analyze large data streams. A large ecosystem of facial recognition algorithms already exists from a variety of sources including commercial vendors, government programs and academia. However, integrating this important technology into existing technology stacks is a difficult and expensive endeavor. The JanICE API aims to address this problem by functioning as a compatibility layer between users and the algorithms. Users can write their applications on "top" of the API while algorithm providers will implement their algorithms "beneath" the API. This means that users can write their applications independent of any single FR algorithm and gives them the freedom to select the algorithm or algorithms that best serve their specific use case without worrying about integration. Algorithm providers will be able to serve their algorithms across teams and agencies without having to integrate with the different tools and services of each specific team.</p>
-<h2><a class="anchor" id="license"></a>
-License</h2>
-<p>The API is provided under a <a href="LICENSE.txt">BSD-like license</a> and is <em>free for academic and commercial use</em>. </p>
-</div></div><!-- contents -->
+</div><!-- directory -->
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated on Fri Apr 15 2016 18:03:17 for JanICE by &#160;<a href="http://www.doxygen.org/index.html">

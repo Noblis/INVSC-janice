@@ -1,0 +1,15 @@
+\hypertarget{index_overview}{}\section{Overview}\label{index_overview}
+{\itshape libjanice} is a {\itshape C} A\+P\+I that makes integration easier between face recognition algorithms and agencies and entities that would like to use them. The A\+P\+I consists of two header files\+:
+
+\begin{TabularC}{4}
+\hline
+\rowcolor{lightgray}{\bf Header }&{\bf Documentation }&{\bf Required }&{\bf Description  }\\\cline{1-4}
+\hyperlink{janice_8h_source}{janice.\+h} &\hyperlink{group__janice}{Jan\+I\+C\+E} &{\bfseries Yes} &Mandatory interface for the Jan\+I\+C\+E A\+P\+I. \\\cline{1-4}
+\hyperlink{janice__io_8h_source}{janice\+\_\+io.\+h} &\hyperlink{group__janice__io}{Janice I/\+O} &No (Provided) &Media decoding and evaluation harness. \\\cline{1-4}
+\end{TabularC}
+
+\begin{DoxyItemize}
+\item \href{https://github.com/Noblis/janice}{\tt {\bfseries Source Code}} \mbox{[}github.\+com\mbox{]}
+\end{DoxyItemize}\hypertarget{index_about}{}\subsection{About}\label{index_about}
+Facial recognition has emerged as a key technology for government agencies to efficiently triage and analyze large data streams. A large ecosystem of facial recognition algorithms already exists from a variety of sources including commercial vendors, government programs and academia. However, integrating this important technology into existing technology stacks is a difficult and expensive endeavor. The Jan\+I\+C\+E A\+P\+I aims to address this problem by functioning as a compatibility layer between users and the algorithms. Users can write their applications on \char`\"{}top\char`\"{} of the A\+P\+I while algorithm providers will implement their algorithms \char`\"{}beneath\char`\"{} the A\+P\+I. This means that users can write their applications independent of any single F\+R algorithm and gives them the freedom to select the algorithm or algorithms that best serve their specific use case without worrying about integration. Algorithm providers will be able to serve their algorithms across teams and agencies without having to integrate with the different tools and services of each specific team.\hypertarget{index_license}{}\subsection{License}\label{index_license}
+The A\+P\+I is provided under a \href{LICENSE.txt}{\tt B\+S\+D-\/like license} and is {\itshape free for academic and commercial use}. 

@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['janice_5fbgr24',['JANICE_BGR24',['../group__janice.html#gga4040c8aa81857fc2102f27cf34cd973ea45503c486c3f4d472d838e5d8ba9e4f4',1,'janice.h']]],
+  ['janice_5ffailure_5fto_5fdeserialize',['JANICE_FAILURE_TO_DESERIALIZE',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a8cd2cd3dea07b876b79e5edb8dddda22',1,'janice.h']]],
+  ['janice_5ffailure_5fto_5fdetect',['JANICE_FAILURE_TO_DETECT',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a4123e451be0cc17446e73331a5886749',1,'janice.h']]],
+  ['janice_5ffailure_5fto_5fenroll',['JANICE_FAILURE_TO_ENROLL',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72ad318d25055b2f4457f326c7243f87983',1,'janice.h']]],
+  ['janice_5ffailure_5fto_5fserialize',['JANICE_FAILURE_TO_SERIALIZE',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a25bc0e0d4d0163a02591d716d758f654',1,'janice.h']]],
+  ['janice_5fgray8',['JANICE_GRAY8',['../group__janice.html#gga4040c8aa81857fc2102f27cf34cd973eacd24e66ad3d44f6e65ba0e1d55719d7b',1,'janice.h']]],
+  ['janice_5finvalid_5fmedia',['JANICE_INVALID_MEDIA',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72af4733213a23c2f723edbcf0347effa5f',1,'janice.h']]],
+  ['janice_5finvalid_5fsdk_5fpath',['JANICE_INVALID_SDK_PATH',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a1e5b009e37ef706f5978b30b1f3c20ef',1,'janice.h']]],
+  ['janice_5fmissing_5fattributes',['JANICE_MISSING_ATTRIBUTES',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a3769c1a562e8b70e94b183cfeabc2d66',1,'janice.h']]],
+  ['janice_5fmissing_5ffile_5fname',['JANICE_MISSING_FILE_NAME',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a5e548d0ee129d6d88692b7d18aace1a0',1,'janice.h']]],
+  ['janice_5fmissing_5ftemplate_5fid',['JANICE_MISSING_TEMPLATE_ID',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72af7c4b93f7f45e47838e10bc04990d0e7',1,'janice.h']]],
+  ['janice_5fnot_5fimplemented',['JANICE_NOT_IMPLEMENTED',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a8f3eea0e95a4ef4292306bf370a82b7e',1,'janice.h']]],
+  ['janice_5fnull_5fattributes',['JANICE_NULL_ATTRIBUTES',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72afce5fb47b60300a89f3d37eb417c5257',1,'janice.h']]],
+  ['janice_5fnum_5ferrors',['JANICE_NUM_ERRORS',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a6a81ece74f71417fcdb5ad558b57dcbb',1,'janice.h']]],
+  ['janice_5fopen_5ferror',['JANICE_OPEN_ERROR',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72aa572baa59fbe2e7ab7c32b6eb6622da6',1,'janice.h']]],
+  ['janice_5fout_5fof_5fmemory',['JANICE_OUT_OF_MEMORY',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a8f69ad2b7599334e67aecc936721abfa',1,'janice.h']]],
+  ['janice_5fparse_5ferror',['JANICE_PARSE_ERROR',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a0a2b70d3b4b503cc5471485c49e160aa',1,'janice.h']]],
+  ['janice_5fread_5ferror',['JANICE_READ_ERROR',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a07807b7831f199b39f6f4172998fa870',1,'janice.h']]],
+  ['janice_5fsuccess',['JANICE_SUCCESS',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a7cd6c7d28583c2dfa4e19f8642a60f3e',1,'janice.h']]],
+  ['janice_5funknown_5ferror',['JANICE_UNKNOWN_ERROR',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72a418184f1d074e5bbed409836b69c78f5',1,'janice.h']]],
+  ['janice_5fwrite_5ferror',['JANICE_WRITE_ERROR',['../group__janice.html#gga4873d49c1f9d6a6880dfbd485cf6ba72ac7d09bcfc46ee6768086b3e69e0fd269',1,'janice.h']]]
+];
