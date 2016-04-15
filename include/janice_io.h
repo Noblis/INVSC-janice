@@ -26,12 +26,8 @@
 
 #include "janice.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /*!
- * \defgroup janice_io JanICE I/O
+ * \defgroup janice_io Janice I/O
  * \brief Media decoding and evaluation harness.
  * \addtogroup janice_io
  *  @{
@@ -89,7 +85,7 @@ JANICE_EXPORT janice_error janice_error_from_string(const char *error);
  * \remark This function is \ref reentrant.
  * \see janice_free_image
  */
-JANICE_EXPORT janice_error janice_read_image(const char *file_name, janice_image *image);
+JANICE_EXPORT janice_error janice_load_media(const std::string &filename, janice_media &media);
 
 /*!
  * \brief Frees the memory previously allocated for a #janice_image.
@@ -97,40 +93,7 @@ JANICE_EXPORT janice_error janice_read_image(const char *file_name, janice_image
  * \remark This function is \ref reentrant.
  * \see janice_allocate_image
  */
-JANICE_EXPORT void janice_free_image(janice_image image);
-
-/*!
- * \brief Handle to a private video decoding type.
- */
-typedef struct janice_video_type *janice_video;
-
-/*!
- * \brief Returns a video ready for reading.
- * \param[in] file_name Path to image file.
- * \param[out] video Address to store the allocated video.
- * \remark This function is \ref reentrant.
- * \see janice_read_frame janice_close_video
- */
-JANICE_EXPORT janice_error janice_open_video(const char *file_name, janice_video *video);
-
-/*!
- * \brief Returns the current frame and advances the video to the next frame.
- * \param[in] video Video to decode.
- * \param[out] image Address to store the allocated image.
- * \remark This function is \ref reentrant.
- * \see janice_open_video janice_free_image
- */
-JANICE_EXPORT janice_error janice_read_frame(janice_video video, janice_image *image);
-
-/*!
- * \brief Closes a video previously opened by \ref janice_open_video.
- *
- * Call this function to deallocate the memory allocated to decode the video
- * after the desired frames have been read.
- * \param[in] video The video to close.
- * \remark This function is \ref reentrant.
- */
-JANICE_EXPORT void janice_close_video(janice_video video);
+JANICE_EXPORT janice_error janice_free_media(janice_media &media);
 
 /*!
  * \brief File name for a Janice Metadata File
@@ -152,30 +115,58 @@ TEMPLATE_ID        , SUBJECT_ID, FILE_NAME, MEDIA_ID, FRAME, <janice_attribute>,
  * - \c FILE_NAME is a path to the image or video file on disk.
  * - \c MEDIA_ID is a unique integer identifier indicating rows that belong to the same piece of media (image or video clip).
  * - \c FRAME is the video frame number and -1 (or empty string) for still images.
- * - \a \<janice_attribute\> adheres to \ref janice_enum.
  * - All rows associated with the same \c TEMPLATE_ID occur sequentially.
  * - All rows associated with the same \c TEMPLATE_ID and \c FILE_NAME occur sequentially ordered by \c FRAME.
- * - A cell is empty when no value is available for the specified #janice_attribute.
+ * - A cell is empty when no value is available for the specified attribute.
+ *
+ * \par Examples:
+ * - [meds.csv](https://raw.githubusercontent.com/biometrics/janice/master/data/meds.csv)
+ * - [Kirchner.csv](https://raw.githubusercontent.com/biometrics/janice/master/data/Kirchner.csv)
+ * - [Toledo.csv](https://raw.githubusercontent.com/biometrics/janice/master/data/Toledo.csv)
  */
 typedef const char *janice_metadata;
 
 /*!
- * \brief High-level function for enrolling templates from a metadata file and writing templates to disk.
+ * \brief High-level helper function for enrolling templates from a metadata file and writing templates to disk.
  * \param [in] data_path Prefix path to files in metadata.
  * \param [in] metadata #janice_metadata to enroll.
- * \param [in] output_prefix Prefix of a directory to save the templates into. Templates will be saved using their templateID
+ * \param [in] output_path Directory to save the templates to
+ * \param [in] output_file CSV file to hold the filenames, template ids, and subject_ids for the saved templates.
+ *                         The format is templateID,subjectID,filename\n
+ * \param [in] role The role for the templates
  * \param [in] verbose Print information and warnings during gallery enrollment.
+ * \remark This function is \ref thread_unsafe.
  */
-JANICE_EXPORT janice_error janice_create_templates(const char *data_path, janice_metadata metadata, const char *output_prefix, int verbose);
+JANICE_EXPORT janice_error janice_create_templates_helper(const std::string &data_path, janice_metadata metadata, const std::string &templates_path, const std::string &templates_list_file, const janice_template_role role, bool verbose);
 
 /*!
- * \brief High-level function for enrolling a gallery from a metadata file.
- * \param [in] data_path Prefix path to files in metadata.
- * \param [in] metadata #janice_metadata to enroll.
- * \param [in] gallery File to save the templates to.
+ * \brief High-level helper function for enrolling a gallery from a metadata file.
+ * \param [in] templates_file Text file of templates to enroll into the gallery
+ * \param [in] gallery_file File to save the gallery to
  * \param [in] verbose Print information and warnings during gallery enrollment.
+ * \remark This function is \ref thread_unsafe.
  */
-JANICE_EXPORT janice_error janice_create_gallery(const char *data_path, janice_metadata metadata, janice_gallery gallery, int verbose);
+JANICE_EXPORT janice_error janice_create_gallery_helper(const std::string &templates_list_file, const std::string &gallery_file, bool verbose);
+
+/*!
+ * \brief High-level helper function for running verification on two equal sized lists of templates
+ * \param [in] templates_list_file_a The first list of templates
+ * \param [in] templates_list_file_b The second list of templates
+ * \param [in] scores_file The file to write scores to. Scores are written template_id_a,template_id_b,similarity,genuine_match\n
+ * \param [in] verbose Print information and warnings during verification.
+ * \remark This function is \ref thread_unsafe.
+ */
+JANICE_EXPORT janice_error janice_verify_helper(const std::string &templates_list_file_a, const std::string &templates_list_file_b, const std::string &scores_file, bool verbose);
+
+/*!
+ * \brief High-level helper function for running verification on two equal sized lists of templates
+ * \param [in] templates_list_file List of templates to enroll as probes
+ * \param [in] gallery_file Path to the gallery to search against
+ * \param [in] candidate_list File to write the candidate lists to. Each line in the file has the format probe_template_id,rank,gallery_template_id,similarity,genuine_match\n
+ * \param [in] verbose Print information and warnings during search.
+ * \remark This function is \ref thread_unsafe.
+ */
+JANICE_EXPORT janice_error janice_search_helper(const std::string &probes_list_file, const std::string &gallery_list_file, const std::string &gallery_file, int num_requested_returns, const std::string &candidate_list, bool verbose);
 
 /*!
  * \brief A statistic.
@@ -194,54 +185,51 @@ struct janice_metric
  */
 struct janice_metrics
 {
-    struct janice_metric janice_initialize_template_speed; /*!< \brief ms */
+    struct janice_metric janice_load_media_speed; /*!< \brief ms */
+    struct janice_metric janice_free_media_speed; /*!< \brief ms */
     struct janice_metric janice_detection_speed; /*!< \brief ms */
-    struct janice_metric janice_augment_speed; /*!< \brief ms */
-    struct janice_metric janice_finalize_template_speed; /*!< \brief ms */
-    struct janice_metric janice_read_image_speed; /*!< \brief ms */
-    struct janice_metric janice_free_image_speed; /*!< \brief ms */
+    struct janice_metric janice_create_template_speed; /*!< \brief ms */
+    struct janice_metric janice_serialize_template_speed; /*!< \brief ms */
+    struct janice_metric janice_deserialize_template_speed; /*!< \brief ms */
+    struct janice_metric janice_delete_serialized_template_speed; /*!< \brief ms */
+    struct janice_metric janice_delete_template_speed; /*!< \brief ms */
     struct janice_metric janice_verify_speed; /*!< \brief ms */
+    struct janice_metric janice_create_gallery_speed; /*!< \brief ms */
+    struct janice_metric janice_gallery_insert_speed; /*!< \brief ms */
+    struct janice_metric janice_gallery_remove_speed; /*!< \brief ms */
+    struct janice_metric janice_serialize_gallery_speed; /*!< \brief ms */
+    struct janice_metric janice_deserialize_gallery_speed; /*!< \brief ms */
+    struct janice_metric janice_delete_serialized_gallery_speed; /*!< \brief ms */
+    struct janice_metric janice_delete_gallery_speed; /*!< \brief ms */
     struct janice_metric janice_search_speed; /*!< \brief ms */
-    struct janice_metric janice_gallery_size_speed; /*!< \brief ms */
-    struct janice_metric janice_finalize_gallery_speed; /*!< \brief ms */
+
+    struct janice_metric janice_gallery_size; /*!< \brief KB */
     struct janice_metric janice_template_size; /*!< \brief KB */
-    int          janice_missing_attributes_count; /*!< \brief Count of \ref JANICE_MISSING_ATTRIBUTES */
-    int          janice_failure_to_detect_count; /*! \brief Count of \ref JANICE_FAILURE_TO_DETECT */
-    int          janice_failure_to_enroll_count; /*!< \brief Count of \ref JANICE_FAILURE_TO_ENROLL */
-    int          janice_other_errors_count; /*!< \brief Count of \ref janice_error excluding \ref JANICE_MISSING_ATTRIBUTES, \ref JANICE_FAILURE_TO_ENROLL, and \ref JANICE_SUCCESS */
+    int                 janice_missing_attributes_count; /*!< \brief Count of
+                                                             \ref JANICE_MISSING_ATTRIBUTES */
+    int                 janice_failure_to_detect_count; /*!< \brief Count of
+                                                            \ref JANICE_FAILURE_TO_DETECT */
+    int                 janice_failure_to_enroll_count; /*!< \brief Count of
+                                                            \ref JANICE_FAILURE_TO_ENROLL */
+    int                 janice_other_errors_count; /*!< \brief Count of \ref janice_error excluding
+                                                       \ref JANICE_MISSING_ATTRIBUTES,
+                                                       \ref JANICE_FAILURE_TO_ENROLL, and
+                                                       \ref JANICE_SUCCESS */
 };
 
-/*! \brief Retrieve and reset performance metrics. */
+/*!
+ * \brief Retrieve and reset performance metrics.
+ * \remark This function is \ref thread_unsafe.
+ */
 JANICE_EXPORT struct janice_metrics janice_get_metrics();
 
 /*!
  * \brief Print metrics to stdout.
  * \note Will only print metrics with count > 0 occurrences.
+ * \remark This function is \ref thread_unsafe.
  */
 JANICE_EXPORT void janice_print_metrics(struct janice_metrics metrics);
 
 /*! @}*/
 
-/*!
- * \page janice_enum Enum Naming Convention
- * #janice_attribute, #janice_color_space, #janice_error and enum values follow a
- * \c CAPITAL_CASE naming convention. Functions #janice_attribute_to_string and
- * #janice_error_to_string return a string for the corresponding enum by
- * removing the leading \c janice_:
- * \code
- * janice_attribute_to_string(janice_RIGHT_EYE_X); // returns "RIGHT_EYE_X"
- * \endcode
- * Functions #janice_attribute_from_string and #janice_error_from_string provide
- * the opposite functionality:
- * \code
- * janice_attribute_from_string("RIGHT_EYE_X"); // returns janice_RIGHT_EYE_X
- * \endcode
- * \note #janice_attribute_from_string is used to decode #janice_metadata
- * files, so attribute column names should follow this naming convention.
- */
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* IARPA_janice_IO_H */
+#endif /* JANICE_IO_H */

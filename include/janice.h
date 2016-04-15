@@ -28,9 +28,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <vector>
+#include <string>
 
 /*!
  * \mainpage
@@ -83,8 +82,8 @@ extern "C" {
 #endif
 
 #define JANICE_VERSION_MAJOR 2
-#define JANICE_VERSION_MINOR 1
-#define JANICE_VERSION_PATCH 1
+#define JANICE_VERSION_MINOR 2
+#define JANICE_VERSION_PATCH 0
 
 /*!
  * \defgroup janice JanICE
@@ -136,13 +135,12 @@ typedef enum janice_error
     JANICE_UNKNOWN_ERROR      , /*!< Catch-all error code */
     JANICE_OUT_OF_MEMORY      , /*!< Memorry allocation failed */
     JANICE_INVALID_SDK_PATH   , /*!< Incorrect location provided to
-                                     #janice_initialize */
+                                    #janice_initialize */
     JANICE_OPEN_ERROR         , /*!< Failed to open a file */
     JANICE_READ_ERROR         , /*!< Failed to read from a file */
     JANICE_WRITE_ERROR        , /*!< Failed to write to a file */
     JANICE_PARSE_ERROR        , /*!< Failed to parse file */
-    JANICE_INVALID_IMAGE      , /*!< Could not decode image file */
-    JANICE_INVALID_VIDEO      , /*!< Could not decode video file */
+    JANICE_INVALID_MEDIA      , /*!< Could not decode media file */
     JANICE_MISSING_TEMPLATE_ID, /*!< Expected a missing template ID */
     JANICE_MISSING_FILE_NAME  , /*!< Expected a missing file name */
     JANICE_NULL_ATTRIBUTES    , /*!< Null #janice_attributes */
@@ -152,9 +150,13 @@ typedef enum janice_error
                                     provided image */
     JANICE_FAILURE_TO_ENROLL  , /*!< Could not construct a template from the
                                     provided image and attributes */
+    JANICE_FAILURE_TO_SERIALIZE, /*!< Could not serialize a template or
+                                     gallery */
+    JANICE_FAILURE_TO_DESERIALIZE, /*!< Could not deserialize a template
+                                       or gallery */
     JANICE_NOT_IMPLEMENTED    , /*!< Optional functions may return this value in
                                     lieu of a meaninful implementation */
-    JANICE_NUM_ERRORS           /*!< Idiom to iterate over all errors */
+    JANICE_NUM_ERRORS         /*!< Idiom to iterate over all errors */
 } janice_error;
 
 /*!
@@ -172,34 +174,36 @@ typedef enum janice_color_space
 } janice_color_space;
 
 /*!
- * \brief Common representation for still images and video frames.
+ * \brief Common representation for still images and videos.
  *
  * Pixels are stored in _row-major_ order.
  * In other words, pixel layout with respect to decreasing memory spatial
- * locality is \a channel, \a column, \a row.
+ * locality is \a channel, \a column, \a row \a frames.
  * Thus pixel intensity can be retrieved as follows:
  *
 \code
-janice_data get_intensity(janice_image image, size_t channel, size_t column,
-                                                                     size_t row)
+janice_data get_intensity(janice_media media, size_t channel, size_t column,
+                                              size_t row, size_t frame)
 {
-    const size_t columnStep = (image.image_format == JANICE_COLOR ? 3 : 1);
-    const size_t index = row*image.step + column*columnStep + channel;
-    return image.data[index];
+    const size_t columnStep = (image.color_space == JANICE_BGR24 ? 3 : 1);
+    const size_t rowStep    = image.width * columnStep;
+    const size_t index      = row * rowStep + column * columnStep + channel;
+    return image.data[frame][index];
 }
 \endcode
  *
  * Coordinate (0, 0) corresponds to the top-left corner of the image.
  * Coordinate (width-1, height-1) corresponds to the bottom-right corner of the image.
  */
-typedef struct janice_image
+typedef struct janice_media
 {
-    janice_data *data; /*!< \brief Data buffer. */
+    std::vector<janice_data*> data; /*! < \brief A collection of image data of size N,
+                                                where is the number of frames in a video
+                                                or 1 in the case of a still image. */
     size_t width;     /*!< \brief Column count in pixels. */
     size_t height;    /*!< \brief Row count in pixels. */
-    size_t step;      /*!< \brief Bytes per row, including padding. */
     janice_color_space color_space; /*!< \brief Arrangement of #data. */
-} janice_image;
+} janice_media;
 
 /*!
  * \brief Attributes for a particular object in an image.
@@ -218,27 +222,65 @@ typedef struct janice_image
  */
 typedef struct janice_attributes
 {
+    double face_x; /*!< \brief Horizontal offset to top-left corner of face
+                               (pixels) \see \ref face. */
+    double face_y; /*!< \brief Vertical offset to top-left corner of face
+                               (pixels) \see \ref face. */
+    double face_width; /*!< \brief Face horizontal size (pixels)
+                                   \see \ref face. */
+    double face_height; /*!< \brief Face vertical size (pixels)
+                                    \see \ref face. */
+    double right_eye_x; /*!< \brief Face landmark (pixels)
+                                    \see \ref right_eye. */
+    double right_eye_y; /*!< \brief Face landmark (pixels)
+                                    \see \ref right_eye. */
+    double left_eye_x; /*!< \brief Face landmark (pixels) \see \ref left_eye. */
+    double left_eye_y; /*!< \brief Face landmark (pixels) \see \ref left_eye. */
+    double nose_base_x; /*!< \brief Face landmark (pixels)
+                                    \see \ref nose_base. */
+    double nose_base_y; /*!< \brief Face landmark (pixels)
+                                    \see \ref nose_base. */
+    double face_yaw; /*!< \brief Face yaw estimation (degrees). */
+    bool forehead_visible; /*!< \brief Visibility of forehead
+                                  \see forehead_visible. */
+    bool eyes_visible; /*!< \brief Visibility of eyes
+                                     \see \ref eyes_visible. */
+    bool nose_mouth_visible; /*!< \brief Visibility of nose and mouth
+                                    \see nouse_mouth_visible. */
+    bool indoor; /*!< \brief Image was captured indoors \see \ref indoor. */
+
+    double frame_number; /*!< \brief Frame number or -1 for images. */
+} janice_attributes;
+
+/*!
+ * \brief A list of janice_attributes representing a single identity in a
+ *        \ref janice_media instance.
+ */
+typedef struct janice_track
+{
+    std::vector<janice_attributes> track;
+
     double detection_confidence; /*!< \brief A higher value indicates greater
                                              detection confidence. */
-    double face_x; /*!< \brief Horizontal offset to top-left corner of face
-                               (pixels) */
-    double face_y; /*!< \brief Vertical offset to top-left corner of face
-                               (pixels) */
-    double face_width; /*!< \brief Face horizontal size (pixels) */
-    double face_height; /*!< \brief Face vertical size (pixels) */
-    double right_eye_x; /*!< \brief Face landmark (pixels) */
-    double right_eye_y; /*!< \brief Face landmark (pixels) */
-    double left_eye_x; /*!< \brief Face landmark (pixels) */
-    double left_eye_y; /*!< \brief Face landmark (pixels) */
-    double nose_base_x; /*!< \brief Face landmark (pixels) */
-    double nose_base_y; /*!< \brief Face landmark (pixels) */
-    double face_yaw; /*!< \brief Face yaw estimation (degrees). */
     double gender; /*!< \brief Gender of subject of interest, 1 for male, 0 for
                         female. */
-    double age; /*!< \brief Approximate age of subject (years) */
-    double skin_tone; /*!< \brief Skin tone of subject */
+    double age; /*!< \brief Approximate age of subject (years) \see \ref age. */
+    double skin_tone; /*!< \brief Skin tone of subject \see \ref skin_tone. */
+
     double frame_rate; /*!< \brief Frames per second, or 0 for images. */
-} janice_attributes;
+} janice_track;
+
+/*!
+ * \brief An association between a piece of media and metadata.
+ *
+ * All metadata in an association can be assumed to belong to a
+ * single subject.
+ */
+typedef struct janice_association
+{
+    janice_media media;
+    std::vector<janice_track> metadata;
+} janice_association;
 
 /*!
  * \brief Call once at the start of the application, before making any other
@@ -252,192 +294,165 @@ typedef struct janice_attributes
  * \param[in] algorithm An empty string indicating the default algorithm, or an
  *                      implementation-defined string indicating an alternative
  *                      configuration.
- * \param[in] gpu_index An integer index indicating to the implementer what GPU
- *                      should be used. The index will be 0 or greater if a GPU
- *                      is available, and negative otherwise. Implementers who
- *                      do not require a GPU can ignore this value.
+ * \param[in] gpu_dev The GPU device number to be used by all subsequent
+ * 			          implementation function calls
  * \remark This function is \ref thread_unsafe and should only be called once.
  * \see janice_finalize
  */
-JANICE_EXPORT janice_error janice_initialize(const char *sdk_path,
-                                             const char *temp_path,
-                                             const char *algorithm,
-                                             const int gpu_index);
+JANICE_EXPORT janice_error janice_initialize(const std::string &sdk_path,
+                                             const std::string &temp_path,
+                                             const std::string &algorithm,
+                                             const int gpu_dev);
 
 /*!
- * \brief Call once at the end of the application, after making all other calls
- * to the API.
- * \remark This function is \ref thread_unsafe and should only be called once.
- * \see janice_initialize
- */
-JANICE_EXPORT janice_error janice_finalize();
-
-/*!
- * \brief Detect objects in a #janice_image.
+ * \brief Detect objects in a #janice_media.
  *
- * Each object is represented by a #janice_attributes. In the case that the
- * number of detected objects is greater than \p num_requested, the
- * implementation may choose which detections to exclude, potentially returning
- * early before scanning the entire image. Detected objects can then be used in
- * \ref janice_augment.
+ * Each object is represented by a #janice_track. Detected objects
+ * can then be used to create #janice_assocation and passed to
+ * \ref janice_create_template.
+ *
+ * \note The number of attributes in a track can never exceed the
+ * number of frames in a janice_media instance. Still images should
+ * return tracks of length 1.
+ *
+ * \section face_size Minimum Face Size
+ * A minimum size of faces to be detected may be specified by the
+ * caller of \ref janice_detect. This size will be given as a pixel
+ * value and corresponds to the width of the face.
  *
  * \section detection_guarantees Detection Guarantees
- * The first \p num_actual elements of \p attributes_array will be populated by
- * decreasing janice_attributes::detection_confidence.
+ * The returned tracks will be ordered by decreasing
+ * janice_track::detection_confidence.
  *
- * Each of the \p num_actual detections will have values for at least the
- * following attributes:
- *  - janice_attributes::detection_confidence
+ * Each of the tracks will have values for at least janice_track::detection_confidence.
+ * Each of the janice_attributes within a track will have values for
  *  - janice_attributes::face_x
  *  - janice_attributes::face_y
  *  - janice_attributes::face_width
  *  - janice_attributes::face_height
+ *  - janice_attributes::frame_number
  *
- * Any attribute of the \p num_actual detections without a value will be set to
- * \c NaN.
+ * Any attribute of the track or a janice_attributes within the track
+ * without a value will be set to \c NaN.
  *
- * \param[in] image Image to detect objects in.
- * \param[out] attributes_array Pre-allocated array of uninitialized
- *                              #janice_attributes. Expected to be at least
- *                              \p num_requested * \c sizeof(#janice_attributes)
- *                              bytes long.
- * \param[in] num_requested Length of \p attributes_array.
- * \param[out] num_actual The number of detections made by the system. If
- *                        \p num_actual <= \p num_requested, then \p num_actual
- *                        is the length of \p attributes_array populated with
- *                        detected objects by the implementation. Otherwise,
- *                        \p num_actual > \p num_requested, then
- *                        \p attributes_array is fully populated and there were
- *                        additional detections that weren't returned.
+ * \param[in] media Media to detect objects in.
+ * \param[in] min_face_size The minimum width of detected faces that should be returned. The value is in pixels.
+ * \param[out] tracks Empty vector to be filled with detected objects.
  * \remark This function is \ref thread_safe.
  */
-JANICE_EXPORT janice_error janice_detect(const janice_image image,
-                                         janice_attributes *attributes_array,
-                                         const size_t num_requested,
-                                         size_t *num_actual);
+JANICE_EXPORT janice_error janice_detect(const janice_media &media,
+                                         const size_t min_face_size,
+                                         std::vector<janice_track> &tracks);
 
 /*!
  * \brief Contains the recognition information for an object.
- *
- * Create a new template with \ref janice_allocate_template.
  */
 typedef struct janice_template_type *janice_template;
 
+typedef enum janice_template_role {
+    ENROLLMENT_11 = 0,
+    VERIFICATION_11 = 1,
+    ENROLLMENT_1N = 2,
+    IDENTIFICATION = 3,
+    CLUSTERING = 4
+} janice_template_role;
+
 /*!
- * \brief Allocate memory for an empty template.
+ * \brief Build a template from a list of janice_associations
  *
- * Memory is managed by the implementation and guaranteed until
- * \ref janice_free_template.
+ * All media necessary to build a complete template will be passed in at
+ * one time and the constructed template is expected to be suitable for
+ * verification and search.
  *
- * Add images to the template with \ref janice_augment.
- *
- * \code
- * janice_template template_;
- * janice_error error = janice_allocate_template(&template_);
- * assert(!error);
- * \endcode
- *
- * \param[in] template_ An uninitialized template.
+ * \param[in] associations A vector of associations between a piece of media
+ *                         and relevant metadata. All of the associations provided
+ *                         are guaranteed to be of a single subject
+ * \param[in] role An enumeration describing the intended function for the created template.
+ *                 Implementors are not required to have different types of templates for any/all
+ *                 of the roles specified but can if they choose.
+ * \param[out] template_ The template to contain the subject's recognition information.
  * \remark This function is \ref reentrant.
  */
-JANICE_EXPORT janice_error janice_allocate_template(janice_template *template_);
+JANICE_EXPORT janice_error janice_create_template(const std::vector<janice_association> &associations,
+                                                  const janice_template_role role,
+                                                  janice_template &template_);
 
 /*!
- * \brief The maximum number of images that can be
- *        enrolled to a single template.
+ * \brief Build a list of templates from a single piece of janice_media
  *
- * If there is no limit on the number of images
- * that can be enrolled to a template, this function
- * should return -1.
- * \remark This function is \ref thread_safe.
+ * There is no guarantee on the number of individual subjects appearing in the media
+ * and implementors should create as many templates as necessary to represent all of
+ * the people they find.
+ *
+ * Implementors must return a single janice_track for each template they create. The track
+ * must have all of the metadata fields specified in \ref detection_guarantees.
+ *
+ * \param[in] media An image or a video containing an unknown number of identities
+ * \param[in] role An enumeration describing the intended function for the created template.
+ *                 Implementors are not required to have different types of templates for any/all
+ *                 of the roles specified but can if they choose.
+ * \param[out] templates A list of templates containing recognition information for all of the
+ *                       identities discovered in the media.
+ * \param[out] tracks A list of metadata corresponding to the return templates.
  */
-JANICE_EXPORT size_t janice_max_images_per_template();
+JANICE_EXPORT janice_error janice_create_template(const janice_media &media,
+                                                  const janice_template_role role,
+                                                  std::vector<janice_template> &templates,
+                                                  std::vector<janice_track> &tracks);
 
 /*!
- * \brief Add an image to the template.
+ * \brief Serialize a template to a byte array
  *
- * The \p attributes should be provided from a prior call to \ref janice_detect.
+ * The array could be stored on disk, sent to a database, or
+ * whatever else the implementor decides.
  *
- * This function may write to \p attributes, reflecting additional information
- * gained during augmentation.
+ * \param[in] template_ The template to serialize
+ * \param[out] data Unallocated byte array to store the serialized template
+ * \param[out] template_bytes Length of the serialized template
+ * \remark This function is \ref thread_safe
+ */
+JANICE_EXPORT janice_error janice_serialize_template(const janice_template &template_,
+                                                     janice_data *&data,
+                                                     size_t &template_bytes);
+
+/*!
+ * \brief Convert a byte array to a janice_template
  *
- * Augmented templates should be passed to \ref janice_finalize_template when
- * no more imagery needs to be added.
+ * The byte array was initially created with #janice_serialize_template
  *
- * \param[in] image The image containing the detected object to be recognized.
- * \param[in,out] attributes Location and metadata associated with a single
- *                          detected object to recognize.
- * \param[in,out] template_ The template to contain the object's recognition
- *                          information.
+ * \param[in] data Byte array of serialized template data
+ * \param[in] template_bytes Size of \p data
+ * \param[out] template_ Unallocated template to hold deserialized template
+ * \remark This function is \ref thread_safe
+ */
+JANICE_EXPORT janice_error janice_deserialize_template(const janice_data *data,
+                                                       const size_t template_bytes,
+                                                       janice_template &template_);
+
+/*!
+ * \brief Delete a serialized template
+ *
+ * Call this function on a serialized template after it is no longer needed.
+ *
+ * \param[in,out] template_ The serialized template to delete.
+ * \param[in] template_bytes Size of \p data
  * \remark This function is \ref reentrant.
  */
-JANICE_EXPORT janice_error janice_augment(const janice_image image,
-                                          janice_attributes *attributes,
-                                          janice_template template_);
+JANICE_EXPORT janice_error janice_delete_serialized_template(janice_data *&template_,
+                                                             const size_t template_bytes);
 
 /*!
- * \brief Create a finalized template representation for \ref janice_verify,
- *        \ref janice_write_gallery or \ref janice_search.
- *
- * After this function is called no more images will be added or removed
- * from the template.
- * \param[in, out] template_ The template to finalize.
- * \remark This function is \ref reentrant.
- */
-JANICE_EXPORT janice_error janice_finalize_template(janice_template template_);
-
-/*!
- * \brief Templates are represented in persistent storage as files on disk.
- *
- * A \ref janice_template_path is the path to the template folder.
- * Templates are written by \ref janice_write_template and read with
- * \ref janice_read_template. Templates are only written after a call
- * to \ref janice_finalize_template.
- */
-typedef const char *janice_template_path;
-
-/*!
- * \brief Write a template to disk.
- *
- * Templates can be read using \ref janice_read_template. Templates are
- * only written after being finalized with \ref janice_finalize_template
- * \param[in] template_ The template to write to disk
- * \param[in] template_path The location of a file on disk to write the
- *                          template to.
- * \remark This function is \ref reentrant
- * \see janice_read_template
- */
-JANICE_EXPORT janice_error janice_write_template(const janice_template template_,
-                                                 janice_template_path template_path);
-
-/*!
- * \brief Read a template from disk.
- *
- * Templates are written using \ref janice_write_template. Templates that
- * are loaded have already been finalized. The template is already allocated
- * using \ref janice_allocate_template.
- * \param[in] template_ An initialized template
- * \param[in] template_path The location of a file on disk to load the
- *                          template from.
- * \remark This function is \ref reentrant
- * \see janice_write_template
- */
-JANICE_EXPORT janice_error janice_read_template(janice_template template_,
-                                                janice_template_path template_path);
-
-/*!
- * \brief Free memory for a template previously allocated by
- * \ref janice_allocate_template.
+ * \brief Delete a template
  *
  * Call this function on a template after it is no longer needed.
- * \param[in] template_ The template to deallocate.
+ *
+ * \param[in,out] template_ The template to delete.
  * \remark This function is \ref reentrant.
- * \see janice_allocate_template
  */
- JANICE_EXPORT janice_error janice_free_template(janice_template template_);
+JANICE_EXPORT janice_error janice_delete_template(janice_template &template_);
 
 /*!
- * \brief Return a similarity score for two finalized templates.
+ * \brief Return a similarity score for two templates.
  *
  * Higher scores indicate greater similarity.
  *
@@ -450,130 +465,117 @@ JANICE_EXPORT janice_error janice_read_template(janice_template template_,
  * \remark This function is \ref thread_safe.
  * \see janice_search
  */
-JANICE_EXPORT janice_error janice_verify(const janice_template a,
-                                         const janice_template b,
-                                         float *similarity);
+JANICE_EXPORT janice_error janice_verify(const janice_template &a,
+                                         const janice_template &b,
+                                         double &similarity);
 
 /*!
  * \brief Unique identifier for a \ref janice_template.
  *
  * Associate a template with a unique identifier during
- * \ref janice_enroll.
+ * \ref janice_create_gallery.
  * Retrieve the unique identifier from \ref janice_search and \ref janice_cluster.
  */
 typedef size_t janice_template_id;
 
 /*!
- * \brief A collection of \ref janice_template%s.
- *
- * Initialize with \ref janice_allocate_gallery and free with
- * \ref janice_free_gallery.
- * Used to perform searches with \ref janice_search and clustering with
- * \ref janice_cluster.
- * Galleries can be stored on and loaded from disk with \ref
- * janice_write_gallery and \ref janice_read_gallery respectively.
+ * \brief A collection of templates for search
  */
 typedef struct janice_gallery_type *janice_gallery;
 
 /*!
- * \brief Allocate memory for an empty gallery.
+ * \brief Create a gallery from a list of templates.
  *
- * Memory is managed by the implementation and guaranteed until
- * \ref janice_free_gallery.
+ * The created gallery should be suitable for search.
  *
- * Add templates to the gallery with \ref janice_enroll.
- * Remove templates from the gallery with \ref janice_remove_template.
- *
- * \code
- * janice_gallery gallery;
- * janice_error error = janice_allocate_gallery(&gallery);
- * assert(!error);
- * \endcode
- *
- * \param[in] gallery An uninitialized gallery.
- * \remark This function is \ref reentrant.
+ * \param[in] templates List of templates to construct the gallery
+ * \param[in] ids list of unique ids to associate with the templates in the gallery
+ * \param[out] gallery The created gallery
+ * \remark This function is \ref thread_safe
  */
-JANICE_EXPORT janice_error janice_allocate_gallery(janice_gallery *gallery);
+JANICE_EXPORT janice_error janice_create_gallery(const std::vector<janice_template> &templates,
+                                                 const std::vector<janice_template_id> &ids,
+                                                 janice_gallery &gallery);
 
 /*!
- * \brief Add a template to the gallery.
+ * \brief Serialize a gallery to a byte array
  *
- * The \p template_ will be finalized before being added to the gallery.
+ * The array could be stored on disk, sent to a database, or
+ * whatever else the implementor decides.
  *
- * \param[in] template_ The finalized template with recognition information
- * \param[out] template_id The unique id for the template. This will be assigned
- *                         by the gallery during this call.
- * \param[in,out] gallery The gallery to add the template to
- * \remark This function is \ref reentrant.
- * \see janice_remove_template
+ * \param[in] gallery The gallery to serialize
+ * \param[out] data Unallocated byte array to store the serialized gallery
+ * \param[out] gallery_bytes Length of the serialized gallery
+ * \remark This function is \ref thread_safe
  */
-JANICE_EXPORT janice_error janice_enroll(const janice_template template_,
-                                         const janice_template_id template_id,
-                                         janice_gallery gallery);
+JANICE_EXPORT janice_error janice_serialize_gallery(const janice_gallery &gallery,
+                                                    janice_data *&data,
+                                                    size_t &gallery_bytes);
 
 /*!
- * \brief Remove a template from a gallery
+ * \brief Convert a byte array to a janice_gallery
  *
- * The template to remove is identified by its unique \p template_id
- * \param[in] template_id The unique id of the template to be removed
- * \param[in,out] gallery The gallery to remove the template from
- * \remark This function is \ref reentrant
- * \see janice_enroll
- */
-JANICE_EXPORT janice_error janice_remove_template(const janice_template_id template_id,
-                                                  janice_gallery gallery);
-/*!
- * \brief Galleries are represented in persistent storage as folders on disk.
+ * The byte array was initially created with #janice_serialize_gallery
  *
- * A \ref janice_gallery_path is the path to the gallery folder.
- * Galleries are written with \ref janice_write_gallery and read with
- * \ref janice_read_gallery.
+ * \param[in] data Byte array of serialized gallery data
+ * \param[in] gallery_bytes Size of \p data
+ * \param[out] gallery Unallocated gallery to hold deserialized gallery
+ * \remark This function is \ref thread_safe
  */
-typedef const char *janice_gallery_path;
+JANICE_EXPORT janice_error janice_deserialize_gallery(const janice_data *data,
+                                                      const size_t gallery_bytes,
+                                                      janice_gallery &gallery);
 
 /*!
- * \brief Write a gallery to a directory on disk.
+ * \brief Insert a template into a gallery.
  *
- * Access the constructed gallery with \ref janice_read_gallery.
- *
- * \param[in] gallery Initialized gallery
- * \param[in] gallery_path Path to an empty read-write folder to store the
- *                         gallery.
- * \remark This function is \ref reentrant.
- * \see janice_read_gallery
+ * \param[in,out] gallery The gallery to insert the template into
+ * \param[in] template_ The template to insert
+ * \param[in] id Unique id for the new template
+ * \remark This function \ref reentrant
  */
-JANICE_EXPORT janice_error janice_write_gallery(const janice_gallery gallery,
-                                                janice_gallery_path gallery_path);
+JANICE_EXPORT janice_error janice_gallery_insert(janice_gallery &gallery,
+                                                 const janice_template &template_,
+                                                 const janice_template_id id);
 
 /*!
- * \brief Read a gallery from a directory on disk.
+ * \brief Remove a template from a gallery.
  *
- * Read a gallery constructed with \ref janice_write_gallery. The gallery
- * has been inititialized with \ref janice_allocate_gallery.
- *
- * \param[in] gallery Initialized gallery
- * \param[in] gallery_path Path to folder containing stored gallery.
- * \remark This function is \ref reentrant.
- * \see janice_write_gallery
+ * \param[in,out] gallery The gallery to remove a template from
+ * \param[in] id Unique id for the template to delete
+ * \remark This function \ref reentrant
  */
-JANICE_EXPORT janice_error janice_read_gallery(janice_gallery gallery,
-                                               janice_gallery_path gallery_path);
+JANICE_EXPORT janice_error janice_gallery_remove(janice_gallery &gallery,
+                                                 const janice_template_id id);
 
 /*!
- * \brief Free a gallery previously initialized by \ref janice_allocate_gallery.
+ * \brief Delete a gallery
  *
- * \param[in] gallery The gallery to free.
+ * Call this function on a gallery after it is no longer needed.
+ *
+ * \param[in,out] gallery The gallery to delete.
  * \remark This function is \ref reentrant.
  */
- JANICE_EXPORT janice_error janice_free_gallery(janice_gallery gallery);
+JANICE_EXPORT janice_error janice_delete_gallery(janice_gallery &gallery);
+
+/*!
+ * \brief Delete a serialized gallery
+ *
+ * Call this function on a serialized gallery after it is no longer needed.
+ *
+ * \param[in,out] gallery The serialized gallery to delete.
+ * \param[in] gallery_bytes Size of \p data
+ * \remark This function is \ref reentrant.
+ */
+JANICE_EXPORT janice_error janice_delete_serialized_gallery(janice_data *&gallery,
+                                                            const size_t gallery_bytes);
 
 /*!
  * \brief Ranked search for a template against a gallery.
  *
- * \p template_ids and \p similarities should be pre-allocated buffers large
- * enough to contain \p requested_returns elements. \p actual_returns will be
- * less than or equal to requested_returns, depending on the contents of the
- * gallery.
+ * \p template_ids and \p similarities are empty vectors to hold the return
+ * scores. The number of returns should be less than or equal to \p num_requested_returns,
+ * depending on the contents of the gallery.
  *
  * The returned \p similarities \em may be normalized by the implementation
  * based on the contents of the \p gallery. Therefore, similarity scores
@@ -583,63 +585,80 @@ JANICE_EXPORT janice_error janice_read_gallery(janice_gallery gallery,
  * \param[in] probe Probe to search for.
  * \param[in] gallery Gallery to search against.
  * \param[in] num_requested_returns The desired number of returned results.
- * \param[out] template_ids Buffer to contain the \ref janice_template_id of the
- *                          top matching gallery templates.
- * \param[out] similarities Buffer to contain the similarity scores of the top
- *                          matching templates.
- * \param[out] num_actual_returns The number of populated elements in
- *                                template_ids and similarities. This value
- *                                could be zero.
+ * \param[out] template_ids Empty vector to contain the \ref janice_template_id
+ *                          of the top matching gallery templates.
+ * \param[out] similarities Empty vector to contain the similarity scores of
+ *                          the top matching templates.
  * \remark This function is \ref thread_safe.
  * \see janice_verify
  */
-JANICE_EXPORT janice_error janice_search(const janice_template probe,
-                                         const janice_gallery gallery,
+JANICE_EXPORT janice_error janice_search(const janice_template &probe,
+                                         const janice_gallery &gallery,
                                          const size_t num_requested_returns,
-                                         janice_template_id *template_ids,
-                                         float *similarities,
-                                         size_t *num_actual_returns);
+                                         std::vector<janice_template_id> &template_ids,
+                                         std::vector<double> &similarities);
 
 /*!
- * \brief Cluster a gallery into a set of identities.
+ * \brief Cluster a collection of unlabelled people into distinct identites.
  *
- * The output of this function is two arrays, \p template_ids and \p cluster_ids
- * of equal length, serving as a mapping between templates and clusters.
+ * Bounding boxes for all subjects of interest in the media will be provided.
+ *
+ * \section clusters Clusters
+ * Clusters are represented as a list of lists of <int, double> pairs. Each
+ * pairing consists of the cluster id and the cluster confidence and corresponds
+ * to an instance of an identity in a single piece of \ref janice_media.
  *
  * \section clustering_hint Clustering Hint
  * Clustering is generally considered to be an ill-defined problem, and most
  * algorithms require some help determining the appropriate number of clusters.
  * The \p hint parameter helps influence the number of clusters, though the
  * implementation is free to ignore it.
- * - If \p hint is in the range [-1, 1] then it is a clustering
- * \em aggressiveness, with \c -1 favoring more clusters (fewer templates per
- * cluster), and \c 1 favoring fewer clusters (more templates per cluster).
- * - If \p hint is greater than 1 then it is a clustering \em count, indicating
- * the suggested number of clusters.
- * - The suggested default value for \p hint is \c 0.
+ * The goal of the hint is to provide an order of magnitude estimation for the
+ * number of identities that appear in a set of media. As such it will be a
+ * multiple of 10 (10, 100, 1000 etc.).
  *
- * \section gallery_size Gallery Size
- * The size of the gallery is the number of templates that have been enrolled
+ * \note The implementation of this function is optional, and may return
+ *       #JANICE_NOT_IMPLEMENTED.
  *
- *
- * \param[in] gallery The gallery to cluster.
+ * \param[in] associations The collection of media and relevant detection information to cluster
  * \param[in] hint A hint to the clustering algorithm, see \ref clustering_hint.
- * \param[out] template_ids A pre-allocated array provided by the calling
- *                          application large enough to hold \ref gallery_size
- *                          elements.
- * \param[out] cluster_ids A pre-allocated array provided by the calling
- *                         application large enough to hold \ref gallery_size
- *                         elements.
+ * \param[out] clusters A list of lists of cluster pairs, see \ref clusters.
  * \remark This function is \ref thread_safe.
  */
-JANICE_EXPORT janice_error janice_cluster(const janice_gallery gallery,
-                                          const double hint,
-                                          janice_template_id *template_ids,
-                                          int *cluster_ids);
-/*! @}*/
+typedef std::pair<int, double> cluster_pair;
+JANICE_EXPORT janice_error janice_cluster(const std::vector<janice_association> &associations,
+                                          const size_t hint,
+                                          std::vector<std::vector<cluster_pair> > &clusters);
 
-#ifdef __cplusplus
-}
-#endif
+/*!
+ * \brief Cluster an unlabelled set of media into distinct identities.
+ *
+ * No bounding box information will be provided and all people must be detected
+ * by the implementor. These detections should be return as a list of lists of
+ * janice_tracks.
+ *
+ * \note The implementation of this function is optional, and may return
+ *       #JANICE_NOT_IMPLEMENTED
+ *
+ * \param[in] media The collection of media to cluster.
+ * \param[in] hint A hint to the clustering algorithm, see \ref clustering_hint.
+ * \param[out] clusters A list of lists of cluster pairs, see \ref clusters.
+ * \param[out] tracks A list of lists of tracks that must be the same size as #clusters.
+ *                    Each track should provide detection information for the associated
+ *                    \ref cluster_pair.
+ */
+JANICE_EXPORT janice_error janice_cluster(const std::vector<janice_media> &media,
+                                          const size_t hint,
+                                          std::vector<std::vector<cluster_pair> > &clusters,
+                                          std::vector<std::vector<janice_track> > &tracks);
+/*!
+ * \brief Call once at the end of the application, after making all other calls
+ * to the API.
+ * \remark This function is \ref thread_unsafe and should only be called once.
+ * \see janice_initialize
+ */
+JANICE_EXPORT janice_error janice_finalize();
+
+/*! @}*/
 
 #endif /* JANICE_H */

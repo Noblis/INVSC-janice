@@ -1,55 +1,51 @@
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "../../include/janice_io.h"
+#include <janice_io.h>
 
+using namespace std;
 using namespace cv;
 
-static janice_image janiceFromOpenCV(const Mat &mat)
+janice_error janice_load_media(const string &filename, janice_media &media)
 {
-    assert(mat.data && mat.isContinuous());
-    janice_image image;
-    image.width = mat.cols;
-    image.height = mat.rows;
-    image.color_space = (mat.channels() == 3 ? JANICE_BGR24 : JANICE_GRAY8);
-    image.data = (janice_data*)malloc(image.width * image.height * (image.color_space == JANICE_BGR24 ? 3 : 1));
-    memcpy(image.data, mat.data, image.width * image.height * (image.color_space == JANICE_BGR24 ? 3 : 1));
-    return image;
-}
+    Mat img = imread(filename);
+    if (!img.data) { // Couldn't load as an image maybe it's a video
+        VideoCapture video(filename);
+        if (!video.isOpened()) {
+            fprintf(stderr, "Fatal - Janice failed to read: %s\n", filename.c_str());
+            return JANICE_INVALID_MEDIA;
+        }
 
-janice_error janice_read_image(const char *file_name, janice_image *image)
-{
-    const Mat mat = imread(file_name);
-    if (!mat.data) {
-        fprintf(stderr, "Fatal - Janus failed to read: %s\n", file_name);
-        return JANICE_INVALID_IMAGE;
+        Mat frame;
+        bool got_frame = video.read(frame);
+        if (!got_frame)
+            return JANICE_INVALID_MEDIA;
+
+        media.width = frame.cols;
+        media.height = frame.rows;
+        media.color_space = frame.channels() == 3 ? JANICE_BGR24 : JANICE_GRAY8;
+
+        do {
+            janice_data *data = new janice_data[media.width * media.height * (media.color_space == JANICE_BGR24 ? 3 : 1)];
+            memcpy(data, frame.data, media.width * media.height * (media.color_space == JANICE_BGR24 ? 3 : 1));
+            media.data.push_back(data);
+        } while (video.read(frame));
     }
-    *image = janiceFromOpenCV(mat);
+
+    media.width = img.cols;
+    media.height = img.rows;
+    media.color_space = (img.channels() == 3 ? JANICE_BGR24 : JANICE_GRAY8);
+
+    janice_data *data = new janice_data[media.width * media.height * (media.color_space == JANICE_BGR24 ? 3 : 1)];
+    memcpy(data, img.data, media.width * media.height * (media.color_space == JANICE_BGR24 ? 3 : 1));
+    media.data.push_back(data);
+
     return JANICE_SUCCESS;
 }
 
-void janice_free_image(janice_image image)
+janice_error janice_free_media(janice_media &media)
 {
-    free(image.data);
-}
-
-janice_error janice_open_video(const char *file_name, janice_video *video)
-{
-    *video = reinterpret_cast<janice_video>(new VideoCapture(file_name));
+    for (size_t i = 0; i < media.data.size(); i++)
+        delete media.data[i];
     return JANICE_SUCCESS;
-}
-
-janice_error janice_read_frame(janice_video video, janice_image *image)
-{
-    Mat mat;
-    reinterpret_cast<VideoCapture*>(video)->read(mat);
-    if (!mat.data)
-        return JANICE_INVALID_VIDEO;
-    *image = janiceFromOpenCV(mat);
-    return JANICE_SUCCESS;
-}
-
-void janice_close_video(janice_video video)
-{
-    delete reinterpret_cast<VideoCapture*>(video);
 }
