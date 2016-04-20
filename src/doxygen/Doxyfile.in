@@ -758,7 +758,7 @@ WARN_LOGFILE           =
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = ${CMAKE_CURRENT_SOURCE_DIR}/../include
+INPUT                  = ${CMAKE_SOURCE_DIR}/include
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1095,7 +1095,7 @@ HTML_EXTRA_STYLESHEET  =
 # files will be copied as-is; there are no commands or markers available.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_FILES       = ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE.txt
+HTML_EXTRA_FILES       = ${CMAKE_SOURCE_DIR}/LICENSE.txt
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output. Doxygen
 # will adjust the colors in the style sheet and background images according to
