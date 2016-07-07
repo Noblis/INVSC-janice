@@ -12,7 +12,7 @@ janice_error janice_load_media(const string &filename, janice_media &media)
     if (!img.data) { // Couldn't load as an image maybe it's a video
         VideoCapture video(filename);
         if (!video.isOpened()) {
-            fprintf(stderr, "Fatal - Janice failed to read: %s\n", filename.c_str());
+            fprintf(stderr, "Fatal - JanICE failed to read: %s\n", filename.c_str());
             return JANICE_INVALID_MEDIA;
         }
 

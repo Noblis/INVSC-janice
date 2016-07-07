@@ -24,10 +24,10 @@
 #ifndef JANICE_IO_H
 #define JANICE_IO_H
 
-#include "janice.h"
+#include <janice.h>
 
 /*!
- * \defgroup janice_io Janice I/O
+ * \defgroup janice_io JanICE I/O
  * \brief Media decoding and evaluation harness.
  * \addtogroup janice_io
  *  @{
@@ -42,7 +42,7 @@
 {                                                                    \
     const janice_error error = (EXPRESSION);                          \
     if (error != JANICE_SUCCESS) {                                    \
-        fprintf(stderr, "Janice error: %s\n\tFile: %s\n\tLine: %d\n", \
+        fprintf(stderr, "Janus error: %s\n\tFile: %s\n\tLine: %d\n", \
                 janice_error_to_string(error),                        \
                 __FILE__,                                            \
                 __LINE__);                                           \
@@ -79,26 +79,26 @@ JANICE_EXPORT const char *janice_error_to_string(janice_error error);
 JANICE_EXPORT janice_error janice_error_from_string(const char *error);
 
 /*!
- * \brief Read an image from disk.
+ * \brief Read media from disk.
  * \param[in] file_name Path to the image file.
- * \param[out] image Address to store the decoded image.
+ * \param[out] media Empty container to store the decoded media
  * \remark This function is \ref reentrant.
- * \see janice_free_image
+ * \see janice_free_media
  */
 JANICE_EXPORT janice_error janice_load_media(const std::string &filename, janice_media &media);
 
 /*!
- * \brief Frees the memory previously allocated for a #janice_image.
- * \param[in] image #janice_image to free.
+ * \brief Frees the memory previously allocated for a #janice_media.
+ * \param[in] media #janice_media to free.
  * \remark This function is \ref reentrant.
  * \see janice_allocate_image
  */
 JANICE_EXPORT janice_error janice_free_media(janice_media &media);
 
 /*!
- * \brief File name for a Janice Metadata File
+ * \brief File name for a JanICE Metadata File
  *
- * A *Janice Metadata File* is a *Comma-Separated Value* (CSV) text file with the following format:
+ * A *JanICE Metadata File* is a *Comma-Separated Value* (CSV) text file with the following format:
  *
 \verbatim
 TEMPLATE_ID        , SUBJECT_ID, FILE_NAME, MEDIA_ID, FRAME, <janice_attribute>, <janice_attribute>, ..., <janice_attribute>
@@ -118,13 +118,19 @@ TEMPLATE_ID        , SUBJECT_ID, FILE_NAME, MEDIA_ID, FRAME, <janice_attribute>,
  * - All rows associated with the same \c TEMPLATE_ID occur sequentially.
  * - All rows associated with the same \c TEMPLATE_ID and \c FILE_NAME occur sequentially ordered by \c FRAME.
  * - A cell is empty when no value is available for the specified attribute.
- *
- * \par Examples:
- * - [meds.csv](https://raw.githubusercontent.com/biometrics/janice/master/data/meds.csv)
- * - [Kirchner.csv](https://raw.githubusercontent.com/biometrics/janice/master/data/Kirchner.csv)
- * - [Toledo.csv](https://raw.githubusercontent.com/biometrics/janice/master/data/Toledo.csv)
  */
 typedef const char *janice_metadata;
+
+/*!
+ * \brief High-level helper function for running face detection on a list of images
+ * \param [in] data_path Prefix path to files in metadata.
+ * \param [in] metadata #janice_metadata to detect faces in
+ * \param [in] min_face_size The minimum width, in pixels, for detected faces
+ * \param [in] detection_list_file The path to the file to store detection information
+ * \param [in] verbose Print information and warnings during detection
+ * \remark This function is \ref thread_unsafe
+ */
+JANICE_EXPORT janice_error janice_detect_helper(const std::string &data_path, janice_metadata metadata, const size_t min_face_size, const std::string &detection_list_file, bool verbose);
 
 /*!
  * \brief High-level helper function for enrolling templates from a metadata file and writing templates to disk.
@@ -134,7 +140,7 @@ typedef const char *janice_metadata;
  * \param [in] output_file CSV file to hold the filenames, template ids, and subject_ids for the saved templates.
  *                         The format is templateID,subjectID,filename\n
  * \param [in] role The role for the templates
- * \param [in] verbose Print information and warnings during gallery enrollment.
+ * \param [in] verbose Print information and warnings during template enrollment.
  * \remark This function is \ref thread_unsafe.
  */
 JANICE_EXPORT janice_error janice_create_templates_helper(const std::string &data_path, janice_metadata metadata, const std::string &templates_path, const std::string &templates_list_file, const janice_template_role role, bool verbose);
@@ -195,6 +201,7 @@ struct janice_metrics
     struct janice_metric janice_delete_template_speed; /*!< \brief ms */
     struct janice_metric janice_verify_speed; /*!< \brief ms */
     struct janice_metric janice_create_gallery_speed; /*!< \brief ms */
+    struct janice_metric janice_prepare_gallery_speed; /*!< \brief ms */
     struct janice_metric janice_gallery_insert_speed; /*!< \brief ms */
     struct janice_metric janice_gallery_remove_speed; /*!< \brief ms */
     struct janice_metric janice_serialize_gallery_speed; /*!< \brief ms */

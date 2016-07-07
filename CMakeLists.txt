@@ -1,5 +1,5 @@
 project(janice)
-cmake_minimum_required(VERSION 2.8.6)
+cmake_minimum_required(VERSION 3.0)
 
 set(JANICE_NAME "JanICE")
 set(JANICE_DESCRIPTION "HSI JanICE Program API")
@@ -22,4 +22,7 @@ if(UNIX)
 endif()
 
 include(CTest)
-add_subdirectory(src)
+
+if(JANICE_IMPLEMENTATION AND JANICE_IO_IMPLEMENTATION)
+  add_subdirectory(src)
+endif()
