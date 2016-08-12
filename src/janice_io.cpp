@@ -20,13 +20,17 @@ using namespace std;
 #define ENUM_CASE(X) case JANICE_##X: return #X;
 #define ENUM_COMPARE(X,Y) if (!strcmp(#X, Y)) return JANICE_##X;
 
-const char *janice_error_to_string(janice_error error)
+const char *janice_error_to_string(JaniceError error)
 {
     switch (error) {
         ENUM_CASE(SUCCESS)
         ENUM_CASE(UNKNOWN_ERROR)
         ENUM_CASE(OUT_OF_MEMORY)
         ENUM_CASE(INVALID_SDK_PATH)
+        ENUM_CASE(BAD_SDK_CONFIG)
+        ENUM_CASE(BAD_LICENSE)
+        ENUM_CASE(MISSING_DATA)
+        ENUM_CASE(INVALID_GPU)
         ENUM_CASE(OPEN_ERROR)
         ENUM_CASE(READ_ERROR)
         ENUM_CASE(WRITE_ERROR)
@@ -34,9 +38,7 @@ const char *janice_error_to_string(janice_error error)
         ENUM_CASE(INVALID_MEDIA)
         ENUM_CASE(MISSING_TEMPLATE_ID)
         ENUM_CASE(MISSING_FILE_NAME)
-        ENUM_CASE(NULL_ATTRIBUTES)
-        ENUM_CASE(MISSING_ATTRIBUTES)
-        ENUM_CASE(FAILURE_TO_DETECT)
+        ENUM_CASE(INCORRECT_ROLE)
         ENUM_CASE(FAILURE_TO_ENROLL)
         ENUM_CASE(FAILURE_TO_SERIALIZE)
         ENUM_CASE(FAILURE_TO_DESERIALIZE)
@@ -46,12 +48,15 @@ const char *janice_error_to_string(janice_error error)
     return "UNKNOWN_ERROR";
 }
 
-janice_error janice_error_from_string(const char *error)
+JaniceError janice_error_from_string(const char *error)
 {
     ENUM_COMPARE(SUCCESS, error)
     ENUM_COMPARE(UNKNOWN_ERROR, error)
     ENUM_COMPARE(OUT_OF_MEMORY, error)
     ENUM_COMPARE(INVALID_SDK_PATH, error)
+    ENUM_COMPARE(BAD_SDK_CONFIG, error)
+    ENUM_COMPARE(MISSING_DATA, error)
+    ENUM_COMPARE(INVALID_GPU, error)
     ENUM_COMPARE(OPEN_ERROR, error)
     ENUM_COMPARE(READ_ERROR, error)
     ENUM_COMPARE(WRITE_ERROR, error)
@@ -59,9 +64,7 @@ janice_error janice_error_from_string(const char *error)
     ENUM_COMPARE(INVALID_MEDIA, error)
     ENUM_COMPARE(MISSING_TEMPLATE_ID, error)
     ENUM_COMPARE(MISSING_FILE_NAME, error)
-    ENUM_COMPARE(NULL_ATTRIBUTES, error)
-    ENUM_COMPARE(MISSING_ATTRIBUTES, error)
-    ENUM_COMPARE(FAILURE_TO_DETECT, error)
+    ENUM_COMPARE(INCORRECT_ROLE, error)
     ENUM_COMPARE(FAILURE_TO_ENROLL, error)
     ENUM_COMPARE(FAILURE_TO_SERIALIZE, error)
     ENUM_COMPARE(FAILURE_TO_DESERIALIZE, error)
@@ -74,6 +77,9 @@ janice_error janice_error_from_string(const char *error)
 static vector<double> janice_load_media_samples;
 static vector<double> janice_free_media_samples;
 static vector<double> janice_detection_samples;
+static vector<double> janice_get_rects_samples;
+static vector<double> janice_get_confidence_samples;
+static vector<double> janice_get_offset_samples;
 static vector<double> janice_create_template_samples;
 static vector<double> janice_template_size_samples;
 static vector<double> janice_serialize_template_samples;
@@ -109,12 +115,15 @@ static void _janice_add_sample(vector<double> &samples, double sample)
 
 #ifndef JANICE_CUSTOM_DETECT
 
-janice_error janice_detect_helper(const string &data_path, janice_metadata metadata, const size_t min_face_size, const string &detection_list_file, bool verbose)
+JaniceError janice_detect_helper(const string &data_path, JaniceMetadata metadata, const uint32_t min_face_size, const string &detection_list_file, bool verbose)
 {
     clock_t start;
 
     ifstream file(metadata);
     ofstream output(detection_list_file);
+
+    // Write the header
+    output << "File,Frame,Face_X,Face_Y,Face_Width,Face_Height,Confidence\n";
 
     // Parse the header
     string line;
@@ -125,38 +134,49 @@ janice_error janice_detect_helper(const string &data_path, janice_metadata metad
         string filename;
         getline(attributes, filename, ',');
 
-        janice_media media;
+        JaniceMedia media;
 
         start = clock();
         JANICE_ASSERT(janice_load_media(data_path + filename, media))
         _janice_add_sample(janice_load_media_samples, 1000.0 * (clock() - start) / CLOCKS_PER_SEC);
 
-        vector<janice_track> tracks;
+        vector<JaniceDetection> detections;
 
         start = clock();
-        janice_error error = janice_detect(media, min_face_size, tracks);
+        JANICE_ASSERT(janice_detect(media, min_face_size, detections))
         _janice_add_sample(janice_detection_samples, 1000.0 * (clock() - start) / CLOCKS_PER_SEC);
 
-        if (error == JANICE_FAILURE_TO_DETECT) {
-            janice_failure_to_detect_count++;
-            continue;
-        } else if (error != JANICE_SUCCESS) {
-            janice_other_errors_count++;
-            continue;
-        }
+        for (size_t i = 0; i < detections.size(); i++) {
+            const JaniceDetection &detection = detections[i];
 
-        for (size_t i = 0; i < tracks.size(); i++) {
-            const janice_track &track = tracks[i];
-            for (size_t j = 0; j < track.track.size(); j++) {
-                const janice_attributes &attrs = track.track[j];
-                output << filename << ","
-                       << attrs.face_x << ","
-                       << attrs.face_y << ","
-                       << attrs.face_width << ","
-                       << attrs.face_height << ","
-                       << track.detection_confidence << "\n";
+            vector<JaniceRect> rects;
+            start = clock();
+            JANICE_ASSERT(janice_get_rects_from_detection(detection, rects))
+            _janice_add_sample(janice_get_rects_samples, 1000.0 * (clock() - start) / CLOCKS_PER_SEC);
+
+            double confidence;
+            start = clock();
+            JANICE_ASSERT(janice_get_confidence_from_detection(detection, confidence))
+            _janice_add_sample(janice_get_confidence_samples, 1000.0 * (clock() - start) / CLOCKS_PER_SEC);
+
+            int offset;
+            start = clock();
+            JANICE_ASSERT(janice_get_frame_offset_from_detection(detection, offset))
+            _janice_add_sample(janice_get_offset_samples, 1000.0 * (clock() - start) / CLOCKS_PER_SEC);
+
+            for (size_t j = 0; j < rects.size(); j++) {
+                const JaniceRect &rect = rects[j];
+                output << filename               << ","
+                       << to_string(offset + j)  << ","
+                       << to_string(rect.x)      << ","
+                       << to_string(rect.y)      << ","
+                       << to_string(rect.width)  << ","
+                       << to_string(rect.height) << ","
+                       << to_string(confidence)  << "\n";
             }
         }
+
+        janice_free_media(media);
     }
 
     file.close();
@@ -173,16 +193,16 @@ janice_error janice_detect_helper(const string &data_path, janice_metadata metad
 struct TemplateData
 {
     vector<string> filenames;
-    vector<janice_template_id> templateIDs;
-    map<janice_template_id, int> subjectIDLUT;
-    vector<janice_track> tracks;
+    vector<JaniceTemplateId> templateIDs;
+    map<JaniceTemplateId, int> subjectIDLUT;
+    vector<JaniceRect> rects;
 
     void release()
     {
         filenames.clear();
         templateIDs.clear();
         subjectIDLUT.clear();
-        tracks.clear();
+        rects.clear();
     }
 };
 
@@ -191,7 +211,7 @@ struct TemplateIterator : public TemplateData
     size_t i;
     bool verbose;
 
-    TemplateIterator(janice_metadata metadata, bool verbose)
+    TemplateIterator(JaniceMetadata metadata, bool verbose)
         : i(0), verbose(verbose)
     {
         ifstream file(metadata);
@@ -220,120 +240,81 @@ struct TemplateIterator : public TemplateData
             filenames.push_back(filename);
 
             // Construct a track from the metadata
-            janice_track track;
-            janice_attributes attributes;
+            JaniceRect rect;
             for (int j = 0; getline(attributeValues, attributeValue, ','); j++) {
                 double value = attributeValue.empty() ? NAN : atof(attributeValue.c_str());
-                if (header[j] == "FRAME_NUMBER")
-                    attributes.frame_number = value;
-                else if (header[j] == "FACE_X")
-                    attributes.face_x = value;
+                if (header[j] == "FACE_X")
+                    rect.x = value;
                 else if (header[j] == "FACE_Y")
-                    attributes.face_y = value;
+                    rect.y = value;
                 else if (header[j] == "FACE_WIDTH")
-                    attributes.face_width = value;
+                    rect.width = value;
                 else if (header[j] == "FACE_HEIGHT")
-                    attributes.face_height = value;
-                else if (header[j] == "RIGHT_EYE_X")
-                    attributes.right_eye_x = value;
-                else if (header[j] == "RIGHT_EYE_Y")
-                    attributes.right_eye_y = value;
-                else if (header[j] == "LEFT_EYE_X")
-                    attributes.left_eye_x = value;
-                else if (header[j] == "LEFT_EYE_Y")
-                    attributes.left_eye_y = value;
-                else if (header[j] == "NOSE_BASE_X")
-                    attributes.nose_base_x = value;
-                else if (header[j] == "NOSE_BASE_Y")
-                    attributes.nose_base_y = value;
-                else if (header[j] == "FACE_YAW")
-                    attributes.face_yaw = value;
-                else if (header[j] == "FOREHEAD_VISIBLE")
-                    attributes.forehead_visible = value;
-                else if (header[j] == "EYES_VISIBLE")
-                    attributes.eyes_visible = value;
-                else if (header[j] == "NOSE_MOUTH_VISIBLE")
-                    attributes.nose_mouth_visible = value;
-                else if (header[j] == "INDOOR")
-                    attributes.indoor = value;
-                else if (header[j] == "GENDER")
-                    track.gender = value;
-                else if (header[j] == "AGE")
-                    track.age = value;
-                else if (header[j] == "SKIN_TONE")
-                    track.skin_tone = value;
+                    rect.height = value;
             }
-            track.track.push_back(attributes);
-            tracks.push_back(track);
+            rects.push_back(rect);
         }
         if (verbose)
-            fprintf(stderr, "\rEnrolling %zu/%zu", i, tracks.size());
+            fprintf(stderr, "\rEnrolling %zu/%zu", i, rects.size());
     }
 
     TemplateData next()
     {
         TemplateData templateData;
-        if (i >= tracks.size()) {
+        if (i >= rects.size()) {
             fprintf(stderr, "\n");
         } else {
-            const janice_template_id templateID = templateIDs[i];
-            while ((i < tracks.size()) && (templateIDs[i] == templateID)) {
+            const JaniceTemplateId templateID = templateIDs[i];
+            while ((i < rects.size()) && (templateIDs[i] == templateID)) {
                 templateData.templateIDs.push_back(templateIDs[i]);
                 templateData.filenames.push_back(filenames[i]);
-                templateData.tracks.push_back(tracks[i]);
+                templateData.rects.push_back(rects[i]);
                 i++;
             }
             if (verbose)
-                fprintf(stderr, "\rEnrolling %zu/%zu", i, tracks.size());
+                fprintf(stderr, "\rEnrolling %zu/%zu", i, rects.size());
         }
         return templateData;
     }
 
-    static janice_error create(const string &data_path, const TemplateData templateData, const janice_template_role role, janice_template *template_, janice_template_id *templateID, bool verbose)
+    static JaniceError create(const string &data_path, const TemplateData templateData, const JaniceTemplateRole role, JaniceTemplate *tmpl, JaniceTemplateId *templateID, bool verbose)
     {
         clock_t start;
 
         // A set to hold all of the media and metadata required to make a full template
-        vector<janice_association> associations;
+        vector<JaniceDetection> detections;
 
         // Create a set of all the media used for this template
         for (size_t i = 0; i < templateData.templateIDs.size(); i++) {
-            janice_media media;
+            JaniceMedia media;
 
             start = clock();
             JANICE_ASSERT(janice_load_media(data_path + templateData.filenames[i], media))
             _janice_add_sample(janice_load_media_samples, 1000.0 * (clock() - start) / CLOCKS_PER_SEC);
 
-            janice_association association;
-            association.media = media;
-            association.metadata = templateData.tracks[i];
-            associations.push_back(association);
+            JaniceDetection detection;
+            JANICE_ASSERT(janice_create_detection(media, templateData.rects[i], detection))
+
+            detections.push_back(detection);
+
+            start = clock();
+            JANICE_ASSERT(janice_free_media(media))
+            _janice_add_sample(janice_free_media_samples, 1000.0 * (clock() - start) / CLOCKS_PER_SEC);
         }
 
         // Create the template
         start = clock();
-        janice_error error = janice_create_template(associations, role, *template_);
+        JaniceError error = janice_create_template(detections, role, *tmpl);
         _janice_add_sample(janice_create_template_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
 
         // Check the result for errors
-        if (error == JANICE_MISSING_ATTRIBUTES) {
-            janice_missing_attributes_count++;
-            if (verbose)
-                printf("Missing attributes for: %s\n", templateData.filenames[0].c_str());
-        } else if (error == JANICE_FAILURE_TO_ENROLL) {
+        if (error == JANICE_FAILURE_TO_ENROLL) {
             janice_failure_to_enroll_count++;
             if (verbose)
                 printf("Failure to enroll: %s\n", templateData.filenames[0].c_str());
         } else if (error != JANICE_SUCCESS) {
             janice_other_errors_count++;
             printf("Warning: %s on: %s\n", janice_error_to_string(error),templateData.filenames[0].c_str());
-        }
-
-        // Free the media
-        for (size_t i = 0; i < associations.size(); i++) {
-            start = clock();
-            JANICE_ASSERT(janice_free_media(associations[i].media));
-            _janice_add_sample(janice_free_media_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
         }
 
         *templateID = templateData.templateIDs[0];
@@ -345,7 +326,7 @@ struct TemplateIterator : public TemplateData
 
 #ifndef JANICE_CUSTOM_CREATE_TEMPLATES
 
-janice_error janice_create_templates_helper(const string &data_path, janice_metadata metadata, const string &templates_path, const string &templates_list_file, const janice_template_role role, bool verbose)
+JaniceError janice_create_templates_helper(const string &data_path, JaniceMetadata metadata, const string &templates_path, const string &templates_list_file, const JaniceTemplateRole role, bool verbose)
 {
     clock_t start;
 
@@ -353,19 +334,19 @@ janice_error janice_create_templates_helper(const string &data_path, janice_meta
     TemplateIterator ti(metadata, true);
 
     // Preallocate some variables
-    janice_template template_;
-    janice_template_id templateID;
+    JaniceTemplate tmpl;
+    JaniceTemplateId templateID;
 
     // Set up file I/O
     ofstream templates_list_stream(templates_list_file.c_str(), ios::out | ios::ate);
 
     TemplateData templateData = ti.next();
     while (!templateData.templateIDs.empty()) {
-        JANICE_CHECK(TemplateIterator::create(data_path, templateData, role, &template_, &templateID, verbose))
+        JANICE_CHECK(TemplateIterator::create(data_path, templateData, role, &tmpl, &templateID, verbose))
 
         // Useful strings
         char templateIDBuffer[10], subjectIDBuffer[10];
-        sprintf(templateIDBuffer, "%zu", templateID);
+        sprintf(templateIDBuffer, "%u", templateID);
         const string templateIDString(templateIDBuffer);
         sprintf(subjectIDBuffer, "%d", templateData.subjectIDLUT[templateID]);
         const string subjectIDString(subjectIDBuffer);
@@ -374,16 +355,16 @@ janice_error janice_create_templates_helper(const string &data_path, janice_meta
         // Serialize the template to a file.
         ofstream template_stream(templateOutputFile.c_str(), ios::out | ios::binary);
         start = clock();
-        JANICE_CHECK(janice_serialize_template(template_, template_stream));
+        JANICE_CHECK(janice_serialize_template(tmpl, template_stream));
         _janice_add_sample(janice_serialize_template_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
         template_stream.close();
 
         // Write the template metadata to the list
         templates_list_stream << templateIDString << "," << subjectIDString << "," << templateOutputFile << "\n";
 
-        // Delete the actual template
+        // Delete the template
         start = clock();
-        JANICE_CHECK(janice_delete_template(template_));
+        JANICE_CHECK(janice_delete_template(tmpl));
         _janice_add_sample(janice_delete_template_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
 
         // Move to the next template
@@ -399,7 +380,7 @@ janice_error janice_create_templates_helper(const string &data_path, janice_meta
 
 #endif // JANICE_CUSTOM_CREATE_TEMPLATES
 
-static janice_error janice_load_templates_from_file(const string &templates_list_file, vector<janice_template> &templates, vector<janice_template_id> &template_ids, vector<int> &subject_ids)
+static JaniceError janice_load_templates_from_file(const string &templates_list_file, vector<JaniceTemplate> &tmpls, vector<JaniceTemplateId> &template_ids, vector<int> &subject_ids)
 {
     clock_t start;
 
@@ -418,13 +399,14 @@ static janice_error janice_load_templates_from_file(const string &templates_list
 
         // Load the serialized template from disk
         ifstream template_stream(template_file.c_str(), ios::in | ios::binary);
-        janice_template template_ = NULL;
+        JaniceTemplate tmpl = NULL;
+
         start = clock();
-        JANICE_CHECK(janice_deserialize_template(template_, template_stream));
+        JANICE_CHECK(janice_deserialize_template(tmpl, template_stream));
         _janice_add_sample(janice_deserialize_template_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
         template_stream.close();
 
-        templates.push_back(template_);
+        tmpls.push_back(tmpl);
     }
     templates_list_stream.close();
 
@@ -433,19 +415,19 @@ static janice_error janice_load_templates_from_file(const string &templates_list
 
 #ifndef JANICE_CUSTOM_CREATE_GALLERY
 
-janice_error janice_create_gallery_helper(const string &templates_list_file, const string &gallery_file, bool verbose)
+JaniceError janice_create_gallery_helper(const string &templates_list_file, const string &gallery_file, bool verbose)
 {
     clock_t start;
 
-    vector<janice_template> templates;
-    vector<janice_template_id> template_ids;
+    vector<JaniceTemplate> tmpls;
+    vector<JaniceTemplateId> template_ids;
     vector<int> subject_ids;
-    JANICE_CHECK(janice_load_templates_from_file(templates_list_file, templates, template_ids, subject_ids));
+    JANICE_CHECK(janice_load_templates_from_file(templates_list_file, tmpls, template_ids, subject_ids));
 
     // Create the gallery
-    janice_gallery gallery = NULL;
+    JaniceGallery gallery = NULL;
     start = clock();
-    janice_create_gallery(templates, template_ids, gallery);
+    janice_create_gallery(tmpls, template_ids, gallery);
     _janice_add_sample(janice_create_gallery_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
 
     // Prepare the gallery for searching
@@ -460,7 +442,7 @@ janice_error janice_create_gallery_helper(const string &templates_list_file, con
     _janice_add_sample(janice_serialize_gallery_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
     gallery_stream.close();
 
-    // Delete the actual gallery
+    // Delete the gallery
     start = clock();
     JANICE_CHECK(janice_delete_gallery(gallery));
     _janice_add_sample(janice_delete_gallery_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
@@ -475,26 +457,26 @@ janice_error janice_create_gallery_helper(const string &templates_list_file, con
 
 #ifndef JANICE_CUSTOM_VERIFY
 
-janice_error janice_verify_helper(const string &templates_list_file_a, const string &templates_list_file_b, const string &scores_file, bool verbose)
+JaniceError janice_verify_helper(const string &templates_list_file_a, const string &templates_list_file_b, const string &scores_file, bool verbose)
 {
     clock_t start;
 
     // Load the template sets
-    vector<janice_template> templates_a, templates_b;
-    vector<janice_template_id> template_ids_a, template_ids_b;
+    vector<JaniceTemplate> tmpls_a, tmpls_b;
+    vector<JaniceTemplateId> template_ids_a, template_ids_b;
     vector<int> subject_ids_a, subject_ids_b;
 
-    JANICE_CHECK(janice_load_templates_from_file(templates_list_file_a, templates_a, template_ids_a, subject_ids_a));
-    JANICE_CHECK(janice_load_templates_from_file(templates_list_file_b, templates_b, template_ids_b, subject_ids_b));
+    JANICE_CHECK(janice_load_templates_from_file(templates_list_file_a, tmpls_a, template_ids_a, subject_ids_a));
+    JANICE_CHECK(janice_load_templates_from_file(templates_list_file_b, tmpls_b, template_ids_b, subject_ids_b));
 
-    assert(templates_a.size() == templates_b.size());
+    assert(tmpls_a.size() == tmpls_b.size());
 
     // Compare the templates and write the results to the scores file
     ofstream scores_stream(scores_file.c_str(), ios::out | ios::ate);
-    for (size_t i = 0; i < templates_a.size(); i++) {
+    for (size_t i = 0; i < tmpls_a.size(); i++) {
         double similarity;
         start = clock();
-        janice_verify(templates_a[i], templates_b[i], similarity);
+        janice_verify(tmpls_a[i], tmpls_b[i], similarity);
         _janice_add_sample(janice_verify_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
 
         scores_stream << template_ids_a[i] << "," << template_ids_b[i] << "," << similarity << ","
@@ -512,13 +494,13 @@ janice_error janice_verify_helper(const string &templates_list_file_a, const str
 
 #ifndef JANICE_CUSTOM_SEARCH
 
-janice_error janice_ensure_size(const vector<janice_template_id> &all_ids, vector<janice_template_id> &return_ids, vector<double> &similarities)
+JaniceError janice_ensure_size(const vector<JaniceTemplateId> &all_ids, vector<JaniceTemplateId> &return_ids, vector<double> &similarities)
 {
-    set<janice_template_id> return_lookup(return_ids.begin(), return_ids.end());
+    set<JaniceTemplateId> return_lookup(return_ids.begin(), return_ids.end());
 
     return_ids.reserve(all_ids.size()); similarities.reserve(all_ids.size());
     for (size_t i = 0; i < all_ids.size(); i++) {
-        janice_template_id id = all_ids[i];
+        JaniceTemplateId id = all_ids[i];
         if (return_lookup.find(id) == return_lookup.end()) {
             return_ids.push_back(id);
             similarities.push_back(0.0);
@@ -528,20 +510,20 @@ janice_error janice_ensure_size(const vector<janice_template_id> &all_ids, vecto
     return JANICE_SUCCESS;
 }
 
-janice_error janice_search_helper(const string &probes_list_file, const string &gallery_list_file, const string &gallery_file, int num_requested_returns, const string &candidate_list_file, bool verbose)
+JaniceError janice_search_helper(const string &probes_list_file, const string &gallery_list_file, const string &gallery_file, int num_requested_returns, const string &candidate_list_file, bool verbose)
 {
     clock_t start;
 
     // Vectors to hold loaded data
-    vector<janice_template> probe_templates, gallery_templates;
-    vector<janice_template_id> probe_template_ids, gallery_template_ids;
+    vector<JaniceTemplate> probe_templates, gallery_templates;
+    vector<JaniceTemplateId> probe_template_ids, gallery_template_ids;
     vector<int> probe_subject_ids, gallery_subject_ids;
 
     JANICE_CHECK(janice_load_templates_from_file(probes_list_file, probe_templates, probe_template_ids, probe_subject_ids));
     JANICE_CHECK(janice_load_templates_from_file(gallery_list_file, gallery_templates, gallery_template_ids, gallery_subject_ids))
 
     // Build template_id -> subject_id LUT for the gallery
-    map<janice_template_id, int> subjectIDLUT;
+    map<JaniceTemplateId, int> subjectIDLUT;
     for (size_t i = 0; i < gallery_template_ids.size(); i++) {
         subjectIDLUT.insert(make_pair(gallery_template_ids[i], gallery_subject_ids[i]));
 
@@ -552,14 +534,14 @@ janice_error janice_search_helper(const string &probes_list_file, const string &
 
     // Load the serialized gallery from disk
     ifstream gallery_stream(gallery_file.c_str(), ios::in | ios::binary);
-    janice_gallery gallery = NULL;
+    JaniceGallery gallery = NULL;
     start = clock();
     JANICE_CHECK(janice_deserialize_gallery(gallery, gallery_stream));
     _janice_add_sample(janice_deserialize_gallery_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
 
     ofstream candidate_stream(candidate_list_file.c_str(), ios::out | ios::ate);
     for (size_t i = 0; i < probe_templates.size(); i++) {
-        vector<janice_template_id> return_template_ids;
+        vector<JaniceTemplateId> return_template_ids;
         vector<double> similarities;
         start = clock();
         JANICE_CHECK(janice_search(probe_templates[i], gallery, num_requested_returns, return_template_ids, similarities));
@@ -585,9 +567,9 @@ janice_error janice_search_helper(const string &probes_list_file, const string &
 
 #endif // JANICE_CUSTOM_SEARCH
 
-static janice_metric calculateMetric(const vector<double> &samples)
+static JaniceMetric calculateMetric(const vector<double> &samples)
 {
-    janice_metric metric;
+    JaniceMetric metric;
     metric.count = samples.size();
 
     if (metric.count > 0) {
@@ -608,12 +590,15 @@ static janice_metric calculateMetric(const vector<double> &samples)
     return metric;
 }
 
-janice_metrics janice_get_metrics()
+JaniceMetrics janice_get_metrics()
 {
-    janice_metrics metrics;
+    JaniceMetrics metrics;
     metrics.janice_load_media_speed                 = calculateMetric(janice_load_media_samples);
     metrics.janice_free_media_speed                 = calculateMetric(janice_free_media_samples);
     metrics.janice_detection_speed                  = calculateMetric(janice_detection_samples);
+    metrics.janice_get_rects_speed                  = calculateMetric(janice_get_rects_samples);
+    metrics.janice_get_confidence_speed             = calculateMetric(janice_get_confidence_samples);
+    metrics.janice_get_offset_speed                 = calculateMetric(janice_get_offset_samples);
     metrics.janice_create_template_speed            = calculateMetric(janice_create_template_samples);
     metrics.janice_template_size                    = calculateMetric(janice_template_size_samples);
     metrics.janice_serialize_template_speed         = calculateMetric(janice_serialize_template_samples);
@@ -631,24 +616,26 @@ janice_metrics janice_get_metrics()
     metrics.janice_delete_serialized_gallery_speed  = calculateMetric(janice_delete_serialized_gallery_samples);
     metrics.janice_delete_gallery_speed             = calculateMetric(janice_delete_gallery_samples);
     metrics.janice_search_speed                     = calculateMetric(janice_search_samples);
-    metrics.janice_missing_attributes_count         = janice_missing_attributes_count;
     metrics.janice_failure_to_enroll_count          = janice_failure_to_enroll_count;
     metrics.janice_other_errors_count               = janice_other_errors_count;
     return metrics;
 }
 
-static void printMetric(FILE *file, const char *name, janice_metric metric, bool speed = true)
+static void printMetric(FILE *file, const char *name, JaniceMetric metric, bool speed = true)
 {
     if (metric.count > 0)
         fprintf(file, "%s\t%.2g\t%.2g\t%s\t%.2g\n", name, metric.mean, metric.stddev, speed ? "ms" : "KB", double(metric.count));
 }
 
-void janice_print_metrics(janice_metrics metrics)
+void janice_print_metrics(JaniceMetrics metrics)
 {
     fprintf(stderr,     "API Symbol                      \tMean\tStdDev\tUnits\tCount\n");
     printMetric(stderr, "janice_load_media                ", metrics.janice_load_media_speed);
     printMetric(stderr, "janice_free_media                ", metrics.janice_free_media_speed);
     printMetric(stderr, "janice_detection                 ", metrics.janice_detection_speed);
+    printMetric(stderr, "janice_get_rects                 ", metrics.janice_get_rects_speed);
+    printMetric(stderr, "janice_get_confidence            ", metrics.janice_get_confidence_speed);
+    printMetric(stderr, "janice_get_offset                ", metrics.janice_get_offset_speed);
     printMetric(stderr, "janice_create_template           ", metrics.janice_create_template_speed);
     printMetric(stderr, "janice_template_size             ", metrics.janice_template_size, false);
     printMetric(stderr, "janice_serialize_template        ", metrics.janice_serialize_template_speed);
@@ -668,7 +655,6 @@ void janice_print_metrics(janice_metrics metrics)
     printMetric(stderr, "janice_search                    ", metrics.janice_search_speed);
     fprintf(stderr,     "\n\n");
     fprintf(stderr,     "janice_error                     \tCount\n");
-    fprintf(stderr,     "JANICE_MISSING_ATTRIBUTES        \t%d\n", metrics.janice_missing_attributes_count);
     fprintf(stderr,     "JANICE_FAILURE_TO_ENROLL         \t%d\n", metrics.janice_failure_to_enroll_count);
     fprintf(stderr,     "All other errors                \t%d\n", metrics.janice_other_errors_count);
 }
