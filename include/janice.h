@@ -155,6 +155,10 @@ enum JaniceError
                                       gallery */
     JANICE_FAILURE_TO_DESERIALIZE, /*!< Could not deserialize a template
                                         or gallery */
+    JANICE_NOT_SET            , /*!< Accessor functions called on fields that do
+                                     not have data set, but could have data in the
+                                     future if additional processing was completed
+                                     may return this value. */
     JANICE_NOT_IMPLEMENTED    , /*!< Optional functions may return this value in
                                      lieu of a meaninful implementation */
     JANICE_NUM_ERRORS         /*!< Idiom to iterate over all errors */
@@ -382,14 +386,15 @@ enum JaniceTemplateRole {
  * one time and the constructed template is expected to be suitable for
  * verification and search.
  *
- * \param[in] detections A vector of detection objects.
+ * \param[in,out] detections A vector of detection objects. The vector is mutable so that additional
+ *                           metadata created during template creation can be associated with the detection.
  * \param[in] role An enumeration describing the intended function for the created template.
  *                 Implementors are not required to have different types of templates for any/all
  *                 of the roles specified but can if they choose.
  * \param[out] tmpl The template to contain the subject's recognition information.
  * \remark This function is \ref reentrant.
  */
-JANICE_EXPORT JaniceError janice_create_template(const std::vector<JaniceDetection> &detections,
+JANICE_EXPORT JaniceError janice_create_template(std::vector<JaniceDetection> &detections,
                                                  const JaniceTemplateRole role,
                                                  JaniceTemplate &janice_template);
 
