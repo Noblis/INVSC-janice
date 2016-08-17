@@ -39,16 +39,16 @@
  * \see JANICE_CHECK
  */
 #define JANICE_ASSERT(EXPRESSION)                                     \
-{                                                                    \
-    const janice_error error = (EXPRESSION);                          \
+{                                                                     \
+    const JaniceError error = (EXPRESSION);                          \
     if (error != JANICE_SUCCESS) {                                    \
-        fprintf(stderr, "Janus error: %s\n\tFile: %s\n\tLine: %d\n", \
+        fprintf(stderr, "Janus error: %s\n\tFile: %s\n\tLine: %d\n",  \
                 janice_error_to_string(error),                        \
-                __FILE__,                                            \
-                __LINE__);                                           \
-        abort();                                                     \
-    }                                                                \
-}                                                                    \
+                __FILE__,                                             \
+                __LINE__);                                            \
+        abort();                                                      \
+    }                                                                 \
+}                                                                     \
 
 /*!
  * \brief The \c JANICE_CHECK macro provides a simple recoverable error handling
@@ -56,27 +56,27 @@
  * \see JANICE_ASSERT
  */
 #define JANICE_CHECK(EXPRESSION)             \
-{                                           \
-    const janice_error error = (EXPRESSION); \
+{                                            \
+    const JaniceError error = (EXPRESSION); \
     if (error != JANICE_SUCCESS)             \
-        return error;                       \
-}                                           \
+        return error;                        \
+}                                            \
 
 /*!
- * \brief #janice_error to string.
+ * \brief #JaniceError to string.
  * \param[in] error Error code to stringify.
  * \note Memory for the return value is static and should not be freed.
  * \remark This function is \ref thread_safe.
  */
-JANICE_EXPORT const char *janice_error_to_string(janice_error error);
+JANICE_EXPORT const char *janice_error_to_string(JaniceError error);
 
 /*!
- * \brief #janice_error from string.
+ * \brief #JaniceError from string.
  * \param[in] error String to decode.
  * \remark This function is \ref thread_safe.
  * \see janice_enum
  */
-JANICE_EXPORT janice_error janice_error_from_string(const char *error);
+JANICE_EXPORT JaniceError janice_error_from_string(const char *error);
 
 /*!
  * \brief Read media from disk.
@@ -85,15 +85,15 @@ JANICE_EXPORT janice_error janice_error_from_string(const char *error);
  * \remark This function is \ref reentrant.
  * \see janice_free_media
  */
-JANICE_EXPORT janice_error janice_load_media(const std::string &filename, janice_media &media);
+JANICE_EXPORT JaniceError janice_load_media(const std::string &filename, JaniceMedia &media);
 
 /*!
  * \brief Frees the memory previously allocated for a #janice_media.
- * \param[in] media #janice_media to free.
+ * \param[in] media #JaniceMedia to free.
  * \remark This function is \ref reentrant.
- * \see janice_allocate_image
+ * \see janice_load_media
  */
-JANICE_EXPORT janice_error janice_free_media(janice_media &media);
+JANICE_EXPORT JaniceError janice_free_media(JaniceMedia &media);
 
 /*!
  * \brief File name for a JanICE Metadata File
@@ -119,18 +119,18 @@ TEMPLATE_ID        , SUBJECT_ID, FILE_NAME, MEDIA_ID, FRAME, <janice_attribute>,
  * - All rows associated with the same \c TEMPLATE_ID and \c FILE_NAME occur sequentially ordered by \c FRAME.
  * - A cell is empty when no value is available for the specified attribute.
  */
-typedef const char *janice_metadata;
+typedef const char *JaniceMetadata;
 
 /*!
  * \brief High-level helper function for running face detection on a list of images
  * \param [in] data_path Prefix path to files in metadata.
- * \param [in] metadata #janice_metadata to detect faces in
+ * \param [in] metadata #JaniceMetadata to detect faces in
  * \param [in] min_face_size The minimum width, in pixels, for detected faces
  * \param [in] detection_list_file The path to the file to store detection information
  * \param [in] verbose Print information and warnings during detection
  * \remark This function is \ref thread_unsafe
  */
-JANICE_EXPORT janice_error janice_detect_helper(const std::string &data_path, janice_metadata metadata, const size_t min_face_size, const std::string &detection_list_file, bool verbose);
+JANICE_EXPORT JaniceError janice_detect_helper(const std::string &data_path, JaniceMetadata metadata, const uint32_t min_face_size, const std::string &detection_list_file, bool verbose);
 
 /*!
  * \brief High-level helper function for enrolling templates from a metadata file and writing templates to disk.
@@ -143,7 +143,7 @@ JANICE_EXPORT janice_error janice_detect_helper(const std::string &data_path, ja
  * \param [in] verbose Print information and warnings during template enrollment.
  * \remark This function is \ref thread_unsafe.
  */
-JANICE_EXPORT janice_error janice_create_templates_helper(const std::string &data_path, janice_metadata metadata, const std::string &templates_path, const std::string &templates_list_file, const janice_template_role role, bool verbose);
+JANICE_EXPORT JaniceError janice_create_templates_helper(const std::string &data_path, JaniceMetadata metadata, const std::string &templates_path, const std::string &templates_list_file, const JaniceTemplateRole role, bool verbose);
 
 /*!
  * \brief High-level helper function for enrolling a gallery from a metadata file.
@@ -152,7 +152,7 @@ JANICE_EXPORT janice_error janice_create_templates_helper(const std::string &dat
  * \param [in] verbose Print information and warnings during gallery enrollment.
  * \remark This function is \ref thread_unsafe.
  */
-JANICE_EXPORT janice_error janice_create_gallery_helper(const std::string &templates_list_file, const std::string &gallery_file, bool verbose);
+JANICE_EXPORT JaniceError janice_create_gallery_helper(const std::string &templates_list_file, const std::string &gallery_file, bool verbose);
 
 /*!
  * \brief High-level helper function for running verification on two equal sized lists of templates
@@ -162,7 +162,7 @@ JANICE_EXPORT janice_error janice_create_gallery_helper(const std::string &templ
  * \param [in] verbose Print information and warnings during verification.
  * \remark This function is \ref thread_unsafe.
  */
-JANICE_EXPORT janice_error janice_verify_helper(const std::string &templates_list_file_a, const std::string &templates_list_file_b, const std::string &scores_file, bool verbose);
+JANICE_EXPORT JaniceError janice_verify_helper(const std::string &templates_list_file_a, const std::string &templates_list_file_b, const std::string &scores_file, bool verbose);
 
 /*!
  * \brief High-level helper function for running verification on two equal sized lists of templates
@@ -172,70 +172,68 @@ JANICE_EXPORT janice_error janice_verify_helper(const std::string &templates_lis
  * \param [in] verbose Print information and warnings during search.
  * \remark This function is \ref thread_unsafe.
  */
-JANICE_EXPORT janice_error janice_search_helper(const std::string &probes_list_file, const std::string &gallery_list_file, const std::string &gallery_file, int num_requested_returns, const std::string &candidate_list, bool verbose);
+JANICE_EXPORT JaniceError janice_search_helper(const std::string &probes_list_file, const std::string &gallery_list_file, const std::string &gallery_file, int num_requested_returns, const std::string &candidate_list, bool verbose);
 
 /*!
  * \brief A statistic.
  * \see janice_metrics
  */
-struct janice_metric
+struct JaniceMetric
 {
-    size_t count;  /*!< \brief Number of samples. */
-    double mean;   /*!< \brief Sample average. */
-    double stddev; /*!< \brief Sample standard deviation. */
+    uint32_t count; /*!< \brief Number of samples. */
+    double mean;    /*!< \brief Sample average. */
+    double stddev;  /*!< \brief Sample standard deviation. */
 };
 
 /*!
  * \brief All statistics.
  * \see janice_get_metrics
  */
-struct janice_metrics
+struct JaniceMetrics
 {
-    struct janice_metric janice_load_media_speed; /*!< \brief ms */
-    struct janice_metric janice_free_media_speed; /*!< \brief ms */
-    struct janice_metric janice_detection_speed; /*!< \brief ms */
-    struct janice_metric janice_create_template_speed; /*!< \brief ms */
-    struct janice_metric janice_serialize_template_speed; /*!< \brief ms */
-    struct janice_metric janice_deserialize_template_speed; /*!< \brief ms */
-    struct janice_metric janice_delete_serialized_template_speed; /*!< \brief ms */
-    struct janice_metric janice_delete_template_speed; /*!< \brief ms */
-    struct janice_metric janice_verify_speed; /*!< \brief ms */
-    struct janice_metric janice_create_gallery_speed; /*!< \brief ms */
-    struct janice_metric janice_prepare_gallery_speed; /*!< \brief ms */
-    struct janice_metric janice_gallery_insert_speed; /*!< \brief ms */
-    struct janice_metric janice_gallery_remove_speed; /*!< \brief ms */
-    struct janice_metric janice_serialize_gallery_speed; /*!< \brief ms */
-    struct janice_metric janice_deserialize_gallery_speed; /*!< \brief ms */
-    struct janice_metric janice_delete_serialized_gallery_speed; /*!< \brief ms */
-    struct janice_metric janice_delete_gallery_speed; /*!< \brief ms */
-    struct janice_metric janice_search_speed; /*!< \brief ms */
+    JaniceMetric janice_load_media_speed; /*!< \brief ms */
+    JaniceMetric janice_free_media_speed; /*!< \brief ms */
+    JaniceMetric janice_detection_speed; /*!< \brief ms */
+    JaniceMetric janice_get_rects_speed; /*!< \brief ms */
+    JaniceMetric janice_get_confidence_speed; /*!< \brief ms */
+    JaniceMetric janice_get_offset_speed; /*!< \brief ms */
+    JaniceMetric janice_create_template_speed; /*!< \brief ms */
+    JaniceMetric janice_serialize_template_speed; /*!< \brief ms */
+    JaniceMetric janice_deserialize_template_speed; /*!< \brief ms */
+    JaniceMetric janice_delete_serialized_template_speed; /*!< \brief ms */
+    JaniceMetric janice_delete_template_speed; /*!< \brief ms */
+    JaniceMetric janice_verify_speed; /*!< \brief ms */
+    JaniceMetric janice_create_gallery_speed; /*!< \brief ms */
+    JaniceMetric janice_prepare_gallery_speed; /*!< \brief ms */
+    JaniceMetric janice_gallery_insert_speed; /*!< \brief ms */
+    JaniceMetric janice_gallery_remove_speed; /*!< \brief ms */
+    JaniceMetric janice_serialize_gallery_speed; /*!< \brief ms */
+    JaniceMetric janice_deserialize_gallery_speed; /*!< \brief ms */
+    JaniceMetric janice_delete_serialized_gallery_speed; /*!< \brief ms */
+    JaniceMetric janice_delete_gallery_speed; /*!< \brief ms */
+    JaniceMetric janice_search_speed; /*!< \brief ms */
 
-    struct janice_metric janice_gallery_size; /*!< \brief KB */
-    struct janice_metric janice_template_size; /*!< \brief KB */
-    int                 janice_missing_attributes_count; /*!< \brief Count of
-                                                             \ref JANICE_MISSING_ATTRIBUTES */
-    int                 janice_failure_to_detect_count; /*!< \brief Count of
-                                                            \ref JANICE_FAILURE_TO_DETECT */
+    JaniceMetric janice_gallery_size; /*!< \brief KB */
+    JaniceMetric janice_template_size; /*!< \brief KB */
     int                 janice_failure_to_enroll_count; /*!< \brief Count of
-                                                            \ref JANICE_FAILURE_TO_ENROLL */
-    int                 janice_other_errors_count; /*!< \brief Count of \ref janice_error excluding
-                                                       \ref JANICE_MISSING_ATTRIBUTES,
-                                                       \ref JANICE_FAILURE_TO_ENROLL, and
-                                                       \ref JANICE_SUCCESS */
+                                                             \ref JANICE_FAILURE_TO_ENROLL */
+    int                 janice_other_errors_count; /*!< \brief Count of \ref JaniceError excluding
+                                                        \ref JANICE_FAILURE_TO_ENROLL, and
+                                                        \ref JANICE_SUCCESS */
 };
 
 /*!
  * \brief Retrieve and reset performance metrics.
  * \remark This function is \ref thread_unsafe.
  */
-JANICE_EXPORT struct janice_metrics janice_get_metrics();
+JANICE_EXPORT JaniceMetrics janice_get_metrics();
 
 /*!
  * \brief Print metrics to stdout.
  * \note Will only print metrics with count > 0 occurrences.
  * \remark This function is \ref thread_unsafe.
  */
-JANICE_EXPORT void janice_print_metrics(struct janice_metrics metrics);
+JANICE_EXPORT void janice_print_metrics(JaniceMetrics metrics);
 
 /*! @}*/
 
