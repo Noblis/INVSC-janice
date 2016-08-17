@@ -267,11 +267,17 @@ typedef struct JaniceDetectionType *JaniceDetection;
 /*!
  * \brief Create a detection from an image and a bounding box.
  * \param[in] media Media that contains a face
- * \param[in] rect Rectangle that shows the location of the face
+ * \param[in] rect Rectangle that shows the location of a face of interest. If
+ *                 the media is a video, the location is of the first appearance
+ *                 of a person of interest. The implementation is responsible for
+ *                 finding additional examples of the person of interest in successive
+ *                 frames if it could benefit from additional information.
+ * \param[in] frame The index of the frame that the face appears in.
  * \param[out] detection A detection object encoding the media and rectangle
  */
 JANICE_EXPORT JaniceError janice_create_detection(const JaniceMedia &media,
                                                   const JaniceRect &rect,
+                                                  const uint32_t frame,
                                                   JaniceDetection &detection);
 
 /*!
