@@ -277,7 +277,7 @@ typedef struct JaniceDetectionType *JaniceDetection;
  */
 JANICE_EXPORT JaniceError janice_create_detection(const JaniceMedia &media,
                                                   const JaniceRect &rect,
-                                                  const uint32_t frame,
+                                                  uint32_t frame,
                                                   JaniceDetection &detection);
 
 /*!
