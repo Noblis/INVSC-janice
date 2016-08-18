@@ -146,7 +146,8 @@ enum JaniceError
     JANICE_WRITE_ERROR        , /*!< Failed to write to a file */
     JANICE_PARSE_ERROR        , /*!< Failed to parse file */
     JANICE_INVALID_MEDIA      , /*!< Could not decode media file */
-    JANICE_MISSING_TEMPLATE_ID, /*!< Expected a missing template ID */
+    JANICE_DUPLICATE_ID       , /*!< Given a templateId twice in a gallery */
+    JANICE_MISSING_ID         , /*!< Expected a missing template ID */
     JANICE_MISSING_FILE_NAME  , /*!< Expected a missing file name */
     JANICE_INCORRECT_ROLE     , /*!< Incorrect template role for the function */
     JANICE_FAILURE_TO_ENROLL  , /*!< Could not construct a template from the
