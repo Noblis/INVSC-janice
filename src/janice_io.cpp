@@ -36,14 +36,16 @@ const char *janice_error_to_string(JaniceError error)
         ENUM_CASE(WRITE_ERROR)
         ENUM_CASE(PARSE_ERROR)
         ENUM_CASE(INVALID_MEDIA)
-        ENUM_CASE(MISSING_TEMPLATE_ID)
+        ENUM_CASE(DUPLICATE_ID)
+        ENUM_CASE(MISSING_ID)
         ENUM_CASE(MISSING_FILE_NAME)
         ENUM_CASE(INCORRECT_ROLE)
         ENUM_CASE(FAILURE_TO_ENROLL)
         ENUM_CASE(FAILURE_TO_SERIALIZE)
         ENUM_CASE(FAILURE_TO_DESERIALIZE)
-        ENUM_CASE(NUM_ERRORS)
+        ENUM_CASE(NOT_SET)
         ENUM_CASE(NOT_IMPLEMENTED)
+        ENUM_CASE(NUM_ERRORS)
     }
     return "UNKNOWN_ERROR";
 }
@@ -62,14 +64,16 @@ JaniceError janice_error_from_string(const char *error)
     ENUM_COMPARE(WRITE_ERROR, error)
     ENUM_COMPARE(PARSE_ERROR, error)
     ENUM_COMPARE(INVALID_MEDIA, error)
-    ENUM_COMPARE(MISSING_TEMPLATE_ID, error)
+    ENUM_COMPARE(DUPLICATE_ID, error)
+    ENUM_COMPARE(MISSING_ID, error)
     ENUM_COMPARE(MISSING_FILE_NAME, error)
     ENUM_COMPARE(INCORRECT_ROLE, error)
     ENUM_COMPARE(FAILURE_TO_ENROLL, error)
     ENUM_COMPARE(FAILURE_TO_SERIALIZE, error)
     ENUM_COMPARE(FAILURE_TO_DESERIALIZE, error)
-    ENUM_COMPARE(NUM_ERRORS, error)
+    ENUM_COMPARE(NOT_SET, error)
     ENUM_COMPARE(NOT_IMPLEMENTED, error)
+    ENUM_COMPARE(NUM_ERRORS, error)
     return JANICE_UNKNOWN_ERROR;
 }
 
@@ -97,8 +101,6 @@ static vector<double> janice_deserialize_gallery_samples;
 static vector<double> janice_delete_serialized_gallery_samples;
 static vector<double> janice_delete_gallery_samples;
 static vector<double> janice_search_samples;
-static int janice_missing_attributes_count = 0;
-static int janice_failure_to_detect_count = 0;
 static int janice_failure_to_enroll_count = 0;
 static int janice_other_errors_count = 0;
 
@@ -196,6 +198,7 @@ struct TemplateData
     vector<JaniceTemplateId> templateIDs;
     map<JaniceTemplateId, int> subjectIDLUT;
     vector<JaniceRect> rects;
+    vector<uint32_t> frames;
 
     void release()
     {
@@ -203,6 +206,7 @@ struct TemplateData
         templateIDs.clear();
         subjectIDLUT.clear();
         rects.clear();
+        frames.clear();
     }
 };
 
@@ -241,6 +245,8 @@ struct TemplateIterator : public TemplateData
 
             // Construct a track from the metadata
             JaniceRect rect;
+            uint32_t frame;
+
             for (int j = 0; getline(attributeValues, attributeValue, ','); j++) {
                 double value = attributeValue.empty() ? NAN : atof(attributeValue.c_str());
                 if (header[j] == "FACE_X")
@@ -251,8 +257,12 @@ struct TemplateIterator : public TemplateData
                     rect.width = value;
                 else if (header[j] == "FACE_HEIGHT")
                     rect.height = value;
+                else if (header[j] == "FRAME")
+                    frame = value;
             }
+
             rects.push_back(rect);
+            frames.push_back(frame);
         }
         if (verbose)
             fprintf(stderr, "\rEnrolling %zu/%zu", i, rects.size());
@@ -269,6 +279,7 @@ struct TemplateIterator : public TemplateData
                 templateData.templateIDs.push_back(templateIDs[i]);
                 templateData.filenames.push_back(filenames[i]);
                 templateData.rects.push_back(rects[i]);
+                templateData.frames.push_back(frames[i]);
                 i++;
             }
             if (verbose)
@@ -293,7 +304,7 @@ struct TemplateIterator : public TemplateData
             _janice_add_sample(janice_load_media_samples, 1000.0 * (clock() - start) / CLOCKS_PER_SEC);
 
             JaniceDetection detection;
-            JANICE_ASSERT(janice_create_detection(media, templateData.rects[i], detection))
+            JANICE_ASSERT(janice_create_detection(media, templateData.rects[i], templateData.frames[i], detection))
 
             detections.push_back(detection);
 
