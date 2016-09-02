@@ -529,7 +529,7 @@ JANICE_EXPORT JaniceError janice_prepare_gallery(JaniceGallery &gallery);
  */
 JANICE_EXPORT JaniceError janice_gallery_insert(JaniceGallery &gallery,
                                                 const JaniceTemplate &tmpl,
-                                                const JaniceTemplateId id);
+                                                JaniceTemplateId id);
 
 /*!
  * \brief Remove a template from a gallery. After removal the gallery does
@@ -540,7 +540,7 @@ JANICE_EXPORT JaniceError janice_gallery_insert(JaniceGallery &gallery,
  * \remark This function \ref reentrant
  */
 JANICE_EXPORT JaniceError janice_gallery_remove(JaniceGallery &gallery,
-                                                const JaniceTemplateId id);
+                                                JaniceTemplateId id);
 
 /*!
  * \brief Delete a gallery

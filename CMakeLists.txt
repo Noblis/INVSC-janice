@@ -23,6 +23,4 @@ endif()
 
 include(CTest)
 
-if(JANICE_IMPLEMENTATION AND JANICE_IO_IMPLEMENTATION)
-  add_subdirectory(src)
-endif()
+add_subdirectory(src)
