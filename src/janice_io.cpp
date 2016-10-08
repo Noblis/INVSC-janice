@@ -304,7 +304,8 @@ struct TemplateIterator : public TemplateData
             _janice_add_sample(janice_load_media_samples, 1000.0 * (clock() - start) / CLOCKS_PER_SEC);
 
             JaniceDetection detection;
-            JANICE_ASSERT(janice_create_detection(media, templateData.rects[i], templateData.frames[i], detection))
+            if (janice_create_detection(media, templateData.rects[i], templateData.frames[i], detection) != JANICE_SUCCESS)
+                continue;
 
             detections.push_back(detection);
 
@@ -438,7 +439,7 @@ JaniceError janice_create_gallery_helper(const string &templates_list_file, cons
     // Create the gallery
     JaniceGallery gallery = NULL;
     start = clock();
-    janice_create_gallery(tmpls, template_ids, gallery);
+    JANICE_CHECK(janice_create_gallery(tmpls, template_ids, gallery));
     _janice_add_sample(janice_create_gallery_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
 
     // Prepare the gallery for searching
@@ -505,22 +506,6 @@ JaniceError janice_verify_helper(const string &templates_list_file_a, const stri
 
 #ifndef JANICE_CUSTOM_SEARCH
 
-JaniceError janice_ensure_size(const vector<JaniceTemplateId> &all_ids, vector<JaniceTemplateId> &return_ids, vector<double> &similarities)
-{
-    set<JaniceTemplateId> return_lookup(return_ids.begin(), return_ids.end());
-
-    return_ids.reserve(all_ids.size()); similarities.reserve(all_ids.size());
-    for (size_t i = 0; i < all_ids.size(); i++) {
-        JaniceTemplateId id = all_ids[i];
-        if (return_lookup.find(id) == return_lookup.end()) {
-            return_ids.push_back(id);
-            similarities.push_back(0.0);
-        }
-    }
-
-    return JANICE_SUCCESS;
-}
-
 JaniceError janice_search_helper(const string &probes_list_file, const string &gallery_list_file, const string &gallery_file, int num_requested_returns, const string &candidate_list_file, bool verbose)
 {
     clock_t start;
@@ -557,8 +542,6 @@ JaniceError janice_search_helper(const string &probes_list_file, const string &g
         start = clock();
         JANICE_CHECK(janice_search(probe_templates[i], gallery, num_requested_returns, return_template_ids, similarities));
         _janice_add_sample(janice_search_samples, 1000 * (clock() - start) / CLOCKS_PER_SEC);
-
-        janice_ensure_size(gallery_template_ids, return_template_ids, similarities);
 
         for (size_t j = 0; j < return_template_ids.size(); j++)
             candidate_stream << probe_template_ids[i] << "," << j << "," << return_template_ids[j] << "," << similarities[j]

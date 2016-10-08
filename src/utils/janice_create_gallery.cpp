@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    char *algorithm = "";
+    std::string algorithm = "";
     bool verbose = false;
 
     for (int i = 0; i < argc - requiredArgs; i++) {

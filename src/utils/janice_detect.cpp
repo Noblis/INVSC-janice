@@ -13,13 +13,13 @@ const char *get_ext(const char *filename)
 
 void printUsage()
 {
-    printf("Usage: janice_create_templates sdk_path temp_path data_path metadata_file templates_dir template_list_file template_role [-algorithm <algorithm>] [-verbose]\n");
+    printf("Usage: janice_detect sdk_path temp_path data_path metadata_file min_face_size output_file [-algorithm <algorithm>] [-verbose]\n");
 }
 
 int main(int argc, char *argv[])
 {
-    int requiredArgs = 8;
-    if ((argc < requiredArgs) || (argc > 12)) {
+    int requiredArgs = 7;
+    if ((argc < requiredArgs) || (argc > 10)) {
         printUsage();
         return 1;
     }
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     }
 
     JANICE_ASSERT(janice_initialize(argv[1], argv[2], algorithm, 0))
-    JANICE_ASSERT(janice_create_templates_helper(argv[3], argv[4], argv[5], argv[6], static_cast<JaniceTemplateRole>(atoi(argv[7])), verbose))
+    JANICE_ASSERT(janice_detect_helper(argv[3], argv[4], atoi(argv[5]), argv[6], verbose));
     JANICE_ASSERT(janice_finalize())
 
     return EXIT_SUCCESS;
