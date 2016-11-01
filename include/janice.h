@@ -81,9 +81,9 @@
 #  endif
 #endif
 
-#define JANICE_VERSION_MAJOR 2
-#define JANICE_VERSION_MINOR 2
-#define JANICE_VERSION_PATCH 1
+#define JANICE_VERSION_MAJOR 3
+#define JANICE_VERSION_MINOR 0
+#define JANICE_VERSION_PATCH 0
 
 /*!
  * \defgroup janice JanICE
@@ -316,13 +316,13 @@ JANICE_EXPORT JaniceError janice_get_rects_from_detection(const JaniceDetection 
  *        frame offset is the number of frames that pass in a video before the
  *        detection object begins.
  * \param[in] detection The detection object to get the frame offset from
- * \param[out] offset The frame offset. It should be -1 if the detection object
+ * \param[out] offset The frame offset. It should be 0 if the detection object
  *             was collected from an image.
  * \note This function is required.
  * \remark This function is \ref thread_safe
  */
 JANICE_EXPORT JaniceError janice_get_frame_offset_from_detection(const JaniceDetection &detection,
-                                                                 int &offset);
+                                                                 uint32_t &offset);
 
 /*!
  * \brief Accessor function to get the confidence for a detection object. In
