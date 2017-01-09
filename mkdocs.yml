@@ -1,0 +1,44 @@
+# Information
+site_name: JanICE
+site_description: 'The JanICE API for computer vision'
+site_author: 'Noblis'
+
+# Repository
+repo_name: 'Github'
+repo_url: https://github.com/Noblis/janice
+
+# Theme
+theme: readthedocs
+
+# Options
+extra:
+    version: '4.0.0'
+    palette:
+        primary: 'blue grey'
+        accent: 'green'
+    font:
+        text: 'Roboto'
+        code: 'Roboto Mono'
+    i18n:
+        prev: 'Previous'
+        next: 'Next'
+
+pages:
+    - Overview: 'index.md'
+    - API:
+        - Computer Vision Concepts: 'api/cv_concepts.md'
+        - Software Concepts: 'api/software_concepts.md'
+        - Enumerations: 'api/enums.md'
+        - Objects: 'api/objects.md'
+        - Functions: 'api/functions.md'
+    - Interfaces:
+        - C++: 'interfaces/cpp.md'
+        - Python: 'interfaces/python.md'
+        - C#: 'interfaces/csharp.md'
+        - Java: 'interfaces/java.md'
+    - License: 'LICENSE.md'
+
+markdown_extensions:
+    - attr_list
+    - codehilite(css_class=code)
+    - admonition

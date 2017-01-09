@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Noblis">
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Software Concepts - JanICE</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Software Concepts";
+    var mkdocs_page_input_path = "api/software_concepts.md";
+    var mkdocs_page_url = "/api/software_concepts/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> JanICE</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../..">Overview</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>API</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../cv_concepts/">Computer Vision Concepts</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Software Concepts</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#ErrorHandling">Error Handling</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#MemoryAllocation">Memory Allocation</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#ThreadSafety">Thread Safety</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#Compiling">Compiling</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#Versioning">Versioning</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../enums/">Enumerations</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../objects/">Objects</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Interfaces</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/cpp/">C++</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/python/">Python</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/csharp/">C#</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/java/">Java</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../LICENSE/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">JanICE</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>API &raquo;</li>
+        
+      
+    
+    <li>Software Concepts</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Noblis/janice/edit/master/docs/api/software_concepts.md"
+          class="icon icon-github"> Edit on Github</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="ErrorHandling">Error Handling</h2>
+<p>The API handles errors using return codes. Valid return codes are defined
+<a href="#JaniceError">here</a>. In general, it is assumed that new memory is only
+allocated if a function returns <code>JANICE_SUCCESS</code>. Therefore,
+<strong>implementors are REQUIRED to deallocate any memory allocated during a
+function call if that function returns an error.</strong></p>
+<h2 id="MemoryAllocation">Memory Allocation</h2>
+<p>The API tries to be agnostic to different memory allocation strategies and
+memory allocators for all API objects. For convenience and brevity however,
+functions that return arrays of values (for example
+<a href="#JaniceSearch">janice_search</a>) must allocate those arrays using the
+<a href="https://www-s.acm.illinois.edu/webmonkeys/book/c_guide/2.13.html#malloc">malloc</a>
+function available in the C standard library. It is the responsibility of the
+user of the API to ensure that those arrays are deleted with corresponding
+calls to
+<a href="https://www-s.acm.illinois.edu/webmonkeys/book/c_guide/2.13.html#free">free</a>.</p>
+<p>In general, the API often passes unallocated pointers to functions for the
+implementor to allocate appropriately. This is indicated if the type of a
+function input is <code>JaniceObject**</code>, or in the case of a utility
+<code>typedef</code> <code>JaniceTypedef*</code>. It is considered a best
+practice for unallocated pointers to be initialized to <code>NULL</code> before
+they are passed to a function, but this is not guaranteed. It is the
+responsibility of the users of the API to ensure that pointers do not point to
+valid data before they are passed to functions in which they are modified, as
+this would cause memory leaks.</p>
+<h2 id="ThreadSafety">Thread Safety</h2>
+<p>All functions are marked one of:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Thread safe</td>
+<td>Can be called simultaneously from multiple threads, even when the invocations use shared data.</td>
+</tr>
+<tr>
+<td>Reentrant</td>
+<td>Can be called simultaneously from multiple threads, but only if each invocation uses its own data.</td>
+</tr>
+<tr>
+<td>Thread unsafe</td>
+<td>Can not be called simultaneously from multiple threads.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Compiling">Compiling</h2>
+<p>Define <code>JANICE_LIBRARY</code> during compilation to export JanICE symbols.</p>
+<h2 id="Versioning">Versioning</h2>
+<p>This API follows the <a href="http://semver.org">semantic versioning</a> paradigm. Each
+released iteration is tagged with a major.minor.patch version. A change in
+the major version indicates a breaking change. A change in the minor version
+indicates a backwards-compatible change. A change in the patch version
+indicates a backwards-compatible bug fix.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../enums/" class="btn btn-neutral float-right" title="Enumerations">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../cv_concepts/" class="btn btn-neutral" title="Computer Vision Concepts"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../cv_concepts/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../enums/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>
