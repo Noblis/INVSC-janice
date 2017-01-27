@@ -15,6 +15,10 @@ set(JANICE_VERSION ${JANICE_VERSION_MAJOR}.${JANICE_VERSION_MINOR}.${JANICE_VERS
 
 configure_file(api/janice.h ${CMAKE_CURRENT_BINARY_DIR}/refreshes_version_when_changed)
 
+# Default initialize the library variables
+set(JANICE_IMPLEMENTATION CACHE STRING "A path to a library implementing the JanICE API")
+set(JANICE_IO_IMPLEMENTATION CACHE STRING "A path to a library implementating the JanICE I/O API")
+
 # Include the API header files
 include_directories(api)
 

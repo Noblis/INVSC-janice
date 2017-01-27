@@ -4,7 +4,7 @@ The JanICE API is a *C* API that provides a common interface between computer vi
 algorithms and agencies and entities that would like to use them. The API consists
 of a core header file defining required *C* functions. It also defines a number of interfaces to other languages on top of the *C* API.
 
-The documentation for the *C* API is available [here](api/cv_concepts.md).
+The documentation for the *C* API is available [here](api/software_concepts.md).
 
 There are currently interfaces for:
 

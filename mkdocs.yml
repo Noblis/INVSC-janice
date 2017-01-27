@@ -9,6 +9,7 @@ repo_url: https://github.com/Noblis/janice
 
 # Theme
 theme: readthedocs
+theme_dir: 'docs/theme/'
 
 # Options
 extra:
@@ -26,11 +27,43 @@ extra:
 pages:
     - Overview: 'index.md'
     - API:
-        - Computer Vision Concepts: 'api/cv_concepts.md'
         - Software Concepts: 'api/software_concepts.md'
-        - Enumerations: 'api/enums.md'
-        - Objects: 'api/objects.md'
-        - Functions: 'api/functions.md'
+        - Miscellaneous:
+            - Functions: 'api/misc/functions.md'
+        - Error Handling:
+            - Overview: 'api/errors/overview.md'
+            - Enums: 'api/errors/enums.md'
+            - Functions: 'api/errors/functions.md'
+        - I/O: 
+            - Overview: 'api/io/overview.md'
+            - Structs: 'api/io/structs.md'
+            - Typedefs: 'api/io/typedefs.md'
+            - Functions: 'api/io/functions.md'
+        - Detection:
+            - Overview: 'api/detection/overview.md'
+            - Structs: 'api/detection/structs.md'
+            - Typedefs: 'api/detection/typedefs.md'
+            - Functions: 'api/detection/functions.md'
+        - Enrollment:
+            - Overview: 'api/enrollment/overview.md'
+            - Enums: 'api/enrollment/enums.md'
+            - Structs: 'api/enrollment/structs.md'
+            - Typedefs: 'api/enrollment/typedefs.md'
+            - Functions: 'api/enrollment/functions.md'
+        - Gallery:
+            - Overview: 'api/gallery/overview.md'
+            - Structs: 'api/gallery/structs.md'
+            - Typedefs: 'api/gallery/typedefs.md'
+            - Functions: 'api/gallery/functions.md'
+        - Comparison:
+            - Overview: 'api/comparison/overview.md'
+            - Typedefs: 'api/comparison/typedefs.md'
+            - Functions: 'api/comparison/functions.md'
+        - Clustering:
+            - Overview: 'api/clustering/overview.md'
+            - Structs: 'api/clustering/structs.md'
+            - Typedefs: 'api/clustering/typedefs.md'
+            - Functions: 'api/clustering/functions.md'
     - Interfaces:
         - C++: 'interfaces/cpp.md'
         - Python: 'interfaces/python.md'

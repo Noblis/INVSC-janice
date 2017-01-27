@@ -8,17 +8,7 @@ function call if that function returns an error.**
 
 ## Memory Allocation {: #MemoryAllocation }
 
-The API tries to be agnostic to different memory allocation strategies and
-memory allocators for all API objects. For convenience and brevity however,
-functions that return arrays of values (for example
-[janice_search](#JaniceSearch)) must allocate those arrays using the
-[malloc](https://www-s.acm.illinois.edu/webmonkeys/book/c_guide/2.13.html#malloc)
-function available in the C standard library. It is the responsibility of the
-user of the API to ensure that those arrays are deleted with corresponding
-calls to
-[free](https://www-s.acm.illinois.edu/webmonkeys/book/c_guide/2.13.html#free).
-
-In general, the API often passes unallocated pointers to functions for the
+The API often passes unallocated pointers to functions for the
 implementor to allocate appropriately. This is indicated if the type of a
 function input is <code>JaniceObject\*\*</code>, or in the case of a utility
 <code>typedef</code> <code>JaniceTypedef\*</code>. It is considered a best

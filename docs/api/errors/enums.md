@@ -1,5 +1,6 @@
 ## JaniceError {: #JaniceError }
-Every function in the JanICE *C* API returns an error code when executed. In the case of successful application <code>JANICE_SUCCESS</code> is returned, otherwise a code indicating the specific issue is returned. The error codes are:
+
+The error codes defined in the JanICE *C* API
 
 Code | Description
 --- | ---
@@ -25,14 +26,3 @@ Code | Description
 <code>JANICE_FAILURE_TO_DESERIALIZE</code> | Could not deserialize a data structure
 <code>JANICE_NOT_IMPLEMENTED</code>        | Optional function return
 <code>JANICE_NUM_ERRORS</code>             | Utility to iterate over all errors
-
-## JaniceEnrollmentType {: #JaniceEnrollmentType }
-Often times, the templates produced by algorithms will require different data for different use cases. The enrollment type indicates what the use case for the created template will be, allowing implementors to specialize their templates if they so desire. The use cases supported by the API are:
-
-Type | Description
----|---
-<code>Janice11Reference</code> | The template will be used as a reference template for 1 to 1 verification.
-<code>Janice11Verification</code> | The template will be used for verification against a reference template in 1 to 1 verification.
-<code>Janice1NProbe</code> | The template will be used as a probe in 1 to N search.
-<code>Janice1NGallery</code> | The template will be enrolled into a gallery and searched against for 1 to N search.
-<code>JaniceCluster</code> | The template will be used for clustering
