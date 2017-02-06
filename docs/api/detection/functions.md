@@ -368,12 +368,16 @@ if (janice_free_detection(&detection) != JANICE_SUCCESS)
 
 ## janice_free_detections {: #JaniceFreeDetections }
 
-Free any memory associated with an array of [JaniceDetection](typedefs.md#JaniceDetection) objects.
+Free any memory associated with an array of
+[JaniceDetection](typedefs.md#JaniceDetection) objects. This function should
+free memory allocated for the underlying detection objects AND memory allocated
+for the array.
 
 #### Signature {: #JaniceFreeDetectionsSignature }
 
 ```
-JANICE_EXPORT JaniceError janice_free_detections(JaniceDetections* detection);
+JANICE_EXPORT JaniceError janice_free_detections(JaniceDetections* detection,
+                                                 uint32_t num_detections);
 ```
 
 #### Thread Safety {: #JaniceFreeDetectionsThreadSafety }
@@ -402,6 +406,6 @@ This function is reentrant.
 
 #### Parameters {: #JaniceFreeDetectionItemsParameters }
 
-Name  | Type | Description
------ | ---- | -----------
+Name  | Type                                                       | Description
+----- | ---------------------------------------------------------- | -----------
 items | [JaniceDetectionItems\*](typedefs.md#JaniceDetectionItems) | An array of detection items to free. Best practice dictates the pointer should be set to <code>NULL</code> after it is freed.

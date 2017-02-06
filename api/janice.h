@@ -91,7 +91,8 @@ JANICE_EXPORT JaniceError janice_write_detection(JaniceConstDetection detection,
 // Cleanup
 JANICE_EXPORT JaniceError janice_free_detection(JaniceDetection* detection);
 
-JANICE_EXPORT JaniceError janice_free_detections(JaniceDetections* detections);
+JANICE_EXPORT JaniceError janice_free_detections(JaniceDetections* detections, 
+                                                 uint32_t num_detections);
 
 JANICE_EXPORT JaniceError janice_free_detection_items(JaniceDetectionItems* items);
 
