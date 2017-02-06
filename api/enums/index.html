@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Noblis">
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Enumerations - JanICE</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Enumerations";
+    var mkdocs_page_input_path = "api/enums.md";
+    var mkdocs_page_url = "/api/enums/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> JanICE</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../..">Overview</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>API</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../cv_concepts/">Computer Vision Concepts</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../software_concepts/">Software Concepts</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Enumerations</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#JaniceError">JaniceError</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#JaniceEnrollmentType">JaniceEnrollmentType</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../objects/">Objects</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Interfaces</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/cpp/">C++</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/python/">Python</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/csharp/">C#</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/java/">Java</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../LICENSE/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">JanICE</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>API &raquo;</li>
+        
+      
+    
+    <li>Enumerations</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Noblis/janice/edit/master/docs/api/enums.md"
+          class="icon icon-github"> Edit on Github</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="JaniceError">JaniceError</h2>
+<p>Every function in the JanICE <em>C</em> API returns an error code when executed. In the case of successful application <code>JANICE_SUCCESS</code> is returned, otherwise a code indicating the specific issue is returned. The error codes are:</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>JANICE_SUCCESS</code></td>
+<td>No error</td>
+</tr>
+<tr>
+<td><code>JANICE_UNKNOWN_ERROR</code></td>
+<td>Catch all error code</td>
+</tr>
+<tr>
+<td><code>JANICE_OUT_OF_MEMORY</code></td>
+<td>Out of memory error</td>
+</tr>
+<tr>
+<td><code>JANICE_INVALID_SDK_PATH</code></td>
+<td>Invalid SDK location</td>
+</tr>
+<tr>
+<td><code>JANICE_BAD_SDK_CONFIG</code></td>
+<td>Invalid SDK configuration</td>
+</tr>
+<tr>
+<td><code>JANICE_BAD_LICENSE</code></td>
+<td>Incorrect license file</td>
+</tr>
+<tr>
+<td><code>JANICE_MISSING_DATA</code></td>
+<td>Missing SDK data</td>
+</tr>
+<tr>
+<td><code>JANICE_INVALID_GPU</code></td>
+<td>The GPU is not functioning</td>
+</tr>
+<tr>
+<td><code>JANICE_OPEN_ERROR</code></td>
+<td>Failed to open a file</td>
+</tr>
+<tr>
+<td><code>JANICE_READ_ERROR</code></td>
+<td>Failed to read from a file</td>
+</tr>
+<tr>
+<td><code>JANICE_WRITE_ERROR</code></td>
+<td>Failed to write to a file</td>
+</tr>
+<tr>
+<td><code>JANICE_PARSE_ERROR</code></td>
+<td>Failed to parse a file</td>
+</tr>
+<tr>
+<td><code>JANICE_INVALID_MEDIA</code></td>
+<td>Failed to decode a media file</td>
+</tr>
+<tr>
+<td><code>JANICE_DUPLICATE_ID</code></td>
+<td>Template id already exists in a gallery</td>
+</tr>
+<tr>
+<td><code>JANICE_MISSING_ID</code></td>
+<td>Template id can't be found</td>
+</tr>
+<tr>
+<td><code>JANICE_MISSING_FILE_NAME</code></td>
+<td>An expected file name is not given</td>
+</tr>
+<tr>
+<td><code>JANICE_INCORRECT_ROLE</code></td>
+<td>Incorrect template role</td>
+</tr>
+<tr>
+<td><code>JANICE_FAILURE_TO_ENROLL</code></td>
+<td>Could not construct a template</td>
+</tr>
+<tr>
+<td><code>JANICE_FAILURE_TO_SERIALIZE</code></td>
+<td>Could not serialize a data structure</td>
+</tr>
+<tr>
+<td><code>JANICE_FAILURE_TO_DESERIALIZE</code></td>
+<td>Could not deserialize a data structure</td>
+</tr>
+<tr>
+<td><code>JANICE_NOT_IMPLEMENTED</code></td>
+<td>Optional function return</td>
+</tr>
+<tr>
+<td><code>JANICE_NUM_ERRORS</code></td>
+<td>Utility to iterate over all errors</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceEnrollmentType">JaniceEnrollmentType</h2>
+<p>Often times, the templates produced by algorithms will require different data for different use cases. The enrollment type indicates what the use case for the created template will be, allowing implementors to specialize their templates if they so desire. The use cases supported by the API are:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Janice11Reference</code></td>
+<td>The template will be used as a reference template for 1 to 1 verification.</td>
+</tr>
+<tr>
+<td><code>Janice11Verification</code></td>
+<td>The template will be used for verification against a reference template in 1 to 1 verification.</td>
+</tr>
+<tr>
+<td><code>Janice1NProbe</code></td>
+<td>The template will be used as a probe in 1 to N search.</td>
+</tr>
+<tr>
+<td><code>Janice1NGallery</code></td>
+<td>The template will be enrolled into a gallery and searched against for 1 to N search.</td>
+</tr>
+<tr>
+<td><code>JaniceCluster</code></td>
+<td>The template will be used for clustering</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../objects/" class="btn btn-neutral float-right" title="Objects">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../software_concepts/" class="btn btn-neutral" title="Software Concepts"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../software_concepts/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../objects/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>

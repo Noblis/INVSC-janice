@@ -1,59 +1,272 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>JanICE by Noblis</title>
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The JanICE API for computer vision">
+  <meta name="author" content="Noblis">
+  <link rel="shortcut icon" href="./img/favicon.ico">
+  <title>Overview - JanICE</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-light.css">
-    <meta name="viewport" content="width=device-width">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>JanICE</h1>
-        <p>Operational fork of the IARPA Janus API</p>
+  <link rel="stylesheet" href="./css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="./css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="./css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Overview";
+    var mkdocs_page_input_path = "index.md";
+    var mkdocs_page_url = "/";
+  </script>
+  
+  <script src="./js/jquery-2.1.1.min.js"></script>
+  <script src="./js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="./js/highlight.pack.js"></script> 
+  
+</head>
 
-        <p class="view"><a href="https://github.com/Noblis/janice">View the Project on GitHub <small>Noblis/janice</small></a></p>
+<body class="wy-body-for-nav" role="document">
 
+  <div class="wy-grid-for-nav">
 
-        <ul>
-          <li><a href="https://github.com/Noblis/janice/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/Noblis/janice/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/Noblis/janice">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h3>
-<a id="welcome-to-the-janice-api" class="anchor" href="#welcome-to-the-janice-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to the JanICE API</h3>
-
-<p>There will be some text here describing the API.</p>
-
-<h3>
-<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Documentation</h3>
-
-<p><a href="docs/html/index.html">Documentation</a> generated automatically with Doxygen</p>
-
-<h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>Probably have some people who should be mentioned here</p>
-
-<h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Some contact information here for support.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/Noblis">Noblis</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
     
-  </body>
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="." class="icon icon-home"> JanICE</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href=".">Overview</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#janice-api">JanICE API</a></li>
+                
+                    <li><a class="toctree-l4" href="#about">About</a></li>
+                
+                    <li><a class="toctree-l4" href="#focus-areas">Focus Areas</a></li>
+                
+                    <li><a class="toctree-l4" href="#license">License</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>API</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="api/cv_concepts/">Computer Vision Concepts</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="api/software_concepts/">Software Concepts</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="api/enums/">Enumerations</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="api/objects/">Objects</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="api/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Interfaces</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="interfaces/cpp/">C++</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="interfaces/python/">Python</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="interfaces/csharp/">C#</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="interfaces/java/">Java</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="LICENSE/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href=".">JanICE</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Overview</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Noblis/janice/edit/master/docs/index.md"
+          class="icon icon-github"> Edit on Github</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="janice-api">JanICE API</h1>
+<p>The JanICE API is a <em>C</em> API that provides a common interface between computer vision
+algorithms and agencies and entities that would like to use them. The API consists
+of a core header file defining required <em>C</em> functions. It also defines a number of interfaces to other languages on top of the <em>C</em> API.</p>
+<p>The documentation for the <em>C</em> API is available <a href="api/cv_concepts/">here</a>.</p>
+<p>There are currently interfaces for:</p>
+<p>There are plans to write interfaces for:</p>
+<ul>
+<li><a href="interfaces/cpp/"><em>C++</em></a></li>
+<li><a href="interfaces/python/"><em>Python</em></a></li>
+<li><a href="interfaces/csharp/"><em>C#</em></a></li>
+<li><a href="interfaces/java/"><em>Java</em></a></li>
+</ul>
+<h2 id="about">About</h2>
+<p>Computer vision is a rapidly expanding and improving field that has seen significant
+progress in it's capabilities over the past decade. Government agencies can leverage
+computer vision algorithms to better understand images and videos that they ingest.
+This in turn can lead to improved response times, increased public safety, and numerous
+other benefits. The JanICE API provides a common framework that commercial vendors and
+government agencies can use to ease integration between algorithms and use cases. The
+API aims to cover a number of different Computer Vision subproblems. At this time these
+problems include:</p>
+<ul>
+<li>Face Recognition</li>
+<li>Camera Identification</li>
+</ul>
+<p>Some function calls serve multiple use cases in different ways. In those cases the function documentation strives to clearly indicate the differences. If no differences are indicated it means that the function is universal in that it applies the same to each subproblem addressed by the API.</p>
+<h2 id="focus-areas">Focus Areas</h2>
+<h3 id="face-recognition">Face Recognition</h3>
+<p>Facial recognition has emerged as a key technology for government agencies to efficiently triage and analyze large data streams. A large ecosystem of facial recognition algorithms already exists from a variety of sources including commercial vendors, government programs and academia. However, integrating this important technology into existing technology stacks is a difficult and expensive endeavor. The JanICE API aims to address this problem by functioning as a compatibility layer between users and the algorithms. Users can write their applications on "top" of the API while algorithm providers will implement their algorithms "beneath" the API. This means that users can write their applications independent of any single FR algorithm and gives them the freedom to select the algorithm or algorithms that best serve their specific use case without worrying about integration. Algorithm providers will be able to serve their algorithms across teams and agencies without having to integrate with the different tools and services of each specific team.</p>
+<h3 id="camera-identification">Camera Identification</h3>
+<p>Camera identification provides the capability to use sensor pattern noise (SPN) to identify images (still and video) that have been captured using the same source camera device. Since the SPN generation and matching processes are similar to biometric template generation and matching, the JanICE functionality can be adapted for this purpose. Likewise the use cases are similar in that 1:1, 1:N, and clustering capabilities are needed. (The latter two implying the existence of a gallery of imagery for which SPN has been calculated.) This also allows both FR and Camera Identification modules (algorithms) to be deployed within the same application/platform.</p>
+<h2 id="license">License</h2>
+<p>The API is provided under the MIT license(LICENSE.txt) and is
+<em>free for academic and commercial use</em>.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api/cv_concepts/" class="btn btn-neutral float-right" title="Computer Vision Concepts">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+        <span style="margin-left: 15px"><a href="api/cv_concepts/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="./js/theme.js"></script>
+
+</body>
 </html>
+
+<!--
+MkDocs version : 0.16.1
+Build Date UTC : 2017-01-09 21:50:57
+-->

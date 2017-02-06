@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Noblis">
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Objects - JanICE</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Objects";
+    var mkdocs_page_input_path = "api/objects.md";
+    var mkdocs_page_url = "/api/objects/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> JanICE</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../..">Overview</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>API</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../cv_concepts/">Computer Vision Concepts</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../software_concepts/">Software Concepts</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../enums/">Enumerations</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Objects</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#overview">Overview</a></li>
+                
+                    <li><a class="toctree-l4" href="#JaniceMediaType">JaniceMediaType</a></li>
+                
+                    <li><a class="toctree-l4" href="#JaniceRect">JaniceRect</a></li>
+                
+                    <li><a class="toctree-l4" href="#JaniceDetectionInstance">JaniceDetectionInstance</a></li>
+                
+                    <li><a class="toctree-l4" href="#JaniceDetectionType">JaniceDetectionType</a></li>
+                
+                    <li><a class="toctree-l4" href="#JaniceTemplateType">JaniceTemplateType</a></li>
+                
+                    <li><a class="toctree-l4" href="#JaniceGalleryType">JaniceGalleryType</a></li>
+                
+                    <li><a class="toctree-l4" href="#JaniceClusterItem">JaniceClusterItem</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Interfaces</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/cpp/">C++</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/python/">Python</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/csharp/">C#</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../interfaces/java/">Java</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../LICENSE/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">JanICE</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>API &raquo;</li>
+        
+      
+    
+    <li>Objects</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Noblis/janice/edit/master/docs/api/objects.md"
+          class="icon icon-github"> Edit on Github</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="overview">Overview</h1>
+<p>Janice objects generally fall into two classes; utility objects that exist
+to simplify function parameters or represent basic classes, and fundamental
+objects that correspond to high level API concepts. For fundamental objects,
+the API employs the <a href="http://en.cppreference.com/w/cpp/language/pimpl">PIMPL idiom</a>
+to abstract away the implementation from the end user. This has the added
+advantage of not enforcing any paradigm on implementors to implement their
+fundamental objects in a predefined manner.</p>
+<h2 id="JaniceMediaType">JaniceMediaType</h2>
+<p>An opaque pointer to a struct that represents an image or video. See <a href="#Media">the
+paragraph on media</a> for more information. The API deals exclusively
+with pointers to this object and provides the following typedefs for convenience</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JaniceMedia</td>
+<td><code>typedef struct JaniceMediaType*</code></td>
+</tr>
+<tr>
+<td>JaniceConstMedia</td>
+<td><code>typedef const struct JaniceMediaType*</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceRect">JaniceRect</h2>
+<p>A simple struct that represents a rectangle</p>
+<h4 id="JaniceRectFields">Fields</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x</td>
+<td>uint32_t</td>
+<td>The x offset of the rectangle in pixels</td>
+</tr>
+<tr>
+<td>y</td>
+<td>uint32_t</td>
+<td>The y offset of the rectangle in pixels</td>
+</tr>
+<tr>
+<td>width</td>
+<td>uint32_t</td>
+<td>The width of the rectangle in pixels</td>
+</tr>
+<tr>
+<td>height</td>
+<td>uint32_t</td>
+<td>The height of the rectangle in pixels</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceDetectionInstance">JaniceDetectionInstance</h2>
+<p>A single detection in an image or video, represented as a rectangle,
+confidence, and frame number. See <a href="#Detection">the paragraph on detection</a> for
+information on why this structure is necessary.</p>
+<h4 id="JaniceDetectionInstanceConfidence">Confidence</h4>
+<p>The confidence value indicates a likelihood that the rectangle actually bounds
+an object of interest. It is <strong>NOT</strong> required to be a probability and often
+only has meaning relative to other confidence values from the same algorithm.
+The only restriction is that a larger confidence value indicates a greater
+likelihood that the rectangle bounds an object.</p>
+<h4 id="JaniceDetectionInstanceFields">Fields</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rect</td>
+<td><a href="#JaniceRect">JaniceRect</a></td>
+<td>The rectangle that bounds the object of interest</td>
+</tr>
+<tr>
+<td>confidence</td>
+<td>double</td>
+<td>A likelihood that the rectangle bounds an object of interest. See <a href="#Confidence">this description</a></td>
+</tr>
+<tr>
+<td>frame</td>
+<td>uint32_t</td>
+<td>A frame index indicating which frame the rectangle came from. If the rectangle comes from an image this should be set to 0</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceDetectionType">JaniceDetectionType</h2>
+<p>An opaque pointer to a struct that represents a detection. See <a href="#Detection">the paragraph
+on detection</a> for more information. The API deals exclusively with
+pointers to this object and provides the following typedefs for convenience.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JaniceDetection</td>
+<td><code>typedef struct JaniceDetectionType*</code></td>
+</tr>
+<tr>
+<td>JaniceConstDetection</td>
+<td><code>typedef const struct JaniceDetectionType*</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceTemplateType">JaniceTemplateType</h2>
+<p>An opaque pointer to a struct that represents a template. See <a href="#FeatureExtraction">the paragraph on
+feature extraction</a> for more information. The API deals
+exclusively with pointers to this object and provides the following typedefs
+for convienience.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JaniceTemplate</td>
+<td><code>typedef struct JaniceTemplateType*</code></td>
+</tr>
+<tr>
+<td>JaniceConstTemplate</td>
+<td><code>typedef const struct JaniceTemplateType*</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceGalleryType">JaniceGalleryType</h2>
+<p>An opaque pointer to a struct that represents a gallery. See <a href="#Galleries">the paragraph on
+galleries</a> for more information. The API deals exclusively with
+pointers to this object and provides the following typedefs for convenience.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JaniceGallery</td>
+<td><code>typedef struct JaniceGalleryType*</code></td>
+</tr>
+<tr>
+<td>JaniceConstGallery</td>
+<td><code>typedef const struct JaniceGalleryType*</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceClusterItem">JaniceClusterItem</h2>
+<p>A utility structure that stores cluster information about an API object.</p>
+<h3 id="fields">Fields</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cluster_id</td>
+<td>uint32_t</td>
+<td>The id of the cluster that this item belongs to. Two items with the same cluster id are members of the same cluster</td>
+</tr>
+<tr>
+<td>source_id</td>
+<td>uint32_t</td>
+<td>The id of the source object this item refers to. Two items with the same source id came from the same source object.</td>
+</tr>
+<tr>
+<td>confidence</td>
+<td>double</td>
+<td>The confidence that this item belongs in it's assigned cluster. The confidence could be used after the fact to "purify" clusters by removing the least confident members.</td>
+</tr>
+<tr>
+<td>detection</td>
+<td><a href="#JaniceDetectionType">JaniceDetection</a></td>
+<td>In the special case where the source object is a <a href="#JaniceMediaType">JaniceMediaType</a> object, the source id is not enough to handle the case where multiple objects of interest exist within the media. The detection is used in this case to give the specific location of the object that this item refers to.</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../functions/" class="btn btn-neutral float-right" title="Functions">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../enums/" class="btn btn-neutral" title="Enumerations"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../enums/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../functions/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>

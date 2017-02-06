@@ -1,6 +1,0 @@
-{
-  "name": "JanICE",
-  "tagline": "Operational fork of the IARPA Janus API",
-  "body": "### Welcome to the JanICE API\r\nThere will be some text here describing the API.\r\n\r\n### Documentation\r\n[Documentation](docs/html/index.html) generated automatically with Doxygen\r\n\r\n### Authors and Contributors\r\nProbably have some people who should be mentioned here\r\n\r\n### Support or Contact\r\nSome contact information here for support.\r\n",
-  "note": "Don't delete this file! It's used internally to help with page regeneration."
-}
