@@ -4,7 +4,7 @@
     
     <url>
      <loc>/</loc>
-     <lastmod>2017-01-09</lastmod>
+     <lastmod>2017-02-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,32 +12,56 @@
     
         
     <url>
-     <loc>/api/cv_concepts/</loc>
-     <lastmod>2017-01-09</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
      <loc>/api/software_concepts/</loc>
-     <lastmod>2017-01-09</lastmod>
+     <lastmod>2017-02-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>/api/enums/</loc>
-     <lastmod>2017-01-09</lastmod>
+     <loc></loc>
+     <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>/api/objects/</loc>
-     <lastmod>2017-01-09</lastmod>
+     <loc></loc>
+     <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>/api/functions/</loc>
-     <lastmod>2017-01-09</lastmod>
+     <loc></loc>
+     <lastmod></lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc></loc>
+     <lastmod></lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc></loc>
+     <lastmod></lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc></loc>
+     <lastmod></lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc></loc>
+     <lastmod></lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc></loc>
+     <lastmod></lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -47,25 +71,25 @@
         
     <url>
      <loc>/interfaces/cpp/</loc>
-     <lastmod>2017-01-09</lastmod>
+     <lastmod>2017-02-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/interfaces/python/</loc>
-     <lastmod>2017-01-09</lastmod>
+     <lastmod>2017-02-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/interfaces/csharp/</loc>
-     <lastmod>2017-01-09</lastmod>
+     <lastmod>2017-02-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/interfaces/java/</loc>
-     <lastmod>2017-01-09</lastmod>
+     <lastmod>2017-02-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -74,7 +98,7 @@
     
     <url>
      <loc>/LICENSE/</loc>
-     <lastmod>2017-01-09</lastmod>
+     <lastmod>2017-02-06</lastmod>
      <changefreq>daily</changefreq>
     </url>
     

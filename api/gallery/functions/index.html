@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Noblis">
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>Functions - JanICE</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Functions";
+    var mkdocs_page_input_path = "api/gallery/functions.md";
+    var mkdocs_page_url = "/api/gallery/functions/";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> JanICE</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Overview</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+        <li><span>API</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../software_concepts/">Software Concepts</a>
+        
+    </li>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Miscellaneous</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../misc/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Error Handling</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/enums/">Enums</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>I/O</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Detection</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Enrollment</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/enums/">Enums</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Gallery</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Functions</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#JaniceCreateGallery">janice_create_gallery</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceGalleryInsert">janice_gallery_insert</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceGalleryRemove">janice_gallery_remove</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceGalleryPrepare">janice_gallery_prepare</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceSerializeGallery">janice_serialize_gallery</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceDeserializeGallery">janice_deserialize_gallery</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceReadGallery">janice_read_gallery</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceWriteGallery">janice_write_gallery</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceFreeGallery">janice_free_gallery</a></li>
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Comparison</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Clustering</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+        <li><span>Interfaces</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/cpp/">C++</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/python/">Python</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/csharp/">C#</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/java/">Java</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../LICENSE/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">JanICE</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>API &raquo;</li>
+        
+      
+        
+          <li>Gallery &raquo;</li>
+        
+      
+    
+    <li>Functions</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Noblis/janice/edit/master/docs/api/gallery/functions.md"
+          class="icon icon-github"> Edit on Github</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="JaniceCreateGallery">janice_create_gallery</h2>
+<p>Create a <a href="../typedefs/#JaniceGallery">JaniceGallery</a> object from a list of
+templates and unique ids.</p>
+<h4 id="JaniceCreateGallerySignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_create_gallery(JaniceConstTemplates tmpls,
+                                                const JaniceTemplateIds ids,
+                                                JaniceGallery* gallery);</code></pre>
+
+
+<h4 id="thread-safety-janicecreategallerythreadsafety">Thread Safety {: #JaniceCreateGalleryThreadSafety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceCreateGalleryParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tmpls</td>
+<td><a href="../../enrollment/typedefs/#JaniceConstTemplates">JaniceConstTemplates</a></td>
+<td>An array of templates to add to the gallery</td>
+</tr>
+<tr>
+<td>ids</td>
+<td>const <a href="../typedefs/#JaniceTemplateIds">JaniceTemplateIds</a></td>
+<td>A set of unique identifiers to associate with the input templates. The <em>ith</em> id corresponds to the <em>ith</em> input template.</td>
+</tr>
+<tr>
+<td>gallery</td>
+<td><a href="../typedefs/#JaniceGallery">JaniceGallery*</a></td>
+<td>An uninitialized gallery object.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceCreateGalleryExample">Example</h4>
+<pre class="code"><code>JaniceTemplates tmpls; // Where tmpls is a valid array of valid template
+                       // objects created previously
+JaniceTemplateIds ids; // Where ids is a valid array of unique unsigned integers that
+                       // is the same length as tmpls
+JaniceGallery gallery = NULL; // best practice to initialize to NULL
+
+if (janice_create_gallery(tmpls, ids, &amp;gallery) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+
+
+<h2 id="JaniceGalleryInsert">janice_gallery_insert</h2>
+<p>Insert a template into a gallery object. The template data should be copied
+into the gallery as the template may be deleted after this function.</p>
+<h4 id="JaniceGalleryInsertSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_gallery_insert(JaniceGallery gallery,
+                                                JaniceConstTemplate tmpl,
+                                                JaniceTemplateId id);</code></pre>
+
+
+<h4 id="JaniceGalleryInsertThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceGalleryInsertParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gallery</td>
+<td><a href="../typedefs/#JaniceGallery">JaniceGallery</a></td>
+<td>A gallery object to insert the template into.</td>
+</tr>
+<tr>
+<td>tmpl</td>
+<td><a href="../../enrollment/typedefs/#JaniceConstTemplate">JaniceConstTemplate</a></td>
+<td>A template object to insert into the gallery.</td>
+</tr>
+<tr>
+<td>id</td>
+<td><a href="../typedefs/#JaniceTemplateId">JaniceTemplateId</a></td>
+<td>A unique id to associate with the input template</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceGalleryInsertExample">Example</h4>
+<pre class="code"><code>JaniceTemplate tmpl; // Where tmpl is a valid template object created
+                     // previously
+JaniceTemplateId id; // Where id is a unique integer to associate with tmpl. This
+                     // integer should not exist in the gallery
+JaniceGallery gallery; // Where gallery is a valid gallery object created
+                       // previously
+
+if (janice_gallery_insert(gallery, tmpl, id) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+
+
+<h2 id="JaniceGalleryRemove">janice_gallery_remove</h2>
+<p>Remove a template from a gallery object using its unique id.</p>
+<h4 id="JaniceGalleryRemoveSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_gallery_remove(JaniceGallery gallery,
+                                                uint32_t id);</code></pre>
+
+
+<h4 id="JaniceGalleryRemoveThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gallery</td>
+<td><a href="../typedefs/#JaniceGallery">JaniceGallery</a></td>
+<td>A gallery object to remove the template from</td>
+</tr>
+<tr>
+<td>id</td>
+<td><a href="../typedefs/#JaniceTemplateId">JaniceTemplateId</a></td>
+<td>A unique id associated with a template in the gallery that indicates which template should be remove.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="example">Example</h4>
+<pre class="code"><code>JaniceTemplate tmpl; // Where tmpl is a valid template object created
+                     // previously
+const JaniceTemplateId id = 0; // A unique integer id to associate with tmpl.
+
+JaniceGallery gallery; // Where gallery is a valid gallery object created
+                       // previously that does not have a template with id '0'
+                       // already inserted in it.
+
+// Insert the template with id 0
+if (janice_gallery_insert(gallery, tmpl, id) != JANICE_SUCCESS)
+    // ERROR!
+
+// Now we can remove the template
+if (janice_gallery_remove(gallery, id) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+
+
+<h2 id="JaniceGalleryPrepare">janice_gallery_prepare</h2>
+<p>Prepare a gallery for search. Implementors can use this function as an
+opportunity to streamline gallery objects to accelerate the search process. The
+calling convention for this function is <strong>NOT</strong> specified by the API, this
+means that this function is not guaranteed to be called before
+<a href="../../comparison/functions/#JaniceSearch">janice_search</a>. It also means that templates can be added
+to a gallery before and after this function is called. Implementations should
+handle all of these calling conventions. However, users should be aware that
+this function may be computationally expensive. They should strive to call it
+only at critical junctions before search and as few times as possible overall.</p>
+<h4 id="JaniceGalleryPrepareSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_gallery_prepare(JaniceGallery gallery);</code></pre>
+
+
+<h4 id="JaniceGalleryPrepareThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceGalleryPrepareParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gallery</td>
+<td><a href="../typedefs/#JaniceGallery">JaniceGallery</a></td>
+<td>A gallery object to prepare</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceGalleryPrepareExample">Example</h4>
+<pre class="code"><code>JaniceTemplate* tmpls; // Where tmpls is a valid array of valid template
+                       // objects created previously
+JaniceTemplateIds ids; // Where ids is a valid array of unique unsigned integers that
+                       // is the same length as tmpls
+JaniceTemplate tmpl; // Where tmpl is a valid template object created
+                     // previously
+JaniceTemplateId id; // Where id is a unique integer id to associate with tmpl.
+
+JaniceGallery gallery = NULL; // best practice to initialize to NULL
+
+if (janice_create_gallery(tmpls, ids, &amp;gallery) != JANICE_SUCCESS)
+    // ERROR!
+
+// It is valid to run search without calling prepare
+if (janice_search(tmpl, gallery ... ) != JANICE_SUCCESS)
+    // ERROR!
+
+// Prepare can be called after search
+if (janice_gallery_prepare(gallery) != JANICE_SUCCESS)
+    // ERROR!
+
+// Search can be called again right after prepare
+if (janice_search(tmpl, gallery ... ) != JANICE_SUCCESS)
+    // ERROR!
+
+// Insert another template into the gallery. This is valid after the gallery
+// has been prepared
+if (janice_gallery_insert(gallery, tmpl, 112) != JANICE_SUCCESS)
+    // ERROR!
+
+// Prepare the gallery again
+if (janice_gallery_prepare(gallery) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+
+
+<h2 id="JaniceSerializeGallery">janice_serialize_gallery</h2>
+<p>Serialize a <a href="../typedefs/#JaniceGallery">JaniceGallery</a> object to a flat buffer.</p>
+<h4 id="JaniceSerializeGallerySignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_serialize_gallery(JaniceConstGallery gallery,
+                                                   JaniceBuffer* data,
+                                                   size_t* len);</code></pre>
+
+
+<h4 id="JaniceSerializeGalleryThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceSerializeGalleryParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gallery</td>
+<td><a href="../typedefs/#JaniceConstGallery">JaniceConstGallery</a></td>
+<td>A gallery object to serialize</td>
+</tr>
+<tr>
+<td>data</td>
+<td><a href="../../io/typedefs/#JaniceBuffer">JaniceBuffer</a></td>
+<td>An uninitialized buffer to hold the flattened data.</td>
+</tr>
+<tr>
+<td>len</td>
+<td>size_t*</td>
+<td>The length of the flat buffer after it is filled.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceSerializeGalleryExample">Example</h4>
+<pre class="code"><code>JaniceGallery gallery; // Where gallery is a valid gallery created
+                       // previously.
+
+JaniceBuffer buffer = NULL;
+size_t buffer_len;
+janice_serialize_gallery(gallery, &amp;buffer, &amp;buffer_len);</code></pre>
+
+
+<h2 id="JaniceDeserializeGallery">janice_deserialize_gallery</h2>
+<p>Deserialize a <a href="../typedefs/#JaniceGallery">JaniceGallery</a> object from a flat buffer.</p>
+<h4 id="JaniceDeserializeGallerySignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_deserialize_gallery(const JaniceBuffer data,
+                                                     size_t len,
+                                                     JaniceGallery* gallery);</code></pre>
+
+
+<h4 id="JaniceDeserializeGalleryThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="parameters_1">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td>const <a href="../../io/typedefs/#JaniceBuffer">JaniceBuffer</a></td>
+<td>A buffer containing data from a flattened gallery object.</td>
+</tr>
+<tr>
+<td>len</td>
+<td>size_t</td>
+<td>The length of the flat buffer</td>
+</tr>
+<tr>
+<td>gallery</td>
+<td><a href="../typedefs/#JaniceGallery">JaniceGallery*</a></td>
+<td>An uninitialized gallery object.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="example_1">Example</h4>
+<pre class="code"><code>const size_t buffer_len = K; // Where K is the known length of the buffer
+unsigned char buffer[buffer_len];
+
+FILE* file = fopen(&quot;serialized.gallery&quot;, &quot;r&quot;);
+fread(buffer, 1, buffer_len, file);
+
+JaniceGallery gallery = NULL; // best practice to initialize to NULL
+janice_deserialize_gallery(buffer, buffer_len, gallery);
+
+fclose(file);</code></pre>
+
+
+<h2 id="JaniceReadGallery">janice_read_gallery</h2>
+<p>Read a gallery from a file on disk. This method is functionally equivalent
+to the following-</p>
+<pre class="code"><code>const size_t buffer_len = K; // Where K is the known length of the buffer
+JaniceBuffer buffer[buffer_len];
+
+FILE* file = fopen(&quot;serialized.gallery&quot;, &quot;r&quot;);
+fread(buffer, 1, buffer_len, file);
+
+JaniceGallery gallery = NULL; // best practice to initialize to NULL
+janice_deserialize_gallery(buffer, buffer_len, gallery);
+
+fclose(file);</code></pre>
+
+
+<p>It is provided for memory efficiency and ease of use when reading from disk.</p>
+<h4 id="JaniceReadGallerySignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_read_gallery(const char* filename,
+                                              JaniceGallery* gallery);</code></pre>
+
+
+<h4 id="JaniceReadGalleryThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceReadGalleryParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>filename</td>
+<td>const char*</td>
+<td>The path to a file on disk</td>
+</tr>
+<tr>
+<td>gallery</td>
+<td><a href="../typedefs/#JaniceGallery">JaniceGallery*</a></td>
+<td>An uninitialized gallery object.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceReadGalleryExample">Example</h4>
+<pre class="code"><code>JaniceGallery gallery = NULL;
+if (janice_read_gallery(&quot;example.gallery&quot;, &amp;gallery) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+
+
+<h2 id="JaniceWriteGallery">janice_write_gallery</h2>
+<p>Write a gallery to a file on disk. This method is functionally equivalent
+to the following-</p>
+<pre class="code"><code>JaniceGallery gallery; // Where gallery is a valid gallery created previously.
+
+JaniceBuffer buffer = NULL;
+size_t buffer_len;
+janice_serialize_gallery(gallery, &amp;buffer, &amp;buffer_len);
+
+FILE* file = fopen(&quot;serialized.gallery&quot;, &quot;w+&quot;);
+fwrite(buffer, 1, buffer_len, file);
+
+fclose(file);</code></pre>
+
+
+<p>It is provided for memory efficiency and ease of use when writing to disk.</p>
+<h4 id="JaniceWriteGallerySignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_write_gallery(JaniceConstGallery gallery,
+                                               const char* filename);</code></pre>
+
+
+<h4 id="JaniceWriteGalleryThreadSafety">ThreadSafety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceWriteGalleryParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gallery</td>
+<td><a href="../typedefs/#JaniceConstGallery">JaniceConstGallery</a></td>
+<td>The gallery object to write to disk</td>
+</tr>
+<tr>
+<td>filename</td>
+<td>const char*</td>
+<td>The path to a file on disk</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceWriteGalleryExample">Example</h4>
+<pre class="code"><code>JaniceGallery gallery; // Where gallery is a valid gallery created previously
+if (janice_write_gallery(gallery, &quot;example.gallery&quot;) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+
+
+<h2 id="JaniceFreeGallery">janice_free_gallery</h2>
+<p>Free any memory associated with a <a href="../structs/#JaniceGalleryType">JaniceGalleryType</a> object.</p>
+<h4 id="JaniceFreeGallerySignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_gallery(JaniceGallery* gallery);</code></pre>
+
+
+<h4 id="JaniceFreeGalleryThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceFreeGalleryParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gallery</td>
+<td><a href="../typedefs/#JaniceGallery">JaniceGallery*</a></td>
+<td>A gallery object to free. Best practice dictates the pointer should be set to <code>NULL</code> after it is freed.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceFreeGalleryExample">Example</h4>
+<pre class="code"><code>JaniceGallery gallery; // Where gallery is a valid gallery object created previously
+if (janice_free_gallery(&amp;gallery) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../comparison/overview/" class="btn btn-neutral float-right" title="Overview">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../typedefs/" class="btn btn-neutral" title="Typedefs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../typedefs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../comparison/overview/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../../js/theme.js"></script>
+
+</body>
+</html>

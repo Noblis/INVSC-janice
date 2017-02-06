@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Noblis">
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>Functions - JanICE</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Functions";
+    var mkdocs_page_input_path = "api/clustering/functions.md";
+    var mkdocs_page_url = "/api/clustering/functions/";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> JanICE</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Overview</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+        <li><span>API</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../software_concepts/">Software Concepts</a>
+        
+    </li>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Miscellaneous</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../misc/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Error Handling</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/enums/">Enums</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>I/O</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Detection</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Enrollment</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/enums/">Enums</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Gallery</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Comparison</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Clustering</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Functions</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#janice_cluster_media">janice_cluster_media</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceClusterTemplates">janice_cluster_templates</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceFreeMediaClusterItems">janice_free_media_cluster_items</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceFreeTemplateClusterItems">janice_free_template_cluster_items</a></li>
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+        <li><span>Interfaces</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/cpp/">C++</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/python/">Python</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/csharp/">C#</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/java/">Java</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../LICENSE/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">JanICE</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>API &raquo;</li>
+        
+      
+        
+          <li>Clustering &raquo;</li>
+        
+      
+    
+    <li>Functions</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Noblis/janice/edit/master/docs/api/clustering/functions.md"
+          class="icon icon-github"> Edit on Github</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="janice_cluster_media">janice_cluster_media</h2>
+<p>Cluster a collection of media objects into groups. Each media object may
+contain 0 or more objects of interest. To distinguish between these objects
+the output cluster contains an object location.</p>
+<h4 id="JaniceClusterMediaSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_cluster_media(JaniceConstMedias input,
+                                               const JaniceMediaIds input_ids,
+                                               uint32_t num_inputs,
+                                               uint32_t hint,
+                                               JaniceMediaClusterItems* clusters,
+                                               uint32_t* num_clusters);</code></pre>
+
+
+<h4 id="JaniceClusterMediaThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceClusterMediaHint">Hint</h4>
+<p>Clustering is generally considered to be an ill-defined problem, and most
+algorithms require some help determining the appropriate number of clusters.
+The hint parameter helps influence the number of clusters, though the
+implementation is free to ignore it. The goal of the hint is to provide user
+input for two use cases:</p>
+<ol>
+<li>If the hint is between 0 - 1 it should be regarded as a purity requirement for the algorithm. A 1 indicates the user wants perfectly pure clusters, even if that means more clusters are returned. A 0 indicates that the user wants very few clusters returned and accepts there may be some errors.</li>
+<li>If the hint is &gt; 1 it represents an estimated upper bound on the number of object types in the set.</li>
+</ol>
+<h4 id="JaniceClusterMediaParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>input</td>
+<td><a href="../../io/typedefs/#JaniceConstMedias">JaniceConstMedias</a></td>
+<td>An array of media objects to cluster</td>
+</tr>
+<tr>
+<td>input_ids</td>
+<td>const <a href="../typedefs/#JaniceMediaIds">JaniceMediaIds</a></td>
+<td>An array of unique identifiers for the input objects. This array must be the same size as <em>input</em> and the <em>ith</em> id corresponds to the <em>ith</em> media object in the input.</td>
+</tr>
+<tr>
+<td>num_inputs</td>
+<td>uint32_t</td>
+<td>The size of both the input and input_ids arrays.</td>
+</tr>
+<tr>
+<td>hint</td>
+<td>uint32_t</td>
+<td>A <a href="#JaniceClusterMediaHint">hint</a> to the clustering algorithm.</td>
+</tr>
+<tr>
+<td>clusters</td>
+<td><a href="../typedefs/#JaniceMediaClusterItems">JaniceMediaClusterItems*</a></td>
+<td>An uninitialized array to hold the cluster output.</td>
+</tr>
+<tr>
+<td>num_clusters</td>
+<td>uint32_t*</td>
+<td>The size of the <em>clusters</em> array.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceClusterTemplates">janice_cluster_templates</h2>
+<p>Cluster a collection of template objects into groups.</p>
+<h4 id="JaniceClusterTemplatesSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_cluster_templates(JaniceConstTemplates input,
+                                                   const JaniceTemplateIds input_ids,
+                                                   uint32_t num_inputs,
+                                                   uint32_t hint,
+                                                   JaniceTemplateClusterItems* clusters,
+                                                   uint32_t* num_clusters);</code></pre>
+
+
+<h4 id="JaniceClusterTemplatesThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceClusterTemplatesParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>input</td>
+<td><a href="../../enrollment/typedefs/#JaniceConstTemplates">JaniceConstTemplates</a></td>
+<td>An array of template objects to cluster</td>
+</tr>
+<tr>
+<td>input_ids</td>
+<td>const <a href="../../gallery/typedefs/#JaniceMediaIds">JaniceTemplateIds</a></td>
+<td>An array of unique identifiers for the input objects. This array must be the same size as <em>input</em> and the <em>ith</em> id corresponds to the <em>ith</em> media object in the input.</td>
+</tr>
+<tr>
+<td>num_inputs</td>
+<td>uint32_t</td>
+<td>The size of both the input and input_ids arrays.</td>
+</tr>
+<tr>
+<td>hint</td>
+<td>uint32_t</td>
+<td>A <a href="#JaniceClusterMediaHint">hint</a> to the clustering algorithm.</td>
+</tr>
+<tr>
+<td>clusters</td>
+<td><a href="../typedefs/#JaniceTemplateClusterItems">JaniceTemplateClusterItems*</a></td>
+<td>An uninitialized array to hold the cluster output.</td>
+</tr>
+<tr>
+<td>num_clusters</td>
+<td>uint32_t*</td>
+<td>The size of the <em>clusters</em> array.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceFreeMediaClusterItems">janice_free_media_cluster_items</h2>
+<p>Free any memory associated with a <a href="../typedefs/#JaniceMediaClusterItems">JaniceMediaClusterItems</a> object.</p>
+<h4 id="JaniceFreeMediaClusterItemsSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_media_cluster_items(JaniceMediaClusterItems* clusters);</code></pre>
+
+
+<h4 id="JaniceFreeMediaClusterItemsThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceFreeMediaClusterItemsParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clusters</td>
+<td><a href="../typedefs/#JaniceMediaClusterItems">JaniceMediaClusterItems*</a></td>
+<td>The object to free</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceFreeTemplateClusterItems">janice_free_template_cluster_items</h2>
+<p>Free any memory associated with a <a href="../typedefs/#JaniceTemplateClusterItems">JaniceTemplateClusterItems</a> object.</p>
+<h4 id="JaniceFreeTemplateClusterItemsSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_template_cluster_items(JaniceTemplateClusterItems* clusters);</code></pre>
+
+
+<h4 id="JaniceFreeTemplateClusterItemsThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceFreeTemplateClusterItemsParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clusters</td>
+<td><a href="../typedefs/#JaniceTemplateClusterItems">JaniceTemplateClusterItems*</a></td>
+<td>The object to free</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../../interfaces/cpp/" class="btn btn-neutral float-right" title="C++">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../typedefs/" class="btn btn-neutral" title="Typedefs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../typedefs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../../interfaces/cpp/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../../js/theme.js"></script>
+
+</body>
+</html>

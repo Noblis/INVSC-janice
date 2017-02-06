@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Noblis">
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>Functions - JanICE</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Functions";
+    var mkdocs_page_input_path = "api/enrollment/functions.md";
+    var mkdocs_page_url = "/api/enrollment/functions/";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> JanICE</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Overview</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+        <li><span>API</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../software_concepts/">Software Concepts</a>
+        
+    </li>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Miscellaneous</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../misc/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Error Handling</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/enums/">Enums</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>I/O</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Detection</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Enrollment</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../enums/">Enums</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Functions</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#JaniceCreateTemplate">janice_create_template</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceTemplateGetAttribute">janice_template_get_attribute</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceSerializeTemplate">janice_serialize_template</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceDeserializeTemplate">janice_deserialize_template</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceReadTemplate">janice_read_template</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceWriteTemplate">janice_write_template</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceFreeTemplate">janice_free_template</a></li>
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Gallery</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Comparison</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Clustering</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+        <li><span>Interfaces</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/cpp/">C++</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/python/">Python</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/csharp/">C#</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/java/">Java</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../LICENSE/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">JanICE</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>API &raquo;</li>
+        
+      
+        
+          <li>Enrollment &raquo;</li>
+        
+      
+    
+    <li>Functions</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Noblis/janice/edit/master/docs/api/enrollment/functions.md"
+          class="icon icon-github"> Edit on Github</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="JaniceCreateTemplate">janice_create_template</h2>
+<p>Create a <a href="../typedefs/#JaniceTemplate">JaniceTemplate</a> object from an array of detections.</p>
+<h4 id="JaniceCreateTemplateSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_create_template(JaniceConstDetections detections,
+                                                 uint32_t num_detections,
+                                                 JaniceEnrollmentType role,
+                                                 JaniceTemplate* tmpl);</code></pre>
+
+
+<h4 id="JaniceCreateTemplateThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceCreateTemplateParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>detections</td>
+<td><a href="../../detection/typedefs/#JaniceConstDetections">JaniceConstDetections</a></td>
+<td>An array of detection objects</td>
+</tr>
+<tr>
+<td>num_detections</td>
+<td>uint32_t</td>
+<td>The number of input detections</td>
+</tr>
+<tr>
+<td>role</td>
+<td><a href="../enums/#JaniceEnrollmentType">JaniceEnrollmentType</a></td>
+<td>The use case for the template</td>
+</tr>
+<tr>
+<td>tmpl</td>
+<td><a href="../typedefs/#JaniceTemplate">JaniceTemplate*</a></td>
+<td>An uninitialized template object.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceCreateTemplateExample">Example</h4>
+<pre class="code"><code>JaniceDetections detections; // Where detections is a valid array of valid
+                             // detection objects created previously
+const uint32_t num_detections = K; // Where K is the number of detections in
+                                   // the detections array
+JaniceEnrollmentType role = Janice1NProbe; // This template will be used as a
+                                           // probe in 1-N search
+JaniceTemplate tmpl = NULL; // Best practice to initialize to NULL
+
+if (janice_create_template(detections, num_detections, rolw, &amp;tmpl) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+
+
+<h2 id="JaniceTemplateGetAttribute">janice_template_get_attribute</h2>
+<p>Get a metadata value from a template using a key string. The valid set of keys
+is determined by the implementation and must be included in their delivered
+documentation. The possible return values for a valid key are also
+implementation specific. Invalid keys should return an error.</p>
+<h4 id="JaniceTemplateGetAttributeSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_template_get_attribute(JaniceConstTemplate tmpl,
+                                                        const char* attribute,
+                                                        char** value);</code></pre>
+
+
+<h4 id="JaniceTemplateGetAttributeThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceTemplateGetAttributeParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tmpl</td>
+<td><a href="../typedefs/#JaniceConstTemplate">JaniceConstTemplate</a></td>
+<td>A template object to query the attribute from</td>
+</tr>
+<tr>
+<td>attribute</td>
+<td>const char*</td>
+<td>The name of the attribute to query</td>
+</tr>
+<tr>
+<td>value</td>
+<td>char**</td>
+<td>An uninitialized pointer to hold the attribute value. The return value must be null-terminated.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceSerializeTemplate">janice_serialize_template</h2>
+<p>Serialize a <a href="../typedefs/#JaniceTemplate">JaniceTemplate</a> object to a flat buffer.</p>
+<h4 id="JaniceSerializeTemplateSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_serialize_template(JaniceConstTemplate tmpl,
+                                                    JaniceBuffer* data,
+                                                    size_t* len);</code></pre>
+
+
+<h4 id="JaniceSerializeTemplateThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceSerializeTemplateParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tmpl</td>
+<td><a href="../typedefs/#JaniceConstTemplate">JaniceConstTemplate</a></td>
+<td>A template object to serialize</td>
+</tr>
+<tr>
+<td>data</td>
+<td><a href="../../io/typedefs/#JaniceBuffer">JaniceBuffer*</a></td>
+<td>An uninitialized buffer to hold the flattened data.</td>
+</tr>
+<tr>
+<td>len</td>
+<td>size_t*</td>
+<td>The length of the flat buffer after it is filled.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceSerializeTemplateExample">Example</h4>
+<pre class="code"><code>JaniceTemplate tmpl; // Where tmpl is a valid template created
+                     // previously.
+
+JaniceBuffer buffer = NULL;
+size_t buffer_len;
+janice_serialize_template(tmpl, &amp;buffer, &amp;buffer_len);</code></pre>
+
+
+<h2 id="JaniceDeserializeTemplate">janice_deserialize_template</h2>
+<p>Deserialize a <a href="../typedefs/#JaniceTemplate">JaniceTemplate</a> object from a flat buffer.</p>
+<h4 id="JaniceDeserializeTemplateSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_deserialize_template(const JaniceBuffer data,
+                                                      size_t len,
+                                                      JaniceTemplate* tmpl);</code></pre>
+
+
+<h4 id="JaniceDeserializeTemplateThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>data</td>
+<td>const <a href="../../io/typedefs/#JaniceBuffer">JaniceBuffer</a></td>
+<td>A buffer containing data from a flattened template object.</td>
+</tr>
+<tr>
+<td>len</td>
+<td>size_t</td>
+<td>The length of the flat buffer</td>
+</tr>
+<tr>
+<td>tmpl</td>
+<td><a href="../typedefs/#JaniceTemplate">JaniceTemplate*</a></td>
+<td>An uninitialized template object.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="example">Example</h4>
+<pre class="code"><code>const size_t buffer_len = K; // Where K is the known length of the buffer
+JaniceBuffer buffer[buffer_len];
+
+FILE* file = fopen(&quot;serialized.template&quot;, &quot;r&quot;);
+fread(buffer, 1, buffer_len, file);
+
+JaniceTemplate tmpl = NULL; // best practice to initialize to NULL
+janice_deserialize_template(buffer, buffer_len, tmpl);
+
+fclose(file);</code></pre>
+
+
+<h2 id="JaniceReadTemplate">janice_read_template</h2>
+<p>Read a template from a file on disk. This method is functionally equivalent
+to the following-</p>
+<pre class="code"><code>const size_t buffer_len = K; // Where K is the known length of the buffer
+JaniceBuffer buffer[buffer_len];
+
+FILE* file = fopen(&quot;serialized.template&quot;, &quot;r&quot;);
+fread(buffer, 1, buffer_len, file);
+
+JaniceTemplate tmpl = nullptr;
+janice_deserialize_template(buffer, buffer_len, tmpl);
+
+fclose(file);</code></pre>
+
+
+<p>It is provided for memory efficiency and ease of use when reading from disk.</p>
+<h4 id="JaniceReadTemplateSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_read_template(const char* filename,
+                                               JaniceTemplate* tmpl);</code></pre>
+
+
+<h4 id="JaniceReadTemplateThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceReadTemplateParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>filename</td>
+<td>const char*</td>
+<td>The path to a file on disk</td>
+</tr>
+<tr>
+<td>tmpl</td>
+<td><a href="../typedefs/#JaniceTemplate">JaniceTemplate*</a></td>
+<td>An uninitialized template object.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceReadTemplateExample">Example</h4>
+<pre class="code"><code>JaniceTemplate tmpl = NULL;
+if (janice_read_template(&quot;example.template&quot;, &amp;tmpl) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+
+
+<h2 id="JaniceWriteTemplate">janice_write_template</h2>
+<p>Write a template to a file on disk. This method is functionally equivalent
+to the following-</p>
+<pre class="code"><code>JaniceTemplate tmpl; // Where tmpl is a valid template created
+                     // previously.
+
+JaniceBuffer buffer = NULL;
+size_t buffer_len;
+janice_serialize_template(tmpl, &amp;buffer, &amp;buffer_len);
+
+FILE* file = fopen(&quot;serialized.template&quot;, &quot;w+&quot;);
+fwrite(buffer, 1, buffer_len, file);
+
+fclose(file);</code></pre>
+
+
+<p>It is provided for memory efficiency and ease of use when writing to disk.</p>
+<h4 id="JaniceWriteTemplateSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_write_template(JaniceConstTemplate tmpl,
+                                                const char* filename);</code></pre>
+
+
+<h4 id="JaniceWriteTemplateThreadSafety">ThreadSafety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceWriteTemplateParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tmpl</td>
+<td><a href="../typedefs/#JaniceConstTemplate">JaniceConstTemplate</a></td>
+<td>The template object to write to disk</td>
+</tr>
+<tr>
+<td>filename</td>
+<td>const char*</td>
+<td>The path to a file on disk</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceWriteTemplateExample">Example</h4>
+<pre class="code"><code>JaniceTemplate tmpl; // Where tmpl is a valid template created
+                     // previously
+if (janice_write_template(tmpl, &quot;example.template&quot;) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+
+
+<h2 id="JaniceFreeTemplate">janice_free_template</h2>
+<p>Free any memory associated with a <a href="../structs/#JaniceTemplateType">JaniceTemplateType</a> object.</p>
+<h4 id="JaniceFreeTemplateSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_template(JaniceTemplate* tmpl);</code></pre>
+
+
+<h4 id="JaniceFreeTemplateThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceFreeTemplateParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tmpl</td>
+<td><a href="../structs/#JaniceTemplateType">JaniceTemplate*</a></td>
+<td>A template object to free. Best practice dictates the pointer should be set to <code>NULL</code> after it is freed.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceFreeTemplateExample">Example</h4>
+<pre class="code"><code>JaniceTemplate tmpl; // Where tmpl is a valid template object created previously
+if (janice_free_template(&amp;tmpl) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../gallery/overview/" class="btn btn-neutral float-right" title="Overview">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../typedefs/" class="btn btn-neutral" title="Typedefs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../typedefs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../gallery/overview/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../../js/theme.js"></script>
+
+</body>
+</html>

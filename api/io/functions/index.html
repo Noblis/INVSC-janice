@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Noblis">
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>Functions - JanICE</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Functions";
+    var mkdocs_page_input_path = "api/io/functions.md";
+    var mkdocs_page_url = "/api/io/functions/";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> JanICE</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Overview</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+        <li><span>API</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../software_concepts/">Software Concepts</a>
+        
+    </li>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Miscellaneous</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../misc/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Error Handling</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/enums/">Enums</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>I/O</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Functions</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#JaniceCreateImage">janice_create_image</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceCreateImageFromBuffer">janice_create_image_from_buffer</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceImageAccess">janice_image_access</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceFreeImage">janice_free_image</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceMediaItNext">janice_media_it_next</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceMediaItSeek">janice_media_it_seek</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceMediaItGet">janice_media_it_get</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceMediaItTell">janice_media_it_tell</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceFreeMediaIterator">janice_free_media_iterator</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceCreateMedia">janice_create_media</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceMediaGetIterator">janice_media_get_iterator</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceFreeMedia">janice_free_media</a></li>
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Detection</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Enrollment</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/enums/">Enums</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Gallery</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Comparison</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../comparison/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Clustering</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+        <li><span>Interfaces</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/cpp/">C++</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/python/">Python</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/csharp/">C#</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/java/">Java</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../LICENSE/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">JanICE</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>API &raquo;</li>
+        
+      
+        
+          <li>I/O &raquo;</li>
+        
+      
+    
+    <li>Functions</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Noblis/janice/edit/master/docs/api/io/functions.md"
+          class="icon icon-github"> Edit on Github</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="JaniceCreateImage">janice_create_image</h2>
+<p>Create an image with the provided dimensions. This function should allocate and
+own its data buffer.</p>
+<h4 id="JaniceCreateImageSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_create_image(uint32_t channels,
+                                              uint32_t rows,
+                                              uint32_t cols,
+                                              JaniceImage* image);</code></pre>
+
+
+<h4 id="JaniceCreateImageThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceCreateImageParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>channels</td>
+<td>uint32_t</td>
+<td>The number of channels the image should have</td>
+</tr>
+<tr>
+<td>rows</td>
+<td>uint32_t</td>
+<td>The number of rows the image should have</td>
+</tr>
+<tr>
+<td>cols</td>
+<td>uint32_t</td>
+<td>The number of columns the image should have</td>
+</tr>
+<tr>
+<td>image</td>
+<td><a href="../typedefs/#JaniceImage">JaniceImage*</a></td>
+<td>An uninitialized pointer to an image object</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceCreateImageFromBuffer">janice_create_image_from_buffer</h2>
+<p>Create an image with the provided dimensions and data. The image should borrow
+the data not own it.</p>
+<h4 id="JaniceCreateImageFromBufferSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_create_image_from_buffer(uint32_t channels,
+                                                          uint32_t rows,
+                                                          uint32_t cols,
+                                                          const JaniceBuffer data,
+                                                          JaniceImage* image);</code></pre>
+
+
+<h4 id="JaniceCreateImageFromBufferThreadSafety">Thread Safety</h4>
+<p>This function is reentrant</p>
+<h4 id="JaniceCreateImageFromBufferParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>channels</td>
+<td>uint32_t</td>
+<td>The number of channels the image should have</td>
+</tr>
+<tr>
+<td>rows</td>
+<td>uint32_t</td>
+<td>The number of rows the image should have</td>
+</tr>
+<tr>
+<td>cols</td>
+<td>uint32_t</td>
+<td>The number of columns the image should have</td>
+</tr>
+<tr>
+<td>data</td>
+<td><a href="../typedefs/#JaniceBuffer">JaniceBuffer</a></td>
+<td>An array of data the image should use. The array must have length equal to channels * rows * cols and be contiguous and describe image data in row-major order</td>
+</tr>
+<tr>
+<td>image</td>
+<td><a href="../typedefs/#JaniceImage">JaniceImage</a></td>
+<td>An uninitialized pointer to an image object.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceImageAccess">janice_image_access</h2>
+<p>Get a pixel value at a given row, column and channel.</p>
+<h4 id="JaniceImageAccessSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_image_access(JaniceConstImage image,
+                                              uint32_t channel,
+                                              uint32_t row,
+                                              uint32_t col,
+                                              uint8_t* value);</code></pre>
+
+
+<h4 id="JaniceImageAccessThreadSafety">Thread Safety</h4>
+<p>This function is reentrant</p>
+<h4 id="JaniceImageAccessParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>image</td>
+<td><a href="../typedefs/#JaniceConstImage">JaniceConstImage</a></td>
+<td>An image object</td>
+</tr>
+<tr>
+<td>channel</td>
+<td>uint32_t</td>
+<td>The channel to access. Must be less than image-&gt;channels.</td>
+</tr>
+<tr>
+<td>row</td>
+<td>uint32_t</td>
+<td>The row to access. Must be less than image-&gt;rows.</td>
+</tr>
+<tr>
+<td>col</td>
+<td>uint32_t</td>
+<td>The column to access. Must be less that image-&gt;cols.</td>
+</tr>
+<tr>
+<td>value</td>
+<td>uint8_t*</td>
+<td>A container for the value at the given index.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceFreeImage">janice_free_image</h2>
+<p>Free any memory associated with a <a href="../typedefs/#JaniceImage">JaniceImage</a>.</p>
+<h4 id="JaniceFreeImageSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_image(JaniceImage* image);</code></pre>
+
+
+<h4 id="JaniceFreeImageThreadSafety">Thread Safety</h4>
+<p>This function is reentrant</p>
+<h4 id="JaniceFreeImageParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>image</td>
+<td><a href="../typedefs/#JaniceImage">JaniceImage*</a></td>
+<td>An image object to free</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceMediaItNext">janice_media_it_next</h2>
+<p>Get the next frame or load the image from a media iterator.</p>
+<h4 id="JaniceMediaItNextSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_media_it_next(JaniceMediaIterator it,
+                                               JaniceImage* image);</code></pre>
+
+
+<h4 id="JaniceMediaItNextThreadSafety">Thread Safety</h4>
+<p>This function is reentrant</p>
+<h4 id="JaniceMediaItNextParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>it</td>
+<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator</a></td>
+<td>A media iterator object to query</td>
+</tr>
+<tr>
+<td>image</td>
+<td><a href="../typedefs/#JaniceImage">JaniceImage*</a></td>
+<td>An uninitialized pointer to an image object to hold the next frame or image</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceMediaItSeek">janice_media_it_seek</h2>
+<p>Seek to a provided frame. Seek should work such that a successive call to
+<a href="#JaniceMediaItNext">next</a> returns the frame at the index provided to seek.</p>
+<h4 id="JaniceMediaItSeekSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_media_it_seek(JaniceMediaIterator it,
+                                               uint32_t frame);</code></pre>
+
+
+<h4 id="JaniceMediaItSeekThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceMediaItSeekParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>it</td>
+<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator</a></td>
+<td>A media iterator object to seek in</td>
+</tr>
+<tr>
+<td>frame</td>
+<td>uint32_t</td>
+<td>The frame to seek to. It must be less than the total number of frames in the video.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceMediaItGet">janice_media_it_get</h2>
+<p>Get a specified frame from a media object. This method should be functionally
+equivalent to calling <code>janice_media_it_seek(frame)</code> followed by
+<code>janice_media_it_next(image)</code>.</p>
+<h4 id="JaniceMediaItGetSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_media_it_get(JaniceMediaIterator it,
+                                              JaniceImage* image,
+                                              uint32_t frame);</code></pre>
+
+
+<h4 id="JaniceMediaItGetThreadSafety">Thread Safety</h4>
+<p>This function is reentrant</p>
+<h4 id="JaniceMediaItGetParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>it</td>
+<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator</a></td>
+<td>A media iterator object to get a frame from</td>
+</tr>
+<tr>
+<td>image</td>
+<td><a href="../typedefs/#JaniceImage">JaniceImage*</a></td>
+<td>An uninitialized image object to hold the frame or image</td>
+</tr>
+<tr>
+<td>frame</td>
+<td>uint32_t</td>
+<td>The index of the frame to get. This must be less than the number of frames in the video.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceMediaItTell">janice_media_it_tell</h2>
+<p>Get the current frame position of a media object.</p>
+<h4 id="JaniceMediaItTellSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_media_it_tell(JaniceMediaIterator it,
+                                               uint32_t* frame);</code></pre>
+
+
+<h4 id="JaniceMediaItTellThreadSafety">Thread Safety</h4>
+<p>This function is reentrant</p>
+<h4 id="JaniceMediaItTellParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>it</td>
+<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator</a></td>
+<td>A media object to get the current frame position from</td>
+</tr>
+<tr>
+<td>frame</td>
+<td>uint32_t*</td>
+<td>A container to hold the queried frame value</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceFreeMediaIterator">janice_free_media_iterator</h2>
+<p>Free any memory associated with a <a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator</a>.</p>
+<h4 id="JaniceFreeMediaIteratorSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_media_iterator(JaniceMediaIterator* it);</code></pre>
+
+
+<h4 id="JaniceFreeMediaIteratorThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceFreeMediaIteratorParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>it</td>
+<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator*</a></td>
+<td>An iterator object to free</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceCreateMedia">janice_create_media</h2>
+<p>Create a media object from a file</p>
+<h4 id="JaniceCreateMediaSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_create_media(const char* filename,
+                                              JaniceMedia* media);</code></pre>
+
+
+<h4 id="JaniceCreateMediaThreadSafety">Thread Safety</h4>
+<p>This function is reentrant</p>
+<h4 id="JaniceCreateMediaParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>filename</td>
+<td>const char*</td>
+<td>A path to a file on disk</td>
+</tr>
+<tr>
+<td>media</td>
+<td><a href="../typedefs/#JaniceMedia">JaniceMedia*</a></td>
+<td>An uninitialized pointer to a media object</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceMediaGetIterator">janice_media_get_iterator</h2>
+<p>Get an iterator from a media object.</p>
+<h4 id="JaniceMediaGetIteratorSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_media_get_iterator(JaniceConstMedia media,
+                                                    JaniceMediaIterator* it);</code></pre>
+
+
+<h4 id="JaniceMediaGetIteratorThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceMediaGetIteratorParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>media</td>
+<td><a href="../typedefs/#JaniceConstMemo">JaniceConstMedia</a></td>
+<td>A media object to get an iterator from</td>
+</tr>
+<tr>
+<td>it</td>
+<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator*</a></td>
+<td>An uninitialized iterator object.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceFreeMedia">janice_free_media</h2>
+<p>Free any memory associated with a <a href="../typedefs/#JaniceMedia">JaniceMedia</a>.</p>
+<h4 id="JaniceFreeMediaSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_media(JaniceMedia* media);</code></pre>
+
+
+<h4 id="JaniceFreeMediaThreadSafety">Thread Safety</h4>
+<p>This function is reentrant</p>
+<h4 id="JaniceFreeMediaParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>media</td>
+<td><a href="../typedefs/#JaniceMedia">JaniceMedia*</a></td>
+<td>A media object to free</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../detection/overview/" class="btn btn-neutral float-right" title="Overview">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../typedefs/" class="btn btn-neutral" title="Typedefs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../typedefs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../detection/overview/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../../js/theme.js"></script>
+
+</body>
+</html>

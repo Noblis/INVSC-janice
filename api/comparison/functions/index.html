@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Noblis">
+  <link rel="shortcut icon" href="../../../img/favicon.ico">
+  <title>Functions - JanICE</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Functions";
+    var mkdocs_page_input_path = "api/comparison/functions.md";
+    var mkdocs_page_url = "/api/comparison/functions/";
+  </script>
+  
+  <script src="../../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../../.." class="icon icon-home"> JanICE</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../..">Overview</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+        <li><span>API</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../software_concepts/">Software Concepts</a>
+        
+    </li>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Miscellaneous</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../misc/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Error Handling</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/enums/">Enums</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../errors/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>I/O</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../io/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Detection</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../detection/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Enrollment</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/enums/">Enums</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../enrollment/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Gallery</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../gallery/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Comparison</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Functions</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#JaniceVerify">janice_verify</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceSearch">janice_search</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceFreeSimilarities">janice_free_similarities</a></li>
+            
+                <li class="toctree-l3"><a href="#JaniceFreeSearchIds">janice_free_search_ids</a></li>
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+
+        
+            
+    <ul class="subnav">
+        <li><span>Clustering</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/overview/">Overview</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/structs/">Structs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/typedefs/">Typedefs</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../clustering/functions/">Functions</a>
+        
+    </li>
+
+        
+    </ul>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+        <li><span>Interfaces</span></li>
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/cpp/">C++</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/python/">Python</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/csharp/">C#</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../../interfaces/java/">Java</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../../LICENSE/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../..">JanICE</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>API &raquo;</li>
+        
+      
+        
+          <li>Comparison &raquo;</li>
+        
+      
+    
+    <li>Functions</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/Noblis/janice/edit/master/docs/api/comparison/functions.md"
+          class="icon icon-github"> Edit on Github</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="JaniceVerify">janice_verify</h2>
+<p>Compare two templates with the difference expressed as a similarity score.</p>
+<h4 id="JaniceVerifySignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_verify(JaniceConstTemplate reference,
+                                        JaniceConstTemplate verification,
+                                        JaniceSimilarity* similarity);</code></pre>
+
+
+<h4 id="JaniceVerifyThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceVerifySimilarityScore">Similarity Score</h4>
+<p>This API expects that the comparison of two templates results in a single value
+that quantifies the similarity between them. A similarity score is constrained
+by the following requirements:</p>
+<pre class="code"><code>1. Higher scores indicate greater similarity
+2. Scores can be asymmetric. This mean verify(a, b) does not necessarily
+   equal verify(b, a)</code></pre>
+
+
+<h4 id="JaniceVerifyParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>reference</td>
+<td><a href="../../enrollment/typedefs/#JaniceConstTemplate">JaniceConstTemplate</a></td>
+<td>A reference template. This template was created with the <a href="../../enrollment/enums/#JaniceEnrollmentType">Janice11Reference</a> role.</td>
+</tr>
+<tr>
+<td>verification</td>
+<td><a href="../../enrollment/typedefs/#JaniceConstTemplate">JaniceConstTemplate</a></td>
+<td>A verification template. This template was created with the <a href="../../enrollment/enums/#JaniceEnrollmentType">Janice11Verification</a> role.</td>
+</tr>
+<tr>
+<td>similarity</td>
+<td><a href="../typedefs/#JaniceSimilarity">JaniceSimilarity</a>*</td>
+<td>A similarity score. See <a href="#JaniceVerifySimilarityScore">this section</a> for more information.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceVerifyExample">Example</h4>
+<pre class="code"><code>JaniceTemplate reference; // Where reference is a valid template object created
+                          // previously
+JaniceTemplate verification; // Where verification is a valid template object
+                             // created previously
+JaniceSimilarity similarity;
+if (janice_verify(reference, verification, &amp;similarity) != JANICE_SUCCESS)
+    // ERROR!</code></pre>
+
+
+<h2 id="JaniceSearch">janice_search</h2>
+<p>Compute 1-N search results between a query template object and a target gallery
+object. The function allocates two arrays of equal size, one containing
+<a href="#JaniceVerifySimilarityScore">similarity scores</a> and the other containing the
+unique id of the template the score was computed with (along with the query).
+Often it is desirable (and perhaps computationally efficient) to only see the
+top K scores out of N possible templates. The option to set a K is provided to
+the user as part of the function parameters.</p>
+<h4 id="JaniceSearchSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_search(JaniceConstTemplate probe,
+                                        JaniceConstGallery gallery,
+                                        uint32_t num_requested,
+                                        JaniceSimilarities* similarities,
+                                        JaniceSearchTemplateIds* ids,
+                                        uint32_t* num_returned);</code></pre>
+
+
+<h4 id="JaniceSearchThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceSearchParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>probe</td>
+<td><a href="../../enrollment/typedefs/#JaniceConstTemplate">JaniceConstTemplate</a></td>
+<td>A template object to use as a query</td>
+</tr>
+<tr>
+<td>gallery</td>
+<td><a href="../../gallery/typedefs/#JaniceConstGallery">JaniceConstGallery</a></td>
+<td>A gallery object to search against</td>
+</tr>
+<tr>
+<td>num_requested</td>
+<td>uint32_t</td>
+<td>The number of requested returns. If the user would like as many returns as there are templates in the gallery they can pass this parameter with the value 0.</td>
+</tr>
+<tr>
+<td>similarities</td>
+<td><a href="../typedefs/#JaniceSimilarities">JaniceSimilarities*</a></td>
+<td>An array of <a href="#JaniceVerifySimilarityScore">similarity scores</a>. The scores are expected to be sorted in descending order (i.e. the highest scores is stored at index 0).</td>
+</tr>
+<tr>
+<td>ids</td>
+<td><a href="../typedefs/#JaniceSearchTemplateIds">JaniceSearchTemplateIds*</a></td>
+<td>An array of unique ids identifying the target templates associated with the similarity scores. This array must be the same size as the similarities array. The <em>ith</em> id corresponds with the <em>ith</em> similarity.</td>
+</tr>
+<tr>
+<td>num_returned</td>
+<td>uint32_t*</td>
+<td>The number of elements in the similarities and ids arrays. This number can be different from <strong>num_requested</strong>.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="JaniceSearchExample">Example</h4>
+<pre class="code"><code>JaniceTemplate probe;  // Where probe is a valid template object created
+                       // previously
+JaniceGallery gallery; // Where gallery is a valid gallery object created
+                       // previously
+const uint32_t num_requested = 50; // Request the top 50 matches
+
+JaniceSimilarities similarities = NULL;
+JaniceSearchTemplateIds ids = NULL;
+uint32_t num_returned;
+
+// Run search
+if (janice_search(probe, gallery, num_requested, &amp;similarities, &amp;ids, &amp;num_returned) != JANICE_SUCCESS)
+    // ERROR!
+
+num_requested == num_returned; // This might not be true!</code></pre>
+
+
+<h2 id="JaniceFreeSimilarities">janice_free_similarities</h2>
+<p>Free any memory associated with a <a href="../typedefs/#JaniceSimilarities">JaniceSimilarities</a> object.</p>
+<h4 id="JaniceFreeSimilaritiesSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_similarities(JaniceSimilarities* similarities);</code></pre>
+
+
+<h4 id="JaniceFreeSimilaritiesThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceFreeSimilaritiesParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>similarities</td>
+<td><a href="../typedefs/#JaniceSimilarities">JaniceSimilarities*</a></td>
+<td>An array of similarities to free.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceFreeSearchIds">janice_free_search_ids</h2>
+<p>Free any memory associated with a <a href="../typedefs/#JaniceSearchTemplateIds">JaniceSearchTemplateIds</a> object.</p>
+<h4 id="JaniceFreeSearchIdsSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_search_ids(JaniceSearchTemplateIds* ids);</code></pre>
+
+
+<h4 id="JaniceFreeSearchIdsThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceFreeSearchIdsParamters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ids</td>
+<td><a href="../typedefs/#JaniceSearchTemplateIds">JaniceSearchTemplateIds*</a></td>
+<td>An array of ids to free.</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../clustering/overview/" class="btn btn-neutral float-right" title="Overview">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../typedefs/" class="btn btn-neutral" title="Typedefs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../typedefs/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../../clustering/overview/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../../js/theme.js"></script>
+
+</body>
+</html>
