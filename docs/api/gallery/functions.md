@@ -8,6 +8,7 @@ templates and unique ids.
 ```
 JANICE_EXPORT JaniceError janice_create_gallery(JaniceConstTemplates tmpls,
                                                 const JaniceTemplateIds ids,
+                                                uint32_t num_tmpls,
                                                 JaniceGallery* gallery);
 ```
 
@@ -17,11 +18,12 @@ This function is reentrant.
 
 #### Parameters {: #JaniceCreateGalleryParameters }
 
-Name    | Type                                                                   | Description
-------- | ---------------------------------------------------------------------- | -----------
-tmpls   | [JaniceConstTemplates](../enrollment/typedefs.md#JaniceConstTemplates) | An array of templates to add to the gallery
-ids     | const [JaniceTemplateIds](typedefs.md#JaniceTemplateIds)               | A set of unique identifiers to associate with the input templates. The *ith* id corresponds to the *ith* input template.
-gallery | [JaniceGallery\*](typedefs.md#JaniceGallery)                           | An uninitialized gallery object.
+Name      | Type                                                                   | Description
+--------- | ---------------------------------------------------------------------- | -----------
+tmpls     | [JaniceConstTemplates](../enrollment/typedefs.md#JaniceConstTemplates) | An array of templates to add to the gallery
+ids       | const [JaniceTemplateIds](typedefs.md#JaniceTemplateIds)               | A set of unique identifiers to associate with the input templates. The *ith* id corresponds to the *ith* input template.
+num_tmpls | uint32_t                                                               | The number of templates in the array.
+gallery   | [JaniceGallery\*](typedefs.md#JaniceGallery)                           | An uninitialized gallery object.
 
 #### Example {: #JaniceCreateGalleryExample }
 

@@ -164,6 +164,7 @@ typedef JaniceTemplateId* JaniceTemplateIds;
 // Functions
 JANICE_EXPORT JaniceError janice_create_gallery(JaniceConstTemplates tmpls,
                                                 const JaniceTemplateIds ids,
+                                                uint32_t num_tmpls,
                                                 JaniceGallery* gallery);
 
 JANICE_EXPORT JaniceError janice_gallery_insert(JaniceGallery gallery,

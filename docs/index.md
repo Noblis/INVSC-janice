@@ -15,15 +15,11 @@ There are plans to write interfaces for:
 * [*C#*](interfaces/csharp.md)
 * [*Java*](interfaces/java.md)
 
-## Sponsors
+## About
 
-This work is being sponsored by The Department of Homeland Security; Science and Technology Directorate.
-
-<div style="text-align:center">
+<div style="float:right; display:inline-block; margin-top:-80px">
     <img src="assets/dhs_logo_small.png" alt="DHS_S&T_logo">
 </div>
-
-## About
 
 Computer vision is a rapidly expanding and improving field that has seen significant
 progress in it's capabilities over the past decade. Government agencies can leverage
@@ -38,6 +34,8 @@ problems include:
 * Camera Identification
 
 Some function calls serve multiple use cases in different ways. In those cases the function documentation strives to clearly indicate the differences. If no differences are indicated it means that the function is universal in that it applies the same to each subproblem addressed by the API.
+
+This work is being sponsored by The Department of Homeland Security; Science and Technology Directorate.
 
 ## Focus Areas
 
