@@ -73,9 +73,16 @@ JANICE_EXPORT JaniceError janice_free_media_iterator(JaniceMediaIterator* it);
 // ----------------------------------------------------------------------------
 // Media
 
+enum JaniceMediaCategory
+{
+    Image,
+    Video
+};
+
 struct JaniceMediaType
 {
     char* filename;
+    JaniceMediaCategory category;
 
     uint32_t channels;
     uint32_t rows;

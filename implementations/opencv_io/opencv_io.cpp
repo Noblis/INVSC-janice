@@ -209,8 +209,9 @@ JaniceError janice_create_media(const char* filename,
     strcpy(media->filename, filename);
     media->filename[strlen(filename)] = '\0';
 
-    // Initialize this to the image default to avoid an extra condition later
-    media->frames = 1;
+    // Initialize these to the image defaults to avoid an extra condition later
+    media->category = Image;
+    media->frames   = 1;
 
     // To get the media dimensions we temporalily load either the image or the
     // the first frame. This also checks if the filename is valid
@@ -228,7 +229,8 @@ JaniceError janice_create_media(const char* filename,
             return JANICE_INVALID_MEDIA;
         }
 
-        media->frames = (uint32_t) video.get(CV_CAP_PROP_FRAME_COUNT);
+        media->category = Video;
+        media->frames   = (uint32_t) video.get(CV_CAP_PROP_FRAME_COUNT);
     }
 
     // Set the media dimensions
@@ -244,7 +246,8 @@ JaniceError janice_media_get_iterator(JaniceConstMedia media, JaniceMediaIterato
     JaniceMediaIterator it = new JaniceMediaIteratorType();
 
     it->filename = media->filename;
-    it->video.open(media->filename);
+    if (media->category == Video)
+        it->video.open(media->filename);
 
     *_it = it;
 
