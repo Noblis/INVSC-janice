@@ -15,7 +15,16 @@ There are plans to write interfaces for:
 * [*C#*](interfaces/csharp.md)
 * [*Java*](interfaces/java.md)
 
+## Sponsors
+
+This work is being sponsored by The Department of Homeland Security; Science and Technology Directorate.
+
+<div style="text-align:center">
+    <img src="assets/dhs_logo_small.png" alt="DHS_S&T_logo">
+</div>
+
 ## About
+
 Computer vision is a rapidly expanding and improving field that has seen significant
 progress in it's capabilities over the past decade. Government agencies can leverage
 computer vision algorithms to better understand images and videos that they ingest.
