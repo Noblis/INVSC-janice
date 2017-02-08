@@ -55,8 +55,8 @@ typedef struct JaniceDetectionItem* JaniceDetectionItems;
 
 typedef struct JaniceDetectionType* JaniceDetection;
 typedef const struct JaniceDetectionType* JaniceConstDetection;
-typedef struct JaniceDetection* JaniceDetections;
-typedef struct JaniceConstDetection* JaniceConstDetections;
+typedef JaniceDetection* JaniceDetections;
+typedef JaniceConstDetection* JaniceConstDetections;
 
 // Functions
 JANICE_EXPORT JaniceError janice_create_detection(JaniceConstMedia media,
@@ -111,8 +111,8 @@ enum JaniceEnrollmentType
 
 typedef struct JaniceTemplateType* JaniceTemplate;
 typedef const struct JaniceTemplateType* JaniceConstTemplate;
-typedef struct JaniceTemplate* JaniceTemplates;
-typedef struct JaniceConstTemplate* JaniceConstTemplates;
+typedef JaniceTemplate* JaniceTemplates;
+typedef JaniceConstTemplate* JaniceConstTemplates;
 
 // Functions
 JANICE_EXPORT JaniceError janice_create_template(JaniceConstDetections detections,
