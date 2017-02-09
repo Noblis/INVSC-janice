@@ -11,27 +11,13 @@ y      | uint32_t | The y offset of the rectangle in pixels
 width  | uint32_t | The width of the rectangle in pixels
 height | uint32_t | The height of the rectangle in pixels
 
-## JaniceDetectionInstance {: #JaniceDetectionInstance }
+## JaniceDetectionIteratorType {: #JaniceDetectionIteratorType }
 
-A single detection in an image or video, represented as a rectangle,
-confidence, and frame number. See [the detection overview](overview.md) for
-information on why this structure is necessary.
-
-#### Confidence {: #JaniceDetectionInstanceConfidence }
-
-The confidence value indicates a likelihood that the rectangle actually bounds
-an object of interest. It is **NOT** required to be a probability and often
-only has meaning relative to other confidence values from the same algorithm.
-The only restriction is that a larger confidence value indicates a greater
-likelihood that the rectangle bounds an object.
-
-#### Fields {: #JaniceDetectionInstanceFields }
-
-Name       | Type                      | Description
----------- | ------------------------- | -----------
-rect       | [JaniceRect](#JaniceRect) | The rectangle that bounds the object of interest
-confidence | double                    | A likelihood that the rectangle bounds an object of interest. See [this description](#JaniceDetectionInstanceConfidence)
-frame      | uint32_t                  | A frame index indicating which frame the rectangle came from. If the rectangle comes from an image this should be set to 0
+An opaque pointer to an iterator class through a detection. If the detection
+was computed from an image, the iterator should only move over a single value.
+If the detection was computed from a video, the iterator should move over an
+array of elements, the length of which is less than or equal to the number of
+frames in the video, and might be sparse (i.e. frames can be skipped).
 
 ## JaniceDetectionType {: #JaniceDetectionType }
 
