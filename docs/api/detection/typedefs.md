@@ -1,11 +1,11 @@
-## JaniceDetectionItems {: #JaniceDetectionItems }
+## JaniceDetectionIterator
 
-An array of [JaniceDetectionItems](structs.md#JaniceDetectionItem).
+A pointer to a [JaniceDetectionIteratorType](structs.md#JaniceDetectionIteratorType) object.
 
-#### Signature {: #JaniceDetectionItemSignature }
+#### Signature {: #JaniceDetectionIterator }
 
 ```
-typedef struct JaniceDetectionItem* JaniceDetectionItems;
+typedef struct JaniceDetectionIteratorType* JaniceDetectionIterator;
 ```
 
 ## JaniceDetection {: #JaniceDetection }

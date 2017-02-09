@@ -1,3 +1,77 @@
+## janice_detection_it_next {: #JaniceDetectionItNext }
+
+Get the next element in a detection track.
+
+#### Signature {: #JaniceDetectionItNextSignature }
+
+```
+JANICE_EXPORT JaniceError janice_detection_it_next(JaniceDetectionIterator it,
+                                                   JaniceRect* rect,
+                                                   uint32_t* frame,
+                                                   float* confidence);
+```
+
+#### Thread Safety {: #JaniceDetectionItNextThreadSafety }
+
+This function is reentrant.
+
+#### Confidence {: #JaniceDetectionItNextConfidence }
+
+The confidence value indicates a likelihood that the rectangle actually bounds
+an object of interest. It is **NOT** required to be a probability and often
+only has meaning relative to other confidence values from the same algorithm.
+The only restriction is that a larger confidence value indicates a greater
+likelihood that the rectangle bounds an object.
+
+#### Parameters {: #JaniceDetectionItNextParameters }
+
+Name       | Type                                                           | Description
+---------- | -------------------------------------------------------------- | -----------
+it         | [JaniceDetectionIterator](typedefs.md#JaniceDetectionIterator) | A detection iterator object
+rect       | [JaniceRect\*](structs.md#JaniceRect)                          | The location of a object of interest
+frame      | [uint32_t\*]                                                   | The frame index for an object of interest.
+confidence | [float\*]                                                      | The [confidence](#JaniceDetectionItNextConfidence) of the location.
+
+## janice_detection_it_reset {: #JaniceDetectionItReset }
+
+Reset an iterator back to its initial state.
+
+#### Signature {: #JaniceDetectionItResetSignature }
+
+```
+JANICE_EXPORT JaniceError janice_detection_it_reset(JaniceDetectionIterator it);
+```
+
+#### Thread Safety {: #JaniceDetectionItResetThreadSafety }
+
+This function is reentrant.
+
+#### Parameters {: #JaniceDetectionItResetParameters }
+
+Name | Type                                                           | Description
+---- | -------------------------------------------------------------- | -----------
+it   | [JaniceDetectionIterator](typedefs.md#JaniceDetectionIterator) | The iterator object to reset.
+
+## janice_free_detection_it {: #JaniceFreeDetectionIt }
+
+Free any memory associated with a detection iterator object.
+
+#### Signature {: #JaniceFreeDetectionItSignature }
+
+```
+JANICE_EXPORT JaniceError janice_free_detection_it(JaniceDetectionIterator* it);
+```
+
+#### Thread Safety {: #JaniceFreeDetectionItThreadSafety }
+
+This function is reentrant.
+
+#### Parameters {: #JaniceFreeDetectionItParameters }
+
+Name | Type                                                             | Description
+---- | ---------------------------------------------------------------- | -----------
+it   | [JaniceDetectionIterator\*](typedefs.md#JaniceDetectionIterator) | The iterator object to free.
+
 ## janice_create_detection {: #JaniceCreateDetection }
 
 Create a detection from a known rectangle. This is useful if a human has
@@ -130,42 +204,27 @@ if (janice_detect(media, min_object_size, &detections, &num_detections) != JANIC
     // ERROR!
 ```
 
-## janice_detection_get_items {: #JaniceDetectionGetItems }
+## janice_create_detection_it {: #JaniceCreateDetectionIt }
 
-Get a list of the [JaniceDetectionItems](structs.md#JaniceDetectionItem) that
-comprise the detection.
+Create an iterator to iterate over detection elements.
 
-#### Signature {: #JaniceDetectionGetItemsSignature }
+#### Signature {: #JaniceCreateDetectionItSignature }
 
 ```
-JANICE_EXPORT JaniceError janice_detection_get_item(JaniceConstDetection detection,
-                                                    JaniceDetectionItems* instances,
-                                                    uint32_t* num_instances);
+JANICE_EXPORT JaniceError janice_create_detection_it(JaniceConstDetection detection,
+                                                     JaniceDetectionIterator* it);
 ```
 
-#### Thread Safety {: #JaniceDetectionGetItemsThreadSafety }
+#### Thread Safety {: #JaniceCreateDetectionItThreadSafety }
 
 This function is reentrant.
 
-#### Parameters {: #JaniceDetectionGetItemsParameters }
+#### Parameters {: #JaniceCreateDetectionItParameters }
 
-Name          | Type                                                       | Description
-------------- | ---------------------------------------------------------- | -----------
-detection     | [JaniceConstDetection](typedefs.md#JaniceConstDetection)   | A detection object to get instances from
-instances     | [JaniceDetectionItems\*](typedefs.md#JaniceDetectionItems) | An uninitialized array to hold the instances that comprise the detection.
-num_instances | uint32_t\*                                                 | The number of instances that comprise the detection
-
-#### Example {: #JaniceDetectionGetInstancesExample }
-
-```
-JaniceDetection detection; // Where detection is a valid detection object
-                           // created previously
-JaniceDetectionItems items = NULL; // best practice to initialize to NULL
-uint32_t num_items; // Will be populated with the size of items
-
-if (janice_detection_get_items(detection, &items, &num_items) != JANICE_SUCCESS)
-    // ERROR!
-```
+Name      | Type                                                             | Description
+--------- | ---------------------------------------------------------------- | -----------
+detection | [JaniceConstDetection](typedefs.md#JaniceConstDetection)         | The detection to create the iterator from.
+it        | [JaniceDetectionIterator\*](typedefs.md#JaniceDetectionIterator) | An uninitialized detection iterator object. It is initialized as part of the function call.
 
 ## janice_serialize_detection {: #JaniceSerializeDetection }
 
@@ -389,23 +448,3 @@ This function is reentrant.
 Name       | Type                                               | Description
 ---------- | -------------------------------------------------- | -----------
 detections | [JaniceDetections\*](typedefs.md#JaniceDetections) | An array of detections to free. Best practice dictates the pointer should be set to <code>NULL</code> after it is freed.
-
-## janice_free_detection_items {: #JaniceFreeDetectionItems }
-
-Free any memory associated with an array of [JaniceDetectionItem](structs.md#JaniceDetectionItem) objects.
-
-#### Signature {: #JaniceFreeDetectionItemsSignature }
-
-```
-JANICE_EXPORT JaniceError janice_free_detection_items(JaniceDetectionItems* items);
-```
-
-#### Thread Safety {: #JaniceFreeDetectionItemsThreadSafety }
-
-This function is reentrant.
-
-#### Parameters {: #JaniceFreeDetectionItemsParameters }
-
-Name  | Type                                                       | Description
------ | ---------------------------------------------------------- | -----------
-items | [JaniceDetectionItems\*](typedefs.md#JaniceDetectionItems) | An array of detection items to free. Best practice dictates the pointer should be set to <code>NULL</code> after it is freed.
