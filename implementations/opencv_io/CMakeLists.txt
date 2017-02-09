@@ -14,3 +14,8 @@ target_link_libraries(opencv_io ${OpenCV_LIBS})
 install(TARGETS opencv_io RUNTIME DESTINATION bin
                           LIBRARY DESTINATION lib
                           ARCHIVE DESTINATION lib)
+
+# Optionally, build unit tests
+if (${BUILD_TESTING})
+  add_subdirectory(test)
+endif()

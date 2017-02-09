@@ -5,59 +5,6 @@
 // ----------------------------------------------------------------------------
 // JaniceImage
 
-JaniceError janice_free_buffer(JaniceBuffer* buffer)
-{
-    delete[] *buffer;
-    *buffer = nullptr;
-
-    return JANICE_SUCCESS;
-}
-
-JaniceError janice_create_image(uint32_t channels,
-                                uint32_t rows,
-                                uint32_t cols,
-                                JaniceImage* _image)
-{
-    JaniceImage image = new JaniceImageType();
-
-    // Set up the dimensions
-    image->channels = channels;
-    image->rows = rows;
-    image->cols = cols;
-
-    // Allocate a buffer. We own the buffer since we allocated it
-    image->data = new uint8_t[channels * rows * cols];
-    image->owner = true;
-
-    *_image = image;
-
-    return JANICE_SUCCESS;
-}
-
-JaniceError janice_create_image_from_buffer(uint32_t channels,
-                                            uint32_t rows,
-                                            uint32_t cols,
-                                            const JaniceBuffer data,
-                                            JaniceImage* _image)
-{
-    JaniceImage image = new JaniceImageType();
-
-    // Set up the dimensions
-    image->channels = channels;
-    image->rows = rows;
-    image->cols = cols;
-
-    // Just point to the buffer provided. We don't own this buffer so we should
-    // not delete it. We also have to assume the provided buffer is as large as
-    // the provided dimensions indicate
-    image->data = data;
-    image->owner = false;
-
-    *_image = image;
-
-    return JANICE_SUCCESS;
-}
-
 JaniceError janice_image_access(JaniceConstImage image,
                                 uint32_t channel,
                                 uint32_t row,
@@ -78,7 +25,7 @@ JaniceError janice_image_access(JaniceConstImage image,
 JaniceError janice_free_image(JaniceImage* image)
 {
     if ((*image)->owner) { // have to delete the data
-        delete[] (*image)->data;
+        free((*image)->data);
         (*image)->data = nullptr;
     }
 
@@ -99,22 +46,21 @@ struct JaniceMediaIteratorType
     VideoCapture video;
 };
 
-static inline JaniceError cv_mat_to_janice_image(Mat& m, JaniceImage* image)
+static inline JaniceError cv_mat_to_janice_image(Mat& m, JaniceImage* _image)
 {
-    // Create the image by borrowing the mat's data buffer
-    JaniceError ret = janice_create_image_from_buffer(m.channels(),
-                                                      m.rows,
-                                                      m.cols,
-                                                      m.ptr<uint8_t>(),
-                                                      image);
-    if (ret != JANICE_SUCCESS)
-        return ret;
+    // Allocate a new image
+    JaniceImage image = new JaniceImageType();
 
-    // We do some trickery here to avoid a data copy. OpenCV Mats use reference
-    // counting to check when to delete their data. We manually increment the
-    // count and tell our image to delete the data later.
-    m.addref();
-    (*image)->owner = true;
+    // Set up the dimensions
+    image->channels = m.channels();
+    image->rows = m.rows;
+    image->cols = m.cols;
+
+    image->data = (JaniceBuffer) malloc(m.channels() * m.rows * m.cols);
+    memcpy(image->data, m.data, m.channels() * m.rows * m.cols);
+    image->owner = true;
+
+    *_image = image;
 
     return JANICE_SUCCESS;
 }
@@ -184,6 +130,9 @@ JaniceError janice_media_it_get(JaniceMediaIterator it,
 JaniceError janice_media_it_tell(JaniceMediaIterator it,
                                  uint32_t* frame)
 {
+    if (!it->video.isOpened()) // image
+        return JANICE_INVALID_MEDIA;
+
     *frame = (uint32_t) it->video.get(CV_CAP_PROP_POS_FRAMES);
     return JANICE_SUCCESS;
 }
@@ -198,6 +147,24 @@ JaniceError janice_free_media_iterator(JaniceMediaIterator *it)
 
 // ----------------------------------------------------------------------------
 // JaniceMedia
+
+// Utility function to manually count video frames. Necessary because
+// video.get(CV_CAP_PROP_FRAME_COUNT) seems to fail in some cases
+static inline uint32_t count_frames(cv::VideoCapture& video)
+{
+    // Reset the video to the beginning
+    video.set(CV_CAP_PROP_POS_FRAMES, 0);
+
+    cv::Mat frame;
+    uint32_t frame_count = 0;
+    while (video.read(frame))
+        ++frame_count;
+
+    // Reset the video again
+    video.set(CV_CAP_PROP_POS_FRAMES, 0);
+
+    return frame_count;
+}
 
 JaniceError janice_create_media(const char* filename,
                                 JaniceMedia* _media)
@@ -230,13 +197,15 @@ JaniceError janice_create_media(const char* filename,
         }
 
         media->category = Video;
-        media->frames   = (uint32_t) video.get(CV_CAP_PROP_FRAME_COUNT);
+        media->frames   = count_frames(video);
     }
 
     // Set the media dimensions
     media->channels = (uint32_t) img.channels();
     media->rows     = (uint32_t) img.rows;
     media->cols     = (uint32_t) img.cols;
+
+    *_media = media;
 
     return JANICE_SUCCESS;
 }

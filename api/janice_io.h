@@ -16,8 +16,6 @@ extern "C" {
 
 typedef uint8_t* JaniceBuffer;
 
-JANICE_EXPORT JaniceError janice_free_buffer(JaniceBuffer* buffer);
-
 struct JaniceImageType
 {
     uint32_t channels;
@@ -30,17 +28,6 @@ struct JaniceImageType
 
 typedef struct JaniceImageType* JaniceImage;
 typedef const struct JaniceImageType* JaniceConstImage;
-
-JANICE_EXPORT JaniceError janice_create_image(uint32_t channels,
-                                              uint32_t rows,
-                                              uint32_t cols,
-                                              JaniceImage* image);
-
-JANICE_EXPORT JaniceError janice_create_image_from_buffer(uint32_t channels,
-                                                          uint32_t rows,
-                                                          uint32_t cols,
-                                                          const JaniceBuffer data,
-                                                          JaniceImage* image);
 
 JANICE_EXPORT JaniceError janice_image_access(JaniceConstImage image,
                                               uint32_t channel,
