@@ -50,7 +50,7 @@ JANICE_EXPORT JaniceError janice_detection_it_next(JaniceDetectionIterator it,
 JANICE_EXPORT JaniceError janice_detection_it_reset(JaniceDetectionIterator it);
 
 // Cleanup
-JANICE_EXPORT JaniceError janice_free_detection_it(JaniceDetectionIterator* it);
+JANICE_EXPORT JaniceError janice_free_detection_iterator(JaniceDetectionIterator* it);
 
 // ----------------------------------------------------------------------------
 // Detection
