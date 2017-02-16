@@ -39,6 +39,12 @@ JANICE_EXPORT JaniceError janice_train(const char* data_prefix,
 // ----------------------------------------------------------------------------
 // Detection Iterator
 
+// Structs
+struct JaniceRect
+{
+    uint32_t x, y, width, height;
+};
+
 typedef struct JaniceDetectionIteratorType* JaniceDetectionIterator;
 
 // Functions
@@ -56,11 +62,6 @@ JANICE_EXPORT JaniceError janice_free_detection_iterator(JaniceDetectionIterator
 // Detection
 
 // Structs
-struct JaniceRect
-{
-    uint32_t x, y, width, height;
-};
-
 typedef struct JaniceDetectionType* JaniceDetection;
 typedef const struct JaniceDetectionType* JaniceConstDetection;
 typedef JaniceDetection* JaniceDetections;
@@ -163,7 +164,7 @@ JANICE_EXPORT JaniceError janice_verify(JaniceConstTemplate reference,
 typedef struct JaniceGalleryType* JaniceGallery;
 typedef const struct JaniceGalleryType* JaniceConstGallery;
 
-typedef uint32_t JaniceTemplateId;
+typedef size_t JaniceTemplateId;
 typedef JaniceTemplateId* JaniceTemplateIds;
 
 // Functions
