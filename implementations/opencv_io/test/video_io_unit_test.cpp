@@ -40,7 +40,7 @@ using namespace std;
 
 int check_media_basics(JaniceConstMedia media)
 {
-    CHECK(strcmp(media->filename, "media/second_test.mp4") == 0, // condition
+    CHECK(strcmp(media->filename, "media/test_video.mp4") == 0, // condition
           "Media filename != 'media/test_video.mp4'", // message
           [](){}) // cleanup function
 
@@ -174,8 +174,8 @@ int check_media_iterator(JaniceConstMedia media)
 }
 
 // ----------------------------------------------------------------------------
-// Check image pixel values
-
+// Check image pixel values. Due to lossy compression in video codecs, we can't
+// reliably check the exact value, so use a 10 unit tolerance.
 static inline int check_pixel(JaniceConstImage image,
                                uint32_t x,
                                uint32_t y,
@@ -192,37 +192,76 @@ static inline int check_pixel(JaniceConstImage image,
                                     y, // row
                                     x, // col
                                     &pixel),
-                // Cleanup
-                [](){})
-    CHECK(pixel == blue,
-          "Blue pixel doesn't match.",
-          [](){})
+                                    // Cleanup
+                                    []() {})
 
-    // Get the green pixel
+    int pixel_delta = abs(int(pixel) - int(blue));
+
+    CHECK(pixel_delta < 10,
+        "Blue pixel doesn't match.",
+        []() {})
+
+        // Get the green pixel
     JANICE_CALL(janice_image_access(image,
                                     1, // channel
                                     y, // row
                                     x, // col
                                     &pixel),
-                // Cleanup
-                [](){})
-    CHECK(pixel == green,
-          "Green pixel doesn't match.",
-          [](){})
+                                    // Cleanup
+                                    []() {});
+    
+    pixel_delta = abs(int(pixel) - int(green));
 
-    // Get the red pixel
+    CHECK(pixel_delta < 10,
+        "Green pixel doesn't match.",
+        []() {})
+
+        // Get the red pixel
     JANICE_CALL(janice_image_access(image,
                                     2, // channel
                                     y, // row
                                     x, // col
                                     &pixel),
-                // Cleanup
-                [](){})
-    CHECK(pixel == red,
+                                    // Cleanup
+                                    []() {})
+
+    pixel_delta = abs(int(pixel) - int(red));
+
+    CHECK(pixel_delta < 10,
           "Red pixel doesn't match.",
           [](){})
 
     return 0;
+}
+
+uint8_t frame_color_lookup[9][3] = 
+{
+    {0,   0,   254},
+    {0,   255, 0},
+    {255, 0,   0},
+    {0,   127, 127},
+    {127, 127, 0},
+    {127, 0,   127},
+    {0,   0,   0},
+    {127, 127, 127},
+    {255, 255, 255}
+};
+
+// look up expecteed color for the specified frame of test video
+int expected_frame_colors(int frame_number, uint8_t * r, uint8_t * g, uint8_t * b)
+{
+    // past end of video 
+    if (frame_number >= 90)
+        return 0;
+
+    // solid colors, repeated for 10 frames each 
+    int idx = frame_number / 10;
+
+    *r = frame_color_lookup[idx][0];
+    *g = frame_color_lookup[idx][1];
+    *b = frame_color_lookup[idx][2];
+
+    return 1;
 }
 
 int check_media_pixel_values(JaniceConstMedia media)
@@ -235,50 +274,53 @@ int check_media_pixel_values(JaniceConstMedia media)
     // Variables to be filled during iterator calls
     JaniceImage image = nullptr;
 
-    CHECK(janice_media_it_next(it, &image) == JANICE_MEDIA_AT_END,
-          "Calling next on a media iterator for an image should return JANICE_MEDIA_AT_END",
-          // Cleanup
-          [&]() {
-              janice_free_media_iterator(&it);
-          })
+    // loop over video 
+    uint32_t frame_count = 0;
 
-    // Utility function to free image and iterator memory if a check fails
-    auto cleanup = [&]() {
-        janice_free_image(&image);
-        janice_free_media_iterator(&it);
-    };
+    uint8_t r, g, b;
 
-    // Our test image is a 3x3 grid of 100px x 100px blocks, each of which
-    // is a different, solid, color.
-    CHECK(check_pixel(image,  50,  50,   0,   0, 255) == 0,
-          "Pixel mismatch",
-          cleanup)
-    CHECK(check_pixel(image, 150,  50,   0, 255,   0) == 0,
-          "Pixel mismatch",
-          cleanup)
-    CHECK(check_pixel(image, 250,  50, 255,   0,   0) == 0,
-          "Pixel mismatch",
-          cleanup)
-    CHECK(check_pixel(image,  50, 150,   0, 127, 127) == 0,
-          "Pixel mismatch",
-          cleanup)
-    CHECK(check_pixel(image, 150, 150, 127, 127,   0) == 0,
-          "Pixel mismatch",
-          cleanup)
-    CHECK(check_pixel(image, 250, 150, 127,   0, 127) == 0,
-          "Pixel mismatch",
-          cleanup)
-    CHECK(check_pixel(image,  50, 250,   0,   0,   0) == 0,
-          "Pixel mismatch",
-          cleanup)
-    CHECK(check_pixel(image, 150, 250, 127, 127, 127) == 0,
-          "Pixel mismatch",
-          cleanup)
-    CHECK(check_pixel(image, 250, 250, 255, 255, 255) == 0,
-          "Pixel mismatch",
-          cleanup)
+    while (true) {
+        JaniceError err = janice_media_it_next(it, &image);
+        JaniceError expected = JANICE_SUCCESS;
 
-    cleanup();
+        ++frame_count;
+
+        auto cleanup = [&]() {
+            janice_free_image(&image);
+            janice_free_media_iterator(&it);
+        };
+
+        // On the last frame we loop back to the beginning
+        if (frame_count == 90) {
+            expected = JANICE_MEDIA_AT_END;
+            frame_count = 0;
+        }
+
+        CHECK(err == expected,
+            "Next should return JANICE_SUCCESS except for on the last frame",
+            []() {})
+
+        if (expected == JANICE_MEDIA_AT_END)
+            break;
+
+
+        // verify that the frame number we are using is correct, pull expected rgb values for this frame
+        CHECK(expected_frame_colors(frame_count - 1, &r, &g, &b) == 1, "Advanced past expected end of video, for unknown reasons.", []() {})
+
+        // check that actual and expected colors match at some point in the image
+        CHECK(check_pixel(image, 50, 50, r, g, b) == 0,
+            "Pixel mismatch",
+            cleanup)
+
+        JANICE_CALL(janice_free_image(&image),
+            // Cleanup
+            []() {})
+
+            if (expected == JANICE_MEDIA_AT_END)
+                break;
+    }
+
+    janice_free_media_iterator(&it);
 
     return 0;
 }
@@ -293,15 +335,15 @@ int main(int, char*[])
     // Create a media object from our test image
     JaniceMedia media = nullptr;
     JANICE_CALL(janice_create_media(test_video.c_str(),
-                                    &media),
-                 // Cleanup
-                 [](){})
+        &media),
+        // Cleanup
+        []() {})
 
     // Check basic image properties
-    //if (check_media_basics(media) == 1) {
-    //    janice_free_media(&media);
-    //    return 1;
-    //}
+    if (check_media_basics(media) == 1) {
+        janice_free_media(&media);
+        return 1;
+    }
 
     // Check that an iterator can be created and its functions work as expected
     // for a video
@@ -311,10 +353,10 @@ int main(int, char*[])
     }
 
     // Check the loaded pixel values of the test image
-    //if (check_media_pixel_values(media) == 1) {
-    //    janice_free_media(&media);
-    //    return 1;
-    //}
+    if (check_media_pixel_values(media) == 1) {
+        janice_free_media(&media);
+        return 1;
+    }
 
     janice_free_media(&media);
 

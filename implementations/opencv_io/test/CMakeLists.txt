@@ -1,5 +1,8 @@
 # We require C++11 for testing
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+if (UNIX)
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+endif()
+
 
 # Gather all the tests and then iterate over them
 file(GLOB TESTS *.cpp)
