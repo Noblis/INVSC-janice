@@ -37,7 +37,7 @@ JANICE_EXPORT JaniceError janice_train(const char* data_prefix,
                                        const char* data_list);
 
 // ----------------------------------------------------------------------------
-// Detection
+// Detection Iterator
 
 // Structs
 struct JaniceRect
@@ -45,14 +45,23 @@ struct JaniceRect
     uint32_t x, y, width, height;
 };
 
-struct JaniceDetectionItem
-{
-    JaniceRect rect;
-    uint32_t frame;
-    double confidence;
-};
-typedef struct JaniceDetectionItem* JaniceDetectionItems;
+typedef struct JaniceDetectionIteratorType* JaniceDetectionIterator;
 
+// Functions
+JANICE_EXPORT JaniceError janice_detection_it_next(JaniceDetectionIterator it,
+                                                   JaniceRect* rect,
+                                                   uint32_t* frame,
+                                                   float* confidence);
+
+JANICE_EXPORT JaniceError janice_detection_it_reset(JaniceDetectionIterator it);
+
+// Cleanup
+JANICE_EXPORT JaniceError janice_free_detection_iterator(JaniceDetectionIterator* it);
+
+// ----------------------------------------------------------------------------
+// Detection
+
+// Structs
 typedef struct JaniceDetectionType* JaniceDetection;
 typedef const struct JaniceDetectionType* JaniceConstDetection;
 typedef JaniceDetection* JaniceDetections;
@@ -69,9 +78,8 @@ JANICE_EXPORT JaniceError janice_detect(JaniceConstMedia media,
                                         JaniceDetections* detections,
                                         uint32_t* num_detections);
 
-JANICE_EXPORT JaniceError janice_detection_get_items(JaniceConstDetection detection,
-                                                     JaniceDetectionItems* items,
-                                                     uint32_t* num_items);
+JANICE_EXPORT JaniceError janice_create_detection_it(JaniceConstDetection detection,
+                                                     JaniceDetectionIterator* it);
 
 // I/O
 JANICE_EXPORT JaniceError janice_serialize_detection(JaniceConstDetection detection,
@@ -93,8 +101,6 @@ JANICE_EXPORT JaniceError janice_free_detection(JaniceDetection* detection);
 
 JANICE_EXPORT JaniceError janice_free_detections(JaniceDetections* detections, 
                                                  uint32_t num_detections);
-
-JANICE_EXPORT JaniceError janice_free_detection_items(JaniceDetectionItems* items);
 
 // ----------------------------------------------------------------------------
 // Enrollment
@@ -158,7 +164,7 @@ JANICE_EXPORT JaniceError janice_verify(JaniceConstTemplate reference,
 typedef struct JaniceGalleryType* JaniceGallery;
 typedef const struct JaniceGalleryType* JaniceConstGallery;
 
-typedef uint32_t JaniceTemplateId;
+typedef size_t JaniceTemplateId;
 typedef JaniceTemplateId* JaniceTemplateIds;
 
 // Functions

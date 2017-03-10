@@ -2,7 +2,7 @@
 # To use it simply link it into your project
 
 find_package(OpenCV 3.0 REQUIRED)
-set(OpenCV_LIBS opencv_core opencv_highgui opencv_videoio opencv_videostab opencv_imgcodecs)
+set(OpenCV_LIBS opencv_core opencv_highgui opencv_videoio opencv_imgcodecs)
 
 add_library(opencv_io SHARED opencv_io.cpp)
 set_target_properties(opencv_io PROPERTIES
