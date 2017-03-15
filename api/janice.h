@@ -155,7 +155,7 @@ typedef double JaniceSimilarity;
 
 JANICE_EXPORT JaniceError janice_verify(JaniceConstTemplate reference,
                                         JaniceConstTemplate verification,
-                                        JaniceSimilarity similarity);
+                                        JaniceSimilarity* similarity);
 
 // ----------------------------------------------------------------------------
 // Gallery
