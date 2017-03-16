@@ -114,6 +114,7 @@ int check_media_iterator(JaniceConstMedia media)
           [&]() {
             janice_free_media_iterator(&it);
           })
+    janice_free_media_iterator(&it);
 
     return 0;
 }

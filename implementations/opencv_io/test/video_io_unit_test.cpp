@@ -300,8 +300,10 @@ int check_media_pixel_values(JaniceConstMedia media)
             "Next should return JANICE_SUCCESS except for on the last frame",
             []() {})
 
-        if (expected == JANICE_MEDIA_AT_END)
+	  if (expected == JANICE_MEDIA_AT_END) {
+	    janice_free_image(&image);
             break;
+	 }
 
 
         // verify that the frame number we are using is correct, pull expected rgb values for this frame

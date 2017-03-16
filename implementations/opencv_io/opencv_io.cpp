@@ -225,7 +225,7 @@ JaniceError janice_media_get_iterator(JaniceConstMedia media, JaniceMediaIterato
 
 JaniceError janice_free_media(JaniceMedia* media)
 {
-    delete (*media)->filename;
+    delete [] (*media)->filename;
     delete (*media);
     *media = nullptr;
 
