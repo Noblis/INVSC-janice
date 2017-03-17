@@ -98,7 +98,6 @@ int check_media_iterator_next(JaniceMediaIterator it)
                     [&]() {
                         janice_free_image(&image);
                     })
-        printf("frame: %u frame_count: %u\n", frame, frame_count);
         // Confirm the queried results match the excepted
         //CHECK(frame == frame_count,
         //      "Queried frame doesn't match expected",
