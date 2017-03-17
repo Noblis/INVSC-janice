@@ -9,7 +9,7 @@ extern "C" {
 
 #define JANICE_VERSION_MAJOR 4
 #define JANICE_VERSION_MINOR 0
-#define JANICE_VERSION_PATCH 0
+#define JANICE_VERSION_PATCH 1
 
 // ----------------------------------------------------------------------------
 // Initialization
@@ -155,7 +155,7 @@ typedef double JaniceSimilarity;
 
 JANICE_EXPORT JaniceError janice_verify(JaniceConstTemplate reference,
                                         JaniceConstTemplate verification,
-                                        JaniceSimilarity similarity);
+                                        JaniceSimilarity* similarity);
 
 // ----------------------------------------------------------------------------
 // Gallery
