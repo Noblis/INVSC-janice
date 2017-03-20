@@ -17,7 +17,9 @@ extern "C" {
 JANICE_EXPORT JaniceError janice_initialize(const char* sdk_path,
                                             const char* temp_path,
                                             const char* algorithm,
-                                            const int gpu_dev);
+                                            const int num_threads,
+                                            const int* gpus,
+                                            const int num_gpus);
 
 // ----------------------------------------------------------------------------
 // Versioning
@@ -172,6 +174,8 @@ JANICE_EXPORT JaniceError janice_create_gallery(JaniceConstTemplates tmpls,
                                                 const JaniceTemplateIds ids,
                                                 uint32_t num_tmpls,
                                                 JaniceGallery* gallery);
+
+JANICE_EXPORT JaniceError janice_gallery_reserve(size_t n);
 
 JANICE_EXPORT JaniceError janice_gallery_insert(JaniceGallery gallery,
                                                 JaniceConstTemplate tmpl,
