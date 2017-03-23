@@ -1,4 +1,4 @@
-#include <janice_io.h>
+#include <janice_file_io.h>
 
 #include <string>
 #include <cstring>
@@ -36,43 +36,13 @@
 using namespace std;
 
 // ----------------------------------------------------------------------------
-// Check basic media properties
-
-int check_media_basics(JaniceConstMedia media)
-{
-    CHECK(strncmp(media->filename, "media/test_image.png", 20) == 0, // condition
-          "Media filename != 'media/test_image.png'", // message
-          [](){}) // cleanup function
-
-    CHECK(media->category == Image,
-          "Media category != Image",
-          [](){})
-
-    CHECK(media->channels == 3,
-          "Media channels != 3",
-          [](){})
-
-    CHECK(media->rows == 300,
-          "Media rows != 300",
-          [](){})
-
-    CHECK(media->cols == 300,
-          "Media columns != 300",
-          [](){})
-    CHECK(media->frames == 1,
-          "Media frames != 1",
-          [](){})
-
-    return 0;
-}
-
-// ----------------------------------------------------------------------------
 // Check media iterator
 
-int check_media_iterator(JaniceConstMedia media)
+int check_media_iterator(const char * fname)
 {
     JaniceMediaIterator it = nullptr;
-    JANICE_CALL(janice_media_get_iterator(media, &it),
+    
+    JANICE_CALL(janice_file_get_iterator(fname, &it),
                 // Cleanup
                 [](){})
 
@@ -171,10 +141,11 @@ static inline int check_pixel(JaniceConstImage image,
     return 0;
 }
 
-int check_media_pixel_values(JaniceConstMedia media)
+int check_media_pixel_values(const char * fname)
 {
     JaniceMediaIterator it = nullptr;
-    JANICE_CALL(janice_media_get_iterator(media, &it),
+
+    JANICE_CALL(janice_file_get_iterator(fname, &it),
                 // Cleanup
                 [](){})
 
@@ -236,33 +207,17 @@ int main(int, char*[])
 {
     const string test_image = "media/test_image.png";
 
-    // Create a media object from our test image
-    JaniceMedia media = nullptr;
-    JANICE_CALL(janice_create_media(test_image.c_str(),
-                                    &media),
-                 // Cleanup
-                 [](){})
-
-    // Check basic image properties
-    if (check_media_basics(media) == 1) {
-        janice_free_media(&media);
-        return 1;
-    }
 
     // Check that an iterator can be created and its functions work as expected
     // for an image
-    if (check_media_iterator(media) == 1) {
-        janice_free_media(&media);
+    if (check_media_iterator(test_image.c_str()) == 1) {
         return 1;
     }
 
     // Check the loaded pixel values of the test image
-    if (check_media_pixel_values(media) == 1) {
-        janice_free_media(&media);
+    if (check_media_pixel_values(test_image.c_str()) == 1) {
         return 1;
     }
-
-    janice_free_media(&media);
 
     return 0;
 }

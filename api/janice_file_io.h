@@ -2,10 +2,17 @@
 #define JANICE_FILE_IO_H
 
 #include <janice_io.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-JaniceError janice_file_get_iterator(const char * _filename, JaniceMediaIterator *_it);
+JANICE_EXPORT JaniceError janice_file_get_iterator(const char * _filename, JaniceMediaIterator *_it);
 
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 
 #endif
+
 

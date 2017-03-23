@@ -1,4 +1,4 @@
-#include <janice_io.h>
+#include <janice_file_io.h>
 
 #include <string>
 #include <cstring>
@@ -36,38 +36,6 @@
 using namespace std;
 
 // ----------------------------------------------------------------------------
-// Check basic media properties
-
-int check_media_basics(JaniceConstMedia media)
-{
-    CHECK(strcmp(media->filename, "media/test_video.mp4") == 0, // condition
-          "Media filename != 'media/test_video.mp4'", // message
-          [](){}) // cleanup function
-
-    CHECK(media->category == Video,
-          "Media category != Video",
-          [](){})
-
-    CHECK(media->channels == 3,
-          "Media channels != 3",
-          [](){})
-
-    CHECK(media->rows == 300,
-          "Media rows != 300",
-          [](){})
-
-    CHECK(media->cols == 300,
-          "Media columns != 300",
-          [](){})
-
-    CHECK(media->frames == 90,
-          "Media frames != 90",
-          [](){})
-
-    return 0;
-}
-
-// ----------------------------------------------------------------------------
 // Check media iterator
 
 // Check the iterator next and tell functions
@@ -82,6 +50,7 @@ int check_media_iterator_next(JaniceMediaIterator it)
         JaniceError expected = JANICE_SUCCESS;
         ++frame_count;
 
+        
         // On the last frame we loop back to the beginning
         if (frame_count == 90) {
             expected = JANICE_MEDIA_AT_END;
@@ -89,21 +58,15 @@ int check_media_iterator_next(JaniceMediaIterator it)
         }
 
         CHECK(err == expected,
-              "Next should return JANICE_SUCCESS except for on the last frame",
-              [](){})
+            "Next should return JANICE_SUCCESS except for on the last frame",
+            []() {})
 
         // Next, query the iterator for it's internal frame count
         JANICE_CALL(janice_media_it_tell(it, &frame),
                     // Cleanup
                     [&]() {
                         janice_free_image(&image);
-                    })
-        // Confirm the queried results match the excepted
-        //CHECK(frame == frame_count,
-        //      "Queried frame doesn't match expected",
-        //      [&]() {
-        //        janice_free_image(&image);
-        //      })
+        })
 
         JANICE_CALL(janice_free_image(&image),
                     // Cleanup
@@ -148,12 +111,12 @@ int check_media_iterator_seek(JaniceMediaIterator it)
     return 0;
 }
 
-int check_media_iterator(JaniceConstMedia media)
+int check_media_iterator(const char* media)
 {
     JaniceMediaIterator it = nullptr;
-    JANICE_CALL(janice_media_get_iterator(media, &it),
+    JANICE_CALL(janice_file_get_iterator(media, &it),
                 // Cleanup
-                [](){})
+                []() {})
 
     if (check_media_iterator_next(it) == 1) {
         janice_free_media_iterator(&it);
@@ -263,10 +226,10 @@ int expected_frame_colors(int frame_number, uint8_t * r, uint8_t * g, uint8_t * 
     return 1;
 }
 
-int check_media_pixel_values(JaniceConstMedia media)
+int check_media_pixel_values(const char* media)
 {
     JaniceMediaIterator it = nullptr;
-    JANICE_CALL(janice_media_get_iterator(media, &it),
+    JANICE_CALL(janice_file_get_iterator(media, &it),
                 // Cleanup
                 [](){})
 
@@ -331,35 +294,18 @@ int check_media_pixel_values(JaniceConstMedia media)
 
 int main(int, char*[])
 {
-    const string test_video = "media/test_video.mp4";
-
-    // Create a media object from our test image
-    JaniceMedia media = nullptr;
-    JANICE_CALL(janice_create_media(test_video.c_str(),
-        &media),
-        // Cleanup
-        []() {})
-
-    // Check basic image properties
-    if (check_media_basics(media) == 1) {
-        janice_free_media(&media);
-        return 1;
-    }
+    const char * test_video = "media/test_video.mp4";
 
     // Check that an iterator can be created and its functions work as expected
     // for a video
-    if (check_media_iterator(media) == 1) {
-        janice_free_media(&media);
+    if (check_media_iterator(test_video) == 1) {
         return 1;
     }
 
     // Check the loaded pixel values of the test image
-    if (check_media_pixel_values(media) == 1) {
-        janice_free_media(&media);
+    if (check_media_pixel_values(test_video) == 1) {
         return 1;
     }
-
-    janice_free_media(&media);
 
     return 0;
 }

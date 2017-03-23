@@ -41,7 +41,7 @@ JANICE_EXPORT JaniceError janice_free_image(JaniceImage* image);
 // Media Iterator
 
 typedef struct JaniceMediaIteratorType* JaniceMediaIterator;
-typedef JaniceMediaIterator* JanceMediaIterators;
+typedef JaniceMediaIterator* JaniceMediaIterators;
 
   
 

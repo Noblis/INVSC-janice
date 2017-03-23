@@ -1,4 +1,3 @@
-#include <janice_io.h>
 #include <janice_file_io.h>
 
 #include <opencv2/highgui/highgui.hpp>
@@ -51,23 +50,24 @@ struct JaniceMediaIteratorType
 
 // initialize the iterator, for still images, img will be filled in, for
 // videos it will not, for videos the video capture (video) will be open
-static inline JaniceError initialize_media_iterator(JaniceMediaIterator it, cv::mat & img)
+static inline JaniceError initialize_media_iterator(JaniceMediaIterator it, cv::Mat & img)
 {
     it->initialized = true;
 
     // attempt imread
-    img = cv::imread(filename, IMREAD_ANYCOLOR); // We use ANYCOLOR to load either RGB or Grayscale images
-    
-    if (img.data)
+    img = cv::imread(it->filename, IMREAD_ANYCOLOR); // We use ANYCOLOR to load either RGB or Grayscale images
+
+    if (img.data) {
         return JANICE_MEDIA_AT_END;
-    
-    // Couldn't load as an image maybe it's a video
-    VideoCapture video(filename);
-    // couldn't open as a video either? error out
-    if (!video.isOpened()) {
-        return JANICE_OPEN_ERROR;
     }
     
+    // Couldn't load as an image maybe it's a video
+    it->video.open(it->filename);
+
+    // couldn't open as a video either? error out
+    if (!it->video.isOpened()) {
+        return JANICE_OPEN_ERROR;
+    }
     return JANICE_SUCCESS;
 }
 
@@ -93,21 +93,25 @@ static inline JaniceError cv_mat_to_janice_image(Mat& m, JaniceImage* _image)
 JaniceError janice_media_it_next(JaniceMediaIterator it,
                                  JaniceImage* image)
 {
-    if (!initialized) {
+    if (!it->initialized) {
       // are we an image or a video?
       cv::Mat buffer;
       JaniceError rc = initialize_media_iterator(it, buffer);
 
       // we do an initial read on images, but not videos.
-      // if video is not opened, and we returned media at end (always
+      // if video is not opened, and we returned media_at_end (always
       // do this for stills), convert output and return.
-      if (!it->video.isOpened() && rc == JANICE_MEDIA_AT_END)
-	  return cv_mat_to_janice_image(cv_image, image);
+      if (!it->video.isOpened() && rc == JANICE_MEDIA_AT_END) {
+          JaniceError conv_rc = cv_mat_to_janice_image(buffer, image);
+          if (conv_rc != JANICE_SUCCESS)
+              return conv_rc;
+          return rc;
+      }
 
       if (rc != JANICE_SUCCESS && rc != JANICE_MEDIA_AT_END)
           return rc; // just return an error code, we have no valid output
     }
-      
+
     // Check if the media is an image
     if (!it->video.isOpened()) {
         Mat cv_image = imread(it->filename, IMREAD_ANYCOLOR);
@@ -138,15 +142,15 @@ JaniceError janice_media_it_seek(JaniceMediaIterator it,
                                  uint32_t frame)
 {
     if (!it->initialized) {
-        cv::mat useless;
-	JaniceError rc = initialize_media_iterator(it, useless);
-	if (rc != JANICE_SUCCESS && rc != JANICE_MEDIA_AT_END)
-	    return rc;
+        cv::Mat useless;
+	    JaniceError rc = initialize_media_iterator(it, useless);
+    	if (rc != JANICE_SUCCESS && rc != JANICE_MEDIA_AT_END)
+	        return rc;
     }
     
     if (!it->video.isOpened()) // image
         return JANICE_INVALID_MEDIA;
-
+    
     if (frame >= it->video.get(CV_CAP_PROP_FRAME_COUNT)) // invalid index
         return JANICE_OUT_OF_BOUNDS_ACCESS;
 
@@ -179,9 +183,10 @@ JaniceError janice_media_it_tell(JaniceMediaIterator it,
                                  uint32_t* frame)
 {
     if (!it->initialized) {
+        cv::Mat useless;
         JaniceError rc = initialize_media_iterator(it, useless);
-	if (rc != JANICE_SUCESS && rc != JANICE_MEDIA_AT_END)
-	  return rc;
+    	if (rc != JANICE_SUCCESS && rc != JANICE_MEDIA_AT_END)
+	      return rc;
     }
     
     if (!it->video.isOpened()) // image
