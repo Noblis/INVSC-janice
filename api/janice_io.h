@@ -60,7 +60,9 @@ JANICE_EXPORT JaniceError janice_media_it_tell(JaniceMediaIterator it,
 
 JANICE_EXPORT JaniceError janice_free_media_iterator(JaniceMediaIterator* it);
 
-  // ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+JANICE_EXPORT JaniceError janice_file_get_iterator(const char * _filename, JaniceMediaIterator *_it);
+
 
 #ifdef __cplusplus
 } // extern "C"
