@@ -1,4 +1,5 @@
 #include <janice_io.h>
+#include <janice_file_io.h>
 
 #include <opencv2/highgui/highgui.hpp>
 
@@ -43,8 +44,32 @@ using namespace cv;
 struct JaniceMediaIteratorType
 {
     std::string filename;
+    bool initialized;
+
     VideoCapture video;
 };
+
+// initialize the iterator, for still images, img will be filled in, for
+// videos it will not, for videos the video capture (video) will be open
+static inline JaniceError initialize_media_iterator(JaniceMediaIterator it, cv::mat & img)
+{
+    it->initialized = true;
+
+    // attempt imread
+    img = cv::imread(filename, IMREAD_ANYCOLOR); // We use ANYCOLOR to load either RGB or Grayscale images
+    
+    if (img.data)
+        return JANICE_MEDIA_AT_END;
+    
+    // Couldn't load as an image maybe it's a video
+    VideoCapture video(filename);
+    // couldn't open as a video either? error out
+    if (!video.isOpened()) {
+        return JANICE_OPEN_ERROR;
+    }
+    
+    return JANICE_SUCCESS;
+}
 
 static inline JaniceError cv_mat_to_janice_image(Mat& m, JaniceImage* _image)
 {
@@ -68,12 +93,26 @@ static inline JaniceError cv_mat_to_janice_image(Mat& m, JaniceImage* _image)
 JaniceError janice_media_it_next(JaniceMediaIterator it,
                                  JaniceImage* image)
 {
+    if (!initialized) {
+      // are we an image or a video?
+      cv::Mat buffer;
+      JaniceError rc = initialize_media_iterator(it, buffer);
+
+      // we do an initial read on images, but not videos.
+      // if video is not opened, and we returned media at end (always
+      // do this for stills), convert output and return.
+      if (!it->video.isOpened() && rc == JANICE_MEDIA_AT_END)
+	  return cv_mat_to_janice_image(cv_image, image);
+
+      if (rc != JANICE_SUCCESS && rc != JANICE_MEDIA_AT_END)
+          return rc; // just return an error code, we have no valid output
+    }
+      
     // Check if the media is an image
     if (!it->video.isOpened()) {
         Mat cv_image = imread(it->filename, IMREAD_ANYCOLOR);
         JaniceError ret = cv_mat_to_janice_image(cv_image, image);
-        if (ret != JANICE_SUCCESS)
-            return ret;
+	
         return JANICE_MEDIA_AT_END;
     }
 
@@ -98,6 +137,13 @@ JaniceError janice_media_it_next(JaniceMediaIterator it,
 JaniceError janice_media_it_seek(JaniceMediaIterator it,
                                  uint32_t frame)
 {
+    if (!it->initialized) {
+        cv::mat useless;
+	JaniceError rc = initialize_media_iterator(it, useless);
+	if (rc != JANICE_SUCCESS && rc != JANICE_MEDIA_AT_END)
+	    return rc;
+    }
+    
     if (!it->video.isOpened()) // image
         return JANICE_INVALID_MEDIA;
 
@@ -114,6 +160,8 @@ JaniceError janice_media_it_get(JaniceMediaIterator it,
                                 JaniceImage* image,
                                 uint32_t frame)
 {
+    // don't need to check it->initialized, seek will do it.
+  
     // First we seek
     JaniceError ret = janice_media_it_seek(it, frame);
     if (ret != JANICE_SUCCESS)
@@ -130,6 +178,12 @@ JaniceError janice_media_it_get(JaniceMediaIterator it,
 JaniceError janice_media_it_tell(JaniceMediaIterator it,
                                  uint32_t* frame)
 {
+    if (!it->initialized) {
+        JaniceError rc = initialize_media_iterator(it, useless);
+	if (rc != JANICE_SUCESS && rc != JANICE_MEDIA_AT_END)
+	  return rc;
+    }
+    
     if (!it->video.isOpened()) // image
         return JANICE_INVALID_MEDIA;
 
@@ -146,88 +200,19 @@ JaniceError janice_free_media_iterator(JaniceMediaIterator *it)
 }
 
 // ----------------------------------------------------------------------------
-// JaniceMedia
 
-// Utility function to manually count video frames. Necessary because
-// video.get(CV_CAP_PROP_FRAME_COUNT) seems to fail in some cases
-static inline uint32_t count_frames(cv::VideoCapture& video)
-{
-    // Reset the video to the beginning
-    video.set(CV_CAP_PROP_POS_FRAMES, 0);
-
-    cv::Mat frame;
-    uint32_t frame_count = 0;
-    while (video.read(frame))
-        ++frame_count;
-
-    // Reset the video again
-    video.set(CV_CAP_PROP_POS_FRAMES, 0);
-
-    return frame_count;
-}
-
-JaniceError janice_create_media(const char* filename,
-                                JaniceMedia* _media)
-{
-    JaniceMedia media = new JaniceMediaType();
-
-    // Copy over the filename
-    media->filename = new char[strlen(filename) + 1];
-    strcpy(media->filename, filename);
-    media->filename[strlen(filename)] = '\0';
-
-    // Initialize these to the image defaults to avoid an extra condition later
-    media->category = Image;
-    media->frames   = 1;
-
-    // To get the media dimensions we temporalily load either the image or the
-    // the first frame. This also checks if the filename is valid
-    Mat img = imread(filename, IMREAD_ANYCOLOR); // We use ANYCOLOR to load either RGB or Grayscale images
-    if (!img.data) { // Couldn't load as an image maybe it's a video
-        VideoCapture video(filename);
-        if (!video.isOpened()) {
-            janice_free_media(&media);
-            return JANICE_OPEN_ERROR;
-        }
-
-        bool got_frame = video.read(img);
-        if (!got_frame) {
-            janice_free_media(&media);
-            return JANICE_INVALID_MEDIA;
-        }
-
-        media->category = Video;
-        media->frames   = count_frames(video);
-    }
-
-    // Set the media dimensions
-    media->channels = (uint32_t) img.channels();
-    media->rows     = (uint32_t) img.rows;
-    media->cols     = (uint32_t) img.cols;
-
-    *_media = media;
-
-    return JANICE_SUCCESS;
-}
-
-JaniceError janice_media_get_iterator(JaniceConstMedia media, JaniceMediaIterator *_it)
+// non-api
+JaniceError janice_file_get_iterator(const char * _filename, JaniceMediaIterator *_it)
 {
     JaniceMediaIterator it = new JaniceMediaIteratorType();
 
-    it->filename = media->filename;
-    if (media->category == Video)
-        it->video.open(media->filename);
-
+    // defer initialization until the first get/advance call 
+    it->initialized = false;
+    it->filename = _filename;
+    
     *_it = it;
 
-    return JANICE_SUCCESS;
-}
-
-JaniceError janice_free_media(JaniceMedia* media)
-{
-    delete [] (*media)->filename;
-    delete (*media);
-    *media = nullptr;
 
     return JANICE_SUCCESS;
 }
+

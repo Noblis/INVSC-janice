@@ -41,6 +41,9 @@ JANICE_EXPORT JaniceError janice_free_image(JaniceImage* image);
 // Media Iterator
 
 typedef struct JaniceMediaIteratorType* JaniceMediaIterator;
+typedef JaniceMediaIterator* JanceMediaIterators;
+
+  
 
 JANICE_EXPORT JaniceError janice_media_it_next(JaniceMediaIterator it,
                                                JaniceImage* image);
@@ -57,40 +60,7 @@ JANICE_EXPORT JaniceError janice_media_it_tell(JaniceMediaIterator it,
 
 JANICE_EXPORT JaniceError janice_free_media_iterator(JaniceMediaIterator* it);
 
-// ----------------------------------------------------------------------------
-// Media
-
-enum JaniceMediaCategory
-{
-    Image,
-    Video
-};
-
-struct JaniceMediaType
-{
-    char* filename;
-    JaniceMediaCategory category;
-
-    uint32_t channels;
-    uint32_t rows;
-    uint32_t cols;
-    uint32_t frames;
-};
-
-typedef struct JaniceMediaType* JaniceMedia;
-typedef const struct JaniceMediaType *JaniceConstMedia;
-typedef JaniceMedia* JaniceMedias;
-typedef JaniceConstMedia* JaniceConstMedias;
-
-JANICE_EXPORT JaniceError janice_create_media(const char* filename,
-                                              JaniceMedia* media);
-
-JANICE_EXPORT JaniceError janice_media_get_iterator(JaniceConstMedia media,
-                                                    JaniceMediaIterator* it);
-
-JANICE_EXPORT JaniceError janice_free_media(JaniceMedia* media);
-
-// ----------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------
 
 #ifdef __cplusplus
 } // extern "C"
