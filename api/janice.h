@@ -9,7 +9,7 @@ extern "C" {
 
 #define JANICE_VERSION_MAJOR 4
 #define JANICE_VERSION_MINOR 0
-#define JANICE_VERSION_PATCH 0
+#define JANICE_VERSION_PATCH 1
 
 // ----------------------------------------------------------------------------
 // Initialization
@@ -70,12 +70,12 @@ typedef JaniceDetection* JaniceDetections;
 typedef JaniceConstDetection* JaniceConstDetections;
 
 // Functions
-JANICE_EXPORT JaniceError janice_create_detection(JaniceConstMedia media,
+JANICE_EXPORT JaniceError janice_create_detection(JaniceMediaIterator media,
                                                   const JaniceRect rect,
                                                   uint32_t frame,
                                                   JaniceDetection* detection);
 
-JANICE_EXPORT JaniceError janice_detect(JaniceConstMedia media,
+JANICE_EXPORT JaniceError janice_detect(JaniceMediaIterator media,
                                         uint32_t min_object_size,
                                         JaniceDetections* detections,
                                         uint32_t* num_detections);
@@ -157,7 +157,7 @@ typedef double JaniceSimilarity;
 
 JANICE_EXPORT JaniceError janice_verify(JaniceConstTemplate reference,
                                         JaniceConstTemplate verification,
-                                        JaniceSimilarity similarity);
+                                        JaniceSimilarity* similarity);
 
 // ----------------------------------------------------------------------------
 // Gallery
@@ -252,7 +252,7 @@ struct JaniceTemplateClusterItem
 typedef struct JaniceTemplateClusterItem* JaniceTemplateClusterItems;
 
 // Functions
-JANICE_EXPORT JaniceError janice_cluster_media(JaniceConstMedias input,
+JANICE_EXPORT JaniceError janice_cluster_media(JaniceMediaIterators input,
                                                const JaniceMediaIds input_ids,
                                                uint32_t num_inputs,
                                                uint32_t hint,

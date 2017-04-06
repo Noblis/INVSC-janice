@@ -53,7 +53,7 @@ enum JaniceError
     JANICE_NUM_ERRORS              // Utility to iterate over all errors
 };
 
-JANICE_EXPORT const char* janice_error_to_string(JaniceError error)
+static const char* janice_error_to_string(JaniceError error)
 {
     if      (error == JANICE_SUCCESS)                return "Success";
     else if (error == JANICE_UNKNOWN_ERROR)          return "Unknown error";
