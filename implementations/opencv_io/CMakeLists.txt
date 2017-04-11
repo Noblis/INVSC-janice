@@ -1,7 +1,10 @@
 # Build the opencv_io library. This library implements the interfaces in janice_io.h
 # To use it simply link it into your project
 
-find_package(OpenCV 3.0 REQUIRED)
+if (NOT OpenCV_FOUND) 
+  find_package(OpenCV 3 REQUIRED)
+endif(NOT OpenCV_FOUND)
+
 set(OpenCV_LIBS opencv_core opencv_highgui opencv_videoio opencv_imgcodecs)
 
 add_library(opencv_io SHARED opencv_io.cpp)
