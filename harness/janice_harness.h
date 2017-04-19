@@ -22,7 +22,7 @@
 
 JANICE_HARNESS_EXPORT void janice_cluster_files(const char * input_fname, const char * output_fname, float aggressiveness);
 
-JANICE_HARNESS_EXPORT void janice_batch_extract_templates(const char * input_fname, const char * output_fname);
+JANICE_HARNESS_EXPORT void janice_batch_extract_templates(const char * input_fname, const char * output_fname, int num_threads);
 
 JANICE_HARNESS_EXPORT void janice_batch_read_templates(const char * input_file, JaniceTemplates *output_file, JaniceTemplateIds * tids, int * output_count);
 

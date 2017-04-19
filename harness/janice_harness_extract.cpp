@@ -59,7 +59,7 @@ std::vector<JaniceTemplate> batch_extract_templates(const std::vector<std::strin
 }
 
 
-void janice_batch_extract_templates(const char * input_fname, const char * output_fname)
+void janice_batch_extract_templates(const char * input_fname, const char * output_fname, int nThreads)
 {
     // parse input json file
     std::ifstream fin;
@@ -95,7 +95,7 @@ void janice_batch_extract_templates(const char * input_fname, const char * outpu
 
     }
 
-    int thread_count = std::thread::hardware_concurrency();
+    int thread_count = nThreads;
     int block_size = ceil(float(fnames.size()) / float(thread_count));
     
 

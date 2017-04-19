@@ -1,8 +1,7 @@
+set(JANICE_WITH_EVAL_HARNESS ON CACHE BOOL "Compile evaluation library/utilities")
 
-option(JANICE_WTIH_EVAL_HARNESS "Compile evaluation library/utilities" ON)
-
-if ((${JANICE_WITH_EVAL_HARNESS}) AND (JANICE_IO_IMPLEMENTATION) AND (JANICE_IMPLEMENTATION))
-# target for the eval harness library
+if (${JANICE_WITH_EVAL_HARNESS} AND (JANICE_IO_IMPLEMENTATION) AND (JANICE_IMPLEMENTATION))
+   # target for the eval harness library
    add_library(janice_harness SHARED janice_harness_cluster.cpp janice_harness_extract.cpp)
    include_directories(${CMAKE_CURRENT_LIST_DIR})
 

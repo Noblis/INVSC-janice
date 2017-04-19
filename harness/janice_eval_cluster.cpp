@@ -1,8 +1,7 @@
 #include "janice_harness.h"
 
-
 #include <iostream>
-
+#include <thread>
 
 int main(int argc, char ** argv)
 {
@@ -11,12 +10,17 @@ int main(int argc, char ** argv)
     // 2 -- input file
     // 3 -- output file
     // 4 -- distance threshold
+    // 5 -- optional, nThreads
 
     if (argc < 5) {
-        std::cerr << "Insufficient arguments, expected usage is: janice_eval_cluster sdk_path input_filename output_filename threshold" << std::endl;
+        std::cerr << "Insufficient arguments, expected usage is: janice_eval_cluster sdk_path input_filename output_filename threshold (nThreads)" << std::endl;
         return -1;
     }
-    int rc = janice_initialize(argv[1], "", "", -1);
+    int nThreads = std::thread::hardware_concurrency();
+    if (argc >= 6)
+        nThreads = atoi(argv[5]);
+
+    int rc = janice_initialize(argv[1], "", "", nThreads,nullptr,0);
     if (rc != JANICE_SUCCESS) {
         std::cerr << "Initialization failed!" << std::endl;
         return -1;
