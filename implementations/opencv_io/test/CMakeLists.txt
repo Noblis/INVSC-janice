@@ -3,10 +3,8 @@ if (UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
-
 # Gather all the tests and then iterate over them
 file(GLOB TESTS *.cpp)
-#file(GLOB TESTS image_io_unit_test.cpp)
 
 foreach(TEST ${TESTS})
   # Get the name of the file without the extension
@@ -20,8 +18,8 @@ foreach(TEST ${TESTS})
            COMMAND ${TEST_NAME}
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-  # Link and install the executable against the opencv_io library
-  target_link_libraries(${TEST_NAME} opencv_io)
+  # Link and install the executable against the janice_io_opencv library
+  target_link_libraries(${TEST_NAME} janice_io_opencv)
   install(TARGETS ${TEST_NAME}
           RUNTIME DESTINATION bin)
 endforeach()

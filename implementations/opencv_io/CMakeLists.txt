@@ -1,4 +1,4 @@
-# Build the opencv_io library. This library implements the interfaces in janice_io.h
+# Build the janice_io_opencv library. This library implements methods to create media iterators
 # To use it simply link it into your project
 
 if (NOT OpenCV_FOUND) 
@@ -7,16 +7,20 @@ endif(NOT OpenCV_FOUND)
 
 set(OpenCV_LIBS opencv_core opencv_highgui opencv_videoio opencv_imgcodecs)
 
-add_library(opencv_io SHARED opencv_io.cpp)
-set_target_properties(opencv_io PROPERTIES
-                      DEFINE_SYMBOL JANICE_LIBRARY
-                      VERSION ${JANICE_VERSION_MAJOR}.${JANICE_VERSION_MINOR}.${JANICE_VERSION_PATCH}
-                      SOVERSION ${JANICE_VERSION_MAJOR}.${JANICE_VERSION_MINOR})
-target_link_libraries(opencv_io ${OpenCV_LIBS}) 
+include_directories(.)
 
-install(TARGETS opencv_io RUNTIME DESTINATION bin
-                          LIBRARY DESTINATION lib
-                          ARCHIVE DESTINATION lib)
+add_library(janice_io_opencv SHARED janice_io_opencv.cpp)
+set_target_properties(janice_io_opencv PROPERTIES
+                                       DEFINE_SYMBOL JANICE_LIBRARY
+                                       VERSION ${JANICE_VERSION_MAJOR}.${JANICE_VERSION_MINOR}.${JANICE_VERSION_PATCH}
+                                       SOVERSION ${JANICE_VERSION_MAJOR}.${JANICE_VERSION_MINOR})
+target_link_libraries(janice_io_opencv ${OpenCV_LIBS})
+
+install(TARGETS janice_io_opencv RUNTIME DESTINATION bin
+                                 LIBRARY DESTINATION lib
+                                 ARCHIVE DESTINATION lib)
+
+install(FILES janice_io_opencv.h DESTINATION include/janice)
 
 # Optionally, build unit tests
 if (${BUILD_TESTING})

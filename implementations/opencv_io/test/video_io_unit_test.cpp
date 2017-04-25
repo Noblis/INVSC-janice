@@ -1,4 +1,4 @@
-#include <janice_io.h>
+#include <janice_io_opencv.h>
 
 #include <string>
 #include <cstring>
@@ -45,11 +45,10 @@ int check_media_iterator_next(JaniceMediaIterator it)
     uint32_t frame, frame_count = 0;
 
     while (true) {
-        JaniceError err = janice_media_it_next(it, &image);
+        JaniceError err = it->next(it, &image);
 
         JaniceError expected = JANICE_SUCCESS;
         ++frame_count;
-
         
         // On the last frame we loop back to the beginning
         if (frame_count == 90) {
@@ -62,7 +61,7 @@ int check_media_iterator_next(JaniceMediaIterator it)
             []() {})
 
         // Next, query the iterator for it's internal frame count
-        JANICE_CALL(janice_media_it_tell(it, &frame),
+        JANICE_CALL(it->tell(it, &frame),
                     // Cleanup
                     [&]() {
                         janice_free_image(&image);
@@ -79,14 +78,12 @@ int check_media_iterator_next(JaniceMediaIterator it)
     return 0;
 }
 
-#define CHECKED_RANDOM_SEEK(desired, actual)      \
-JANICE_CALL(janice_media_it_seek(it, desired),    \
-            [](){})                               \
-JANICE_CALL(janice_media_it_tell(it, &actual),    \
-            [](){})                               \
-CHECK(desired == actual,                          \
-      "Seeked frame does not match actual frame", \
-      [](){})
+#define CHECKED_RANDOM_SEEK(desired, actual)                                     \
+{                                                                                \
+    JANICE_CALL(it->seek(it, desired), [](){})                                   \
+    JANICE_CALL(it->tell(it, &actual), [](){})                                   \
+    CHECK(desired == actual, "Seeked frame does not match actual frame", [](){}) \
+}
 
 // Check the iterator seek and tell functions
 int check_media_iterator_seek(JaniceMediaIterator it)
@@ -104,7 +101,7 @@ int check_media_iterator_seek(JaniceMediaIterator it)
     CHECKED_RANDOM_SEEK(89, frame)
 
     // And let's do an out of bounds seek
-    CHECK(janice_media_it_seek(it, 100) == JANICE_OUT_OF_BOUNDS_ACCESS,
+    CHECK(it->seek(it, 100) == JANICE_OUT_OF_BOUNDS_ACCESS,
           "Out of bounds seek returned incorrect error",
           [](){})
 
@@ -114,21 +111,21 @@ int check_media_iterator_seek(JaniceMediaIterator it)
 int check_media_iterator(const char* media)
 {
     JaniceMediaIterator it = nullptr;
-    JANICE_CALL(janice_file_get_iterator(media, &it),
+    JANICE_CALL(janice_io_opencv_create_media_iterator(media, &it),
                 // Cleanup
                 []() {})
 
     if (check_media_iterator_next(it) == 1) {
-        janice_free_media_iterator(&it);
+        janice_io_opencv_free_media_iterator(&it);
         return 1;
     }
 
     if (check_media_iterator_seek(it) == 1) {
-        janice_free_media_iterator(&it);
+        janice_io_opencv_free_media_iterator(&it);
         return 1;
     }
 
-    JANICE_CALL(janice_free_media_iterator(&it),
+    JANICE_CALL(janice_io_opencv_free_media_iterator(&it),
                 // Cleanup
                 [](){})
 
@@ -138,6 +135,7 @@ int check_media_iterator(const char* media)
 // ----------------------------------------------------------------------------
 // Check image pixel values. Due to lossy compression in video codecs, we can't
 // reliably check the exact value, so use a 10 unit tolerance.
+
 static inline int check_pixel(JaniceConstImage image,
                                uint32_t x,
                                uint32_t y,
@@ -229,7 +227,7 @@ int expected_frame_colors(int frame_number, uint8_t * r, uint8_t * g, uint8_t * 
 int check_media_pixel_values(const char* media)
 {
     JaniceMediaIterator it = nullptr;
-    JANICE_CALL(janice_file_get_iterator(media, &it),
+    JANICE_CALL(janice_io_opencv_create_media_iterator(media, &it),
                 // Cleanup
                 [](){})
 
@@ -242,14 +240,14 @@ int check_media_pixel_values(const char* media)
     uint8_t r, g, b;
 
     while (true) {
-        JaniceError err = janice_media_it_next(it, &image);
+        JaniceError err = it->next(it, &image);
         JaniceError expected = JANICE_SUCCESS;
 
         ++frame_count;
 
         auto cleanup = [&]() {
             janice_free_image(&image);
-            janice_free_media_iterator(&it);
+            janice_io_opencv_free_media_iterator(&it);
         };
 
         // On the last frame we loop back to the beginning
@@ -284,7 +282,7 @@ int check_media_pixel_values(const char* media)
                 break;
     }
 
-    janice_free_media_iterator(&it);
+    janice_io_opencv_free_media_iterator(&it);
 
     return 0;
 }
