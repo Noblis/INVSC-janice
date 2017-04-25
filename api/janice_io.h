@@ -40,29 +40,20 @@ JANICE_EXPORT JaniceError janice_free_image(JaniceImage* image);
 // ----------------------------------------------------------------------------
 // Media Iterator
 
+typedef void* JaniceMediaIteratorState;
+
+struct JANICE_EXPORT JaniceMediaIteratorType
+{
+    JaniceError (*next)(JaniceMediaIteratorType*, JaniceImage*);
+    JaniceError (*seek)(JaniceMediaIteratorType*, uint32_t);
+    JaniceError (* get)(JaniceMediaIteratorType*, JaniceImage*, uint32_t);
+    JaniceError (*tell)(JaniceMediaIteratorType*, uint32_t*);
+
+    JaniceMediaIteratorState _internal;
+};
+
 typedef struct JaniceMediaIteratorType* JaniceMediaIterator;
 typedef JaniceMediaIterator* JaniceMediaIterators;
-
-  
-
-JANICE_EXPORT JaniceError janice_media_it_next(JaniceMediaIterator it,
-                                               JaniceImage* image);
-
-JANICE_EXPORT JaniceError janice_media_it_seek(JaniceMediaIterator it,
-                                               uint32_t frame);
-
-JANICE_EXPORT JaniceError janice_media_it_get(JaniceMediaIterator it,
-                                              JaniceImage* image,
-                                              uint32_t frame);
-
-JANICE_EXPORT JaniceError janice_media_it_tell(JaniceMediaIterator it,
-                                               uint32_t* frame);
-
-JANICE_EXPORT JaniceError janice_free_media_iterator(JaniceMediaIterator* it);
-
-// ----------------------------------------------------------------------------
-JANICE_EXPORT JaniceError janice_file_get_iterator(const char * _filename, JaniceMediaIterator *_it);
-
 
 #ifdef __cplusplus
 } // extern "C"
