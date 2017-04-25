@@ -56,7 +56,7 @@ int check_media_iterator(const char* filename)
           })
 
     // We will check the actual image later. Just delete it now
-    JANICE_CALL(janice_free_image(&image),
+    JANICE_CALL(it->free_image(&image),
                 // Cleanup
                 [&]() {
                     janice_io_opencv_free_media_iterator(&it);
@@ -98,42 +98,18 @@ static inline int check_pixel(JaniceConstImage image,
                                uint8_t green,
                                uint8_t blue)
 {
-    // Variable to hold pixel values
-    uint8_t pixel;
-
-    // Get the blue pixel first, remember OpenCV stores images in BGR order
-    JANICE_CALL(janice_image_access(image,
-                                    0, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                // Cleanup
-                [](){})
-    CHECK(pixel == blue,
+    // Check the blue pixel first, remember OpenCV stores images in BGR order
+    CHECK(janice_image_access(image, 0, y, x) == blue,
           "Blue pixel doesn't match.",
           [](){})
 
-    // Get the green pixel
-    JANICE_CALL(janice_image_access(image,
-                                    1, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                // Cleanup
-                [](){})
-    CHECK(pixel == green,
+    // Check the green pixel
+    CHECK(janice_image_access(image, 1, y, x) == green,
           "Green pixel doesn't match.",
           [](){})
 
-    // Get the red pixel
-    JANICE_CALL(janice_image_access(image,
-                                    2, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                // Cleanup
-                [](){})
-    CHECK(pixel == red,
+    // Check the red pixel
+    CHECK(janice_image_access(image, 2, y, x) == red,
           "Red pixel doesn't match.",
           [](){})
 
@@ -159,7 +135,7 @@ int check_media_pixel_values(const char* filename)
 
     // Utility function to free image and iterator memory if a check fails
     auto cleanup = [&]() {
-        janice_free_image(&image);
+        it->free_image(&image);
         janice_io_opencv_free_media_iterator(&it);
     };
 

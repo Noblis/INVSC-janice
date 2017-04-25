@@ -60,16 +60,16 @@ int check_media_iterator_next(JaniceMediaIterator it)
             "Next should return JANICE_SUCCESS except for on the last frame",
             []() {})
 
+        auto cleanup = [&]() {
+            it->free_image(&image);
+        };
+
         // Next, query the iterator for it's internal frame count
         JANICE_CALL(it->tell(it, &frame),
                     // Cleanup
-                    [&]() {
-                        janice_free_image(&image);
-        })
+                    cleanup)
 
-        JANICE_CALL(janice_free_image(&image),
-                    // Cleanup
-                    [](){})
+        cleanup();
 
         if (expected == JANICE_MEDIA_AT_END)
             break;
@@ -146,49 +146,22 @@ static inline int check_pixel(JaniceConstImage image,
     // Variable to hold pixel values
     uint8_t pixel;
 
-    // Get the blue pixel first, remember OpenCV stores images in BGR order
-    JANICE_CALL(janice_image_access(image,
-                                    0, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                                    // Cleanup
-                                    []() {})
+    // Check the blue pixel first, remember OpenCV stores images in BGR order
+    CHECK(abs(int(janice_image_access(image, 0, y, x)) - int(blue)) < 10,
+          "Blue pixel doesn't match.",
+          // Cleanup
+          [](){})
 
-    int pixel_delta = abs(int(pixel) - int(blue));
+    // Check the green pixel
+    CHECK(abs(int(janice_image_access(image, 1, y, x)) - int(green)) < 10,
+          "Green pixel doesn't match.",
+          // Cleanup
+          [](){})
 
-    CHECK(pixel_delta < 10,
-        "Blue pixel doesn't match.",
-        []() {})
-
-        // Get the green pixel
-    JANICE_CALL(janice_image_access(image,
-                                    1, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                                    // Cleanup
-                                    []() {});
-    
-    pixel_delta = abs(int(pixel) - int(green));
-
-    CHECK(pixel_delta < 10,
-        "Green pixel doesn't match.",
-        []() {})
-
-        // Get the red pixel
-    JANICE_CALL(janice_image_access(image,
-                                    2, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                                    // Cleanup
-                                    []() {})
-
-    pixel_delta = abs(int(pixel) - int(red));
-
-    CHECK(pixel_delta < 10,
+    // Check the red pixel
+    CHECK(abs(int(janice_image_access(image, 2, y, x)) - int(red)) < 10,
           "Red pixel doesn't match.",
+          // Cleanup
           [](){})
 
     return 0;
@@ -208,7 +181,7 @@ uint8_t frame_color_lookup[9][3] =
 };
 
 // look up expecteed color for the specified frame of test video
-int expected_frame_colors(int frame_number, uint8_t * r, uint8_t * g, uint8_t * b)
+int expected_frame_colors(int frame_number, uint8_t* r, uint8_t* g, uint8_t* b)
 {
     // past end of video 
     if (frame_number >= 90)
@@ -246,7 +219,7 @@ int check_media_pixel_values(const char* media)
         ++frame_count;
 
         auto cleanup = [&]() {
-            janice_free_image(&image);
+            it->free_image(&image);
             janice_io_opencv_free_media_iterator(&it);
         };
 
@@ -257,29 +230,30 @@ int check_media_pixel_values(const char* media)
         }
 
         CHECK(err == expected,
-            "Next should return JANICE_SUCCESS except for on the last frame",
-            []() {})
+              "Next should return JANICE_SUCCESS except for on the last frame",
+              [](){})
 
-	  if (expected == JANICE_MEDIA_AT_END) {
-	    janice_free_image(&image);
+        if (expected == JANICE_MEDIA_AT_END) {
+            it->free_image(&image);
             break;
-	 }
-
+        }
 
         // verify that the frame number we are using is correct, pull expected rgb values for this frame
-        CHECK(expected_frame_colors(frame_count - 1, &r, &g, &b) == 1, "Advanced past expected end of video, for unknown reasons.", []() {})
+        CHECK(expected_frame_colors(frame_count - 1, &r, &g, &b) == 1,
+              "Advanced past expected end of video, for unknown reasons.",
+              // Cleanup
+              cleanup)
 
         // check that actual and expected colors match at some point in the image
         CHECK(check_pixel(image, 50, 50, r, g, b) == 0,
-            "Pixel mismatch",
-            cleanup)
+              "Pixel mismatch",
+              // Cleanup
+              cleanup)
 
-        JANICE_CALL(janice_free_image(&image),
-            // Cleanup
-            []() {})
+        cleanup();
 
-            if (expected == JANICE_MEDIA_AT_END)
-                break;
+        if (expected == JANICE_MEDIA_AT_END)
+            break;
     }
 
     janice_io_opencv_free_media_iterator(&it);

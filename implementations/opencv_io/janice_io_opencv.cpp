@@ -194,6 +194,15 @@ JaniceError tell(JaniceMediaIterator it, uint32_t* frame)
     return JANICE_SUCCESS;
 }
 
+JaniceError free_image(JaniceImage* image)
+{
+    if ((*image)->owner)
+        free((*image)->data);
+    delete (*image);
+
+    return JANICE_SUCCESS;
+}
+
 // ----------------------------------------------------------------------------
 // OpenCV I/O
 
@@ -205,6 +214,8 @@ JaniceError janice_io_opencv_create_media_iterator(const char* filename, JaniceM
     it->seek = &seek;
     it->get  = &get;
     it->tell = &tell;
+
+    it->free_image = &free_image;
 
     JaniceMediaIteratorStateType* state = new JaniceMediaIteratorStateType();
     state->initialized = false;
