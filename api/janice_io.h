@@ -29,13 +29,10 @@ struct JaniceImageType
 typedef struct JaniceImageType* JaniceImage;
 typedef const struct JaniceImageType* JaniceConstImage;
 
-JANICE_EXPORT JaniceError janice_image_access(JaniceConstImage image,
-                                              uint32_t channel,
-                                              uint32_t row,
-                                              uint32_t col,
-                                              uint8_t* value);
-
-JANICE_EXPORT JaniceError janice_free_image(JaniceImage* image);
+inline uint8_t janice_image_access(JaniceConstImage image, uint32_t channel, uint32_t row, uint32_t col)
+{
+    return image->data[(row * image->cols) + (col * image->channels) + channel];
+}
 
 // ----------------------------------------------------------------------------
 // Media Iterator
@@ -48,6 +45,8 @@ struct JANICE_EXPORT JaniceMediaIteratorType
     JaniceError (*seek)(JaniceMediaIteratorType*, uint32_t);
     JaniceError (* get)(JaniceMediaIteratorType*, JaniceImage*, uint32_t);
     JaniceError (*tell)(JaniceMediaIteratorType*, uint32_t*);
+
+    JaniceError (*free_image)(JaniceImage*);
 
     JaniceMediaIteratorState _internal;
 };
