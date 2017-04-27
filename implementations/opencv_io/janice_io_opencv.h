@@ -10,8 +10,6 @@ extern "C" {
 JANICE_EXPORT JaniceError janice_io_opencv_create_media_iterator(const char* filename,
                                                                  JaniceMediaIterator* it);
 
-JANICE_EXPORT JaniceError janice_io_opencv_free_media_iterator(JaniceMediaIterator* it);
-
 #ifdef __cplusplus
 } // extern "C"
 #endif

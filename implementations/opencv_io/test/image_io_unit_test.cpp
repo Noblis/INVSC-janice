@@ -52,38 +52,38 @@ int check_media_iterator(const char* filename)
           "Calling next on a media iterator for an image should return JANICE_MEDIA_AT_END",
           // Cleanup
           [&]() {
-              janice_io_opencv_free_media_iterator(&it);
+              it->free(&it);
           })
 
     // We will check the actual image later. Just delete it now
     JANICE_CALL(it->free_image(&image),
                 // Cleanup
                 [&]() {
-                    janice_io_opencv_free_media_iterator(&it);
+                    it->free(&it);
                 })
 
     CHECK(it->seek(it, 100) == JANICE_INVALID_MEDIA,
           "Calling seek on a media iterator for an image should always return JANICE_INVALID_MEDIA",
           // Cleanup
           [&]() {
-            janice_io_opencv_free_media_iterator(&it);
+            it->free(&it);
           })
 
     CHECK(it->get(it, &image, 100) == JANICE_INVALID_MEDIA,
           "Calling get on a media iterator for an image should always return JANICE_INVALID_MEDIA",
           // Cleanup
           [&]() {
-            janice_io_opencv_free_media_iterator(&it);
+            it->free(&it);
           })
 
     CHECK(it->tell(it, &frame) == JANICE_INVALID_MEDIA,
           "Calling tell on a media iterator for an image should always return JANICE_INVALID_MEDIA",
           // Cleanup
           [&]() {
-            janice_io_opencv_free_media_iterator(&it);
+            it->free(&it);
           })
 
-    janice_io_opencv_free_media_iterator(&it);
+    it->free(&it);
 
     return 0;
 }
@@ -130,13 +130,13 @@ int check_media_pixel_values(const char* filename)
           "Calling next on a media iterator for an image should return JANICE_MEDIA_AT_END",
           // Cleanup
           [&]() {
-              janice_io_opencv_free_media_iterator(&it);
+              it->free(&it);
           })
 
     // Utility function to free image and iterator memory if a check fails
     auto cleanup = [&]() {
         it->free_image(&image);
-        janice_io_opencv_free_media_iterator(&it);
+        it->free(&it);
     };
 
     // Our test image is a 3x3 grid of 100px x 100px blocks, each of which

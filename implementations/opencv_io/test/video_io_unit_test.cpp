@@ -116,16 +116,16 @@ int check_media_iterator(const char* media)
                 []() {})
 
     if (check_media_iterator_next(it) == 1) {
-        janice_io_opencv_free_media_iterator(&it);
+        it->free(&it);
         return 1;
     }
 
     if (check_media_iterator_seek(it) == 1) {
-        janice_io_opencv_free_media_iterator(&it);
+        it->free(&it);
         return 1;
     }
 
-    JANICE_CALL(janice_io_opencv_free_media_iterator(&it),
+    JANICE_CALL(it->free(&it),
                 // Cleanup
                 [](){})
 
@@ -220,7 +220,7 @@ int check_media_pixel_values(const char* media)
 
         auto cleanup = [&]() {
             it->free_image(&image);
-            janice_io_opencv_free_media_iterator(&it);
+            it->free(&it);
         };
 
         // On the last frame we loop back to the beginning
@@ -256,7 +256,7 @@ int check_media_pixel_values(const char* media)
             break;
     }
 
-    janice_io_opencv_free_media_iterator(&it);
+    it->free(&it);
 
     return 0;
 }
@@ -266,7 +266,7 @@ int check_media_pixel_values(const char* media)
 
 int main(int, char*[])
 {
-    const char * test_video = "media/test_video.mp4";
+    const char* test_video = "media/test_video.mp4";
 
     // Check that an iterator can be created and its functions work as expected
     // for a video

@@ -12,9 +12,14 @@ extern "C" {
 #endif
 
 // ----------------------------------------------------------------------------
-// Image
+// Buffer
 
 typedef uint8_t* JaniceBuffer;
+
+JANICE_EXPORT JaniceError janice_free_buffer(JaniceBuffer* buffer);
+
+// ----------------------------------------------------------------------------
+// Image
 
 struct JaniceImageType
 {
@@ -47,6 +52,7 @@ struct JANICE_EXPORT JaniceMediaIteratorType
     JaniceError (*tell)(JaniceMediaIteratorType*, uint32_t*);
 
     JaniceError (*free_image)(JaniceImage*);
+    JaniceError (*free)(JaniceMediaIteratorType**);
 
     JaniceMediaIteratorState _internal;
 };

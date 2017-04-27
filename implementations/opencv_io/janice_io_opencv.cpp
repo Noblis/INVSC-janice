@@ -203,6 +203,15 @@ JaniceError free_image(JaniceImage* image)
     return JANICE_SUCCESS;
 }
 
+JaniceError free_iterator(JaniceMediaIterator* it)
+{
+    delete (JaniceMediaIteratorStateType*) (*it)->_internal;
+    delete (*it);
+    *it = nullptr;
+
+    return JANICE_SUCCESS;
+}
+
 // ----------------------------------------------------------------------------
 // OpenCV I/O
 
@@ -216,6 +225,7 @@ JaniceError janice_io_opencv_create_media_iterator(const char* filename, JaniceM
     it->tell = &tell;
 
     it->free_image = &free_image;
+    it->free       = &free_iterator;
 
     JaniceMediaIteratorStateType* state = new JaniceMediaIteratorStateType();
     state->initialized = false;
@@ -224,15 +234,6 @@ JaniceError janice_io_opencv_create_media_iterator(const char* filename, JaniceM
     it->_internal = (void*) (state);
 
     *_it = it;
-
-    return JANICE_SUCCESS;
-}
-
-JaniceError janice_io_opencv_free_media_iterator(JaniceMediaIterator *it)
-{
-    delete (JaniceMediaIteratorStateType*) (*it)->_internal;
-    delete (*it);
-    *it = nullptr;
 
     return JANICE_SUCCESS;
 }
