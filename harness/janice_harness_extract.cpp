@@ -20,7 +20,7 @@ std::vector<JaniceTemplate> batch_extract_templates(const std::vector<std::strin
         if (i >= fnames.size())
             std::cerr << "Outo f bounds index: "  << i << " vs. fnames size: " << fnames.size() << std::endl;
 
-        JaniceError ferr = janice_file_get_iterator(fnames[i].c_str(), &it);
+        JaniceError ferr = janice_io_opencv_create_media_iterator(fnames[i].c_str(), &it);
         if (ferr != JANICE_SUCCESS) {
             std::cerr << "failed to create file iterator for index " << i << " name: " << fnames[i] << std::endl;
             out.push_back(nullptr);
@@ -38,7 +38,7 @@ std::vector<JaniceTemplate> batch_extract_templates(const std::vector<std::strin
             std::cerr << "Failed to create detection for index: " << i << " fname: " << fnames[i] << std::endl;
             std::cerr << janice_error_to_string(err) << std::endl;
             out.push_back(nullptr);
-            janice_free_media_iterator(&it);
+	    it->free(&it);
             continue;
         }
 
@@ -49,7 +49,7 @@ std::vector<JaniceTemplate> batch_extract_templates(const std::vector<std::strin
             tmpl = nullptr;
         }
 
-        janice_free_media_iterator(&it);
+	it->free(&it);
         janice_free_detection(&detection);
 
         out.push_back(tmpl);

@@ -4,6 +4,7 @@
 
 #include "janice.h"
 #include "janice_io.h"
+#include "janice_io_opencv.h"
 
 #if defined JANICE_HARNESS_LIBRARY
 #  if defined _WIN32 || defined __CYGWIN__
