@@ -4,7 +4,7 @@ if (UNIX)
 endif()
 
 # Gather all the tests and then iterate over them
-file(GLOB TESTS *.cpp)
+file(GLOB TESTS image_io_unit_test.cpp)
 
 foreach(TEST ${TESTS})
   # Get the name of the file without the extension
