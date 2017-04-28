@@ -8,8 +8,8 @@ serves three purposes:
 3. It allows implementations to be "future-proof" with regards to future developments of image or video formats
 
 To accomplish this goal the API defines a simple interface of two structures,
-[JaniceImageType](structs.md#JaniceImage) and 
-[JaniceMediaType](structs.md#JaniceMedia) which correspond to
+[JaniceImageType](structs.md#JaniceImageType) and 
+[JaniceMediaIteratorType](structs.md#JaniceMediaIteratorType) which correspond to
 a single image or frame and an entire video respectively. These interfaces
 allow pixel-level access for implementations and can be changed independently
 to work with new formats.

@@ -20,8 +20,8 @@ This function is reentrant.
 
 Name      | Type                                                                   | Description
 --------- | ---------------------------------------------------------------------- | -----------
-tmpls     | [JaniceConstTemplates](../enrollment/typedefs.md#JaniceConstTemplates) | An array of templates to add to the gallery
-ids       | const [JaniceTemplateIds](typedefs.md#JaniceTemplateIds)               | A set of unique identifiers to associate with the input templates. The *ith* id corresponds to the *ith* input template.
+tmpls     | [JaniceConstTemplates](../enrollment/typedefs.md#JaniceConstTemplates) | An array of templates to add to the gallery. This can be NULL, which should create an empty gallery.
+ids       | const [JaniceTemplateIds](typedefs.md#JaniceTemplateIds)               | A set of unique identifiers to associate with the input templates. The *ith* id corresponds to the *ith* input template. This can be NULL, which should create an empty gallery.
 num_tmpls | uint32_t                                                               | The number of templates in the array.
 gallery   | [JaniceGallery\*](typedefs.md#JaniceGallery)                           | An uninitialized gallery object.
 
@@ -37,6 +37,27 @@ JaniceGallery gallery = NULL; // best practice to initialize to NULL
 if (janice_create_gallery(tmpls, ids, &gallery) != JANICE_SUCCESS)
     // ERROR!
 ```
+
+## janice_gallery_reserve {: #JaniceGalleryReserve }
+
+Reserve space in a gallery for N templates.
+
+#### Signature {: #JaniceGalleryReserveSignature }
+
+```
+JANICE_EXPORT JaniceError janice_gallery_reserve(size_t n);
+```
+
+#### Thread Safety {: #JaniceGalleryReserveThreadSafety }
+
+This function is reentrant.
+
+#### Parameters {: #JaniceGalleryReserveParameters }
+
+Name | Type   | Description
+---- | ------ | -----------
+n    | size_t | The number of templates to reserve space for
+
 
 ## janice_gallery_insert {: #JaniceGalleryInsert }
 

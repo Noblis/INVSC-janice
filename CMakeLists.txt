@@ -25,6 +25,7 @@ set(JANICE_IO_IMPLEMENTATION CACHE STRING "A path to a library implementating th
 
 # Include the API header files
 include_directories(api)
+install(FILES api/janice.h api/janice_io.h api/janice_error.h DESTINATION include/janice)
 
 # Optionally include another language interface
 add_subdirectory(interfaces)

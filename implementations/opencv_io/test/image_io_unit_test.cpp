@@ -1,4 +1,4 @@
-#include <janice_io.h>
+#include <janice_io_opencv.h>
 
 #include <string>
 #include <cstring>
@@ -36,85 +36,54 @@
 using namespace std;
 
 // ----------------------------------------------------------------------------
-// Check basic media properties
-
-int check_media_basics(JaniceConstMedia media)
-{
-    CHECK(strncmp(media->filename, "media/test_image.png", 20) == 0, // condition
-          "Media filename != 'media/test_image.png'", // message
-          [](){}) // cleanup function
-
-    CHECK(media->category == Image,
-          "Media category != Image",
-          [](){})
-
-    CHECK(media->channels == 3,
-          "Media channels != 3",
-          [](){})
-
-    CHECK(media->rows == 300,
-          "Media rows != 300",
-          [](){})
-
-    CHECK(media->cols == 300,
-          "Media columns != 300",
-          [](){})
-    CHECK(media->frames == 1,
-          "Media frames != 1",
-          [](){})
-
-    return 0;
-}
-
-// ----------------------------------------------------------------------------
 // Check media iterator
 
-int check_media_iterator(JaniceConstMedia media)
+int check_media_iterator(const char* filename)
 {
     JaniceMediaIterator it = nullptr;
-    JANICE_CALL(janice_media_get_iterator(media, &it),
+    JANICE_CALL(janice_io_opencv_create_media_iterator(filename, &it),
                 // Cleanup
                 [](){})
 
     // Variables to be filled during iterator calls
     JaniceImage image = nullptr;
     uint32_t frame;
-
-    CHECK(janice_media_it_next(it, &image) == JANICE_MEDIA_AT_END,
+    CHECK(it->next(it, &image) == JANICE_MEDIA_AT_END,
           "Calling next on a media iterator for an image should return JANICE_MEDIA_AT_END",
           // Cleanup
           [&]() {
-              janice_free_media_iterator(&it);
+              it->free(&it);
           })
 
     // We will check the actual image later. Just delete it now
-    JANICE_CALL(janice_free_image(&image),
+    JANICE_CALL(it->free_image(&image),
                 // Cleanup
                 [&]() {
-                    janice_free_media_iterator(&it);
+                    it->free(&it);
                 })
 
-    CHECK(janice_media_it_seek(it, 100) == JANICE_INVALID_MEDIA,
+    CHECK(it->seek(it, 100) == JANICE_INVALID_MEDIA,
           "Calling seek on a media iterator for an image should always return JANICE_INVALID_MEDIA",
           // Cleanup
           [&]() {
-            janice_free_media_iterator(&it);
+            it->free(&it);
           })
 
-    CHECK(janice_media_it_get(it, &image, 100) == JANICE_INVALID_MEDIA,
+    CHECK(it->get(it, &image, 100) == JANICE_INVALID_MEDIA,
           "Calling get on a media iterator for an image should always return JANICE_INVALID_MEDIA",
           // Cleanup
           [&]() {
-            janice_free_media_iterator(&it);
+            it->free(&it);
           })
 
-    CHECK(janice_media_it_tell(it, &frame) == JANICE_INVALID_MEDIA,
+    CHECK(it->tell(it, &frame) == JANICE_INVALID_MEDIA,
           "Calling tell on a media iterator for an image should always return JANICE_INVALID_MEDIA",
           // Cleanup
           [&]() {
-            janice_free_media_iterator(&it);
+            it->free(&it);
           })
-    janice_free_media_iterator(&it);
+
+    it->free(&it);
 
     return 0;
 }
@@ -129,69 +98,45 @@ static inline int check_pixel(JaniceConstImage image,
                                uint8_t green,
                                uint8_t blue)
 {
-    // Variable to hold pixel values
-    uint8_t pixel;
-
-    // Get the blue pixel first, remember OpenCV stores images in BGR order
-    JANICE_CALL(janice_image_access(image,
-                                    0, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                // Cleanup
-                [](){})
-    CHECK(pixel == blue,
+    // Check the blue pixel first, remember OpenCV stores images in BGR order
+    CHECK(janice_image_access(image, 0, y, x) == blue,
           "Blue pixel doesn't match.",
           [](){})
 
-    // Get the green pixel
-    JANICE_CALL(janice_image_access(image,
-                                    1, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                // Cleanup
-                [](){})
-    CHECK(pixel == green,
+    // Check the green pixel
+    CHECK(janice_image_access(image, 1, y, x) == green,
           "Green pixel doesn't match.",
           [](){})
 
-    // Get the red pixel
-    JANICE_CALL(janice_image_access(image,
-                                    2, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                // Cleanup
-                [](){})
-    CHECK(pixel == red,
+    // Check the red pixel
+    CHECK(janice_image_access(image, 2, y, x) == red,
           "Red pixel doesn't match.",
           [](){})
 
     return 0;
 }
 
-int check_media_pixel_values(JaniceConstMedia media)
+int check_media_pixel_values(const char* filename)
 {
     JaniceMediaIterator it = nullptr;
-    JANICE_CALL(janice_media_get_iterator(media, &it),
+    JANICE_CALL(janice_io_opencv_create_media_iterator(filename, &it),
                 // Cleanup
                 [](){})
 
     // Variables to be filled during iterator calls
     JaniceImage image = nullptr;
 
-    CHECK(janice_media_it_next(it, &image) == JANICE_MEDIA_AT_END,
+    CHECK(it->next(it, &image) == JANICE_MEDIA_AT_END,
           "Calling next on a media iterator for an image should return JANICE_MEDIA_AT_END",
           // Cleanup
           [&]() {
-              janice_free_media_iterator(&it);
+              it->free(&it);
           })
 
     // Utility function to free image and iterator memory if a check fails
     auto cleanup = [&]() {
-        janice_free_image(&image);
-        janice_free_media_iterator(&it);
+        it->free_image(&image);
+        it->free(&it);
     };
 
     // Our test image is a 3x3 grid of 100px x 100px blocks, each of which
@@ -236,33 +181,14 @@ int main(int, char*[])
 {
     const string test_image = "media/test_image.png";
 
-    // Create a media object from our test image
-    JaniceMedia media = nullptr;
-    JANICE_CALL(janice_create_media(test_image.c_str(),
-                                    &media),
-                 // Cleanup
-                 [](){})
-
-    // Check basic image properties
-    if (check_media_basics(media) == 1) {
-        janice_free_media(&media);
-        return 1;
-    }
-
     // Check that an iterator can be created and its functions work as expected
     // for an image
-    if (check_media_iterator(media) == 1) {
-        janice_free_media(&media);
+    if (check_media_iterator(test_image.c_str()) == 1)
         return 1;
-    }
 
     // Check the loaded pixel values of the test image
-    if (check_media_pixel_values(media) == 1) {
-        janice_free_media(&media);
+    if (check_media_pixel_values(test_image.c_str()) == 1)
         return 1;
-    }
-
-    janice_free_media(&media);
 
     return 0;
 }

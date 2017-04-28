@@ -1,4 +1,4 @@
-#include <janice_io.h>
+#include <janice_io_opencv.h>
 
 #include <string>
 #include <cstring>
@@ -36,38 +36,6 @@
 using namespace std;
 
 // ----------------------------------------------------------------------------
-// Check basic media properties
-
-int check_media_basics(JaniceConstMedia media)
-{
-    CHECK(strcmp(media->filename, "media/test_video.mp4") == 0, // condition
-          "Media filename != 'media/test_video.mp4'", // message
-          [](){}) // cleanup function
-
-    CHECK(media->category == Video,
-          "Media category != Video",
-          [](){})
-
-    CHECK(media->channels == 3,
-          "Media channels != 3",
-          [](){})
-
-    CHECK(media->rows == 300,
-          "Media rows != 300",
-          [](){})
-
-    CHECK(media->cols == 300,
-          "Media columns != 300",
-          [](){})
-
-    CHECK(media->frames == 90,
-          "Media frames != 90",
-          [](){})
-
-    return 0;
-}
-
-// ----------------------------------------------------------------------------
 // Check media iterator
 
 // Check the iterator next and tell functions
@@ -77,11 +45,11 @@ int check_media_iterator_next(JaniceMediaIterator it)
     uint32_t frame, frame_count = 0;
 
     while (true) {
-        JaniceError err = janice_media_it_next(it, &image);
+        JaniceError err = it->next(it, &image);
 
         JaniceError expected = JANICE_SUCCESS;
         ++frame_count;
-
+        
         // On the last frame we loop back to the beginning
         if (frame_count == 90) {
             expected = JANICE_MEDIA_AT_END;
@@ -89,25 +57,19 @@ int check_media_iterator_next(JaniceMediaIterator it)
         }
 
         CHECK(err == expected,
-              "Next should return JANICE_SUCCESS except for on the last frame",
-              [](){})
+            "Next should return JANICE_SUCCESS except for on the last frame",
+            []() {})
+
+        auto cleanup = [&]() {
+            it->free_image(&image);
+        };
 
         // Next, query the iterator for it's internal frame count
-        JANICE_CALL(janice_media_it_tell(it, &frame),
+        JANICE_CALL(it->tell(it, &frame),
                     // Cleanup
-                    [&]() {
-                        janice_free_image(&image);
-                    })
-        // Confirm the queried results match the excepted
-        //CHECK(frame == frame_count,
-        //      "Queried frame doesn't match expected",
-        //      [&]() {
-        //        janice_free_image(&image);
-        //      })
+                    cleanup)
 
-        JANICE_CALL(janice_free_image(&image),
-                    // Cleanup
-                    [](){})
+        cleanup();
 
         if (expected == JANICE_MEDIA_AT_END)
             break;
@@ -116,14 +78,12 @@ int check_media_iterator_next(JaniceMediaIterator it)
     return 0;
 }
 
-#define CHECKED_RANDOM_SEEK(desired, actual)      \
-JANICE_CALL(janice_media_it_seek(it, desired),    \
-            [](){})                               \
-JANICE_CALL(janice_media_it_tell(it, &actual),    \
-            [](){})                               \
-CHECK(desired == actual,                          \
-      "Seeked frame does not match actual frame", \
-      [](){})
+#define CHECKED_RANDOM_SEEK(desired, actual)                                     \
+{                                                                                \
+    JANICE_CALL(it->seek(it, desired), [](){})                                   \
+    JANICE_CALL(it->tell(it, &actual), [](){})                                   \
+    CHECK(desired == actual, "Seeked frame does not match actual frame", [](){}) \
+}
 
 // Check the iterator seek and tell functions
 int check_media_iterator_seek(JaniceMediaIterator it)
@@ -141,31 +101,31 @@ int check_media_iterator_seek(JaniceMediaIterator it)
     CHECKED_RANDOM_SEEK(89, frame)
 
     // And let's do an out of bounds seek
-    CHECK(janice_media_it_seek(it, 100) == JANICE_OUT_OF_BOUNDS_ACCESS,
+    CHECK(it->seek(it, 100) == JANICE_OUT_OF_BOUNDS_ACCESS,
           "Out of bounds seek returned incorrect error",
           [](){})
 
     return 0;
 }
 
-int check_media_iterator(JaniceConstMedia media)
+int check_media_iterator(const char* media)
 {
     JaniceMediaIterator it = nullptr;
-    JANICE_CALL(janice_media_get_iterator(media, &it),
+    JANICE_CALL(janice_io_opencv_create_media_iterator(media, &it),
                 // Cleanup
-                [](){})
+                []() {})
 
     if (check_media_iterator_next(it) == 1) {
-        janice_free_media_iterator(&it);
+        it->free(&it);
         return 1;
     }
 
     if (check_media_iterator_seek(it) == 1) {
-        janice_free_media_iterator(&it);
+        it->free(&it);
         return 1;
     }
 
-    JANICE_CALL(janice_free_media_iterator(&it),
+    JANICE_CALL(it->free(&it),
                 // Cleanup
                 [](){})
 
@@ -175,6 +135,7 @@ int check_media_iterator(JaniceConstMedia media)
 // ----------------------------------------------------------------------------
 // Check image pixel values. Due to lossy compression in video codecs, we can't
 // reliably check the exact value, so use a 10 unit tolerance.
+
 static inline int check_pixel(JaniceConstImage image,
                                uint32_t x,
                                uint32_t y,
@@ -185,49 +146,22 @@ static inline int check_pixel(JaniceConstImage image,
     // Variable to hold pixel values
     uint8_t pixel;
 
-    // Get the blue pixel first, remember OpenCV stores images in BGR order
-    JANICE_CALL(janice_image_access(image,
-                                    0, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                                    // Cleanup
-                                    []() {})
+    // Check the blue pixel first, remember OpenCV stores images in BGR order
+    CHECK(abs(int(janice_image_access(image, 0, y, x)) - int(blue)) < 10,
+          "Blue pixel doesn't match.",
+          // Cleanup
+          [](){})
 
-    int pixel_delta = abs(int(pixel) - int(blue));
+    // Check the green pixel
+    CHECK(abs(int(janice_image_access(image, 1, y, x)) - int(green)) < 10,
+          "Green pixel doesn't match.",
+          // Cleanup
+          [](){})
 
-    CHECK(pixel_delta < 10,
-        "Blue pixel doesn't match.",
-        []() {})
-
-        // Get the green pixel
-    JANICE_CALL(janice_image_access(image,
-                                    1, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                                    // Cleanup
-                                    []() {});
-    
-    pixel_delta = abs(int(pixel) - int(green));
-
-    CHECK(pixel_delta < 10,
-        "Green pixel doesn't match.",
-        []() {})
-
-        // Get the red pixel
-    JANICE_CALL(janice_image_access(image,
-                                    2, // channel
-                                    y, // row
-                                    x, // col
-                                    &pixel),
-                                    // Cleanup
-                                    []() {})
-
-    pixel_delta = abs(int(pixel) - int(red));
-
-    CHECK(pixel_delta < 10,
+    // Check the red pixel
+    CHECK(abs(int(janice_image_access(image, 2, y, x)) - int(red)) < 10,
           "Red pixel doesn't match.",
+          // Cleanup
           [](){})
 
     return 0;
@@ -247,7 +181,7 @@ uint8_t frame_color_lookup[9][3] =
 };
 
 // look up expecteed color for the specified frame of test video
-int expected_frame_colors(int frame_number, uint8_t * r, uint8_t * g, uint8_t * b)
+int expected_frame_colors(int frame_number, uint8_t* r, uint8_t* g, uint8_t* b)
 {
     // past end of video 
     if (frame_number >= 90)
@@ -263,10 +197,10 @@ int expected_frame_colors(int frame_number, uint8_t * r, uint8_t * g, uint8_t * 
     return 1;
 }
 
-int check_media_pixel_values(JaniceConstMedia media)
+int check_media_pixel_values(const char* media)
 {
     JaniceMediaIterator it = nullptr;
-    JANICE_CALL(janice_media_get_iterator(media, &it),
+    JANICE_CALL(janice_io_opencv_create_media_iterator(media, &it),
                 // Cleanup
                 [](){})
 
@@ -279,14 +213,14 @@ int check_media_pixel_values(JaniceConstMedia media)
     uint8_t r, g, b;
 
     while (true) {
-        JaniceError err = janice_media_it_next(it, &image);
+        JaniceError err = it->next(it, &image);
         JaniceError expected = JANICE_SUCCESS;
 
         ++frame_count;
 
         auto cleanup = [&]() {
-            janice_free_image(&image);
-            janice_free_media_iterator(&it);
+            it->free_image(&image);
+            it->free(&it);
         };
 
         // On the last frame we loop back to the beginning
@@ -296,32 +230,33 @@ int check_media_pixel_values(JaniceConstMedia media)
         }
 
         CHECK(err == expected,
-            "Next should return JANICE_SUCCESS except for on the last frame",
-            []() {})
+              "Next should return JANICE_SUCCESS except for on the last frame",
+              [](){})
 
-	  if (expected == JANICE_MEDIA_AT_END) {
-	    janice_free_image(&image);
+        if (expected == JANICE_MEDIA_AT_END) {
+            it->free_image(&image);
             break;
-	 }
-
+        }
 
         // verify that the frame number we are using is correct, pull expected rgb values for this frame
-        CHECK(expected_frame_colors(frame_count - 1, &r, &g, &b) == 1, "Advanced past expected end of video, for unknown reasons.", []() {})
+        CHECK(expected_frame_colors(frame_count - 1, &r, &g, &b) == 1,
+              "Advanced past expected end of video, for unknown reasons.",
+              // Cleanup
+              cleanup)
 
         // check that actual and expected colors match at some point in the image
         CHECK(check_pixel(image, 50, 50, r, g, b) == 0,
-            "Pixel mismatch",
-            cleanup)
+              "Pixel mismatch",
+              // Cleanup
+              cleanup)
 
-        JANICE_CALL(janice_free_image(&image),
-            // Cleanup
-            []() {})
+        cleanup();
 
-            if (expected == JANICE_MEDIA_AT_END)
-                break;
+        if (expected == JANICE_MEDIA_AT_END)
+            break;
     }
 
-    janice_free_media_iterator(&it);
+    it->free(&it);
 
     return 0;
 }
@@ -331,35 +266,18 @@ int check_media_pixel_values(JaniceConstMedia media)
 
 int main(int, char*[])
 {
-    const string test_video = "media/test_video.mp4";
-
-    // Create a media object from our test image
-    JaniceMedia media = nullptr;
-    JANICE_CALL(janice_create_media(test_video.c_str(),
-        &media),
-        // Cleanup
-        []() {})
-
-    // Check basic image properties
-    if (check_media_basics(media) == 1) {
-        janice_free_media(&media);
-        return 1;
-    }
+    const char* test_video = "media/test_video.mp4";
 
     // Check that an iterator can be created and its functions work as expected
     // for a video
-    if (check_media_iterator(media) == 1) {
-        janice_free_media(&media);
+    if (check_media_iterator(test_video) == 1) {
         return 1;
     }
 
     // Check the loaded pixel values of the test image
-    if (check_media_pixel_values(media) == 1) {
-        janice_free_media(&media);
+    if (check_media_pixel_values(test_video) == 1) {
         return 1;
     }
-
-    janice_free_media(&media);
 
     return 0;
 }

@@ -38,42 +38,12 @@ A pointer to a [JaniceMediaIteratorType](structs.md#JaniceMediaIteratorType) obj
 typedef struct JaniceMediaIteratorType* JaniceMediaIterator;
 ```
 
-## JaniceMedia {: #JaniceMedia }
+## JaniceMediaIterators {: #JaniceMediaIterators }
 
-A pointer to a [JaniceMediaType](structs.md#JaniceMediaType) object
+A pointer to an array of [JaniceMediaIteratorType](structs.md#JaniceMediaIteratorType) object.
 
-#### Signature {: #JaniceMediaSignature }
-
-```
-typedef struct JaniceMediaType* JaniceMedia;
-```
-
-## JaniceConstMedia {: #JaniceConstMedia }
-
-A pointer to a constant [JaniceMediaType](structs.md#JaniceMediaType) object
-
-#### Signature {: #JaniceConstMediaSignature }
+#### Signature
 
 ```
-typedef const struct JaniceMediaType* JaniceConstMedia;
-```
-
-## JaniceMedias {: #JaniceMedias }
-
-An array of [JaniceMedia](#JaniceMedia) objects
-
-#### Signature {: #JaniceMediasSignature }
-
-```
-typedef JaniceMedia* JaniceMedias;
-```
-
-## JaniceConstMedias {: #JaniceConstMedias }
-
-An array of [JaniceConstMedia](#JaniceConstMedia) objects
-
-#### Signature {: #JaniceConstMediasSignature }
-
-```
-typedef JaniceConstMedia* JaniceConstMedias;
+typedef struct JaniceMediaIterator* JaniceMediaIterators;
 ```

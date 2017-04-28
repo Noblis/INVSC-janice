@@ -10,7 +10,9 @@ to the API.
 JANICE_EXPORT JaniceError janice_initialize(const char* sdk_path,
                                             const char* temp_path,
                                             const char* algorithm,
-                                            const int gpu_dev);
+                                            const int num_threads,
+                                            const int* gpus,
+                                            const int num_gpus);
 ```
 
 #### Thread Safety {: #JaniceInitializeThreadSafety }
@@ -19,12 +21,14 @@ This function is thread unsafe.
 
 #### Parameters {: #JaniceInitializeParameters }
 
-Name      | Type         | Description
---------- | ------------ | -----------
-sdk_path  | const char\* | Path to a *read-only* directory containing the JanICE compliant SDK as specified by the implementor
-temp_path | const char\* | Path to an existing empty *read-write* directory for use as temporary file storage by the implementation. This path must be guaranteed until [janice_finalize](#JaniceFinalize).
-algorithm | const char\* | An empty string indicating the a default algorithm, or an implementation defined string containing an alternative configuration
-gpu_dev   | int          | An index indicated a GPU device to use. If no GPU is available users should pass -1. If implementors do not offer a GPU solution they can ignore this value.
+Name        | Type         | Description
+----------- | ------------ | -----------
+sdk_path    | const char\* | Path to a *read-only* directory containing the JanICE compliant SDK as specified by the implementor
+temp_path   | const char\* | Path to an existing empty *read-write* directory for use as temporary file storage by the implementation. This path must be guaranteed until [janice_finalize](#JaniceFinalize).
+algorithm   | const char\* | An empty string indicating the a default algorithm, or an implementation defined string containing an alternative configuration
+num_threads | const int    | The number of threads the implementation is allowed to use. A value of '-1' indicates that the implementation can use all available hardware.
+gpus        | const int\*  | A list of indices of GPUs available to the implementation. The length of the list is given by *num_gpus*. If implementors do not offer a GPU solution they can ignore this value.
+num_gpus    | const int    | The length of the *gpus* array. If no GPUs are available this should be set to 0.
 
 ## janice_api_version {: #JaniceAPIVersion }
 
