@@ -3,39 +3,6 @@
 #include <opencv2/highgui/highgui.hpp>
 
 // ----------------------------------------------------------------------------
-// JaniceImage
-
-JaniceError janice_image_access(JaniceConstImage image,
-                                uint32_t channel,
-                                uint32_t row,
-                                uint32_t col,
-                                uint8_t* value)
-{
-    if (channel >= image->channels ||
-        row >= image->rows ||
-        col >= image->cols)
-        return JANICE_OUT_OF_BOUNDS_ACCESS;
-
-    const uint32_t step = image->cols * image->channels;
-    *value = image->data[row * step + col * image->channels + channel];
-
-    return JANICE_SUCCESS;
-}
-
-JaniceError janice_free_image(JaniceImage* image)
-{
-    if ((*image)->owner) { // have to delete the data
-        free((*image)->data);
-        (*image)->data = nullptr;
-    }
-
-    delete *image;
-    *image = nullptr;
-
-    return JANICE_SUCCESS;
-}
-
-// ----------------------------------------------------------------------------
 // JaniceMediaIterator
 
 struct JaniceMediaIteratorStateType
@@ -230,7 +197,7 @@ JaniceError janice_io_opencv_create_media_iterator(const char* filename, JaniceM
     JaniceMediaIteratorStateType* state = new JaniceMediaIteratorStateType();
     state->initialized = false;
     state->filename = filename;
-    
+
     it->_internal = (void*) (state);
 
     *_it = it;
