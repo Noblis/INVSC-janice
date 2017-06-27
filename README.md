@@ -39,6 +39,7 @@ commercial use.
 
 ## Documentation
 
+The documentation for the API is hosted [here](https://noblis.github.io/janice/).
 The complete documentation for the API is available in "docs" folder. It is
 designed to be built with the open source [mkdocs](http://www.mkdocs.org)
 project. Alternatively, the documentation can be viewed in any viewer that can
