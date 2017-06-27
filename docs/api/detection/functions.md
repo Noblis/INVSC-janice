@@ -101,10 +101,7 @@ The provided rectangle will encapsulate a face in the media.
 #### Camera Identification {: #JaniceCreateDetectionCameraIdentification }
 
 The provided rectangle will encapsulate a region of interest in the media. Often the
-rectangle will simply border the entire image. Note that at this time camera
-identification is only implemented for images and will return an error if the
-media is a video. Because the implementation is image-only the value in the
-frame parameter is ignored.
+rectangle will simply border the entire image. 
 
 #### Parameters {: #JaniceCreateDetectionParameters }
 
