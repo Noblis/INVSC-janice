@@ -108,9 +108,9 @@
             
                 <li class="toctree-l3"><a href="#JaniceImageType">JaniceImageType</a></li>
             
-                <li class="toctree-l3"><a href="#JaniceMediaIteratorType">JaniceMediaIteratorType</a></li>
+                <li class="toctree-l3"><a href="#JaniceMediaIteratorState">JaniceMediaIteratorState</a></li>
             
-                <li class="toctree-l3"><a href="#JaniceMediaType">JaniceMediaType</a></li>
+                <li class="toctree-l3"><a href="#JaniceMediaIteratorType">JaniceMediaIteratorType</a></li>
             
             </ul>
         
@@ -351,13 +351,14 @@
 </tr>
 </tbody>
 </table>
+<h2 id="JaniceMediaIteratorState">JaniceMediaIteratorState</h2>
+<p>A void pointer to a user-defined structure that contains state required for a
+<a href="#JaniceMediaIteratorType">JaniceMediaIteratorType</a>.</p>
 <h2 id="JaniceMediaIteratorType">JaniceMediaIteratorType</h2>
-<p>An opaque object that iterates over the frames in a media object. The object
-can contain any implementation specific variables or state required to
-implement the iteration interface described <a href="../functions/">here</a>.</p>
-<h2 id="JaniceMediaType">JaniceMediaType</h2>
-<p>An interface representing an image or video</p>
-<h4 id="JaniceMediaTypeFields">Fields</h4>
+<p>An interface representing a single image or video. JaniceMediaIteratorType
+implements an iterator interface on media to enable lazy loading via function
+pointers.</p>
+<h4 id="JaniceMediaIteratorTypeFields">Fields</h4>
 <table>
 <thead>
 <tr>
@@ -368,29 +369,34 @@ implement the iteration interface described <a href="../functions/">here</a>.</p
 </thead>
 <tbody>
 <tr>
-<td>filename</td>
-<td>char*</td>
-<td>A null-terminated string that contains the location of the media on disk.</td>
+<td>next</td>
+<td>JaniceError(JaniceMediaIteratorType*, <a href="#JaniceImageType">JaniceImage*</a>)</td>
+<td>A function pointer that advances the iterator one frame. The next frame or image should be stored in the <a href="#JaniceImageType">JaniceImage*</a> parameter.</td>
 </tr>
 <tr>
-<td>channels</td>
-<td>uint32_t</td>
-<td>The number of channels in the media</td>
+<td>seek</td>
+<td>JaniceError(JaniceMediaIteratorType*, uint32_t)</td>
+<td>A function pointer that advances the iterator to a specific frame. This function is not applicable to images.</td>
 </tr>
 <tr>
-<td>rows</td>
-<td>uint32_t</td>
-<td>The number of rows in the media</td>
+<td>get</td>
+<td>JaniceError(JaniceMediaIteratorType*, <a href="#JaniceImageType">JaniceImage*</a>, uint32_t)</td>
+<td>A function pointer that advances the iterator to a specific frame and retrieves that frame. This function is not applicable to images.</td>
 </tr>
 <tr>
-<td>cols</td>
-<td>uint32_t</td>
-<td>The number of columns in the media</td>
+<td>tell</td>
+<td>JaniceError(JaniceMediaIteratorType*, uint32_t*)</td>
+<td>A function pointer to report the current position of the iterator. This function is not applicable to images.</td>
 </tr>
 <tr>
-<td>frames</td>
-<td>uint32_t</td>
-<td>The number of frames in the media</td>
+<td>free_image</td>
+<td>JaniceError(<a href="#JaniceImageType">JaniceImage*</a></td>
+<td>A function pointer to free an image allocated by <em>next</em> or <em>get</em>.</td>
+</tr>
+<tr>
+<td>free</td>
+<td>JaniceError(JaniceMediaIteratorType**)</td>
+<td>A function pointer to free a media iterator object.</td>
 </tr>
 </tbody>
 </table>

@@ -186,6 +186,8 @@
             
                 <li class="toctree-l3"><a href="#JaniceCreateGallery">janice_create_gallery</a></li>
             
+                <li class="toctree-l3"><a href="#JaniceGalleryReserve">janice_gallery_reserve</a></li>
+            
                 <li class="toctree-l3"><a href="#JaniceGalleryInsert">janice_gallery_insert</a></li>
             
                 <li class="toctree-l3"><a href="#JaniceGalleryRemove">janice_gallery_remove</a></li>
@@ -349,12 +351,12 @@ templates and unique ids.</p>
 <tr>
 <td>tmpls</td>
 <td><a href="../../enrollment/typedefs/#JaniceConstTemplates">JaniceConstTemplates</a></td>
-<td>An array of templates to add to the gallery</td>
+<td>An array of templates to add to the gallery. This can be NULL, which should create an empty gallery.</td>
 </tr>
 <tr>
 <td>ids</td>
 <td>const <a href="../typedefs/#JaniceTemplateIds">JaniceTemplateIds</a></td>
-<td>A set of unique identifiers to associate with the input templates. The <em>ith</em> id corresponds to the <em>ith</em> input template.</td>
+<td>A set of unique identifiers to associate with the input templates. The <em>ith</em> id corresponds to the <em>ith</em> input template. This can be NULL, which should create an empty gallery.</td>
 </tr>
 <tr>
 <td>num_tmpls</td>
@@ -379,6 +381,31 @@ if (janice_create_gallery(tmpls, ids, &amp;gallery) != JANICE_SUCCESS)
     // ERROR!</code></pre>
 
 
+<h2 id="JaniceGalleryReserve">janice_gallery_reserve</h2>
+<p>Reserve space in a gallery for N templates.</p>
+<h4 id="JaniceGalleryReserveSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_gallery_reserve(size_t n);</code></pre>
+
+
+<h4 id="JaniceGalleryReserveThreadSafety">Thread Safety</h4>
+<p>This function is reentrant.</p>
+<h4 id="JaniceGalleryReserveParameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n</td>
+<td>size_t</td>
+<td>The number of templates to reserve space for</td>
+</tr>
+</tbody>
+</table>
 <h2 id="JaniceGalleryInsert">janice_gallery_insert</h2>
 <p>Insert a template into a gallery object. The template data should be copied
 into the gallery as the template may be deleted after this function.</p>

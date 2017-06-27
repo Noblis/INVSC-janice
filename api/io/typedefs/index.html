@@ -118,13 +118,7 @@
             
                 <li class="toctree-l3"><a href="#JaniceMediaIterator">JaniceMediaIterator</a></li>
             
-                <li class="toctree-l3"><a href="#JaniceMedia">JaniceMedia</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceConstMedia">JaniceConstMedia</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceMedias">JaniceMedias</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceConstMedias">JaniceConstMedias</a></li>
+                <li class="toctree-l3"><a href="#JaniceMediaIterators">JaniceMediaIterators</a></li>
             
             </ul>
         
@@ -346,28 +340,10 @@
 <pre class="code"><code>typedef struct JaniceMediaIteratorType* JaniceMediaIterator;</code></pre>
 
 
-<h2 id="JaniceMedia">JaniceMedia</h2>
-<p>A pointer to a <a href="../structs/#JaniceMediaType">JaniceMediaType</a> object</p>
-<h4 id="JaniceMediaSignature">Signature</h4>
-<pre class="code"><code>typedef struct JaniceMediaType* JaniceMedia;</code></pre>
-
-
-<h2 id="JaniceConstMedia">JaniceConstMedia</h2>
-<p>A pointer to a constant <a href="../structs/#JaniceMediaType">JaniceMediaType</a> object</p>
-<h4 id="JaniceConstMediaSignature">Signature</h4>
-<pre class="code"><code>typedef const struct JaniceMediaType* JaniceConstMedia;</code></pre>
-
-
-<h2 id="JaniceMedias">JaniceMedias</h2>
-<p>An array of <a href="#JaniceMedia">JaniceMedia</a> objects</p>
-<h4 id="JaniceMediasSignature">Signature</h4>
-<pre class="code"><code>typedef JaniceMedia* JaniceMedias;</code></pre>
-
-
-<h2 id="JaniceConstMedias">JaniceConstMedias</h2>
-<p>An array of <a href="#JaniceConstMedia">JaniceConstMedia</a> objects</p>
-<h4 id="JaniceConstMediasSignature">Signature</h4>
-<pre class="code"><code>typedef JaniceConstMedia* JaniceConstMedias;</code></pre>
+<h2 id="JaniceMediaIterators">JaniceMediaIterators</h2>
+<p>A pointer to an array of <a href="../structs/#JaniceMediaIteratorType">JaniceMediaIteratorType</a> object.</p>
+<h4 id="signature_1">Signature</h4>
+<pre class="code"><code>typedef struct JaniceMediaIterator* JaniceMediaIterators;</code></pre>
               
             </div>
           </div>

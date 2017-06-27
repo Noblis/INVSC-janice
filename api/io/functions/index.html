@@ -114,25 +114,9 @@
         
             <ul>
             
+                <li class="toctree-l3"><a href="#JaniceFreeBuffer">janice_free_buffer</a></li>
+            
                 <li class="toctree-l3"><a href="#JaniceImageAccess">janice_image_access</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceFreeImage">janice_free_image</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceMediaItNext">janice_media_it_next</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceMediaItSeek">janice_media_it_seek</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceMediaItGet">janice_media_it_get</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceMediaItTell">janice_media_it_tell</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceFreeMediaIterator">janice_free_media_iterator</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceCreateMedia">janice_create_media</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceMediaGetIterator">janice_media_get_iterator</a></li>
-            
-                <li class="toctree-l3"><a href="#JaniceFreeMedia">janice_free_media</a></li>
             
             </ul>
         
@@ -326,14 +310,35 @@
           <div role="main">
             <div class="section">
               
-                <h2 id="JaniceImageAccess">janice_image_access</h2>
+                <h2 id="JaniceFreeBuffer">janice_free_buffer</h2>
+<p>Release the memory for an allocated buffer.</p>
+<h4 id="JaniceFreeBufferSignature">Signature</h4>
+<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_buffer(JaniceBuffer* buffer);</code></pre>
+
+
+<h4 id="JaniceFreeBufferThreadSafety">Thread Safety</h4>
+<p>This function is reentrant</p>
+<h4 id="JaniceFreeBufferParameters">Paramters</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>buffer</td>
+<td><a href="../typedefs/#JaniceBuffer">JaniceBuffer*</a></td>
+<td>The buffer to free</td>
+</tr>
+</tbody>
+</table>
+<h2 id="JaniceImageAccess">janice_image_access</h2>
 <p>Get a pixel value at a given row, column and channel.</p>
 <h4 id="JaniceImageAccessSignature">Signature</h4>
-<pre class="code"><code>JANICE_EXPORT JaniceError janice_image_access(JaniceConstImage image,
-                                              uint32_t channel,
-                                              uint32_t row,
-                                              uint32_t col,
-                                              uint8_t* value);</code></pre>
+<pre class="code"><code>inline uint8_t janice_image_access(JaniceConstImage image, uint32_t channel, uint32_t row, uint32_t col);</code></pre>
 
 
 <h4 id="JaniceImageAccessThreadSafety">Thread Safety</h4>
@@ -367,281 +372,6 @@
 <td>col</td>
 <td>uint32_t</td>
 <td>The column to access. Must be less that image-&gt;cols.</td>
-</tr>
-<tr>
-<td>value</td>
-<td>uint8_t*</td>
-<td>A container for the value at the given index.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="JaniceFreeImage">janice_free_image</h2>
-<p>Free any memory associated with a <a href="../typedefs/#JaniceImage">JaniceImage</a>.</p>
-<h4 id="JaniceFreeImageSignature">Signature</h4>
-<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_image(JaniceImage* image);</code></pre>
-
-
-<h4 id="JaniceFreeImageThreadSafety">Thread Safety</h4>
-<p>This function is reentrant</p>
-<h4 id="JaniceFreeImageParameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>image</td>
-<td><a href="../typedefs/#JaniceImage">JaniceImage*</a></td>
-<td>An image object to free</td>
-</tr>
-</tbody>
-</table>
-<h2 id="JaniceMediaItNext">janice_media_it_next</h2>
-<p>Get the next frame or load the image from a media iterator.</p>
-<h4 id="JaniceMediaItNextSignature">Signature</h4>
-<pre class="code"><code>JANICE_EXPORT JaniceError janice_media_it_next(JaniceMediaIterator it,
-                                               JaniceImage* image);</code></pre>
-
-
-<h4 id="JaniceMediaItNextThreadSafety">Thread Safety</h4>
-<p>This function is reentrant</p>
-<h4 id="JaniceMediaItNextParameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>it</td>
-<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator</a></td>
-<td>A media iterator object to query</td>
-</tr>
-<tr>
-<td>image</td>
-<td><a href="../typedefs/#JaniceImage">JaniceImage*</a></td>
-<td>An uninitialized pointer to an image object to hold the next frame or image</td>
-</tr>
-</tbody>
-</table>
-<h2 id="JaniceMediaItSeek">janice_media_it_seek</h2>
-<p>Seek to a provided frame. Seek should work such that a successive call to
-<a href="#JaniceMediaItNext">next</a> returns the frame at the index provided to seek.</p>
-<h4 id="JaniceMediaItSeekSignature">Signature</h4>
-<pre class="code"><code>JANICE_EXPORT JaniceError janice_media_it_seek(JaniceMediaIterator it,
-                                               uint32_t frame);</code></pre>
-
-
-<h4 id="JaniceMediaItSeekThreadSafety">Thread Safety</h4>
-<p>This function is reentrant.</p>
-<h4 id="JaniceMediaItSeekParameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>it</td>
-<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator</a></td>
-<td>A media iterator object to seek in</td>
-</tr>
-<tr>
-<td>frame</td>
-<td>uint32_t</td>
-<td>The frame to seek to. It must be less than the total number of frames in the video.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="JaniceMediaItGet">janice_media_it_get</h2>
-<p>Get a specified frame from a media object. This method should be functionally
-equivalent to calling <code>janice_media_it_seek(frame)</code> followed by
-<code>janice_media_it_next(image)</code>.</p>
-<h4 id="JaniceMediaItGetSignature">Signature</h4>
-<pre class="code"><code>JANICE_EXPORT JaniceError janice_media_it_get(JaniceMediaIterator it,
-                                              JaniceImage* image,
-                                              uint32_t frame);</code></pre>
-
-
-<h4 id="JaniceMediaItGetThreadSafety">Thread Safety</h4>
-<p>This function is reentrant</p>
-<h4 id="JaniceMediaItGetParameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>it</td>
-<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator</a></td>
-<td>A media iterator object to get a frame from</td>
-</tr>
-<tr>
-<td>image</td>
-<td><a href="../typedefs/#JaniceImage">JaniceImage*</a></td>
-<td>An uninitialized image object to hold the frame or image</td>
-</tr>
-<tr>
-<td>frame</td>
-<td>uint32_t</td>
-<td>The index of the frame to get. This must be less than the number of frames in the video.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="JaniceMediaItTell">janice_media_it_tell</h2>
-<p>Get the current frame position of a media object.</p>
-<h4 id="JaniceMediaItTellSignature">Signature</h4>
-<pre class="code"><code>JANICE_EXPORT JaniceError janice_media_it_tell(JaniceMediaIterator it,
-                                               uint32_t* frame);</code></pre>
-
-
-<h4 id="JaniceMediaItTellThreadSafety">Thread Safety</h4>
-<p>This function is reentrant</p>
-<h4 id="JaniceMediaItTellParameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>it</td>
-<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator</a></td>
-<td>A media object to get the current frame position from</td>
-</tr>
-<tr>
-<td>frame</td>
-<td>uint32_t*</td>
-<td>A container to hold the queried frame value</td>
-</tr>
-</tbody>
-</table>
-<h2 id="JaniceFreeMediaIterator">janice_free_media_iterator</h2>
-<p>Free any memory associated with a <a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator</a>.</p>
-<h4 id="JaniceFreeMediaIteratorSignature">Signature</h4>
-<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_media_iterator(JaniceMediaIterator* it);</code></pre>
-
-
-<h4 id="JaniceFreeMediaIteratorThreadSafety">Thread Safety</h4>
-<p>This function is reentrant.</p>
-<h4 id="JaniceFreeMediaIteratorParameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>it</td>
-<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator*</a></td>
-<td>An iterator object to free</td>
-</tr>
-</tbody>
-</table>
-<h2 id="JaniceCreateMedia">janice_create_media</h2>
-<p>Create a media object from a file</p>
-<h4 id="JaniceCreateMediaSignature">Signature</h4>
-<pre class="code"><code>JANICE_EXPORT JaniceError janice_create_media(const char* filename,
-                                              JaniceMedia* media);</code></pre>
-
-
-<h4 id="JaniceCreateMediaThreadSafety">Thread Safety</h4>
-<p>This function is reentrant</p>
-<h4 id="JaniceCreateMediaParameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>filename</td>
-<td>const char*</td>
-<td>A path to a file on disk</td>
-</tr>
-<tr>
-<td>media</td>
-<td><a href="../typedefs/#JaniceMedia">JaniceMedia*</a></td>
-<td>An uninitialized pointer to a media object</td>
-</tr>
-</tbody>
-</table>
-<h2 id="JaniceMediaGetIterator">janice_media_get_iterator</h2>
-<p>Get an iterator from a media object.</p>
-<h4 id="JaniceMediaGetIteratorSignature">Signature</h4>
-<pre class="code"><code>JANICE_EXPORT JaniceError janice_media_get_iterator(JaniceConstMedia media,
-                                                    JaniceMediaIterator* it);</code></pre>
-
-
-<h4 id="JaniceMediaGetIteratorThreadSafety">Thread Safety</h4>
-<p>This function is reentrant.</p>
-<h4 id="JaniceMediaGetIteratorParameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>media</td>
-<td><a href="../typedefs/#JaniceConstMemo">JaniceConstMedia</a></td>
-<td>A media object to get an iterator from</td>
-</tr>
-<tr>
-<td>it</td>
-<td><a href="../typedefs/#JaniceMediaIterator">JaniceMediaIterator*</a></td>
-<td>An uninitialized iterator object.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="JaniceFreeMedia">janice_free_media</h2>
-<p>Free any memory associated with a <a href="../typedefs/#JaniceMedia">JaniceMedia</a>.</p>
-<h4 id="JaniceFreeMediaSignature">Signature</h4>
-<pre class="code"><code>JANICE_EXPORT JaniceError janice_free_media(JaniceMedia* media);</code></pre>
-
-
-<h4 id="JaniceFreeMediaThreadSafety">Thread Safety</h4>
-<p>This function is reentrant</p>
-<h4 id="JaniceFreeMediaParameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>media</td>
-<td><a href="../typedefs/#JaniceMedia">JaniceMedia*</a></td>
-<td>A media object to free</td>
 </tr>
 </tbody>
 </table>

@@ -322,7 +322,9 @@ to the API.</p>
 <pre class="code"><code>JANICE_EXPORT JaniceError janice_initialize(const char* sdk_path,
                                             const char* temp_path,
                                             const char* algorithm,
-                                            const int gpu_dev);</code></pre>
+                                            const int num_threads,
+                                            const int* gpus,
+                                            const int num_gpus);</code></pre>
 
 
 <h4 id="JaniceInitializeThreadSafety">Thread Safety</h4>
@@ -353,9 +355,19 @@ to the API.</p>
 <td>An empty string indicating the a default algorithm, or an implementation defined string containing an alternative configuration</td>
 </tr>
 <tr>
-<td>gpu_dev</td>
-<td>int</td>
-<td>An index indicated a GPU device to use. If no GPU is available users should pass -1. If implementors do not offer a GPU solution they can ignore this value.</td>
+<td>num_threads</td>
+<td>const int</td>
+<td>The number of threads the implementation is allowed to use. A value of '-1' indicates that the implementation can use all available hardware.</td>
+</tr>
+<tr>
+<td>gpus</td>
+<td>const int*</td>
+<td>A list of indices of GPUs available to the implementation. The length of the list is given by <em>num_gpus</em>. If implementors do not offer a GPU solution they can ignore this value.</td>
+</tr>
+<tr>
+<td>num_gpus</td>
+<td>const int</td>
+<td>The length of the <em>gpus</em> array. If no GPUs are available this should be set to 0.</td>
 </tr>
 </tbody>
 </table>
