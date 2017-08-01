@@ -79,7 +79,7 @@ identified an object of interest and would like to run subsequent API
 functions on it. In the case where the input media is a video the given
 rectangle is considered an initial sighting of the object of interest. The
 implementation may detect additional sightings of the object in successive
-frames.
+frames. The provided rectangle will encapsulate a face in the media.
 
 #### Signature {: #JaniceCreateDetectionSignature }
 
@@ -93,15 +93,6 @@ JANICE_EXPORT JaniceError janice_create_detection(JaniceConstMedia media,
 #### Thread Safety {: #JaniceCreateDetectionThreadSafety }
 
 This function is reentrant.
-
-#### Face Recognition {: #JaniceCreateDetectionFaceRecognition }
-
-The provided rectangle will encapsulate a face in the media.
-
-#### Camera Identification {: #JaniceCreateDetectionCameraIdentification }
-
-The provided rectangle will encapsulate a region of interest in the media. Often the
-rectangle will simply border the entire image. 
 
 #### Parameters {: #JaniceCreateDetectionParameters }
 
@@ -132,7 +123,7 @@ if (janice_create_detection(media, rect, 0 /* frame */, &detection) != JANICE_SU
 
 Automatically detect objects in a media object. See
 [the detection overview](overview.md) for an overview of detection in the
-context of this API.
+context of this API. This function detects faces in the media.
 
 #### Signature {: #JaniceDetectSignature }
 
@@ -169,15 +160,6 @@ contain multiple objects in it by mistake. In some cases, which should be
 clearly documented in implementation documentation, it might be beneficial to
 perform a post-processing clustering step on the results tracks, which could
 help correlate multiple tracks of the same object.
-
-#### Face Recognition {: #JaniceDetectFaceRecognition }
-
-This function detects faces in the media.
-
-#### Camera Identification {: #JaniceDetectCameraIdentification }
-
-This function provides a list of size 1 where the only entry is a detection
-with a rect that encapsulates the entire image.
 
 #### Parameters {: #JaniceDetectParameters }
 
