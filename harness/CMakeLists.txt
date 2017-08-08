@@ -19,4 +19,11 @@ if (${JANICE_WITH_EVAL_HARNESS} AND (JANICE_IO_IMPLEMENTATION) AND (JANICE_IMPLE
 
   add_executable(janice_batch_extract janice_batch_extract.cpp)
   target_link_libraries(janice_batch_extract janice_harness ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
+
+  add_executable(janice_file_extract janice_file_extract.cpp)
+  target_link_libraries(janice_file_extract janice_harness ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
+
+  add_executable(janice_file_compare janice_file_compare.cpp)
+  target_link_libraries(janice_file_compare janice_harness ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
+
 endif()

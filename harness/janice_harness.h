@@ -27,6 +27,10 @@ JANICE_HARNESS_EXPORT void janice_batch_extract_templates(const char * input_fna
 
 JANICE_HARNESS_EXPORT void janice_batch_read_templates(const char * input_file, JaniceTemplates *output_file, JaniceTemplateIds * tids, int * output_count);
 
+JANICE_HARNESS_EXPORT void janice_file_extract(const char * input_file, const char * output_file, int nThreads);
+
+JANICE_HARNESS_EXPORT void janice_file_compare(const char * probe_file, const char * gallery_file, const char * output_file);
+
 
 #endif
  
