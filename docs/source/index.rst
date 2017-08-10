@@ -70,12 +70,12 @@ The API is provided under the MIT license(LICENSE.txt) and is *free for
 academic and commercial use*.
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Contents:
+   :maxdepth: 2
+   :hidden:
 
    api/concepts.rst
    api/errors.rst
-   api/misc.rst
+   api/initialization.rst
    api/io.rst
    api/train.rst
    api/detection.rst

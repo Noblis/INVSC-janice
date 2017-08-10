@@ -1,5 +1,5 @@
-Miscellaneous
-=============
+Initialization
+==============
 
 Functions
 ---------
