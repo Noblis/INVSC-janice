@@ -1,0 +1,838 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Gallery &#8212; JanICE 4.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '4.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Comparison" href="comparison.html" />
+    <link rel="prev" title="Enrollment" href="enrollment.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="gallery">
+<span id="id1"></span><h1>Gallery<a class="headerlink" href="#gallery" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This API defines a gallery object that represents a collection of templates.
+Galleries are useful in the 1-N use case (see <a class="reference internal" href="comparison.html#comparison"><span class="std std-ref">Comparison</span></a>) when a user
+would like to query an unknown probe template against a set of known identities.
+A naive implementation of a gallery might be a simple array of templates. Often
+however, implementations have optimized algorithms or data structures that can
+lead to more efficient search times. It is recommended that advanced data
+structures be implemented as part of a gallery. Please note however the rules on
+gallery modification:</p>
+<ol class="arabic simple">
+<li>Gallery objects may be modified (templates inserted or removed) at any time.</li>
+<li>It is understood that some preprocessing might need to be done between
+gallery modification and efficient search. A function
+<a class="reference internal" href="#janice-gallery-prepare"><span class="std std-ref">janice_gallery_prepare</span></a> exists for this purpose. The calling of this
+function is <strong>OPTIONAL</strong>. Please see <a class="reference internal" href="#janice-gallery-prepare"><span class="std std-ref">janice_gallery_prepare</span></a> for
+more information.</li>
+</ol>
+</div>
+<div class="section" id="structs">
+<h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="janicegallerytype">
+<span id="id2"></span><h3>JaniceGalleryType<a class="headerlink" href="#janicegallerytype" title="Permalink to this headline">¶</a></h3>
+<p>An opaque pointer to a struct that represents a gallery.</p>
+</div>
+</div>
+<div class="section" id="typedefs">
+<h2>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="janicegallery">
+<span id="id3"></span><h3>JaniceGallery<a class="headerlink" href="#janicegallery" title="Permalink to this headline">¶</a></h3>
+<p>A pointer to a <a class="reference internal" href="#janicegallerytype"><span class="std std-ref">JaniceGalleryType</span></a> object.</p>
+<div class="section" id="signature">
+<h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="n">JaniceGalleryType</span><span class="o">*</span> <span class="n">JaniceGallery</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janiceconstgallery">
+<span id="id4"></span><h3>JaniceConstGallery<a class="headerlink" href="#janiceconstgallery" title="Permalink to this headline">¶</a></h3>
+<p>A pointer to a constant <a class="reference internal" href="#janicegallerytype"><span class="std std-ref">JaniceGalleryType</span></a> object.</p>
+<div class="section" id="id5">
+<h4>Signature<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">const</span> <span class="n">struct</span> <span class="n">JaniceGalleryType</span><span class="o">*</span> <span class="n">JaniceConstGallery</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janicetemplateid">
+<span id="id6"></span><h3>JaniceTemplateId<a class="headerlink" href="#janicetemplateid" title="Permalink to this headline">¶</a></h3>
+<p>A unique identifier for a template.</p>
+<div class="section" id="id7">
+<h4>Signature<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">uint32_t</span> <span class="n">JaniceTemplateId</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janicetemplateids">
+<span id="id8"></span><h3>JaniceTemplateIds<a class="headerlink" href="#janicetemplateids" title="Permalink to this headline">¶</a></h3>
+<p>An array of <a class="reference internal" href="#janicetemplateid"><span class="std std-ref">JaniceTemplateId</span></a> objects.</p>
+<div class="section" id="id9">
+<h4>Signature<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">JaniceTemplateId</span><span class="o">*</span> <span class="n">JaniceTemplateIds</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="janice-create-gallery">
+<span id="id10"></span><h3>janice_create_gallery<a class="headerlink" href="#janice-create-gallery" title="Permalink to this headline">¶</a></h3>
+<p>Create a <a class="reference internal" href="#janicegallery"><span class="std std-ref">JaniceGallery</span></a> object from a list of templates and unique ids.</p>
+<div class="section" id="id11">
+<h4>Signature<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_create_gallery</span><span class="p">(</span><span class="n">JaniceConstTemplates</span> <span class="n">tmpls</span><span class="p">,</span>
+                                                <span class="n">const</span> <span class="n">JaniceTemplateIds</span> <span class="n">ids</span><span class="p">,</span>
+                                                <span class="n">uint32_t</span> <span class="n">num_tmpls</span><span class="p">,</span>
+                                                <span class="n">JaniceGallery</span><span class="o">*</span> <span class="n">gallery</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="thread-safety">
+<h4>Thread Safety<a class="headerlink" href="#thread-safety" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="42%" />
+<col width="46%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>tmpls</td>
+<td><a class="reference internal" href="enrollment.html#janiceconsttemplates"><span class="std std-ref">JaniceConstTemplates</span></a></td>
+<td>An array of templates to add to
+the gallery. This can be <em>NULL</em>
+which would create an empty
+gallery. Data should be copied
+into the gallery, leaving the
+templates in a valid state after
+this operation.</td>
+</tr>
+<tr class="row-odd"><td>ids</td>
+<td>const <a class="reference internal" href="#janicetemplateids"><span class="std std-ref">JaniceTemplateIds</span></a></td>
+<td>A set of unique indentifiers to
+associate with the input
+templates. The <em>ith</em> id in this
+array corresponds to the <em>ith</em>
+input template. This array must be
+the same length as <em>tmpls</em>. If
+<em>tmpls</em> is <em>NULL</em> this object
+should also be <em>NULL</em></td>
+</tr>
+<tr class="row-even"><td>num_tm
+pls</td>
+<td>uint32_t</td>
+<td>The length of <em>tmpls</em> and <em>ids</em>.</td>
+</tr>
+<tr class="row-odd"><td>gallery</td>
+<td><a class="reference internal" href="#janicegallery"><span class="std std-ref">JaniceGallery</span></a> *</td>
+<td>An uninitialized gallery object.
+The implementor should allocate
+this object during the function
+call. The user is required to free
+the object by calling
+<a class="reference internal" href="#janice-free-gallery"><span class="std std-ref">janice_free_gallery</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="example">
+<h4>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplates tmpls; // Where tmpls is a valid array of valid template
+                       // objects created previously
+JaniceTemplateIds ids; // Where ids is a valid array of unique unsigned integers that
+                       // is the same length as tmpls
+JaniceGallery gallery = NULL; // best practice to initialize to NULL
+
+if (janice_create_gallery(tmpls, ids, &amp;gallery) != JANICE_SUCCESS)
+    // ERROR!
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-gallery-reserve">
+<span id="id12"></span><h3>janice_gallery_reserve<a class="headerlink" href="#janice-gallery-reserve" title="Permalink to this headline">¶</a></h3>
+<p>Reserve space in a gallery for N templates.</p>
+<div class="section" id="id13">
+<h4>Signature<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_gallery_reserve</span><span class="p">(</span><span class="n">size_t</span> <span class="n">n</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id14">
+<h4>Thread Safety<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id15">
+<h4>Parameters<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="16%" />
+<col width="72%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>n</td>
+<td>size_t</td>
+<td>The number of templates to reserve space for</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-gallery-insert">
+<span id="id16"></span><h3>janice_gallery_insert<a class="headerlink" href="#janice-gallery-insert" title="Permalink to this headline">¶</a></h3>
+<p>Insert a template into a gallery object. The template data should be
+copied into the gallery as the template may be deleted after this
+function.</p>
+<div class="section" id="id17">
+<h4>Signature<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_gallery_insert</span><span class="p">(</span><span class="n">JaniceGallery</span> <span class="n">gallery</span><span class="p">,</span>
+                                                <span class="n">JaniceConstTemplate</span> <span class="n">tmpl</span><span class="p">,</span>
+                                                <span class="n">JaniceTemplateId</span> <span class="nb">id</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id18">
+<h4>Thread Safety<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id19">
+<h4>Parameters<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="37%" />
+<col width="49%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>gallery</td>
+<td><a class="reference internal" href="#janicegallery"><span class="std std-ref">JaniceGallery</span></a></td>
+<td>A gallery object to insert the
+template into.</td>
+</tr>
+<tr class="row-odd"><td>tmpl</td>
+<td><a class="reference internal" href="enrollment.html#janiceconsttemplate"><span class="std std-ref">JaniceConstTemplate</span></a></td>
+<td>A template object to insert into the
+gallery. The template has the role
+Janice1NGallery. The template should
+be copied into the gallery. It must
+remain in a valid state after this
+function call.</td>
+</tr>
+<tr class="row-even"><td>id</td>
+<td><a class="reference internal" href="#janicetemplateid"><span class="std std-ref">JaniceTemplateId</span></a></td>
+<td>A unique id to associate with the
+input template.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id20">
+<h4>Example<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplate tmpl; // Where tmpl is a valid template object created
+                     // previously
+JaniceTemplateId id; // Where id is a unique integer to associate with tmpl. This
+                     // integer should not exist in the gallery
+JaniceGallery gallery; // Where gallery is a valid gallery object created
+                       // previously
+
+if (janice_gallery_insert(gallery, tmpl, id) != JANICE_SUCCESS)
+    // ERROR!
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-gallery-remove">
+<span id="id21"></span><h3>janice_gallery_remove<a class="headerlink" href="#janice-gallery-remove" title="Permalink to this headline">¶</a></h3>
+<p>Remove a template from a gallery object using its unique id.</p>
+<div class="section" id="id22">
+<h4>Signature<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_gallery_remove</span><span class="p">(</span><span class="n">JaniceGallery</span> <span class="n">gallery</span><span class="p">,</span>
+                                                <span class="n">uint32_t</span> <span class="nb">id</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id23">
+<h4>Thread Safety<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id24">
+<h4>Parameters<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="33%" />
+<col width="54%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>gallery</td>
+<td><a class="reference internal" href="#janicegallery"><span class="std std-ref">JaniceGallery</span></a></td>
+<td>A gallery object to remove a template
+from. The template to remove is
+indicated by its unique id.</td>
+</tr>
+<tr class="row-odd"><td>id</td>
+<td><a class="reference internal" href="#janicetemplateid"><span class="std std-ref">JaniceTemplateId</span></a></td>
+<td>A unique id associated with a template
+int the gallery.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id25">
+<h4>Example<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplate tmpl; // Where tmpl is a valid template object created
+                     // previously
+const JaniceTemplateId id = 0; // A unique integer id to associate with tmpl.
+
+JaniceGallery gallery; // Where gallery is a valid gallery object created
+                       // previously that does not have a template with id &#39;0&#39;
+                       // already inserted in it.
+
+// Insert the template with id 0
+if (janice_gallery_insert(gallery, tmpl, id) != JANICE_SUCCESS)
+    // ERROR!
+
+// Now we can remove the template
+if (janice_gallery_remove(gallery, id) != JANICE_SUCCESS)
+    // ERROR!
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-gallery-prepare">
+<span id="id26"></span><h3>janice_gallery_prepare<a class="headerlink" href="#janice-gallery-prepare" title="Permalink to this headline">¶</a></h3>
+<p>Prepare a gallery for search. Implementors can use this function as an
+opportunity to streamline gallery objects to accelerate the search process. The
+calling convention for this function is <strong>NOT</strong> specified by the API, this
+means that this function is not guaranteed to be called before
+<a class="reference internal" href="comparison.html#janice-search"><span class="std std-ref">janice_search</span></a>. It also means that templates can be added to a gallery
+before and after this function is called. Implementations should handle all of
+these calling conventions. However, users should be aware that this function may
+be computationally expensive. They should strive to call it only at critical
+junctions before search and as few times as possible overall.</p>
+<div class="section" id="id27">
+<h4>Signature<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_gallery_prepare</span><span class="p">(</span><span class="n">JaniceGallery</span> <span class="n">gallery</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id28">
+<h4>Thread Safety<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id29">
+<h4>Parameters<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="34%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>gallery</td>
+<td><a class="reference internal" href="#janicegallery"><span class="std std-ref">JaniceGallery</span></a></td>
+<td>A gallery object to prepare</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id30">
+<h4>Example<a class="headerlink" href="#id30" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplate* tmpls; // Where tmpls is a valid array of valid template
+                       // objects created previously
+JaniceTemplateIds ids; // Where ids is a valid array of unique unsigned integers that
+                       // is the same length as tmpls
+JaniceTemplate tmpl; // Where tmpl is a valid template object created
+                     // previously
+JaniceTemplateId id; // Where id is a unique integer id to associate with tmpl.
+
+JaniceGallery gallery = NULL; // best practice to initialize to NULL
+
+if (janice_create_gallery(tmpls, ids, &amp;gallery) != JANICE_SUCCESS)
+    // ERROR!
+
+// It is valid to run search without calling prepare
+if (janice_search(tmpl, gallery ... ) != JANICE_SUCCESS)
+    // ERROR!
+
+// Prepare can be called after search
+if (janice_gallery_prepare(gallery) != JANICE_SUCCESS)
+    // ERROR!
+
+// Search can be called again right after prepare
+if (janice_search(tmpl, gallery ... ) != JANICE_SUCCESS)
+    // ERROR!
+
+// Insert another template into the gallery. This is valid after the gallery
+// has been prepared
+if (janice_gallery_insert(gallery, tmpl, 112) != JANICE_SUCCESS)
+    // ERROR!
+
+// Prepare the gallery again
+if (janice_gallery_prepare(gallery) != JANICE_SUCCESS)
+    // ERROR!
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-serialize-gallery">
+<span id="id31"></span><h3>janice_serialize_gallery<a class="headerlink" href="#janice-serialize-gallery" title="Permalink to this headline">¶</a></h3>
+<p>Serialize a <a class="reference internal" href="#janicegallery"><span class="std std-ref">JaniceGallery</span></a> object to a flat buffer.</p>
+<div class="section" id="id32">
+<h4>Signature<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_serialize_gallery</span><span class="p">(</span><span class="n">JaniceConstGallery</span> <span class="n">gallery</span><span class="p">,</span>
+                                                   <span class="n">JaniceBuffer</span><span class="o">*</span> <span class="n">data</span><span class="p">,</span>
+                                                   <span class="n">size_t</span><span class="o">*</span> <span class="nb">len</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id33">
+<h4>Thread Safety<a class="headerlink" href="#id33" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id34">
+<h4>Parameters<a class="headerlink" href="#id34" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="36%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>gallery</td>
+<td><a class="reference internal" href="#janiceconstgallery"><span class="std std-ref">JaniceConstGallery</span></a></td>
+<td>A gallery object to serialize</td>
+</tr>
+<tr class="row-odd"><td>data</td>
+<td><a class="reference internal" href="io.html#janicebuffer"><span class="std std-ref">JaniceBuffer</span></a></td>
+<td>An uninitialized buffer to hold the
+flattened data. The implementor
+allocate this object during the
+function call. The user is
+responsible for freeing this object
+by calling
+<a class="reference internal" href="io.html#janice-free-buffer"><span class="std std-ref">janice_free_buffer</span></a>.</td>
+</tr>
+<tr class="row-even"><td>len</td>
+<td>size_t *</td>
+<td>The length of the flat buffer after
+it is allocated.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id35">
+<h4>Example<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JaniceGallery</span> <span class="n">gallery</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">gallery</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="n">gallery</span> <span class="n">created</span>
+                       <span class="o">//</span> <span class="n">previously</span><span class="o">.</span>
+
+<span class="n">JaniceBuffer</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
+<span class="n">size_t</span> <span class="n">buffer_len</span><span class="p">;</span>
+<span class="n">janice_serialize_gallery</span><span class="p">(</span><span class="n">gallery</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer_len</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-deserialize-gallery">
+<span id="id36"></span><h3>janice_deserialize_gallery<a class="headerlink" href="#janice-deserialize-gallery" title="Permalink to this headline">¶</a></h3>
+<p>Deserialize a <a class="reference internal" href="#janicegallery"><span class="std std-ref">JaniceGallery</span></a> object from a flat buffer.</p>
+<div class="section" id="id37">
+<h4>Signature<a class="headerlink" href="#id37" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_deserialize_gallery</span><span class="p">(</span><span class="n">const</span> <span class="n">JaniceBuffer</span> <span class="n">data</span><span class="p">,</span>
+                                                     <span class="n">size_t</span> <span class="nb">len</span><span class="p">,</span>
+                                                     <span class="n">JaniceGallery</span><span class="o">*</span> <span class="n">gallery</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id38">
+<h4>Thread Safety<a class="headerlink" href="#id38" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id39">
+<h4>Parameters<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="36%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data</td>
+<td>const <a class="reference internal" href="io.html#janicebuffer"><span class="std std-ref">JaniceBuffer</span></a></td>
+<td>A buffer containing data from a
+flattened gallery object.</td>
+</tr>
+<tr class="row-odd"><td>len</td>
+<td>size_t</td>
+<td>The length of the flat buffer.</td>
+</tr>
+<tr class="row-even"><td>gallery</td>
+<td><a class="reference internal" href="#janicegallery"><span class="std std-ref">JaniceGallery</span></a> *</td>
+<td>An uninitialized gallery object. The
+implementor should allocate this
+object during the function call. The
+user is responsible for freeing the
+object by calling
+<a class="reference internal" href="#janice-free-gallery"><span class="std std-ref">janice_free_gallery</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id40">
+<h4>Example<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">size_t</span> <span class="n">buffer_len</span> <span class="o">=</span> <span class="n">K</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">K</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">known</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="n">buffer</span>
+<span class="n">unsigned</span> <span class="n">char</span> <span class="n">buffer</span><span class="p">[</span><span class="n">buffer_len</span><span class="p">];</span>
+
+<span class="n">FILE</span><span class="o">*</span> <span class="n">file</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s2">&quot;serialized.gallery&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">);</span>
+<span class="n">fread</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">buffer_len</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+
+<span class="n">JaniceGallery</span> <span class="n">gallery</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span> <span class="o">//</span> <span class="n">best</span> <span class="n">practice</span> <span class="n">to</span> <span class="n">initialize</span> <span class="n">to</span> <span class="n">NULL</span>
+<span class="n">janice_deserialize_gallery</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">buffer_len</span><span class="p">,</span> <span class="n">gallery</span><span class="p">);</span>
+
+<span class="n">fclose</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-read-gallery">
+<span id="id41"></span><h3>janice_read_gallery<a class="headerlink" href="#janice-read-gallery" title="Permalink to this headline">¶</a></h3>
+<p>Read a gallery from a file on disk. This method is functionally
+equivalent to the following-</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">size_t</span> <span class="n">buffer_len</span> <span class="o">=</span> <span class="n">K</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">K</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">known</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="n">buffer</span>
+<span class="n">JaniceBuffer</span> <span class="n">buffer</span><span class="p">[</span><span class="n">buffer_len</span><span class="p">];</span>
+
+<span class="n">FILE</span><span class="o">*</span> <span class="n">file</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s2">&quot;serialized.gallery&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">);</span>
+<span class="n">fread</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">buffer_len</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+
+<span class="n">JaniceGallery</span> <span class="n">gallery</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span> <span class="o">//</span> <span class="n">best</span> <span class="n">practice</span> <span class="n">to</span> <span class="n">initialize</span> <span class="n">to</span> <span class="n">NULL</span>
+<span class="n">janice_deserialize_gallery</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">buffer_len</span><span class="p">,</span> <span class="n">gallery</span><span class="p">);</span>
+
+<span class="n">fclose</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>It is provided for memory efficiency and ease of use when reading from
+disk.</p>
+<div class="section" id="id42">
+<h4>Signature<a class="headerlink" href="#id42" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_read_gallery</span><span class="p">(</span><span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">filename</span><span class="p">,</span>
+                                              <span class="n">JaniceGallery</span><span class="o">*</span> <span class="n">gallery</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id43">
+<h4>Thread Safety<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id44">
+<h4>Parameters<a class="headerlink" href="#id44" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="33%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>filename</td>
+<td>const char*</td>
+<td>The path to a file on disk</td>
+</tr>
+<tr class="row-odd"><td>gallery</td>
+<td><a class="reference internal" href="#janicegallery"><span class="std std-ref">JaniceGallery</span></a> *</td>
+<td>An uninitialized gallery object. The
+implementor should allocate this
+object during the function call. The
+user is responsible for freeing this
+object by calling
+<a class="reference internal" href="#janice-free-gallery"><span class="std std-ref">janice_free_gallery</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id45">
+<h4>Example<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceGallery gallery = NULL;
+if (janice_read_gallery(&quot;example.gallery&quot;, &amp;gallery) != JANICE_SUCCESS)
+    // ERROR!
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-write-gallery">
+<span id="id46"></span><h3>janice_write_gallery<a class="headerlink" href="#janice-write-gallery" title="Permalink to this headline">¶</a></h3>
+<p>Write a gallery to a file on disk. This method is functionally
+equivalent to the following-</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JaniceGallery</span> <span class="n">gallery</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">gallery</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="n">gallery</span> <span class="n">created</span> <span class="n">previously</span><span class="o">.</span>
+
+<span class="n">JaniceBuffer</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
+<span class="n">size_t</span> <span class="n">buffer_len</span><span class="p">;</span>
+<span class="n">janice_serialize_gallery</span><span class="p">(</span><span class="n">gallery</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer_len</span><span class="p">);</span>
+
+<span class="n">FILE</span><span class="o">*</span> <span class="n">file</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="s2">&quot;serialized.gallery&quot;</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">);</span>
+<span class="n">fwrite</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">buffer_len</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+
+<span class="n">fclose</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>It is provided for memory efficiency and ease of use when writing to
+disk.</p>
+<div class="section" id="id47">
+<h4>Signature<a class="headerlink" href="#id47" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_write_gallery</span><span class="p">(</span><span class="n">JaniceConstGallery</span> <span class="n">gallery</span><span class="p">,</span>
+                                               <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">filename</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="threadsafety">
+<h4>ThreadSafety<a class="headerlink" href="#threadsafety" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id48">
+<h4>Parameters<a class="headerlink" href="#id48" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="36%" />
+<col width="49%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>gallery</td>
+<td><a class="reference internal" href="#janiceconstgallery"><span class="std std-ref">JaniceConstGallery</span></a></td>
+<td>The gallery object to write to disk.</td>
+</tr>
+<tr class="row-odd"><td>filename</td>
+<td>const char *</td>
+<td>The path to a file on disk</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id49">
+<h4>Example<a class="headerlink" href="#id49" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceGallery gallery; // Where gallery is a valid gallery created previously
+if (janice_write_gallery(gallery, &quot;example.gallery&quot;) != JANICE_SUCCESS)
+    // ERROR!
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-free-gallery">
+<span id="id50"></span><h3>janice_free_gallery<a class="headerlink" href="#janice-free-gallery" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janicegallerytype"><span class="std std-ref">JaniceGalleryType</span></a> object.</p>
+<div class="section" id="id51">
+<h4>Signature<a class="headerlink" href="#id51" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_gallery</span><span class="p">(</span><span class="n">JaniceGallery</span><span class="o">*</span> <span class="n">gallery</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id52">
+<h4>Thread Safety<a class="headerlink" href="#id52" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id53">
+<h4>Parameters<a class="headerlink" href="#id53" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="33%" />
+<col width="54%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>gallery</td>
+<td><a class="reference internal" href="#janicegallery"><span class="std std-ref">JaniceGallery</span></a> *</td>
+<td>A gallery object to free. Best practice
+dicates the pointer should be set to
+<em>NULL</em> after it is freed.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id54">
+<h4>Example<a class="headerlink" href="#id54" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceGallery gallery; // Where gallery is a valid gallery object created previously
+if (janice_free_gallery(&amp;gallery) != JANICE_SUCCESS)
+    // ERROR!
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">JanICE</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="initialization.html">Initialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="detection.html">Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enrollment.html">Enrollment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#structs">Structs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#typedefs">Typedefs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clustering.html">Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="enrollment.html" title="previous chapter">Enrollment</a></li>
+      <li>Next: <a href="comparison.html" title="next chapter">Comparison</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Noblis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/api/gallery.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

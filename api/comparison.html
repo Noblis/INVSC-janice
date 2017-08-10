@@ -1,0 +1,429 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Comparison &#8212; JanICE 4.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '4.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Clustering" href="clustering.html" />
+    <link rel="prev" title="Gallery" href="gallery.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="comparison">
+<span id="id1"></span><h1>Comparison<a class="headerlink" href="#comparison" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This API defines two possible types of comparisons, 1:1 and 1:N. These are
+represented by the <a class="reference internal" href="#janice-verify"><span class="std std-ref">janice_verify</span></a> and <a class="reference internal" href="#janice-search"><span class="std std-ref">janice_search</span></a> functions
+respectively. The API quantifies the relationship between two templates as a
+single number called a <a class="reference internal" href="#comparison-sim-score"><span class="std std-ref">Similarity Score</span></a>.</p>
+</div>
+<div class="section" id="typedefs">
+<h2>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="janicesimilarity">
+<span id="id2"></span><h3>JaniceSimilarity<a class="headerlink" href="#janicesimilarity" title="Permalink to this headline">¶</a></h3>
+<p>A number representing the similarity between two templates. See
+[functions.md#JaniceVerifySimilarityScore] for more information.</p>
+<div class="section" id="signature">
+<h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">double</span> <span class="n">JaniceSimilarity</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janicesimilarities">
+<span id="id3"></span><h3>JaniceSimilarities<a class="headerlink" href="#janicesimilarities" title="Permalink to this headline">¶</a></h3>
+<p>An array of <a class="reference internal" href="#janicesimilarity"><span class="std std-ref">JaniceSimilarity</span></a> objects.</p>
+<div class="section" id="id4">
+<h4>Signature<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">JaniceSimilarity</span><span class="o">*</span> <span class="n">JaniceSimilarities</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janicesearchtemplateids">
+<span id="id5"></span><h3>JaniceSearchTemplateIds<a class="headerlink" href="#janicesearchtemplateids" title="Permalink to this headline">¶</a></h3>
+<p>An array of <a class="reference internal" href="gallery.html#janicetemplateid"><span class="std std-ref">JaniceTemplateId</span></a> objects.</p>
+<div class="section" id="id6">
+<h4>Signature<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">JaniceTemplateId</span><span class="o">*</span> <span class="n">JaniceSearchTemplateIds</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="janice-verify">
+<span id="id7"></span><h3>janice_verify<a class="headerlink" href="#janice-verify" title="Permalink to this headline">¶</a></h3>
+<p>Compare two templates with the difference expressed as a similarity
+score.</p>
+<div class="section" id="id8">
+<h4>Signature<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_verify</span><span class="p">(</span><span class="n">JaniceConstTemplate</span> <span class="n">reference</span><span class="p">,</span>
+                                        <span class="n">JaniceConstTemplate</span> <span class="n">verification</span><span class="p">,</span>
+                                        <span class="n">JaniceSimilarity</span><span class="o">*</span> <span class="n">similarity</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="thread-safety">
+<h4>Thread Safety<a class="headerlink" href="#thread-safety" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="similarity-score">
+<span id="comparison-sim-score"></span><h4>Similarity Score<a class="headerlink" href="#similarity-score" title="Permalink to this headline">¶</a></h4>
+<p>This API expects that the comparison of two templates results in a
+single value that quantifies the similarity between them. A similarity
+score is constrained by the following requirements:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mf">1.</span> <span class="n">Higher</span> <span class="n">scores</span> <span class="n">indicate</span> <span class="n">greater</span> <span class="n">similarity</span>
+<span class="mf">2.</span> <span class="n">Scores</span> <span class="n">can</span> <span class="n">be</span> <span class="n">asymmetric</span><span class="o">.</span> <span class="n">This</span> <span class="n">mean</span> <span class="n">verify</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">necessarily</span>
+   <span class="n">equal</span> <span class="n">verify</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="37%" />
+<col width="45%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>reference</td>
+<td><a class="reference internal" href="enrollment.html#janiceconsttemplate"><span class="std std-ref">JaniceConstTemplate</span></a></td>
+<td>A reference template. This
+template was created with the
+<em>Janice11Reference</em> role.</td>
+</tr>
+<tr class="row-odd"><td>verification</td>
+<td><a class="reference internal" href="enrollment.html#janiceconsttemplate"><span class="std std-ref">JaniceConstTemplate</span></a></td>
+<td>A verification template. This
+this template was created with
+the <em>Janice11Verification</em> role.</td>
+</tr>
+<tr class="row-even"><td>similarity</td>
+<td><a class="reference internal" href="#janicesimilarity"><span class="std std-ref">JaniceSimilarity</span></a> *</td>
+<td>A similarity score. See
+<a class="reference internal" href="#comparison-sim-score"><span class="std std-ref">Similarity Score</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="example">
+<h4>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplate reference; // Where reference is a valid template object created
+                          // previously
+JaniceTemplate verification; // Where verification is a valid template object
+                             // created previously
+JaniceSimilarity similarity;
+if (janice_verify(reference, verification, &amp;similarity) != JANICE_SUCCESS)
+    // ERROR!
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-search">
+<span id="id9"></span><h3>janice_search<a class="headerlink" href="#janice-search" title="Permalink to this headline">¶</a></h3>
+<p>Compute 1-N search results between a query template object and a target
+gallery object. The function allocates two arrays of equal size, one containing
+<a class="reference internal" href="#comparison-sim-score"><span class="std std-ref">Similarity Score</span></a> and the other containing the unique id of the
+template the score was computed with (along with the query). Often it is
+desirable (and perhaps computationally efficient) to only see the top K scores
+out of N possible templates. The option to set a K is provided to the user as
+part of the function parameters.</p>
+<div class="section" id="id10">
+<h4>Signature<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_search</span><span class="p">(</span><span class="n">JaniceConstTemplate</span> <span class="n">probe</span><span class="p">,</span>
+                                        <span class="n">JaniceConstGallery</span> <span class="n">gallery</span><span class="p">,</span>
+                                        <span class="n">uint32_t</span> <span class="n">num_requested</span><span class="p">,</span>
+                                        <span class="n">JaniceSimilarities</span><span class="o">*</span> <span class="n">similarities</span><span class="p">,</span>
+                                        <span class="n">JaniceSearchTemplateIds</span><span class="o">*</span> <span class="n">ids</span><span class="p">,</span>
+                                        <span class="n">uint32_t</span><span class="o">*</span> <span class="n">num_returned</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id11">
+<h4>Thread Safety<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id12">
+<h4>Parameters<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="40%" />
+<col width="41%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>probe</td>
+<td><a class="reference internal" href="enrollment.html#janiceconsttemplate"><span class="std std-ref">JaniceConstTemplate</span></a></td>
+<td>A template to use as a query. The
+template was created with the
+Janice1NProbe role.</td>
+</tr>
+<tr class="row-odd"><td>gallery</td>
+<td><a class="reference internal" href="gallery.html#janiceconstgallery"><span class="std std-ref">JaniceConstGallery</span></a></td>
+<td>A gallery object to search against.</td>
+</tr>
+<tr class="row-even"><td>num_requested</td>
+<td>uint32_t</td>
+<td>The number of requested number of
+returns. If the user would like as
+many returns as there are templates
+in the gallery they can set this to
+0.</td>
+</tr>
+<tr class="row-odd"><td>similarities</td>
+<td>:ref`JaniceSimilarities` *</td>
+<td>An uninitialized array of
+similarity scores. The scores must
+be in descending order (i.e. the
+highest score is stored at index
+0). The implementor should allocate
+this object during the function
+call. The user is responsible for
+freeing the object with
+<a class="reference internal" href="#janice-free-similarities"><span class="std std-ref">janice_free_similarities</span></a>.</td>
+</tr>
+<tr class="row-even"><td>ids</td>
+<td><a class="reference internal" href="#janicesearchtemplateids"><span class="std std-ref">JaniceSearchTemplateIds</span></a> *</td>
+<td>An uninitialized array of unique
+ids identifying the target
+templates associated with each
+score in <em>similarities</em>. This array
+must be the same size as
+<em>similarities</em>. The <em>ith</em> id in
+this array corresponds with the
+<em>ith</em> similarity in <em>similarities</em>.
+The implementor should allocate
+this object during the function
+call. The user is responsible for
+freeing the object by calling
+<a class="reference internal" href="#janice-free-search-ids"><span class="std std-ref">janice_free_search_ids</span></a>.</td>
+</tr>
+<tr class="row-odd"><td>num_returned</td>
+<td>uint32_t*</td>
+<td>The number of elements in the
+<em>similarities</em> and <em>ids</em> arrays.
+This number can be different from
+<em>num_requested</em>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id13">
+<h4>Example<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplate probe;  // Where probe is a valid template object created
+                       // previously
+JaniceGallery gallery; // Where gallery is a valid gallery object created
+                       // previously
+const uint32_t num_requested = 50; // Request the top 50 matches
+
+JaniceSimilarities similarities = NULL;
+JaniceSearchTemplateIds ids = NULL;
+uint32_t num_returned;
+
+// Run search
+if (janice_search(probe, gallery, num_requested, &amp;similarities, &amp;ids, &amp;num_returned) != JANICE_SUCCESS)
+    // ERROR!
+
+num_requested == num_returned; // This might not be true!
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-free-similarities">
+<span id="id14"></span><h3>janice_free_similarities<a class="headerlink" href="#janice-free-similarities" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janicesimilarities"><span class="std std-ref">JaniceSimilarities</span></a> object.</p>
+<div class="section" id="id15">
+<h4>Signature<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_similarities</span><span class="p">(</span><span class="n">JaniceSimilarities</span><span class="o">*</span> <span class="n">similarities</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id16">
+<h4>Thread Safety<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id17">
+<h4>Parameters<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="39%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>similarities</td>
+<td><a class="reference internal" href="#janicesimilarities"><span class="std std-ref">JaniceSimilarities</span></a> *</td>
+<td>An array of similarities to
+free.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-free-search-ids">
+<span id="id18"></span><h3>janice_free_search_ids<a class="headerlink" href="#janice-free-search-ids" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janicesearchtemplateids"><span class="std std-ref">JaniceSearchTemplateIds</span></a> object.</p>
+<div class="section" id="id19">
+<h4>Signature<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_search_ids</span><span class="p">(</span><span class="n">JaniceSearchTemplateIds</span><span class="o">*</span> <span class="n">ids</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id20">
+<h4>Thread Safety<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id21">
+<h4>Parameters<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="51%" />
+<col width="38%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>ids</td>
+<td><a class="reference internal" href="#janicesearchtemplateids"><span class="std std-ref">JaniceSearchTemplateIds</span></a> *</td>
+<td>An array of ids to free.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">JanICE</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="initialization.html">Initialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="detection.html">Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enrollment.html">Enrollment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Comparison</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#typedefs">Typedefs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clustering.html">Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="gallery.html" title="previous chapter">Gallery</a></li>
+      <li>Next: <a href="clustering.html" title="next chapter">Clustering</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Noblis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/api/comparison.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

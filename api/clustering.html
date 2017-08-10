@@ -1,0 +1,518 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Clustering &#8212; JanICE 4.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '4.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="License" href="../license.html" />
+    <link rel="prev" title="Comparison" href="comparison.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="clustering">
+<span id="id1"></span><h1>Clustering<a class="headerlink" href="#clustering" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This API defines clustering is the automatic and unsupervised combination of
+unlabelled templates into groups of like templates. What constitutes likeness is
+heavily dependent on the use case and context in question. One example when
+dealing with faces is grouping based on identity, where all faces belonging to a
+single individual are placed in a cluster.</p>
+</div>
+<div class="section" id="structs">
+<h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="janicemediaclusteritem">
+<span id="id2"></span><h3>JaniceMediaClusterItem<a class="headerlink" href="#janicemediaclusteritem" title="Permalink to this headline">¶</a></h3>
+<p>A structure that connects an input media and location with an output cluster.
+Because multiple detections could occur in a single piece of media a
+<a class="reference internal" href="detection.html#janicerect"><span class="std std-ref">JaniceRect</span></a> and a frame index are included to identify which detection
+this item refers to.</p>
+<div class="section" id="fields">
+<h4>Fields<a class="headerlink" href="#fields" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="32%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>cluster_id</td>
+<td><a class="reference internal" href="#janiceclusterid"><span class="std std-ref">JaniceClusterId</span></a></td>
+<td>A unique identifier for the cluster
+this item belongs to. Items belonging
+to the same cluster should have the
+the id.</td>
+</tr>
+<tr class="row-odd"><td>media_id</td>
+<td><a class="reference internal" href="#janicemediaid"><span class="std std-ref">JaniceMediaId</span></a></td>
+<td>A unique identifier for the media
+object this item corresponds to.</td>
+</tr>
+<tr class="row-even"><td>confidence</td>
+<td>double</td>
+<td>The confidence that this item belongs
+to this cluster.</td>
+</tr>
+<tr class="row-odd"><td>rect</td>
+<td><a class="reference internal" href="detection.html#janicerect"><span class="std std-ref">JaniceRect</span></a></td>
+<td>The location of the clustered object
+in a frame or image.</td>
+</tr>
+<tr class="row-even"><td>frame</td>
+<td>uint32_t</td>
+<td>The frame index of the clustered
+object if the media is a video,
+otherwise 0.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janicetemplateclusteritem">
+<span id="id3"></span><h3>JaniceTemplateClusterItem<a class="headerlink" href="#janicetemplateclusteritem" title="Permalink to this headline">¶</a></h3>
+<p>A structure that connects an input template with an output cluster.</p>
+<div class="section" id="id4">
+<h4>Fields<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="1%" />
+<col width="33%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head" colspan="3">Name      | Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td colspan="2">cluster_id</td>
+<td><a class="reference internal" href="#janiceclusterid"><span class="std std-ref">JaniceClusterId</span></a></td>
+<td>A unique identifier for the cluster
+this item belongs to. Items belonging
+to the same cluster should have the
+same id.</td>
+</tr>
+<tr class="row-odd"><td colspan="2">tmpl_id</td>
+<td><a class="reference internal" href="gallery.html#janicetemplateid"><span class="std std-ref">JaniceTemplateId</span></a></td>
+<td>A unique identifier for the template
+object this item corresponds to.</td>
+</tr>
+<tr class="row-even"><td colspan="2">confidence</td>
+<td>double</td>
+<td>The confidence that this item belongs
+to this cluster.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="typedefs">
+<h2>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="janiceclusterid">
+<span id="id5"></span><h3>JaniceClusterId<a class="headerlink" href="#janiceclusterid" title="Permalink to this headline">¶</a></h3>
+<p>A unique identifier for a cluster</p>
+<div class="section" id="signature">
+<h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">uint32_t</span> <span class="n">JaniceClusterId</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janicemediaid">
+<span id="id6"></span><h3>JaniceMediaId<a class="headerlink" href="#janicemediaid" title="Permalink to this headline">¶</a></h3>
+<p>A unique identifier for a media object</p>
+<div class="section" id="id7">
+<h4>Signature<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">uint32_t</span> <span class="n">JaniceMediaId</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janicemediaids">
+<span id="id8"></span><h3>JaniceMediaIds<a class="headerlink" href="#janicemediaids" title="Permalink to this headline">¶</a></h3>
+<p>An array of <a class="reference internal" href="#janicemediaid"><span class="std std-ref">JaniceMediaId</span></a> objects.</p>
+<div class="section" id="id9">
+<h4>Signature<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">JaniceMediaId</span><span class="o">*</span> <span class="n">JaniceMediaIds</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janicemediaclusteritems">
+<span id="id10"></span><h3>JaniceMediaClusterItems<a class="headerlink" href="#janicemediaclusteritems" title="Permalink to this headline">¶</a></h3>
+<p>An array of <a class="reference internal" href="#janicemediaclusteritem"><span class="std std-ref">JaniceMediaClusterItem</span></a> objects.</p>
+<div class="section" id="id11">
+<h4>Signature<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="n">JaniceMediaClusterItem</span><span class="o">*</span> <span class="n">JaniceMediaClusterItems</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janicetemplateclusteritems">
+<span id="id12"></span><h3>JaniceTemplateClusterItems<a class="headerlink" href="#janicetemplateclusteritems" title="Permalink to this headline">¶</a></h3>
+<p>An array of <a class="reference internal" href="#janicetemplateclusteritem"><span class="std std-ref">JaniceTemplateClusterItem</span></a> objects.</p>
+<div class="section" id="id13">
+<h4>Signature<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="n">JaniceTemplateClusterItem</span><span class="o">*</span> <span class="n">JaniceTemplateClusterItems</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="function">
+<h2>Function<a class="headerlink" href="#function" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="janice-cluster-media">
+<span id="id14"></span><h3>janice_cluster_media<a class="headerlink" href="#janice-cluster-media" title="Permalink to this headline">¶</a></h3>
+<p>Cluster a collection of media objects into groups. Each media object may
+contain 0 or more objects of interest. To distinguish between these
+objects the output cluster contains an object location.</p>
+<div class="section" id="id15">
+<h4>Signature<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_cluster_media</span><span class="p">(</span><span class="n">JaniceConstMedias</span> <span class="nb">input</span><span class="p">,</span>
+                                               <span class="n">const</span> <span class="n">JaniceMediaIds</span> <span class="n">input_ids</span><span class="p">,</span>
+                                               <span class="n">uint32_t</span> <span class="n">num_inputs</span><span class="p">,</span>
+                                               <span class="n">uint32_t</span> <span class="n">hint</span><span class="p">,</span>
+                                               <span class="n">JaniceMediaClusterItems</span><span class="o">*</span> <span class="n">clusters</span><span class="p">,</span>
+                                               <span class="n">uint32_t</span><span class="o">*</span> <span class="n">num_clusters</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="thread-safety">
+<h4>Thread Safety<a class="headerlink" href="#thread-safety" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="hint">
+<span id="clustering-hint"></span><h4>Hint<a class="headerlink" href="#hint" title="Permalink to this headline">¶</a></h4>
+<p>Clustering is generally considered to be an ill-defined problem, and
+most algorithms require some help determining the appropriate number of
+clusters. The hint parameter helps influence the number of clusters,
+though the implementation is free to ignore it. The goal of the hint is
+to provide user input for two use cases:</p>
+<ol class="arabic simple">
+<li>If the hint is between 0 - 1 it should be regarded as a purity
+requirement for the algorithm. A 1 indicates the user wants perfectly
+pure clusters, even if that means more clusters are returned. A 0
+indicates that the user wants very few clusters returned and accepts
+there may be some errors.</li>
+<li>If the hint is &gt; 1 it represents an estimated upper bound on the
+number of object types in the set.</li>
+</ol>
+</div>
+<div class="section" id="parameters">
+<h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="37%" />
+<col width="47%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>input</td>
+<td><a class="reference internal" href="io.html#janicemediaiterators"><span class="std std-ref">JaniceMediaIterators</span></a></td>
+<td>An array of media objects to cluster.</td>
+</tr>
+<tr class="row-odd"><td>input_ids</td>
+<td>const <a class="reference internal" href="#janicemediaids"><span class="std std-ref">JaniceMediaIds</span></a></td>
+<td>An array of unique indentifiers for the
+input objects. This array must be the same
+size as <em>input</em>. The <em>ith</em> id should
+correspond to the <em>ith</em> media object in
+<em>input</em>.</td>
+</tr>
+<tr class="row-even"><td>num_inputs</td>
+<td>uint32_t</td>
+<td>The size of the <em>input</em> and <em>input_ids</em>
+arrays.</td>
+</tr>
+<tr class="row-odd"><td>hint</td>
+<td>uint32_t</td>
+<td>A <a class="reference internal" href="#clustering-hint"><span class="std std-ref">Hint</span></a> to the clustering
+algorithm.</td>
+</tr>
+<tr class="row-even"><td>clusters</td>
+<td><a class="reference internal" href="#janicemediaclusteritems"><span class="std std-ref">JaniceMediaClusterItems</span></a> *</td>
+<td>An uninitialized array of cluster items to
+store the result of clustering. The
+implementor should allocate this object
+during the function call. The user is
+responsible for freeing the object by
+calling
+<a class="reference internal" href="#janice-free-media-cluster-items"><span class="std std-ref">janice_free_media_cluster_items</span></a>.</td>
+</tr>
+<tr class="row-odd"><td>num_clusters</td>
+<td>uint32_t*</td>
+<td>The size of the <em>clusters</em> array.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-cluster-templates">
+<span id="id16"></span><h3>janice_cluster_templates<a class="headerlink" href="#janice-cluster-templates" title="Permalink to this headline">¶</a></h3>
+<p>Cluster a collection of template objects into groups.</p>
+<div class="section" id="id17">
+<h4>Signature<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_cluster_templates</span><span class="p">(</span><span class="n">JaniceConstTemplates</span> <span class="nb">input</span><span class="p">,</span>
+                                                   <span class="n">const</span> <span class="n">JaniceTemplateIds</span> <span class="n">input_ids</span><span class="p">,</span>
+                                                   <span class="n">uint32_t</span> <span class="n">num_inputs</span><span class="p">,</span>
+                                                   <span class="n">uint32_t</span> <span class="n">hint</span><span class="p">,</span>
+                                                   <span class="n">JaniceTemplateClusterItems</span><span class="o">*</span> <span class="n">clusters</span><span class="p">,</span>
+                                                   <span class="n">uint32_t</span><span class="o">*</span> <span class="n">num_clusters</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id18">
+<h4>Thread Safety<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id19">
+<h4>Parameters<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="38%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>input</td>
+<td><a class="reference internal" href="enrollment.html#janiceconsttemplates"><span class="std std-ref">JaniceConstTemplates</span></a></td>
+<td>An array of template objects to cluster.</td>
+</tr>
+<tr class="row-odd"><td>input_ids</td>
+<td>const <a class="reference internal" href="gallery.html#janicetemplateids"><span class="std std-ref">JaniceTemplateIds</span></a></td>
+<td>An array of unique indentifiers for the input
+objects. This array must be the same size as
+<em>input</em>. The <em>ith</em> id should correspond to the
+<em>ith</em> media object in <em>input</em>.</td>
+</tr>
+<tr class="row-even"><td>num_inputs</td>
+<td>uint32_t</td>
+<td>The size of the <em>input</em> and <em>input_ids</em>
+arrays.</td>
+</tr>
+<tr class="row-odd"><td>hint</td>
+<td>uint32_t</td>
+<td>A <a class="reference internal" href="#clustering-hint"><span class="std std-ref">Hint</span></a> to the algorithm. The
+implementor may ignore this value if they
+choose.</td>
+</tr>
+<tr class="row-even"><td>clusters</td>
+<td><a class="reference internal" href="#janicetemplateclusteritems"><span class="std std-ref">JaniceTemplateClusterItems</span></a> *</td>
+<td>An uninitialized array to hold the cluster
+output. The implementor should allocate this
+object during the function call. The user is
+for freeing the object by calling
+<a class="reference internal" href="#janice-free-template-cluster-items"><span class="std std-ref">janice_free_template_cluster_items</span></a>.</td>
+</tr>
+<tr class="row-odd"><td>num_clusters</td>
+<td>uint32_t*</td>
+<td>The size of the <em>clusters</em> array.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-free-media-cluster-items">
+<span id="id20"></span><h3>janice_free_media_cluster_items<a class="headerlink" href="#janice-free-media-cluster-items" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janicemediaclusteritems"><span class="std std-ref">JaniceMediaClusterItems</span></a> object.</p>
+<div class="section" id="id21">
+<h4>Signature<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_media_cluster_items</span><span class="p">(</span><span class="n">JaniceMediaClusterItems</span><span class="o">*</span> <span class="n">clusters</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id22">
+<h4>Thread Safety<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id23">
+<h4>Parameters<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="46%" />
+<col width="38%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>clusters</td>
+<td><a class="reference internal" href="#janicemediaclusteritems"><span class="std std-ref">JaniceMediaClusterItems</span></a> *</td>
+<td>The media cluster object to
+free.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-free-template-cluster-items">
+<span id="id24"></span><h3>janice_free_template_cluster_items<a class="headerlink" href="#janice-free-template-cluster-items" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janicetemplateclusteritems"><span class="std std-ref">JaniceTemplateClusterItems</span></a> object.</p>
+<div class="section" id="id25">
+<h4>Signature<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_template_cluster_items</span><span class="p">(</span><span class="n">JaniceTemplateClusterItems</span><span class="o">*</span> <span class="n">clusters</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id26">
+<h4>Thread Safety<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h4>
+<p>This function is reentrant.</p>
+</div>
+<div class="section" id="id27">
+<h4>Parameters<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="50%" />
+<col width="34%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>clusters</td>
+<td><a class="reference internal" href="#janicetemplateclusteritems"><span class="std std-ref">JaniceTemplateClusterItems</span></a> *</td>
+<td>The template cluster
+object to free.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">JanICE</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="initialization.html">Initialization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="detection.html">Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enrollment.html">Enrollment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Clustering</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#structs">Structs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#typedefs">Typedefs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#function">Function</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="comparison.html" title="previous chapter">Comparison</a></li>
+      <li>Next: <a href="../license.html" title="next chapter">License</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Noblis.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/api/clustering.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
