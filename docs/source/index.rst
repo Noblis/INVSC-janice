@@ -6,6 +6,22 @@
 Welcome to JanICE's documentation!
 ==================================
 
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+
+   api/concepts.rst
+   api/errors.rst
+   api/initialization.rst
+   api/io.rst
+   api/train.rst
+   api/detection.rst
+   api/enrollment.rst
+   api/gallery.rst
+   api/comparison.rst
+   api/clustering.rst
+   license.rst
+
 The JanICE API is a *C* API that provides a common interface between
 computer vision algorithms and agencies and entities that would like to
 use them. The API consists of a core header file defining required *C*
@@ -66,24 +82,8 @@ services of each specific team.
 License
 -------
 
-The API is provided under the MIT license(LICENSE.txt) and is *free for
-academic and commercial use*.
-
-.. toctree::
-   :maxdepth: 2
-   :hidden:
-
-   api/concepts.rst
-   api/errors.rst
-   api/initialization.rst
-   api/io.rst
-   api/train.rst
-   api/detection.rst
-   api/enrollment.rst
-   api/gallery.rst
-   api/comparison.rst
-   api/clustering.rst
-   license.rst
+The API is provided under the MIT :ref:`license` and is *free for academic and
+commercial use*.
 
 Indices and tables
 ==================
