@@ -79,6 +79,10 @@ academic and commercial use*.
    api/io.rst
    api/train.rst
    api/detection.rst
+   api/enrollment.rst
+   api/gallery.rst
+   api/comparison.rst
+   api/clustering.rst
 
 Indices and tables
 ==================

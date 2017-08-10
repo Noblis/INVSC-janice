@@ -1,4 +1,4 @@
-.. io:
+.. _io:
 
 I/O
 ===
@@ -185,7 +185,7 @@ Signature
 Functions
 ---------
 
-.. _janice_free_buffer:
+.. _janice\_free\_buffer:
 
 janice\_free\_buffer
 ~~~~~~~~~~~~~~~~~~~~
@@ -213,7 +213,7 @@ Parameters
 | buffer   | :ref:`JaniceBuffer` \* | The buffer to free   |
 +----------+------------------------+----------------------+
 
-.. _janice_image_access:
+.. _janice\_image\_access:
 
 janice\_image\_access
 ~~~~~~~~~~~~~~~~~~~~~
