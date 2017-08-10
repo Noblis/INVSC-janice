@@ -40,6 +40,12 @@ inline uint8_t janice_image_access(JaniceConstImage image, uint32_t channel, uin
 }
 
 // ----------------------------------------------------------------------------
+// Unique Media Identifier
+
+typedef uint32_t JaniceMediaId;
+typedef JaniceMediaId* JaniceMediaIds;
+
+// ----------------------------------------------------------------------------
 // Media Iterator
 
 typedef void* JaniceMediaIteratorState;
