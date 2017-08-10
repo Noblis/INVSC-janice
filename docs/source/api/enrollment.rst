@@ -145,28 +145,23 @@ This function is reentrant.
 Parameters
 ^^^^^^^^^^
 
-+-------------------+------------------------------+---------------------------+
-| Name              | Type                         | Description               |
-+===================+==============================+===========================+
-| detections        | :ref:`JaniceConstDetections` | An array of detection     | 
-|                   |                              | objects.                  |
-+-------------------+------------------------------+---------------------------+
-| num\_detections   | uint32\_t                    | The number of input       |
-|                   |                              | detections.               |
-+-------------------+------------------------------+---------------------------+
-| role              | :ref:`JaniceEnrollmentType`  | The use case for the      | 
-|                   |                              | template.                 |
-+-------------------+------------------------------+---------------------------+
-| tmpl              | :ref:`JaniceTemplate` \*     | An uninitialized template |
-|                   |                              | object. The implementor   |
-|                   |                              | should allocate this      |
-|                   |                              | object during the function|
-|                   |                              | call. The user is         |
-|                   |                              | responsible for freeing   |
-|                   |                              | object by calling         |
-|                   |                              | :ref:`janice\_free\_      |
-|                   |                              | template`                 |
-+-------------------+------------------------------+---------------------------+
++-------------------+------------------------------+--------------------------------+
+| Name              | Type                         | Description                    |
++===================+==============================+================================+
+| detections        | :ref:`JaniceConstDetections` | An array of detection objects. | 
++-------------------+------------------------------+--------------------------------+
+| num\_detections   | uint32\_t                    | The number of input detections.|
++-------------------+------------------------------+--------------------------------+
+| role              | :ref:`JaniceEnrollmentType`  | The use case for the template  | 
++-------------------+------------------------------+--------------------------------+
+| tmpl              | :ref:`JaniceTemplate` \*     | An uninitialized template      |
+|                   |                              | object. The implementor should |
+|                   |                              | allocate this object during the|
+|                   |                              | function call. The user is     |
+|                   |                              | responsible for freeing the    |
+|                   |                              | object by calling              |
+|                   |                              | :ref:`janice\_free\_template`. |
++-------------------+------------------------------+--------------------------------+
 
 Example
 ^^^^^^^

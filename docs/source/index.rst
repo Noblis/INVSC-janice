@@ -83,6 +83,7 @@ academic and commercial use*.
    api/gallery.rst
    api/comparison.rst
    api/clustering.rst
+   license.rst
 
 Indices and tables
 ==================
