@@ -298,7 +298,7 @@ JANICE_EXPORT JaniceError janice_search_batch(JaniceConstTemplates probes,
                                               uint32_t num_results);
 
 // Cleanup
-JANICE_EXPORT JaniceError janice_free_search_result(JaniceSearchResult* result)
+JANICE_EXPORT JaniceError janice_free_search_result(JaniceSearchResult* result);
 
 JANICE_EXPORT JaniceError janice_free_search_results(JaniceSearchResults* results,
                                                      uint32_t num_results);
