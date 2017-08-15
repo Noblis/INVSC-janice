@@ -20,7 +20,7 @@ struct JaniceImageType
     uint32_t rows;
     uint32_t cols;
 
-    JaniceBuffer data;
+    uint8_t* data;
     bool owner;
 };
 
