@@ -37,6 +37,13 @@ JANICE_EXPORT JaniceError janice_sdk_version(uint32_t* major,
 
 JANICE_EXPORT JaniceError janice_train(const char* data_prefix,
                                        const char* data_list);
+//
+// ----------------------------------------------------------------------------
+// Buffer
+
+typedef uint8_t* JaniceBuffer;
+
+JANICE_EXPORT JaniceError janice_free_buffer(JaniceBuffer* buffer);
 
 // ----------------------------------------------------------------------------
 // Detection
@@ -60,7 +67,11 @@ struct JaniceTrack
     size_t length;
 };
 
+typedef JaniceTrack* JaniceTracks;
 typedef char* JaniceAttribute;
+
+typedef size_t JaniceMediaId;
+typedef JaniceMediaId* JaniceMediaIds;
 
 // Functions
 JANICE_EXPORT JaniceError janice_create_detection_from_rect(JaniceMediaIterator media,
@@ -88,7 +99,7 @@ JANICE_EXPORT JaniceError janice_detection_get_track(JaniceConstDetection detect
                                                      JaniceTrack* track);
 
 JANICE_EXPORT JaniceError janice_detection_get_attribute(JaniceConstDetection detection,
-                                                         JaniceAttribute key,
+                                                         const char* key,
                                                          JaniceAttribute* value);
 
 // I/O
@@ -114,7 +125,12 @@ JANICE_EXPORT JaniceError janice_free_detections(JaniceDetections* detections,
 
 JANICE_EXPORT JaniceError janice_free_track(JaniceTrack* track);
 
+JANICE_EXPORT JaniceError janice_free_tracks(JaniceTracks* tracks, 
+                                             uint32_t num_tracks);
+
 JANICE_EXPORT JaniceError janice_free_attribute_value(JaniceAttribute* value);
+
+JANICE_EXPORT JaniceError janice_free_media_ids(JaniceMediaIds* ids, uint32_t num_ids);
 
 // ----------------------------------------------------------------------------
 // Enrollment
@@ -167,7 +183,7 @@ JANICE_EXPORT JaniceError janice_enroll_from_detections_batch(JaniceConstDetecti
                                                               uint32_t* num_tmpls);
 
 JANICE_EXPORT JaniceError janice_template_get_attribute(JaniceConstTemplate tmpl,
-                                                        JaniceAttribute attribute,
+                                                        const char* attribute,
                                                         JaniceAttribute* value);
 
 // I/O
@@ -187,6 +203,11 @@ JANICE_EXPORT JaniceError janice_write_template(JaniceConstTemplate tmpl,
 
 // Cleanup
 JANICE_EXPORT JaniceError janice_free_template(JaniceTemplate* tmpl);
+
+JANICE_EXPORT JaniceError janice_free_templates(JaniceTemplates* tmpls, 
+                                                uint32_t num_tmpls);
+
+JANICE_EXPORT JaniceError janice_free_template_ids(JaniceTemplateIds* ids, uint32_t num_ids);
 
 // ----------------------------------------------------------------------------
 // Verification
@@ -215,7 +236,8 @@ JANICE_EXPORT JaniceError janice_create_gallery(JaniceConstTemplates tmpls,
                                                 uint32_t num_tmpls,
                                                 JaniceGallery* gallery);
 
-JANICE_EXPORT JaniceError janice_gallery_reserve(size_t n);
+JANICE_EXPORT JaniceError janice_gallery_reserve(JaniceGallery gallery,
+                                                 size_t n);
 
 JANICE_EXPORT JaniceError janice_gallery_insert(JaniceGallery gallery,
                                                 JaniceConstTemplate tmpl,
@@ -278,7 +300,8 @@ JANICE_EXPORT JaniceError janice_search_batch(JaniceConstTemplates probes,
 // Cleanup
 JANICE_EXPORT JaniceError janice_free_search_result(JaniceSearchResult* result)
 
-JANICE_EXPORT JaniceError janice_free_search_results(JaniceSearchResults* results);
+JANICE_EXPORT JaniceError janice_free_search_results(JaniceSearchResults* results,
+                                                     uint32_t num_results);
 
 // ----------------------------------------------------------------------------
 // Cluster

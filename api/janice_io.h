@@ -12,13 +12,6 @@ extern "C" {
 #endif
 
 // ----------------------------------------------------------------------------
-// Buffer
-
-typedef uint8_t* JaniceBuffer;
-
-JANICE_EXPORT JaniceError janice_free_buffer(JaniceBuffer* buffer);
-
-// ----------------------------------------------------------------------------
 // Image
 
 struct JaniceImageType
@@ -38,12 +31,6 @@ inline uint8_t janice_image_access(JaniceConstImage image, uint32_t channel, uin
 {
     return image->data[(row * image->cols * image->channels) + (col * image->channels) + channel];
 }
-
-// ----------------------------------------------------------------------------
-// Unique Media Identifier
-
-typedef uint32_t JaniceMediaId;
-typedef JaniceMediaId* JaniceMediaIds;
 
 // ----------------------------------------------------------------------------
 // Media Iterator
