@@ -23,9 +23,14 @@ include(CTest)
 set(JANICE_IMPLEMENTATION CACHE STRING "A path to a library implementing the JanICE API")
 set(JANICE_IO_IMPLEMENTATION CACHE STRING "A path to a library implementating the JanICE I/O API")
 
-# Include the API header files
-include_directories(api)
-install(FILES api/janice.h api/janice_io.h api/janice_error.h DESTINATION include/janice)
+add_library(janice INTERFACE)
+target_include_directories(janice INTERFACE api)
+
+install(FILES
+          ${CMAKE_CURRENT_SOURCE_DIR}/api/janice_error.h
+          ${CMAKE_CURRENT_SOURCE_DIR}/api/janice_io.h
+          ${CMAKE_CURRENT_SOURCE_DIR}/api/janice.h
+        DESTINATION include/janice)
 
 # Optionally include another language interface
 add_subdirectory(interfaces)

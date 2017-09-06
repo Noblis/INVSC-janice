@@ -35,9 +35,11 @@ JANICE_EXPORT JaniceError janice_sdk_version(uint32_t* major,
 // ----------------------------------------------------------------------------
 // Training
 
-JANICE_EXPORT JaniceError janice_train(const char* data_prefix,
-                                       const char* data_list);
-//
+JANICE_EXPORT JaniceError janice_train(JaniceDetections subjects,
+                                       int* labels,
+                                       uint32_t num_subjects,
+                                       const char* output_prefix);
+
 // ----------------------------------------------------------------------------
 // Buffer
 
