@@ -45,7 +45,7 @@ static inline JaniceError cv_mat_to_janice_image(cv::Mat& m, JaniceImage* _image
     image->rows = m.rows;
     image->cols = m.cols;
 
-    image->data = (JaniceBuffer) malloc(m.channels() * m.rows * m.cols);
+    image->data = (uint8_t*) malloc(m.channels() * m.rows * m.cols);
     memcpy(image->data, m.data, m.channels() * m.rows * m.cols);
     image->owner = true;
 
