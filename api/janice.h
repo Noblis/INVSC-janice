@@ -143,10 +143,9 @@ JANICE_EXPORT JaniceError janice_free_track(JaniceTrack* track);
 JANICE_EXPORT JaniceError janice_free_tracks(JaniceTracks* tracks,
                                              uint32_t num_tracks);
 
-JANICE_EXPORT JaniceError janice_free_attribute(JaniceAttribute* attribute);
+JANICE_EXPORT JaniceError janice_free_attribute(JaniceAttribute* value);
 
-JANICE_EXPORT JaniceError janice_free_media_ids(JaniceMediaIds* ids,
-                                                uint32_t num_ids);
+JANICE_EXPORT JaniceError janice_free_media_ids(JaniceMediaIds* ids, uint32_t num_ids);
 
 // ----------------------------------------------------------------------------
 // Training
@@ -188,6 +187,7 @@ JANICE_EXPORT JaniceError janice_enroll_from_media(JaniceMediaIterator media,
 
 JANICE_EXPORT JaniceError janice_enroll_from_media_batch(JaniceMediaIterators* medias,
                                                          JaniceMediaIds media_ids,
+                                                         uint32_t num_media,
                                                          uint32_t min_object_size,
                                                          JaniceDetectionPolicy policy,
                                                          JaniceEnrollmentType role,
@@ -209,7 +209,7 @@ JANICE_EXPORT JaniceError janice_enroll_from_detections_batch(JaniceConstDetecti
                                                               uint32_t* num_tmpls);
 
 JANICE_EXPORT JaniceError janice_template_get_attribute(JaniceConstTemplate tmpl,
-                                                        const char* attribute,
+                                                        const char* key,
                                                         JaniceAttribute* value);
 
 // I/O
@@ -233,7 +233,8 @@ JANICE_EXPORT JaniceError janice_free_template(JaniceTemplate* tmpl);
 JANICE_EXPORT JaniceError janice_free_templates(JaniceTemplates* tmpls,
                                                 uint32_t num_tmpls);
 
-JANICE_EXPORT JaniceError janice_free_template_ids(JaniceTemplateIds* ids, uint32_t num_ids);
+JANICE_EXPORT JaniceError janice_free_template_ids(JaniceTemplateIds* ids,
+                                                   uint32_t num_ids);
 
 // ----------------------------------------------------------------------------
 // Verification

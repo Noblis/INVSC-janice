@@ -117,13 +117,172 @@ Signature
 
     typedef struct JaniceConstTemplate* JaniceConstTemplates;
 
+.. _JaniceTemplateId:
+
+JaniceTemplateId
+~~~~~~~~~~~~~~~~
+
+A unique identifier for a :ref:`JaniceTemplate` object.
+
+Signature
+^^^^^^^^^
+
+::
+    
+    typedef size_t JaniceTemplateId;
+
+.. _JaniceTemplateIds:
+
+JaniceTemplateIds
+~~~~~~~~~~~~~~~~~
+
+An array of :ref:`JaniceTemplateId` objects.
+
+Signature
+^^^^^^^^^
+
+::
+
+    typedef JaniceTemplateId* JaniceTemplateIds;
+
 Functions
 ---------
 
-.. _janice\_create\_template:
+.. _janice\_enroll\_from\_media:
 
-janice\_create\_template
-~~~~~~~~~~~~~~~~~~~~~~~~
+janice\_enroll\_from\_media
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Detect and enroll templates from a single media file. Detection should respect
+the provided minimum object size and detection policy. This function may
+produce 0 or more templates, depending on the number of objects found in the
+media.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_enroll_from_media(JaniceMediaIterator media,
+                                                       uint32_t min_object_size,
+                                                       JaniceDetectionPolicy policy,
+                                                       JaniceEnrollmentType role,
+                                                       JaniceTemplates* tmpls,
+                                                       JaniceTracks* tracks,
+                                                       uint32_t* num_tmpls);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is reentrant.
+
+Parameters
+^^^^^^^^^^
+
++-------------------+------------------------------+------------------------------------+
+| Name              | Type                         | Description                        |
++===================+==============================+====================================+
+| media             | :ref:`JaniceMediaIterator`   | The media to detect and            |
+|                   |                              | enroll templates from.             |
++-------------------+------------------------------+------------------------------------+
+| min\_object\_size | uint32_t                     | A minimum object size. See         |
+|                   |                              | :ref:`detection\_min\_object\_size`|
++-------------------+------------------------------+------------------------------------+
+| policy            | :ref:`JaniceDetectionPolicy` | The detection policy to follow.    |
++-------------------+------------------------------+------------------------------------+
+| role              | :ref:`JaniceEnrollmentType`  | The use case for the template.     |
++-------------------+------------------------------+------------------------------------+
+| tmpls             | :ref:`JaniceTemplates`\*     | An uninitialized array of templates|
+|                   |                              | enrolled from the media. This      |
+|                   |                              | object should be initialized by the|
+|                   |                              | implementor during the call. The   |
+|                   |                              | user is required to free the object|
+|                   |                              | by calling                         |
+|                   |                              | :ref:`janice\_free\_templates`.    |
++-------------------+------------------------------+------------------------------------+
+| tracks            | :ref:`JaniceTracks`\*        | An uninitialized array of tracks   |
+|                   |                              | associated with *tmpls*. Each track|
+|                   |                              | gives the location information for |
+|                   |                              | the corresponding template in      |
+|                   |                              | *tmpls*. This object should be     |
+|                   |                              | initialized by the implementor     |
+|                   |                              | during the call. The user is       |
+|                   |                              | required to free the object by     |
+|                   |                              | calling                            |
+|                   |                              | :ref:`janice\_free\_tracks`.       |
++-------------------+------------------------------+------------------------------------+
+| num_tmpls         | uint32_t\*                   | The number of elements in *tmpls*  |
+|                   |                              | and *tracks*.                      |
++-------------------+------------------------------+------------------------------------+
+
+.. _janice\_enroll\_from\_media\_batch:
+
+janice\_enroll\_from\_media\_batch
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Detect and enroll templates from a batch of media objects. Batch processing can
+often be more efficient then serial processing of a collection of data,
+particularly if a GPU or co-processor is being utilized.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_enroll_from_media_batch(JaniceMediaIterators* medias,
+                                                             JaniceMediaIds media_ids,
+                                                             uint32_t num_media,
+                                                             uint32_t min_object_size,
+                                                             JaniceDetectionPolicy policy,
+                                                             JaniceEnrollmentType role,
+                                                             JaniceTemplates* tmpls,
+                                                             JaniceTracks* tracks,
+                                                             JaniceMediaIds* tmpl_ids,
+                                                             uint32_t* num_tmpls);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is reentrant.
+
+Parameters
+^^^^^^^^^^
+
++-------------------+------------------------------+-----+
+| Name              | Type                         | Description |
++===================+==============================+=============+
+| medias            | :ref:`JaniceMediaIterators`  | An array of media objects to       |
+|                   |                              | enroll.                            |
++-------------------+------------------------------+------------------------------------+
+| media_ids         | :ref:`JaniceMediaIds`        | An array of unique identifiers for |
+|                   |                              | the input media. These are used to |
+|                   |                              | map the output back to the correct |
+|                   |                              | input. This should have the same   |
+|                   |                              | number of elements as *medias*.    |
++-------------------+------------------------------+------------------------------------+
+| num_media         | uint32_t                     | The number of elements in *medias* |
+|                   |                              | and *media_ids*.                   |
++-------------------+------------------------------+------------------------------------+
+| min\_object\_size | uint32_t                     | A minimum object size. See         |
+|                   |                              | :ref:`detection\_min\_object\_size`|
++-------------------+------------------------------+------------------------------------+
+| policy            | :ref:`JaniceDetectionPolicy` | The detection policy to follow.    |
++-------------------+------------------------------+------------------------------------+
+| role              | :ref:`JaniceEnrollmentType`  | The use case for the template.     |
++-------------------+------------------------------+------------------------------------+
+| tmpls             | :ref:`JaniceTemplates`\*     | An uninitialized array 
++-------------------+------------------------------+
+| tracks            | :ref:`JaniceTracks`\*        |
++-------------------+------------------------------+
+| tmpl_ids          | :ref:`JaniceMediaIds`\*      |
++-------------------+------------------------------+
+| num_tmpls         | uint32_t                     |
++-------------------+------------------------------+
+
+.. _janice\_enroll\_from\_detections:
+
+janice\_enroll\_from\_detections
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Create a :ref:`JaniceTemplate` object from an array of detections.
 
@@ -132,10 +291,10 @@ Signature
 
 ::
 
-    JANICE_EXPORT JaniceError janice_create_template(JaniceConstDetections detections,
-                                                     uint32_t num_detections,
-                                                     JaniceEnrollmentType role,
-                                                     JaniceTemplate* tmpl);
+    JANICE_EXPORT JaniceError janice_enroll_from_detections(JaniceConstDetections detections,
+                                                            uint32_t num_detections,
+                                                            JaniceEnrollmentType role,
+                                                            JaniceTemplate* tmpl);
 
 Thread Safety
 ^^^^^^^^^^^^^
@@ -176,7 +335,7 @@ Example
                                                // probe in 1-N search
     JaniceTemplate tmpl = NULL; // Best practice to initialize to NULL
 
-    if (janice_create_template(detections, num_detections, rolw, &tmpl) != JANICE_SUCCESS)
+    if (janice_enroll_from_detections(detections, num_detections, role, &tmpl) != JANICE_SUCCESS)
         // ERROR!
 
 .. _janice\_template\_get\_attribute:
@@ -196,8 +355,8 @@ Signature
 ::
 
     JANICE_EXPORT JaniceError janice_template_get_attribute(JaniceConstTemplate tmpl,
-                                                            const char* attribute,
-                                                            char** value);
+                                                            const char* key,
+                                                            JaniceAttribute* value);
 
 Thread Safety
 ^^^^^^^^^^^^^
@@ -207,21 +366,25 @@ This function is reentrant.
 Parameters
 ^^^^^^^^^^
 
-+-----------+----------------------------+------------------------------------+
-| Name      | Type                       | Description                        |
-+===========+============================+====================================+
-| tmpl      | :ref:`JaniceConstTemplate` | A template object to query the     |
-|           |                            | attribute from.                    |
-+-----------+----------------------------+------------------------------------+
-| attribute | const char\*               | The name of the attribute to query.|
-+-----------+----------------------------+------------------------------------+
-| value     | char\*\*                   | An uninitialized pointer to hold   |
-|           |                            | the attribute value. The           |
-|           |                            | implementor should allocate this   |
-|           |                            | object during the function call.   |
-|           |                            | The returned value must be a null  |
-|           |                            | terminated string.                 |
-+-----------+----------------------------+------------------------------------+
++-----------+----------------------------+-------------------------------------+
+| Name      | Type                       | Description                         |
++===========+============================+=====================================+
+| tmpl      | :ref:`JaniceConstTemplate` | A template object to query the      |
+|           |                            | attribute from.                     |
++-----------+-----------------------------+------------------------------------+
+| key       | const char\*                | A key to look up a specific        |
+|           |                             | attribute. Valid keys must be      |
+|           |                             | defined and documented by the      |
+|           |                             | implementor.                       | 
++-----------+-----------------------------+------------------------------------+
+| value     | :ref:`JaniceAttribute`\*    | An uninitialized char\* to hold    |
+|           |                             | the value of the attribute. This   |
+|           |                             | object should be allocated by the  |
+|           |                             | implementor during the function    |
+|           |                             | call. The user is responsible for  |
+|           |                             | the object by calling              |
+|           |                             | :ref:`janice\_free\_attribute.     |
++-----------+-----------------------------+------------------------------------+
 
 .. _janice\_serialize\_template:
 
@@ -489,3 +652,65 @@ Example
     JaniceTemplate tmpl; // Where tmpl is a valid template object created previously
     if (janice_free_template(&tmpl) != JANICE_SUCCESS)
         // ERROR!
+
+.. _janice\_free\_templates:
+
+janice\_free\_templates
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Free any memory associated with an array of :ref:`JaniceTemplate` objects.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_free_templates(JaniceTemplates* tmpls,
+                                                    uint32_t num_tmpls);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is reentrant.
+
+Parameters
+^^^^^^^^^^
+
++-----------+--------------------------+---------------------------------------+
+| Name      | Type                     | Description                           |
++===========+==========================+=======================================+
+| tmpls     | :ref:`JaniceTemplates`\* | The templates to free.                |
++-----------+--------------------------+---------------------------------------+
+| num_tmpls | uint32_t                 | The number of elements in *tmpls*.    |
++-----------+--------------------------+---------------------------------------+
+
+.. _janice\_free\_template\_ids:
+
+janice\_free\_template\_ids
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Free any memory associated with an array of :ref:`JaniceTemplateId` objects.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_free_template_ids(JaniceTemplateIds* ids,
+                                                       uint32_t num_ids);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is reentrant.
+
+Parameters
+^^^^^^^^^^
+
++---------+----------------------------+---------------------------------------+
+| Name    | Type                       | Description                           |
++=========+============================+=======================================+
+| ids     | :ref:`JaniceTemplateIds`\* | The template ids to free.             |
++---------+----------------------------+---------------------------------------+
+| num_ids | uint32_t                   | The number of elements in *ids*.      |
++---------+----------------------------+---------------------------------------+

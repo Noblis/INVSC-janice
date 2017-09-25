@@ -465,8 +465,9 @@ Example
 janice\_detect\_batch
 ~~~~~~~~~~~~~~~~~~~~~
 
-Detect faces in a batch of images. Batch processing can often be more efficient 
-than serial processing particularly if a GPU or co-processor is being utilized.
+Detect faces in a batch of media objects. Batch processing can often be more 
+efficient than serial processing, particularly if a GPU or co-processor is being 
+utilized.
 
 Signature
 ^^^^^^^^^
