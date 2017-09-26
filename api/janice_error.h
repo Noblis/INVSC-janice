@@ -43,6 +43,7 @@ enum JaniceError
     JANICE_OUT_OF_BOUNDS_ACCESS  , // Out of bounds access into a buffer
     JANICE_MEDIA_AT_END          , // Media object is at the end of its data
     JANICE_INVALID_ATTRIBUTE_KEY , // An invalid attribute key was provided
+    JANICE_MISSING_ATTRIBUTE     , // A value for a valid attribute key is not present
     JANICE_DUPLICATE_ID          , // Template id already exists in a gallery
     JANICE_MISSING_ID            , // Template id can't be found
     JANICE_MISSING_FILE_NAME     , // An expected file name is not given
@@ -71,6 +72,7 @@ static const char* janice_error_to_string(JaniceError error)
     else if (error == JANICE_OUT_OF_BOUNDS_ACCESS)   return "Out of bounds access into a buffer";
     else if (error == JANICE_MEDIA_AT_END)           return "A media object has reached the end of its internal data";
     else if (error == JANICE_INVALID_ATTRIBUTE_KEY)  return "An invalid attribute key has been provided";
+    else if (error == JANICE_MISSING_ATTRIBUTE)      return "A valid attribute key was provided but there is no value";
     else if (error == JANICE_DUPLICATE_ID)           return "Duplicate template ID in a gallery";
     else if (error == JANICE_MISSING_ID)             return "Missing template ID in a gallery";
     else if (error == JANICE_MISSING_FILE_NAME)      return "Missing a file name";
