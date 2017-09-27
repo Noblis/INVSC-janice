@@ -35,6 +35,7 @@ enum JaniceError
     JANICE_BAD_LICENSE           , // Incorrect license file
     JANICE_MISSING_DATA          , // Missing SDK data
     JANICE_INVALID_GPU           , // The GPU is not functioning
+    JANICE_BAD_ARGUMENT          , // An argument to a JanICE function is invalid 
     JANICE_OPEN_ERROR            , // Failed to open a file
     JANICE_READ_ERROR            , // Failed to read from a file
     JANICE_WRITE_ERROR           , // Failed to write to a file
@@ -64,6 +65,7 @@ static const char* janice_error_to_string(JaniceError error)
     else if (error == JANICE_BAD_LICENSE)            return "Bad license";
     else if (error == JANICE_MISSING_DATA)           return "Missing required data";
     else if (error == JANICE_INVALID_GPU)            return "Invalid GPU";
+    else if (error == JANICE_BAD_ARGUMENT)           return "An argument to a JanICE function is invalid";
     else if (error == JANICE_OPEN_ERROR)             return "Failed to open a file";
     else if (error == JANICE_READ_ERROR)             return "Failed to read from a file";
     else if (error == JANICE_WRITE_ERROR)            return "Failed to write to a file";
