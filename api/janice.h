@@ -228,7 +228,7 @@ JANICE_EXPORT JaniceError janice_enroll_from_media(JaniceMediaIterator media,
                                                    JaniceTemplates* tmpls,
                                                    JaniceTracks* tracks);
 
-JANICE_EXPORT JaniceError janice_enroll_from_media_batch(JaniceMediaIterators medias,
+JANICE_EXPORT JaniceError janice_enroll_from_media_batch(JaniceMediaIterators media,
                                                          JaniceContext context,
                                                          JaniceTemplatesGroup* tmpls,
                                                          JaniceTracksGroup* tracks);
@@ -420,7 +420,7 @@ struct JaniceClusterConfidencesGroup
 };
 
 // Functions
-JANICE_EXPORT JaniceError janice_cluster_media(JaniceMediaIterators medias,
+JANICE_EXPORT JaniceError janice_cluster_media(JaniceMediaIterators media,
                                                JaniceContext context,
                                                JaniceClusterIdsGroup* cluster_ids,
                                                JaniceClusterConfidencesGroup* cluster_confidences,
