@@ -205,6 +205,11 @@ JaniceError free_iterator(JaniceMediaIterator* it)
     return JANICE_SUCCESS;
 }
 
+JaniceError reset(JaniceMediaIteratorType* it)
+{
+    return it->seek(it,0);
+}
+
 // ----------------------------------------------------------------------------
 // OpenCV I/O only, create an opencv_io media iterator 
 
@@ -219,6 +224,8 @@ JaniceError janice_io_opencv_create_media_iterator(const char* filename, JaniceM
 
     it->free_image = &free_image;
     it->free       = &free_iterator;
+
+    it->reset      = &reset;
 
     JaniceMediaIteratorStateType* state = new JaniceMediaIteratorStateType();
     state->initialized = false;
