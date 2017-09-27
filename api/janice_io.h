@@ -55,7 +55,7 @@ typedef struct JaniceMediaIteratorType* JaniceMediaIterator;
 
 struct JaniceMediaIterators
 {
-    JaniceMediaIterator* medias;
+    JaniceMediaIterator* media;
     uint32_t length;
 };
 
