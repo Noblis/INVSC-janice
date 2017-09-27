@@ -8,7 +8,13 @@
 struct JaniceMediaIteratorStateType
 {
     std::string filename;
+
+    // was this object already initialized
     bool initialized;
+    // are we currently at the end of this object
+    // behavior is: return success on last frame, return media_at_end on
+    // subsequent reads, don't cycle.
+    bool at_end;
 
     cv::VideoCapture video;
 };
@@ -24,8 +30,14 @@ static inline JaniceError initialize_media_iterator(JaniceMediaIterator it, cv::
 
     // attempt imread
     img = cv::imread(state->filename, cv::IMREAD_ANYCOLOR); // We use ANYCOLOR to load either RGB or Grayscale images
-    if (img.data)
-        return JANICE_MEDIA_AT_END;
+
+    // if this succeeds, we are confident the file is just an image and can
+    // return immediately.
+    if (img.data) {
+        // still images are considered @ the end after the first read.
+        state->at_end = true;
+        return JANICE_SUCCESS;
+    }
 
     // Couldn't load as an image maybe it's a video
     state->video.open(state->filename);
@@ -57,6 +69,9 @@ static inline JaniceError cv_mat_to_janice_image(cv::Mat& m, JaniceImage* _image
 JaniceError next(JaniceMediaIterator it, JaniceImage* image)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
+    // if we are currently at the end, just return.
+    if (state->at_end)
+        return JANICE_MEDIA_AT_END;
 
     if (!state->initialized) {
         // are we an image or a video?
@@ -64,45 +79,50 @@ JaniceError next(JaniceMediaIterator it, JaniceImage* image)
         JaniceError rc = initialize_media_iterator(it, buffer);
 
         // we do an initial read on images, but not videos.
-        // if video is not opened, and we returned media_at_end (always
-        // do this for stills), convert output and return.
-        if (!state->video.isOpened() && rc == JANICE_MEDIA_AT_END) {
+        // if this is a still (video not opened by init), just convert the
+        // image we read to the output type, and return.
+        if (!state->video.isOpened()) {
             JaniceError conv_rc = cv_mat_to_janice_image(buffer, image);
-            if (conv_rc != JANICE_SUCCESS)
-                return conv_rc;
-            return rc;
+            return conv_rc;
         }
 
-        if (rc != JANICE_SUCCESS && rc != JANICE_MEDIA_AT_END)
-            return rc; // just return an error code, we have no valid output
+        if (rc != JANICE_SUCCESS)
+            return rc; // got an error code on init, just return.
     }
 
-    // Check if the media is an image
+    // Check if the media is an image, if so just read it
+    // this can happen if: we do the initial read, then seek 0 on the still
+    // which unsets at_end. 
     if (!state->video.isOpened()) {
         cv::Mat cv_image = cv::imread(state->filename, cv::IMREAD_ANYCOLOR);
         cv_mat_to_janice_image(cv_image, image);
+        state->at_end = true;
 	
-        return JANICE_MEDIA_AT_END;
+        return JANICE_SUCCESS;
     }
 
     // video - a little bit more complicated
     cv::Mat cv_frame;
-    if (!state->video.read(cv_frame)) // Something went unexpectedly wrong (maybe a corrupted video?).
+    // try to read a frame, could error out
+    if (!state->video.read(cv_frame)) 
         return JANICE_INVALID_MEDIA;
 
+    // convert the frame we got to the output type.
     JaniceError ret = cv_mat_to_janice_image(cv_frame, image);
+    // could fail the conversion...
     if (ret != JANICE_SUCCESS)
         return ret;
 
-    // end of the video. Reset it and return JANICE_MEDIA_AT_END
+    // If we're at the last frame of the video, mark at_end so that 
+    // subsequent reads end early with JANICE_MEDIA_AT_END
     if (state->video.get(CV_CAP_PROP_POS_FRAMES) == state->video.get(CV_CAP_PROP_FRAME_COUNT)) {
-        state->video.set(CV_CAP_PROP_POS_FRAMES, 0);
-        return JANICE_MEDIA_AT_END;
+        state->at_end = true;
     }
 
     return JANICE_SUCCESS;
 }
 
+// seek to the specified frame number
 JaniceError seek(JaniceMediaIterator it, uint32_t frame)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
@@ -110,22 +130,31 @@ JaniceError seek(JaniceMediaIterator it, uint32_t frame)
     if (!state->initialized) {
         cv::Mat useless;
         JaniceError rc = initialize_media_iterator(it, useless);
-    	if (rc != JANICE_SUCCESS && rc != JANICE_MEDIA_AT_END)
-	        return rc;
+    	if (rc != JANICE_SUCCESS)
+            return rc;
     }
     
-    if (!state->video.isOpened()) // image
-        return JANICE_INVALID_MEDIA;
+    if (!state->video.isOpened()) {
+        // for stills, we still allow seek(0) as an idiom for reset
+        if (frame != 0)
+            return JANICE_OUT_OF_BOUNDS_ACCESS;
+        else {
+            state->at_end = false;
+            return JANICE_SUCCESS;
+        }
+    }
     
     if (frame >= state->video.get(CV_CAP_PROP_FRAME_COUNT)) // invalid index
         return JANICE_OUT_OF_BOUNDS_ACCESS;
 
     // Set the video to the desired frame
     state->video.set(CV_CAP_PROP_POS_FRAMES, frame);
+    state->at_end = false;
 
     return JANICE_SUCCESS;
 }
 
+// get the specified frame (aka seek + next)
 JaniceError get(JaniceMediaIterator it, JaniceImage* image, uint32_t frame)
 {
     // don't need to check it->initialized, seek will do it.
@@ -136,13 +165,10 @@ JaniceError get(JaniceMediaIterator it, JaniceImage* image, uint32_t frame)
         return ret;
 
     // Then we get the frame
-    ret = next(it, image);
-    if (ret != JANICE_SUCCESS)
-        return ret;
-
-    return JANICE_SUCCESS;
+    return next(it, image);
 }
 
+// say what frame we are currently on.
 JaniceError tell(JaniceMediaIterator it, uint32_t* frame)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
@@ -150,11 +176,11 @@ JaniceError tell(JaniceMediaIterator it, uint32_t* frame)
     if (!state->initialized) {
         cv::Mat useless;
         JaniceError rc = initialize_media_iterator(it, useless);
-    	if (rc != JANICE_SUCCESS && rc != JANICE_MEDIA_AT_END)
+    	if (rc != JANICE_SUCCESS)
 	      return rc;
     }
     
-    if (!state->video.isOpened()) // image
+    if (!state->video.isOpened()) // image, getting fnum is not supported
         return JANICE_INVALID_MEDIA;
 
     *frame = (uint32_t) state->video.get(CV_CAP_PROP_POS_FRAMES);
@@ -180,7 +206,7 @@ JaniceError free_iterator(JaniceMediaIterator* it)
 }
 
 // ----------------------------------------------------------------------------
-// OpenCV I/O
+// OpenCV I/O only, create an opencv_io media iterator 
 
 JaniceError janice_io_opencv_create_media_iterator(const char* filename, JaniceMediaIterator* _it)
 {
@@ -197,6 +223,7 @@ JaniceError janice_io_opencv_create_media_iterator(const char* filename, JaniceM
     JaniceMediaIteratorStateType* state = new JaniceMediaIteratorStateType();
     state->initialized = false;
     state->filename = filename;
+    state->at_end = false;
 
     it->_internal = (void*) (state);
 
