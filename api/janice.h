@@ -61,7 +61,7 @@ enum JaniceEnrollmentType
     JaniceCluster = 4
 };
 
-struct JaniceContext
+struct JaniceContextType
 {
     // Detection parameters
     JaniceDetectionPolicy policy;
@@ -71,12 +71,24 @@ struct JaniceContext
     JaniceEnrollmentType role;
 
     // Search parameters
-    double min_similarity;
+    double threshold;
     uint32_t max_returns;
 
     // Cluster parameters
     double hint;
 };
+
+typedef JaniceContextType* JaniceContext;
+
+JANICE_EXPORT JaniceError janice_create_context(JaniceDetectionPolicy policy,
+                                                uint32_t min_object_size,
+                                                JaniceEnrollmentType role,
+                                                double threshold,
+                                                uint32_t max_returns,
+                                                double hint,
+                                                JaniceContext* context);
+
+JANICE_EXPORT JaniceError janice_free_context(JaniceContext* context);
 
 // ----------------------------------------------------------------------------
 // Buffer
@@ -173,15 +185,15 @@ JANICE_EXPORT JaniceError janice_write_detection(JaniceDetection detection,
 // Cleanup
 JANICE_EXPORT JaniceError janice_free_detection(JaniceDetection* detection);
 
-JANICE_EXPORT JaniceError janice_free_detections(JaniceDetections* detections);
+JANICE_EXPORT JaniceError janice_clear_detections(JaniceDetections* detections);
 
-JANICE_EXPORT JaniceError janice_free_detections_group(JaniceDetectionsGroup* group);
+JANICE_EXPORT JaniceError janice_clear_detections_group(JaniceDetectionsGroup* group);
 
-JANICE_EXPORT JaniceError janice_free_track(JaniceTrack* track);
+JANICE_EXPORT JaniceError janice_clear_track(JaniceTrack* track);
 
-JANICE_EXPORT JaniceError janice_free_tracks(JaniceTracks* tracks);
+JANICE_EXPORT JaniceError janice_clear_tracks(JaniceTracks* tracks);
 
-JANICE_EXPORT JaniceError janice_free_tracks_group(JaniceTracksGroup* group);
+JANICE_EXPORT JaniceError janice_clear_tracks_group(JaniceTracksGroup* group);
 
 JANICE_EXPORT JaniceError janice_free_attribute(JaniceAttribute* value);
 
@@ -254,9 +266,9 @@ JANICE_EXPORT JaniceError janice_write_template(JaniceTemplate tmpl,
 // Cleanup
 JANICE_EXPORT JaniceError janice_free_template(JaniceTemplate* tmpl);
 
-JANICE_EXPORT JaniceError janice_free_templates(JaniceTemplates* tmpls);
+JANICE_EXPORT JaniceError janice_clear_templates(JaniceTemplates* tmpls);
 
-JANICE_EXPORT JaniceError janice_free_templates_group(JaniceTemplatesGroup* group);
+JANICE_EXPORT JaniceError janice_clear_templates_group(JaniceTemplatesGroup* group);
 
 // ----------------------------------------------------------------------------
 // Verification
@@ -286,9 +298,9 @@ JANICE_EXPORT JaniceError janice_verify_batch(JaniceTemplates references,
                                               JaniceSimilarities* similarities);
 
 // Cleanup
-JANICE_EXPORT JaniceError janice_free_similarities(JaniceSimilarities* similarities);
+JANICE_EXPORT JaniceError janice_clear_similarities(JaniceSimilarities* similarities);
 
-JANICE_EXPORT JaniceError janice_free_similarities_group(JaniceSimilaritiesGroup* group);
+JANICE_EXPORT JaniceError janice_clear_similarities_group(JaniceSimilaritiesGroup* group);
 
 // ----------------------------------------------------------------------------
 // Gallery
@@ -356,9 +368,9 @@ JANICE_EXPORT JaniceError janice_write_gallery(JaniceGallery gallery,
 // Cleanup
 JANICE_EXPORT JaniceError janice_free_gallery(JaniceGallery* gallery);
 
-JANICE_EXPORT JaniceError janice_free_template_ids(JaniceTemplateIds* ids);
+JANICE_EXPORT JaniceError janice_clear_template_ids(JaniceTemplateIds* ids);
 
-JANICE_EXPORT JaniceError janice_free_template_ids_group(JaniceTemplateIdsGroup* group);
+JANICE_EXPORT JaniceError janice_clear_template_ids_group(JaniceTemplateIdsGroup* group);
 
 // ----------------------------------------------------------------------------
 // Search
@@ -420,13 +432,13 @@ JANICE_EXPORT JaniceError janice_cluster_templates(JaniceTemplates tmpls,
                                                    JaniceClusterConfidences* cluster_confidences);
 
 // Cleanup
-JANICE_EXPORT JaniceError janice_free_cluster_ids(JaniceClusterIds* ids);
+JANICE_EXPORT JaniceError janice_clear_cluster_ids(JaniceClusterIds* ids);
 
-JANICE_EXPORT JaniceError janice_free_cluster_ids_group(JaniceClusterIdsGroup* group);
+JANICE_EXPORT JaniceError janice_clear_cluster_ids_group(JaniceClusterIdsGroup* group);
 
-JANICE_EXPORT JaniceError janice_free_cluster_confidences(JaniceClusterConfidences* confidences);
+JANICE_EXPORT JaniceError janice_clear_cluster_confidences(JaniceClusterConfidences* confidences);
 
-JANICE_EXPORT JaniceError janice_free_cluster_confidences_group(JaniceClusterConfidencesGroup* group);
+JANICE_EXPORT JaniceError janice_clear_cluster_confidences_group(JaniceClusterConfidencesGroup* group);
 
 // ----------------------------------------------------------------------------
 // Finalize
