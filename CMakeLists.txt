@@ -32,6 +32,8 @@ install(FILES
           ${CMAKE_CURRENT_SOURCE_DIR}/api/janice.h
         DESTINATION include/janice)
 
+include_directories(api)
+
 # Optionally include another language interface
 add_subdirectory(interfaces)
 
