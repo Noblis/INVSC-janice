@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
     const int min_object_size     = atoi(argv[5]);
     const std::string policy_str  = argv[6];
     const std::string role_str    = argv[7];
-    const std::string output_file = argv[8];
+    const std::string output_path = argv[8];
 
     std::string algorithm;
     int num_threads, gpu;
@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     
     // Check input
-    if (strcmp(get_ext(input_file), "csv") != 0) {
+    if (get_ext(input_file) == std::string("csv")) {
         printf("input_file must be \".csv\" format.\n");
         exit(EXIT_FAILURE);
     }
@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
 
     // Initialize the API
     // TODO: Right now we only allow a single GPU to be used
-    JANICE_ASSERT(janice_initialize(sdk_path, temp_path, algorithm, num_threads, &gpu, 1))
+    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1))
 
     // Unused defaults for context parameters
     double threshold = 0;
@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
 
     // Convert the vector into a C-style struct
     JaniceMediaIterators media_list;
-    media_list.medias = medias.data();
+    media_list.media = medias.data();
     media_list.length = medias.size();
 
     // Run batch enrollment
@@ -111,20 +111,20 @@ int main(int argc, char* argv[])
         JANICE_ASSERT(media->free(&media))
     
     // Write the templates to disk
-    FILE* output = fopen((output_path "/templates.csv").c_str(), "w+");
+    FILE* output = fopen((output_path + "/templates.csv").c_str(), "w+");
     fprintf(output, "FILENAME,SOURCE,FRAME,RECT_X,RECT_Y,RECT_WIDTH,RECT_HEIGHT,CONFIDENCE\n");
 
     for (size_t i = 0; i < tmpls_group.length; ++i) {
-        JaniceTemplates tmpls = tmpls_group[i];
-        JaniceTracks tracks   = tracks_group[i];
+        JaniceTemplates tmpls = tmpls_group.group[i];
+        JaniceTracks tracks   = tracks_group.group[i];
         for (size_t j = 0; j < tmpls.length; ++j) {
-            JaniceTemplate tmpl = tmpls[j];
+            JaniceTemplate tmpl = tmpls.tmpls[j];
     
             // Write the template to disk
-            std::string tmpl_file = output_path + std::stoi(j) + "_" + filenames[i] + ".tmpl";
+            std::string tmpl_file = output_path + std::to_string(j) + "_" + filenames[i] + ".tmpl";
             JANICE_ASSERT(janice_write_template(tmpl, tmpl_file.c_str()))
 
-            JaniceTrack track = tracks[j];
+            JaniceTrack track = tracks.tracks[j];
 
             for (size_t k = 0; k < track.length; ++k) {
                 JaniceRect rect  = track.rects[k];
@@ -133,14 +133,12 @@ int main(int argc, char* argv[])
                 
                 fprintf(output, "%s,%s,%u,%u,%u,%u,%u,%f\n", tmpl_file.c_str(), filenames[i].c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence);
             }
-
-            // Free the track
-            JANICE_ASSERT(janice_clear_track(&track))
         }
     }
 
     // Free the detections
-    JANICE_ASSERT(janice_clear_detections_group(&detections))
+    JANICE_ASSERT(janice_clear_templates_group(&tmpls_group))
+    JANICE_ASSERT(janice_clear_tracks_group(&tracks_group))
 
     // Finalize the API
     JANICE_ASSERT(janice_finalize())

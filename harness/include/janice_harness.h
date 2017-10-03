@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <thread>
+#include <cstring>
 
 #define JANICE_ASSERT(func)                 \
 {                                           \
@@ -18,9 +19,9 @@
                "    Location: %s:%d\n",     \
                janice_error_to_string(rc),  \
                __FILE__, __LINE__);         \
-        exit(EXIT_FAILURE);                 \ 
+        exit(EXIT_FAILURE);                 \
     }                                       \
-}     
+}
 
 inline std::string get_ext(const std::string& filename) 
 {
@@ -30,13 +31,14 @@ inline std::string get_ext(const std::string& filename)
     return "";
 }
 
-inline bool parse_optional_args(int argc, char*[] argv, int min_args, int max_args, std::string& algorithm, int& num_threads, int& gpu)
+inline bool parse_optional_args(int argc, char** argv, int min_args, int /*max_args*/, std::string& algorithm, int& num_threads, int& gpu)
 {
     algorithm = "";
     num_threads = std::thread::hardware_concurrency();
     gpu = -1;
 
-    for (int i = 0; i < (argc - min_args); ++i) {
+    int i;
+    for (i = 0; i < (argc - min_args); ++i) {
         if      (strcmp(argv[min_args + i], "-algorithm") == 0) algorithm   = argv[min_args + (++i)];
         else if (strcmp(argv[min_args + i], "-threads")   == 0) num_threads = atoi(argv[min_args + (++i)]);
         else if (strcmp(argv[min_args + i], "-gpu")       == 0) gpu         = atoi(argv[min_args + (++i)]);

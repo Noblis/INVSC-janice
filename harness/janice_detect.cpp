@@ -31,12 +31,11 @@ int main(int argc, char* argv[])
     int num_threads;
     int gpu;
     if (!parse_optional_args(argc, argv, min_args, max_args, algorithm, num_threads, gpu)) {
-        printf("Unrecognized flag: %s\n", argv[min_args + i]);
         exit(EXIT_FAILURE);
     }
 
     // Check input
-    if (strcmp(get_ext(images_file), "csv") != 0) {
+    if (get_ext(images_file) == std::string("csv")) {
         printf("images_file must be \".csv\" format.\n");
         exit(EXIT_FAILURE);
     }
@@ -53,7 +52,7 @@ int main(int argc, char* argv[])
 
     // Initialize the API
     // TODO: Right now we only allow a single GPU to be used
-    JANICE_ASSERT(janice_initialize(sdk_path, temp_path, algorithm, num_threads, &gpu, 1))
+    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1))
 
     // Unused defaults for context parameters
     JaniceEnrollmentType role;
@@ -83,7 +82,7 @@ int main(int argc, char* argv[])
 
     // Convert the vector into a C-style struct
     JaniceMediaIterators media_list;
-    media_list.medias = medias.data();
+    media_list.media = medias.data();
     media_list.length = medias.size();
 
     // Run batch detection
@@ -101,14 +100,14 @@ int main(int argc, char* argv[])
         JANICE_ASSERT(media->free(&media))
     
     // Write the detection files to disk
-    FILE* output = fopen(output_file, "w+");
+    FILE* output = fopen(output_file.c_str(), "w+");
     fprintf(output, "FILENAME,FRAME,RECT_X,RECT_Y,RECT_WIDTH,RECT_HEIGHT,CONFIDENCE\n");
 
     for (size_t i = 0; i < detections_group.length; ++i) {
-        JaniceDetections detections = detections_group[i];
+        JaniceDetections detections = detections_group.group[i];
         for (size_t j = 0; j < detections.length; ++j) {
             JaniceTrack track;
-            JANICE_ASSERT(janice_detection_get_track(detections[j], &track))
+            JANICE_ASSERT(janice_detection_get_track(detections.detections[j], &track))
 
             const std::string filename = filenames[i];
             for (size_t k = 0; k < track.length; ++k) {
@@ -125,7 +124,7 @@ int main(int argc, char* argv[])
     }
 
     // Free the detections
-    JANICE_ASSERT(janice_clear_detections_group(&detections))
+    JANICE_ASSERT(janice_clear_detections_group(&detections_group))
 
     // Finalize the API
     JANICE_ASSERT(janice_finalize())
