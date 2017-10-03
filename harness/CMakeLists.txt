@@ -20,6 +20,10 @@ if (${JANICE_WITH_EVAL_HARNESS} AND (JANICE_IO_IMPLEMENTATION) AND (JANICE_IMPLE
   add_executable(janice_enroll_detections janice_enroll_detections.cpp)
   target_link_libraries(janice_enroll_detections ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
 
+  # Search
+  add_executable(janice_search janice_search.cpp)
+  target_link_libraries(janice_search ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
+
   # Cluster pre-done template
   add_executable(janice_cluster_templates janice_cluster_templates.cpp)
   target_link_libraries(janice_cluster_templates ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
