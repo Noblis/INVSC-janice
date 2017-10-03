@@ -66,16 +66,17 @@ int main(int argc, char* argv[])
     JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, max_returns, hint, &context))
 
     // Parse the metadata file
-    io::CSVReader<6> metadata(input_file);
-    metadata.read_header(io::ignore_extra_column, "file", "templateId", "Face_X", "Face_Y", "Face_Width", "Face_Height");
+    io::CSVReader<7> metadata(input_file);
+    metadata.read_header(io::ignore_extra_column, "file", "templateId", "subjectId", "Face_X", "Face_Y", "Face_Width", "Face_Height");
 
     std::unordered_map<int, std::vector<JaniceDetection>> detections_lut;
+    std::unordered_map<int, int> subject_id_lut;
 
     // Load the metadata
     std::string filename;
-    int template_id;
+    int template_id, subject_id;
     JaniceRect rect;
-    while (metadata.read_row(filename, template_id, rect.x, rect.y, rect.width, rect.height)) {
+    while (metadata.read_row(filename, template_id, subject_id, rect.x, rect.y, rect.width, rect.height)) {
         JaniceMediaIterator media;
         JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + filename).c_str(), &media))
 
@@ -87,6 +88,8 @@ int main(int argc, char* argv[])
         } else {
             detections_lut[template_id].push_back(detection);
         }
+
+        subject_id_lut[template_id] = subject_id;
 
         JANICE_ASSERT(media->free(&media))
     }
@@ -129,13 +132,13 @@ int main(int argc, char* argv[])
 
     // Write the templates to disk
     FILE* output = fopen((output_path + "/templates.csv").c_str(), "w+");
-    fprintf(output, "file,templateId\n");
+    fprintf(output, "file,templateId,subjectId\n");
 
     for (size_t i = 0; i < tmpls.length; ++i) {
         std::string tmpl_file = output_path + "/" + std::to_string(template_ids[i]) + ".tmpl";
         JANICE_ASSERT(janice_write_template(tmpls.tmpls[i], tmpl_file.c_str()))
 
-        fprintf(output, "%s,%d\n", tmpl_file.c_str(), template_ids[i]);
+        fprintf(output, "%s,%d,%d\n", tmpl_file.c_str(), template_ids[i], subject_id_lut[template_ids[i]]);
     }
 
     // Free the templates

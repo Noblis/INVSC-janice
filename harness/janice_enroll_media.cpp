@@ -109,8 +109,8 @@ int main(int argc, char* argv[])
     }
 
     // Free the media objects
-    for (JaniceMediaIterator& media : media)
-        JANICE_ASSERT(media->free(&media))
+    for (JaniceMediaIterator& it : media)
+        JANICE_ASSERT(it->free(&it))
     
     // Write the templates to disk
     FILE* output = fopen((output_path + "/templates.csv").c_str(), "w+");
