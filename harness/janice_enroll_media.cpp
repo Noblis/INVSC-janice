@@ -4,6 +4,8 @@
 
 #include <fast-cpp-csv-parser/csv.h>
 
+#include <cstring>
+
 void print_usage()
 {
     printf("Usage: janice_enroll_media sdk_path temp_path data_path input_file min_face_size detection_policy role output_path [-algorithm <algorithm>] [-threads <int>] [-gpu <int>]\n");
@@ -34,7 +36,7 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     
     // Check input
-    if (get_ext(input_file) == std::string("csv")) {
+    if (get_ext(input_file) != "csv") {
         printf("input_file must be \".csv\" format.\n");
         exit(EXIT_FAILURE);
     }
@@ -75,25 +77,25 @@ int main(int argc, char* argv[])
 
     // Parse the metadata file
     io::CSVReader<1> metadata(input_file);
-    metadata.read_header(io::ignore_extra_column, "FILENAME");
+    metadata.read_header(io::ignore_extra_column, "file");
 
     std::vector<std::string> filenames;
-    std::vector<JaniceMediaIterator> medias;
+    std::vector<JaniceMediaIterator> media;
 
     // Load filenames into a vector
     std::string filename;
     while (metadata.read_row(filename)) {
-        JaniceMediaIterator media;
-        JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + filename).c_str(), &media))
+        JaniceMediaIterator it;
+        JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + filename).c_str(), &it))
 
         filenames.push_back(filename);
-        medias.push_back(media);
+        media.push_back(it);
     }
 
     // Convert the vector into a C-style struct
     JaniceMediaIterators media_list;
-    media_list.media = medias.data();
-    media_list.length = medias.size();
+    media_list.media = media.data();
+    media_list.length = media.size();
 
     // Run batch enrollment
     JaniceTemplatesGroup tmpls_group;
@@ -101,22 +103,22 @@ int main(int argc, char* argv[])
     JANICE_ASSERT(janice_enroll_from_media_batch(media_list, context, &tmpls_group, &tracks_group))
 
     // Assert we got the correct number of templates (1 list for each media)
-    if (tmpls_group.length != medias.size()) {
+    if (tmpls_group.length != media.size()) {
         printf("Incorrect return value. The number of template lists should match the number of media files\n");
         exit(EXIT_FAILURE);
     }
 
     // Free the media objects
-    for (JaniceMediaIterator& media : medias)
+    for (JaniceMediaIterator& media : media)
         JANICE_ASSERT(media->free(&media))
     
     // Write the templates to disk
     FILE* output = fopen((output_path + "/templates.csv").c_str(), "w+");
-    fprintf(output, "FILENAME,SOURCE,FRAME,RECT_X,RECT_Y,RECT_WIDTH,RECT_HEIGHT,CONFIDENCE\n");
+    fprintf(output, "file,source,frame,Face_X,Face_Y,Face_Width,Face_Height,Confidence\n");
 
     for (size_t i = 0; i < tmpls_group.length; ++i) {
-        JaniceTemplates tmpls = tmpls_group.group[i];
-        JaniceTracks tracks   = tracks_group.group[i];
+        const JaniceTemplates& tmpls = tmpls_group.group[i];
+        const JaniceTracks& tracks   = tracks_group.group[i];
         for (size_t j = 0; j < tmpls.length; ++j) {
             JaniceTemplate tmpl = tmpls.tmpls[j];
     
@@ -136,9 +138,11 @@ int main(int argc, char* argv[])
         }
     }
 
-    // Free the detections
+    // Clean up
     JANICE_ASSERT(janice_clear_templates_group(&tmpls_group))
     JANICE_ASSERT(janice_clear_tracks_group(&tracks_group))
+
+    JANICE_ASSERT(janice_free_context(&context))
 
     // Finalize the API
     JANICE_ASSERT(janice_finalize())
