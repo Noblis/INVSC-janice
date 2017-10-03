@@ -8,13 +8,13 @@
 
 void print_usage()
 {
-    printf("Usage: janice_search sdk_path temp_path data_path probe_file gallery_file threshold num_returns candidate_list [-algorithm <algorithm>] [-threads <int>] [-gpu <int>]\n");
+    printf("Usage: janice_search sdk_path temp_path probe_file gallery_file threshold num_returns candidate_list [-algorithm <algorithm>] [-threads <int>] [-gpu <int>]\n");
 }
 
 int main(int argc, char* argv[])
 {
-    const int min_args = 9;
-    const int max_args = 15;
+    const int min_args = 8;
+    const int max_args = 14;
 
     if (argc < min_args || argc > max_args) {
         print_usage();
@@ -23,9 +23,8 @@ int main(int argc, char* argv[])
 
     const std::string sdk_path       = argv[1];
     const std::string temp_path      = argv[2];
-    const std::string data_path      = argv[3];
-    const std::string probe_file     = argv[4];
-    const std::string gallery_file   = argv[5];
+    const std::string probe_file     = argv[3];
+    const std::string gallery_file   = argv[4];
     const float threshold            = atof(argv[5]);
     const uint32_t num_returns       = atol(argv[6]);
     const std::string cand_list_file = argv[7];
@@ -95,6 +94,7 @@ int main(int argc, char* argv[])
     const uint32_t k = std::min(num_returns, (uint32_t) subject_id_lut.size());
 
     // Open the candidate list file
+    printf("cand_list_file: %s\n", cand_list_file.c_str());
     FILE* cand_list = fopen(cand_list_file.c_str(), "w+");
     fprintf(cand_list, "0");
     for (uint32_t i = 0; i < k; ++i)
