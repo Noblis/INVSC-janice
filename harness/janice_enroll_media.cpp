@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
             JaniceTemplate tmpl = tmpls.tmpls[j];
     
             // Write the template to disk
-            std::string tmpl_file = output_path + std::to_string(j) + "_" + filenames[i] + ".tmpl";
+            std::string tmpl_file = output_path + "/" + std::to_string(j) + "_" + filenames[i] + ".tmpl";
             JANICE_ASSERT(janice_write_template(tmpl, tmpl_file.c_str()))
 
             JaniceTrack track = tracks.tracks[j];
