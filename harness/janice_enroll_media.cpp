@@ -4,6 +4,7 @@
 
 #include <fast-cpp-csv-parser/csv.h>
 
+#include <iostream>
 #include <cstring>
 
 void print_usage()
@@ -77,7 +78,7 @@ int main(int argc, char* argv[])
 
     // Parse the metadata file
     io::CSVReader<1> metadata(input_file);
-    metadata.read_header(io::ignore_extra_column, "file");
+    metadata.read_header(io::ignore_extra_column, "FILENAME");
 
     std::vector<std::string> filenames;
     std::vector<JaniceMediaIterator> media;
@@ -114,8 +115,9 @@ int main(int argc, char* argv[])
     
     // Write the templates to disk
     FILE* output = fopen((output_path + "/templates.csv").c_str(), "w+");
-    fprintf(output, "file,source,frame,Face_X,Face_Y,Face_Width,Face_Height,Confidence\n");
+    fprintf(output, "file,source,frame,Face_X,Face_Y,Face_Width,Face_Height,Confidence,TEMPLATE_ID\n");
 
+    size_t tid = 0;
     for (size_t i = 0; i < tmpls_group.length; ++i) {
         const JaniceTemplates& tmpls = tmpls_group.group[i];
         const JaniceTracks& tracks   = tracks_group.group[i];
@@ -123,8 +125,8 @@ int main(int argc, char* argv[])
             JaniceTemplate tmpl = tmpls.tmpls[j];
     
             // Write the template to disk
-            std::string tmpl_file = output_path + "/" + std::to_string(j) + "_" + filenames[i] + ".tmpl";
-            JANICE_ASSERT(janice_write_template(tmpl, tmpl_file.c_str()))
+            std::string tmpl_file = output_path + "/" + std::to_string(tid++) + ".tmpl";
+            JANICE_ASSERT(janice_write_template(tmpl, tmpl_file.c_str()));
 
             JaniceTrack track = tracks.tracks[j];
 
@@ -133,7 +135,7 @@ int main(int argc, char* argv[])
                 float confidence = track.confidences[k];
                 uint32_t frame   = track.frames[k];
                 
-                fprintf(output, "%s,%s,%u,%u,%u,%u,%u,%f\n", tmpl_file.c_str(), filenames[i].c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence);
+                fprintf(output, "%s,%s,%u,%u,%u,%u,%u,%f,%zu\n", tmpl_file.c_str(), filenames[i].c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence,(tid-1) );
             }
         }
     }
