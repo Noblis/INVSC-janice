@@ -9,12 +9,12 @@
 
 void print_usage()
 {
-    printf("Usage: janice_cluster_templates sdk_path temp_path data_path input_file output_file [-algorithm <algorithm>] [-threads <int>] [-gpu <int>]\n");
+    printf("Usage: janice_cluster_templates sdk_path temp_path data_path input_file output_file clustering_hint [-algorithm <algorithm>] [-threads <int>] [-gpu <int>]\n");
 }
 
 int main(int argc, char* argv[])
 {
-    const int min_args = 6;
+    const int min_args = 7;
     const int max_args = 15;
 
     if (argc < min_args || argc > max_args) {
@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
     const std::string data_path   = argv[3];
     const std::string input_file  = argv[4];
     const std::string output_file = argv[5];
+    const std::string s_hint      = argv[6];
 
     std::string algorithm;
     int num_threads, gpu;
@@ -34,7 +35,7 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     
     // Check input
-    if (get_ext(input_file) == std::string("csv")) {
+    if (get_ext(input_file) != std::string("csv")) {
         printf("input_file must be \".csv\" format.\n");
         exit(EXIT_FAILURE);
     }
@@ -48,7 +49,7 @@ int main(int argc, char* argv[])
     uint32_t min_object_size = 0;
     double threshold = 0;
     uint32_t max_returns = 0;
-    double hint = 1.0f;
+    double hint = atof(s_hint.c_str());
     JaniceEnrollmentType role = JaniceCluster;
 
     JaniceContext context = nullptr;
@@ -82,6 +83,7 @@ int main(int argc, char* argv[])
     JaniceClusterConfidences cluster_confidences;
 
     JANICE_ASSERT(janice_cluster_templates(tmpls, context, &cluster_ids, &cluster_confidences));
+
     if (cluster_ids.length != tmpls.length) {
         std::cerr << "Output cluster assignments did not match input templates length!" << std::endl;
         return -1;
@@ -97,7 +99,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    fout << "TEMPLATE_ID,CLUSTER_ID,CLUSTER_CONFIDENCE" << std::endl;
+    fout << "TEMPLATE_ID,CLUSTER_INDEX,CONFIDENCE" << std::endl;
     // output csv containing cluster assignments/confidences for each template
     for(size_t i=0; i < cluster_ids.length; i++) {
         fout << template_ids[i] <<"," << cluster_ids.ids[i] << "," << cluster_confidences.confidences[i] << std::endl;
