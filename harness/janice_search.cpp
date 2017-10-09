@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
     }
 
     // Keep
-    const uint32_t k = std::min(num_returns, (uint32_t) subject_id_lut.size());
+    const uint32_t k = num_returns != 0 ? std::min(num_returns, (uint32_t) subject_id_lut.size()) : (uint32_t) subject_id_lut.size();
 
     // Open the candidate list file
     printf("cand_list_file: %s\n", cand_list_file.c_str());

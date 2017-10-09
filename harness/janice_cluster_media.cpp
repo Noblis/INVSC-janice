@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     
     // Check input
-    if (get_ext(input_file) == std::string("csv")) {
+    if (get_ext(input_file) != std::string("csv")) {
         printf("input_file must be \".csv\" format.\n");
         exit(EXIT_FAILURE);
     }
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
     media.length = filenames.size();
     media.media  = new JaniceMediaIterator[media.length];
     for( size_t i=0; i < media.length; i++) {
-        JANICE_ASSERT(janice_io_opencv_create_media_iterator(filenames[i].c_str(), &media.media[i]));
+        JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + "/" + filenames[i]).c_str(), &media.media[i]));
     }
 
     JaniceClusterIdsGroup cluster_ids;
