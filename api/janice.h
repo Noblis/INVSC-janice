@@ -200,8 +200,9 @@ JANICE_EXPORT JaniceError janice_free_attribute(JaniceAttribute* value);
 // ----------------------------------------------------------------------------
 // Training
 
-JANICE_EXPORT JaniceError janice_fine_tune(JaniceDetections subjects,
-                                           int* labels,
+JANICE_EXPORT JaniceError janice_fine_tune(JaniceMediaIterators media,
+                                           JaniceTracksGroup group,
+                                           int** labels,
                                            const char* output_prefix);
 
 // ----------------------------------------------------------------------------
