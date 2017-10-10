@@ -26,11 +26,6 @@ struct JaniceImageType
 
 typedef struct JaniceImageType* JaniceImage;
 
-inline uint8_t janice_image_access(JaniceConstImage image, uint32_t channel, uint32_t row, uint32_t col)
-{
-    return image->data[(row * image->cols * image->channels) + (col * image->channels) + channel];
-}
-
 // ----------------------------------------------------------------------------
 // Media Iterator
 
