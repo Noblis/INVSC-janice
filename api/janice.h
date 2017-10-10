@@ -201,7 +201,7 @@ JANICE_EXPORT JaniceError janice_free_attribute(JaniceAttribute* value);
 // Training
 
 JANICE_EXPORT JaniceError janice_fine_tune(JaniceMediaIterators media,
-                                           JaniceTracksGroup group,
+                                           JaniceTracksGroup tracks,
                                            int** labels,
                                            const char* output_prefix);
 
