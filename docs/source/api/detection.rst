@@ -32,17 +32,17 @@ A simple struct that represents a rectangle
 Fields
 ^^^^^^
 
-+----------+-------------+-------------------------------------------+
-| Name     | Type        | Description                               |
-+==========+=============+===========================================+
-| x        | uint32\_t   | The x offset of the rectangle in pixels   |
-+----------+-------------+-------------------------------------------+
-| y        | uint32\_t   | The y offset of the rectangle in pixels   |
-+----------+-------------+-------------------------------------------+
-| width    | uint32\_t   | The width of the rectangle in pixels      |
-+----------+-------------+-------------------------------------------+
-| height   | uint32\_t   | The height of the rectangle in pixels     |
-+----------+-------------+-------------------------------------------+
++--------+-----------+-----------------------------------------+
+|  Name  |   Type    |               Description               |
++========+===========+=========================================+
+| x      | uint32\_t | The x offset of the rectangle in pixels |
++--------+-----------+-----------------------------------------+
+| y      | uint32\_t | The y offset of the rectangle in pixels |
++--------+-----------+-----------------------------------------+
+| width  | uint32\_t | The width of the rectangle in pixels    |
++--------+-----------+-----------------------------------------+
+| height | uint32\_t | The height of the rectangle in pixels   |
++--------+-----------+-----------------------------------------+
 
 .. _JaniceTrack:
 
@@ -54,7 +54,7 @@ Tracks may be sparse (i.e. frames do not need to be sequential). Tracks are
 meant to follow a single object or area of interest, for example a face through
 multiple frames of a video.
 
-.. _detection\_confidence:
+.. _detection_confidence:
 
 Confidence
 ^^^^^^^^^^
@@ -69,42 +69,125 @@ indicates a greater likelihood that the rectangle bounds an object.
 Fields
 ^^^^^^
 
-+-------------+---------------------+------------------------------------------+
-| Name        | Type                | Description                              |
-+=============+=====================+==========================================+
-| rects       | :ref:`JaniceRect`\* | A list of rectangles surrounding areas   |
-|             |                     | of interest in the media. This list      |
-|             |                     | should be *length* elements.             |
-+-------------+---------------------+------------------------------------------+
-| confidences | float\*             | A confidence to associate with each      |
-|             |                     | rectangle in *rects*. See                |
-|             |                     | :ref:`detection\_confidence` for details |
-|             |                     | about confidence values in this API. This|
-|             |                     | list should be *length* elements.        |
-+-------------+---------------------+------------------------------------------+
-| frames      | uint32_t\*          | The frame indices associated with each   |
-|             |                     | rectangle in *rects*. A track may be     |
-|             |                     | sparse and the indicies in this list are |
-|             |                     | required to be sequential. This list     |
-|             |                     | should be *length* elements.             |
-+-------------+---------------------+------------------------------------------+
-| length      | size_t              | The number of rectangles, confidences,   |
-|             |                     | and frames in this structure.            |
-+-------------+---------------------+------------------------------------------+
++-------------+---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|    Name     |        Type         |                                                                                      Description                                                                                       |
++=============+=====================+========================================================================================================================================================================================+
+| rects       | :ref:`JaniceRect`\* | A list of rectangles surrounding areas of interest in the media. This list should be *length* elements.                                                                                |
++-------------+---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| confidences | float\*             | A confidence to associate with each rectangle in *rects*. See :ref:`detection_confidence` for details about confidence values in this API. This list should be *length* elements.      |
++-------------+---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| frames      | uint32\_t\*         | The frame indices associated with each rectangle in *rects*. A track may be sparse and the indicies in this list are required to be sequential. This list should be *length* elements. |
++-------------+---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| length      | size\_t             | The number of rectangles, confidences, and frames in this structure.                                                                                                                   |
++-------------+---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _JaniceTracks:
 
 JaniceTracks
 ~~~~~~~~~~~~
 
-An array of :ref:`JaniceTrack` objects.
+A structure representing a list of :ref:`JaniceTrack` objects.
+
+Fields
+^^^^^^
+
++--------+----------------------+------------------------------------+
+|  Name  |         Type         |            Description             |
++========+======================+====================================+
+| tracks | :ref:`JaniceTrack`\* | An array of track objects          |
++--------+----------------------+------------------------------------+
+| length | size\_t              | The number of elements in *tracks* |
++--------+----------------------+------------------------------------+
+
+.. _JaniceTracksGroup:
+
+JaniceTracksGroup
+~~~~~~~~~~~~~~~~~
+
+A structure representing a list of :ref:`JaniceTracks` objects.
+
+Fields
+^^^^^^
+
++--------+-----------------------+-----------------------------------+
+|  Name  |         Type          |            Description            |
++========+=======================+===================================+
+| group  | :ref:`JaniceTracks`\* | An array of tracks objects        |
++--------+-----------------------+-----------------------------------+
+| length | size\_t               | The number of elements in *group* |
++--------+-----------------------+-----------------------------------+
+
+.. _JaniceBuffer:
+
+JaniceBuffer
+~~~~~~~~~~~~
+
+An array of uint8\_t
 
 Signature
 ^^^^^^^^^
 
 ::
 
-    typedef JaniceTrack* JaniceTracks;
+    typedef uint8_t* JaniceBuffer;
+
+.. _JaniceDetectionType:
+
+JaniceDetectionType
+~~~~~~~~~~~~~~~~~~~
+
+An opaque pointer to a struct that represents a detection. See :ref:`detection`
+for more information.
+
+.. _JaniceDetection:
+
+JaniceDetection
+~~~~~~~~~~~~~~~
+
+A pointer to a :ref:`JaniceDetectionType` object.
+
+Signature
+^^^^^^^^^
+
+::
+
+    typedef struct JaniceDetectionType* JaniceDetection;
+
+.. _JaniceDetections:
+
+JaniceDetections
+~~~~~~~~~~~~~~~~
+
+A structure to represent a list of :ref:`JaniceDetection` objects.
+
+Fields
+^^^^^^
+
++------------+--------------------------+----------------------------------------+
+|    Name    |           Type           |              Description               |
++============+==========================+========================================+
+| detections | :ref:`JaniceDetection`\* | An array of detection objects.         |
++------------+--------------------------+----------------------------------------+
+| length     | size\_t                  | The number of elements in *detections* |
++------------+--------------------------+----------------------------------------+
+
+.. _JaniceDetectionsGroup:
+
+JaniceDetectionsGroup
+~~~~~~~~~~~~~~~~~~~~~
+
+A structure to represent a list of :ref:`JaniceDetections` objects.
+
+Fields
+^^^^^^
+
++--------+-------------------------+-----------------------------------+
+|  Name  |          Type           |            Description            |
++========+=========================+===================================+
+| group  | :ref:`JaniceDetections` | An array of detections objects.   |
++--------+-------------------------+-----------------------------------+
+| length | size\_t                 | The number of elements in *group* |
++--------+-------------------------+-----------------------------------+
 
 .. _JaniceAttribute:
 
@@ -129,127 +212,11 @@ Signature
 
     typedef char* JaniceAttribute;
 
-.. _JaniceMediaId:
-
-JaniceMediaId
-~~~~~~~~~~~~~
-
-A unique identifier for a :ref:`JaniceMediaIterator` object.
-
-Signature
-^^^^^^^^^
-
-::
-
-    typedef size_t JaniceMediaId;
-
-.. _JaniceMediaIds:
-
-JaniceMediaIds
-~~~~~~~~~~~~~~
-
-An array of :ref:`JaniceMediaId` objects.
-
-Signature
-^^^^^^^^^
-
-::
-
-    typedef JaniceMediaId* JaniceMediaIds;
-
-
-.. _JaniceDetectionType:
-
-JaniceDetectionType
-~~~~~~~~~~~~~~~~~~~
-
-An opaque pointer to a struct that represents a detection. See :ref:`detection`
-for more information.
-
-.. _JaniceDetection:
-
-JaniceDetection
-~~~~~~~~~~~~~~~
-
-A pointer to a :ref:`JaniceDetectionType` object.
-
-Signature
-^^^^^^^^^
-
-::
-
-    typedef struct JaniceDetectionType* JaniceDetection;
-
-.. _JaniceConstDetection:
-
-JaniceConstDetection
-~~~~~~~~~~~~~~~~~~~~
-
-A pointer to a constant :ref:`JaniceDetectionType` object.
-
-Signature
-^^^^^^^^^
-
-::
-
-    typedef const struct JaniceDetectionType* JaniceConstDetection;
-
-.. _JaniceDetections:
-
-JaniceDetections
-~~~~~~~~~~~~~~~~
-
-An array of :ref:`JaniceDetection` objects.
-
-Signature
-^^^^^^^^^
-
-::
-
-    typedef struct JaniceDetection* JaniceDetections;
-
-.. _JaniceConstDetections:
-
-JaniceConstDetections
-~~~~~~~~~~~~~~~~~~~~~
-
-An array of :ref:`JaniceConstDetection` objects.
-
-Signature
-^^^^^^^^^
-
-::
-
-    typedef struct JaniceConstDetection* JaniceConstDetections;
-
-.. _JaniceDetectionPolicy:
-
-JaniceDetectionPolicy
-~~~~~~~~~~~~~~~~~~~~~
-
-A policy that controls the types of objects that should be detected by a call
-to :ref:`janice\_detect`. Supported policies are:
-
-+---------------------+-------------------------------------------------------+
-| Policy              | Description                                           |
-+=====================+=======================================================+
-| JaniceDetectAll     | Detect all objects present in the media.              |
-+---------------------+-------------------------------------------------------+
-| JaniceDetectLargest | Detect the largest object present in the media.       |
-|                     | Running detection with this policy should produce at  |
-|                     | most one detection.                                   |
-+---------------------+-------------------------------------------------------+
-| JaniceDetectBest    | Detect the best object present in the media. The      |
-|                     | implementor is responsible for defining what "best"   |
-|                     | entails in the context of their algorithm. Running    |
-|                     | detection with this policy should produce at most one |
-|                     | detection.                                            |
-+---------------------+-------------------------------------------------------+
 
 Functions
 ---------
 
-.. _janice\_create\_detection\_from\_rect:
+.. _janice_create_detection_from_rect:
 
 janice\_create\_detection\_from\_rect
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -274,33 +241,22 @@ Signature
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+-----------+----------------------------+-------------------------------------+
-| Name      | Type                       | Description                         |
-+===========+============================+=====================================+
-| media     | :ref:`JaniceMediaIterator` | A media object to create the        |
-|           |                            | detection from.                     |
-+-----------+----------------------------+-------------------------------------+
-| rect      | const :ref:`JaniceRect`    | A rectangle that bounds the object  |
-|           |                            | of interest.                        |
-+-----------+----------------------------+-------------------------------------+
-| frame     | uint32\_t                  | An index to the frame in the media  |
-|           |                            | where the object of interest appears|
-|           |                            | If the media is an image this should|
-|           |                            | be 0.                               |
-+-----------+----------------------------+-------------------------------------+
-| detection | :ref:`JaniceDetection`\*   | An uninitialized pointer to a       |
-|           |                            | detection object. The object should |
-|           |                            | allocated by the implementor during |
-|           |                            | function execution. The user is     |
-|           |                            | responsible for freeing the object  |
-|           |                            | using                               |
-|           |                            | :ref:`janice\_free\_detection`.     |
-+-----------+----------------------------+-------------------------------------+
++-----------+----------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|   Name    |            Type            |                                                                                                 Description                                                                                                  |
++===========+============================+==============================================================================================================================================================================================================+
+| media     | :ref:`JaniceMediaIterator` | A media object to create the detection from.                                                                                                                                                                 |
++-----------+----------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| rect      | const :ref:`JaniceRect`    | A rectangle that bounds the object of interest.                                                                                                                                                              |
++-----------+----------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| frame     | uint32\_t                  | An index to the frame in the media where the object of interest appears. If the media is an image this should be 0.                                                                                          |
++-----------+----------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| detection | :ref:`JaniceDetection`\*   | An uninitialized pointer to a detection object. The object should allocated by the implementor during function execution. The user is responsible for freeing the object using :ref:`janice_free_detection`. |
++-----------+----------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Example
 ^^^^^^^
@@ -319,7 +275,7 @@ Example
     if (janice_create_detection(media, rect, 0 /* frame */, &detection) != JANICE_SUCCESS)
         // ERROR!
 
-.. _janice\_create\_detection\_from\_track:
+.. _janice_create_detection_from_track:
 
 janice\_create\_detection\_from\_track
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -334,36 +290,28 @@ Signature
 ::
 
     JANICE_EXPORT JaniceError janice_create_detection_from_track(JaniceMediaIterator media,
-                                                                const JaniceTrack track,
-                                                                JaniceDetection* detection);
+                                                                 const JaniceTrack track,
+                                                                 JaniceDetection* detection);
 
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+-----------+----------------------------+-------------------------------------+
-| Name      | Type                       | Description                         |
-+===========+============================+=====================================+
-| media     | :ref:`JaniceMediaIterator` | A media object to create the        |
-|           |                            | detection from.                     |
-+-----------+----------------------------+-------------------------------------+
-| track     | :ref:`JaniceTrack`         | A track bounding a region of        |
-|           |                            | through 1 or more frames.           |
-+-----------+----------------------------+-------------------------------------+
-| detection | :ref:`JaniceDetection`\*   | An uninitialized pointer to a       |
-|           |                            | detection object. The object should |
-|           |                            | allocated by the implementor during |
-|           |                            | function execution. The user is     |
-|           |                            | responsible for freeing the object  |
-|           |                            | using                               |
-|           |                            | :ref:`janice\_free\_detection`.     |
-+-----------+----------------------------+-------------------------------------+
++-----------+----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|   Name    |            Type            |                                                                                                    Description                                                                                                    |
++===========+============================+===================================================================================================================================================================================================================+
+| media     | :ref:`JaniceMediaIterator` | A media object to create the detection from.                                                                                                                                                                      |
++-----------+----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| track     | :ref:`JaniceTrack`         | A track bounding a region of through 1 or more frames.                                                                                                                                                            |
++-----------+----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| detection | :ref:`JaniceDetection`\*   | An uninitialized pointer to a detection object. The object should allocated by the implementor during function execution. The user is responsible for freeing the object by calling :ref:`janice_free_detection`. |
++-----------+----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-.. _janice\_detect:
+.. _janice_detect:
 
 janice\_detect
 ~~~~~~~~~~~~~~
@@ -377,31 +325,15 @@ Signature
 ::
 
     JANICE_EXPORT JaniceError janice_detect(JaniceMediaIterator media,
-                                            uint32_t min_object_size,
-                                            JaniceDetectionPolicy policy,
-                                            JaniceDetections* detections,
-                                            uint32_t* num_detections);
+                                            JaniceContext context,
+                                            JaniceDetections* detections);
 
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
-.. _detection_min_object_size:
-
-Minimum Object Size
-^^^^^^^^^^^^^^^^^^^
-
-This function specifies a minimum object size as one of its parameters.
-This value indicates the minimum size of objects that the user would
-like to see detected. Often, increasing the minimum size can improve
-runtime of algorithms. The size is in pixels and corresponds to the
-length of the smaller side of the rectangle. This means a detection will
-be returned if and only if its smaller side is larger than the value
-specified. If the user does not wish to specify a minimum width 0 can be
-provided.
-
-.. detection\_tracking:
+.. _detection_tracking:
 
 Tracking
 ^^^^^^^^
@@ -421,46 +353,38 @@ correlate multiple tracks of the same object.
 Parameters
 ^^^^^^^^^^
 
-+-------------------+------------------------------+------------------------------------+
-| Name              | Type                         | Description                        |
-+===================+==============================+====================================+
-| media             | :ref:`JaniceMediaIterator`   | A media object to run detection on.|
-+-------------------+------------------------------+------------------------------------+
-| min\_object\_size | uint32\_t                    | A minimum object size. See         |
-|                   |                              | :ref:`detection\_min\_object\_size`|
-+-------------------+------------------------------+------------------------------------+
-| policy            | :ref:`JaniceDetectionPolicy` | The detection policy to follow.    |
-+-------------------+------------------------------+------------------------------------+
-| detections        | :ref:`JaniceDetections` \*   | An uninitialized array to hold all |
-|                   |                              | of the detections detected in the  |
-|                   |                              | in the media object. This object   |
-|                   |                              | should be allocated by the         |
-|                   |                              | implementor during the call. The   |
-|                   |                              | user is required to free the object|
-|                   |                              | by calling                         |
-|                   |                              | :ref:`janice\_free\_detections`.   |
-+-------------------+------------------------------+------------------------------------+
-| num\_detections   | uint32\_t\*                  | The number of detections returned  |
-|                   |                              | in the *detections* array.         |
-+-------------------+------------------------------+------------------------------------+
++------------+----------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|    Name    |            Type            |                                                                                                     Description                                                                                                     |
++============+============================+=====================================================================================================================================================================================================================+
+| media      | :ref:`JaniceMediaIterator` | A media object to run detection on.                                                                                                                                                                                 |
++------------+----------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| context    | :ref:`JaniceContext`       | A context object with relevant hyperparameters set.                                                                                                                                                                 |
++------------+----------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| detections | :ref:`JaniceDetections`\*  | A struct to hold the resulting detections. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling :ref:`janice_clear_detections` |
++------------+----------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Example
 ^^^^^^^
 
 ::
 
-    JaniceMedia media; // Where media is a valid media object created previously
-    const uint32_t min_object_size = 24; // Only find objects where the smaller
-                                         // side is > 24 pixels
-    JaniceDetectionPolicy policy = JaniceDetectAll; // Detect all objects in the media
-    JaniceDetection* detections = NULL; // best practice to initialize to NULL
-    uint32_t num_detections; // Will be populated with the size of detections
+    JaniceContext context = nullptr;
+    if (janice_create_context(JaniceDetectAll, // detection policy
+                              24, // min_object_size, only find objects where the smaller side > 24 pixels
+                              Janice1NProbe, // enrollment type, this shouldn't impact detection
+                              0, // threshold, this shouldn't impact detection
+                              0, // max_returns, this shouldn't impact detection
+                              0, // hint, this shouldn't impact detection
+                              &context) != JANICE_SUCCESS)
+        // ERROR!
 
-    if (janice_detect(media, min_object_size, policy, &detections, &num_detections) != JANICE_SUCCESS)
+    JaniceMedia media; // Where media is a valid media object created previously
+    JaniceDetections detections;
+    if (janice_detect(media, context, &detections) != JANICE_SUCCESS)
         // ERROR!
 
 
-.. _janice\_detect\_batch:
+.. _janice_detect_batch:
 
 janice\_detect\_batch
 ~~~~~~~~~~~~~~~~~~~~~
@@ -475,65 +399,28 @@ Signature
 ::
 
     JANICE_EXPORT JaniceError janice_detect_batch(JaniceMediaIterators media, 
-                                                  JaniceMediaIds media_ids, 
-                                                  uint32_t num_media,
-                                                  uint32_t min_object_size,
-                                                  JaniceDetectionPolicy policy,
-                                                  JaniceDetections* detections,
-                                                  JaniceMediaIds* detection_ids,
-                                                  uint32_t* num_detections);
+                                                  JaniceContext context,
+                                                  JaniceDetectionsGroup* detections);
 
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+-------------------+------------------------------+-------------------------------------+
-| Name              | Type                         | Description                         |
-+===================+==============================+=====================================+
-| media             | :ref:`JaniceMediaIterators`  | An array of media iterators to run  |
-|                   |                              | detection on. The array contains    | 
-|                   |                              | *num_media* elements.               |
-+-------------------+------------------------------+-------------------------------------+
-| media_ids         | :ref:`JaniceMediaIds`        | An array of unique identifiers for  |
-|                   |                              | the media iterators. The array      |
-|                   |                              | contains *num_media* elements.      | 
-+-------------------+------------------------------+-------------------------------------+
-| num_media         | uint32_t                     | The size of the *media* and         |
-|                   |                              | *media_ids* arrays.                 |
-+-------------------+------------------------------+-------------------------------------+
-| min\_object\_size | uint32_t                     | A minimum object size. See          |
-|                   |                              | :ref:`detection\_min\_object\_size` |
-+-------------------+------------------------------+-------------------------------------+
-| policy            | :ref:`JaniceDetectionPolicy` | The detection policy to follow.     |
-+-------------------+------------------------------+-------------------------------------+
-| detections        | :ref:`JaniceDetections`\*    | An uninitialized array to hold all  |
-|                   |                              | of the detections detected in the   |
-|                   |                              | the media objects. This object      |
-|                   |                              | should be allocated by the          |
-|                   |                              | implementor during the call. The    |
-|                   |                              | user is required to free the object |
-|                   |                              | by calling                          |
-|                   |                              | :ref:`janice\_free\_detections`.    |
-+-------------------+------------------------------+-------------------------------------+
-| detection_ids     | :ref:`JaniceMediaIds`\*      | An uninitializedarray of media ids  |
-|                   |                              | that associates a detection to it's |
-|                   |                              | source media. This array should have|
-|                   |                              | the same number of elements as      |
-|                   |                              | *detections*. This object should be |
-|                   |                              | allocated by the implementor during |
-|                   |                              | the call. The user is require to    |
-|                   |                              | free the object by calling          |
-|                   |                              | :ref:`janice\_free\_media\_ids`.    |
-+-------------------+------------------------------+-------------------------------------+
-| num_detections    | uint32_t\*                   | The number of elements in           | 
-|                   |                              | *detections* and *num_detections*.  |
-+-------------------+------------------------------+-------------------------------------+
++------------+--------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|    Name    |              Type              |                                                                                                                                                                                                                                                                                                    Description                                                                                                                                                                                                                                                                                                    |
++============+================================+===================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
+| media      | :ref:`JaniceMediaIterators`    | An array of media iterators to run detection on.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
++------------+--------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| context    | :ref:`JaniceContext`           | A context object with relevant hyperparameters set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
++------------+--------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| detections | :ref:`JaniceDetectionsGroup`\* | A list of lists of detection objects. Each input media iterator can contain 0 or more possible detections. This output structure should mirror the input such that the sublist at index *i* should contain all of the detections found in media iterator *i*. If no detections are found in a particular media object an entry must still be present in the top-level output list and the sublist should have a length of 0. The implementor should allocate the internal members of this object during the call. The user is responsible for clearing the object by calling :ref:`janice_clear_detections_group` |
++------------+--------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-.. _janice\_detection\_get\_track:
+.. _janice_detection_get_track:
 
 janice\_detection\_get\_track
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -546,32 +433,26 @@ Signature
 
 ::
 
-    JANICE_EXPORT JaniceError janice_detection_get_track(JaniceConstDetection detection,
+    JANICE_EXPORT JaniceError janice_detection_get_track(JaniceDetection detection,
                                                          JaniceTrack* track);
 
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+-----------+-----------------------------+------------------------------------+
-| Name      | Type                        | Description                        |
-+===========+=============================+====================================+
-| detection | :ref:`JaniceConstDetection` | The detection to get the track     |
-|           |                             | from.                              |
-+-----------+-----------------------------+------------------------------------+
-| track     | :ref:`JaniceTrack`\*        | An uninitialized track object. This|
-|           |                             | object should be allocated by the  |
-|           |                             | implementor during the call. The   |
-|           |                             | user is responsible for free this  |
-|           |                             | object by calling                  |
-|           |                             | :ref:`janice\_free\_track`.        |
-+-----------+-----------------------------+------------------------------------+
++-----------+------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|   Name    |          Type          |                                                                                      Description                                                                                      |
++===========+========================+=======================================================================================================================================================================================+
+| detection | :ref:`JaniceDetection` | The detection to get the track from.                                                                                                                                                  |
++-----------+------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| track     | :ref:`JaniceTrack`\*   | An uninitialized track object. This object should be allocated by the implementor during the call. The user is responsible for free this object by calling :ref:`janice_clear_track`. |
++-----------+------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-.. _janice\_detection\_get\_attribute:
+.. _janice_detection_get_attribute:
 
 janice\_detection\_get\_attribute
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -587,37 +468,27 @@ Signature
 
 ::
 
-    JANICE_EXPORT JaniceError janice_detection_get_attribute(JaniceConstDetection detection,
+    JANICE_EXPORT JaniceError janice_detection_get_attribute(JaniceDetection detection,
                                                              const char* key,
                                                              JaniceAttribute& value);
 
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+-----------+-----------------------------+------------------------------------+
-| Name      | Type                        | Description                        |
-+===========+=============================+====================================+
-| detection | :ref:`JaniceConstDetection` | The detection object to extract the|
-|           |                             | attribute from.                    |
-+-----------+-----------------------------+------------------------------------+
-| key       | const char\*                | A key to look up a specific        |
-|           |                             | attribute. Valid keys must be      |
-|           |                             | defined and documented by the      |
-|           |                             | implementor.                       | 
-+-----------+-----------------------------+------------------------------------+
-| value     | :ref:`JaniceAttribute`\*    | An uninitialized char\* to hold    |
-|           |                             | the value of the attribute. This   |
-|           |                             | object should be allocated by the  |
-|           |                             | implementor during the function    |
-|           |                             | call. The user is responsible for  |
-|           |                             | the object by calling              |
-|           |                             | :ref:`janice\_free\_attribute.     |
-+-----------+-----------------------------+------------------------------------+
++-----------+--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|   Name    |           Type           |                                                                                                       Description                                                                                                        |
++===========+==========================+==========================================================================================================================================================================================================================+
+| detection | :ref:`JaniceDetection`   | The detection object to extract the attribute from.                                                                                                                                                                      |
++-----------+--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| key       | const char\*             | A key to look up a specific attribute. Valid keys must be defined and documented by the implementor.                                                                                                                     |
++-----------+--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| value     | :ref:`JaniceAttribute`\* | An uninitialized char\* to hold the value of the attribute. This object should be allocated by the implementor during the function call. The user is responsible for the object by calling :ref:`janice_free_attribute`. |
++-----------+--------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _janice\_serialize\_detection:
 
@@ -631,34 +502,27 @@ Signature
 
 ::
 
-    JANICE_EXPORT JaniceError janice_serialize_detection(JaniceConstDetection detection,
+    JANICE_EXPORT JaniceError janice_serialize_detection(JaniceDetection detection,
                                                          JaniceBuffer* data,
                                                          size_t* len);
 
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+-------------+-----------------------------+----------------------------------+
-| Name        | Type                        | Description                      |
-+=============+=============================+==================================+
-| detection   | :ref:`JaniceConstDetection` | A detection object to serialize  |
-+-------------+-----------------------------+----------------------------------+
-| data        | :ref:`JaniceBuffer` \*      | An uninitialized buffer to hold  |
-|             |                             | the flattened data. The          |
-|             |                             | implementor should allocate this |
-|             |                             | object during the function call. |
-|             |                             | The user is required to free the |
-|             |                             | object with                      |
-|             |                             | :ref:`janice\_free\_buffer`.     |
-+-------------+-----------------------------+----------------------------------+
-| len         | size\_t\*                   | The length of the flat buffer    |
-|             |                             | after it is filled.              |
-+-------------+-----------------------------+----------------------------------+
++-----------+------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|   Name    |          Type          |                                                                                            Description                                                                                            |
++===========+========================+===================================================================================================================================================================================================+
+| detection | :ref:`JaniceDetection` | A detection object to serialize                                                                                                                                                                   |
++-----------+------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| data      | :ref:`JaniceBuffer`\*  | An uninitialized buffer to hold the flattened data. The implementor should allocate this object during the function call. The user is required to free the object with :ref:`janice_free_buffer`. |
++-----------+------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| len       | size\_t\*              | The length of the flat buffer after it is filled.                                                                                                                                                 |
++-----------+------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Example
 ^^^^^^^
@@ -673,7 +537,7 @@ Example
     size_t buffer_len;
     janice_serialize_detection(detection, &buffer, &buffer_len);
 
-.. _janice\_deserialize\_detection:
+.. _janice_deserialize_detection:
 
 janice\_deserialize\_detection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -692,26 +556,20 @@ Signature
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+-----------+---------------------------+--------------------------------------+
-| Name      | Type                      | Description                          |
-+===========+===========================+======================================+
-| data      | const :ref:`JaniceBuffer` | A buffer containing data from a      |
-|           |                           | flattened detection object.          |
-+-----------+---------------------------+--------------------------------------+
-| len       | size\_t                   | The length of the flat buffer.       |
-+-----------+---------------------------+--------------------------------------+
-| detection | :ref:`JaniceDetection` \* | An uninitialized detection object.   |
-|           |                           | This object should be allocated by   |
-|           |                           | the implementor during the function  |
-|           |                           | call. Users are required to free the |
-|           |                           | object with                          |
-|           |                           | :ref:`janice\_free\_detection`.      |
-+-----------+---------------------------+--------------------------------------+
++-----------+---------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|   Name    |           Type            |                                                                                       Description                                                                                        |
++===========+===========================+==========================================================================================================================================================================================+
+| data      | const :ref:`JaniceBuffer` | A buffer containing data from a flattened detection object.                                                                                                                              |
++-----------+---------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| len       | size\_t                   | The length of the flat buffer.                                                                                                                                                           |
++-----------+---------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| detection | :ref:`JaniceDetection`\*  | An uninitialized detection object. This object should be allocated by the implementor during the function call. Users are required to free the object with :ref:`janice_free_detection`. |
++-----------+---------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Example
 ^^^^^^^
@@ -729,7 +587,7 @@ Example
 
     fclose(file);
 
-.. _janice\_read\_detection:
+.. _janice_read_detection:
 
 janice\_read\_detection
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -764,18 +622,18 @@ Signature
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+-------------+---------------------------+--------------------------------------+
-| Name        | Type                      | Description                          |
-+=============+===========================+======================================+
-| filename    | const char\*              | The path to a file on disk           |
-+-------------+---------------------------+--------------------------------------+
-| detection   | :ref:`JaniceDetection` \* | An uninitialized detection object.   |
-+-------------+---------------------------+--------------------------------------+
++-----------+--------------------------+------------------------------------+
+|   Name    |           Type           |            Description             |
++===========+==========================+====================================+
+| filename  | const char\*             | The path to a file on disk         |
++-----------+--------------------------+------------------------------------+
+| detection | :ref:`JaniceDetection`\* | An uninitialized detection object. |
++-----------+--------------------------+------------------------------------+
 
 Example
 ^^^^^^^
@@ -786,7 +644,7 @@ Example
     if (janice_read_detection("example.detection", &detection) != JANICE_SUCCESS)
         // ERROR!
 
-.. _janice\_write\_detection:
+.. _janice_write_detection:
 
 janice\_write\_detection
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -816,25 +674,24 @@ Signature
 
 ::
 
-    JANICE_EXPORT JaniceError janice_write_detection(JaniceConstDetection detection,
+    JANICE_EXPORT JaniceError janice_write_detection(JaniceDetection detection,
                                                      const char* filename);
 
 ThreadSafety
 ^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+-------------+-----------------------------+----------------------------------+
-| Name        | Type                        | Description                      |
-+=============+=============================+==================================+
-| detection   | :ref:`JaniceConstDetection` | The detection object to write to |
-|             |                             | disk.                            |
-+-------------+-----------------------------+----------------------------------+
-| filename    | const char\*                | The path to a file on disk       |
-+-------------+-----------------------------+----------------------------------+
++-----------+------------------------+----------------------------------------+
+|   Name    |          Type          |              Description               |
++===========+========================+========================================+
+| detection | :ref:`JaniceDetection` | The detection object to write to disk. |
++-----------+------------------------+----------------------------------------+
+| filename  | const char\*           | The path to a file on disk             |
++-----------+------------------------+----------------------------------------+
 
 Example
 ^^^^^^^
@@ -846,7 +703,35 @@ Example
     if (janice_write_detection(detection, "example.detection") != JANICE_SUCCESS)
         // ERROR!
 
-.. _janice\_free\_detection:
+.. _janice_free_buffer:
+
+janice\_free\_buffer
+~~~~~~~~~~~~~~~~~~~~
+
+Release the memory for an allocated buffer.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_free_buffer(JaniceBuffer* buffer);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is :ref:`reentrant`
+
+Parameters
+^^^^^^^^^^
+
++--------+-----------------------+--------------------+
+|  Name  |         Type          |    Description     |
++========+=======================+====================+
+| buffer | :ref:`JaniceBuffer`\* | The buffer to free |
++--------+-----------------------+--------------------+
+
+.. _janice_free_detection:
 
 janice\_free\_detection
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -863,19 +748,16 @@ Signature
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+------------+---------------------------+-------------------------------------+
-| Name       | Type                      | Description                         |
-+============+===========================+=====================================+
-| detection  | :ref:`JaniceDetection` \* | A detection object to free. Best    |
-|            |                           | practice dictates the pointer       |
-|            |                           | should be set to *NULL* after it is |
-|            |                           | freed.                              |
-+------------+---------------------------+-------------------------------------+
++-----------+--------------------------+-----------------------------+
+|   Name    |           Type           |         Description         |
++===========+==========================+=============================+
+| detection | :ref:`JaniceDetection`\* | A detection object to free. |
++-----------+--------------------------+-----------------------------+
 
 Example
 ^^^^^^^
@@ -887,45 +769,52 @@ Example
     if (janice_free_detection(&detection) != JANICE_SUCCESS)
         // ERROR!
 
-.. _janice\_free\_detections:
+.. _janice_clear_detections:
 
-janice\_free\_detections
-~~~~~~~~~~~~~~~~~~~~~~~~
+janice\_clear\_detections
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Free any memory associated with a:ref:`JaniceDetections` object.
+Free any memory associated with a :ref:`JaniceDetections` object.
 
 Signature
 ^^^^^^^^^
 
 ::
 
-    JANICE_EXPORT JaniceError janice_free_detections(JaniceDetections* detection,
-                                                     uint32_t num_detections);
+    JANICE_EXPORT JaniceError janice_clear_detections(JaniceDetections* detections);
 
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+----------------+----------------------------+--------------------------------+
-| Name           | Type                       | Description                    |
-+================+============================+================================+
-| detections     | :ref:`JaniceDetections` \* | An array of detections to free.|
-|                |                            | Best practice dictates the     |
-|                |                            | pointer should be set to       |
-|                |                            | *NULL* after it is freed.      |
-+----------------+----------------------------+--------------------------------+
-| num_detections | uint32_t                   | The number of elements in      |
-|                |                            | *detections*.                  |
-+----------------+----------------------------+--------------------------------+
++------------+----------------------------+------------------------------+
+|    Name    |            Type            |         Description          |
++============+============================+==============================+
+| detections | :ref:`JaniceDetections` \* | A detection object to clear. |
++------------+----------------------------+------------------------------+
 
-.. _janice\_free\_track:
+.. _janice_clear_detections_group:
 
-janice\_free\_track
-~~~~~~~~~~~~~~~~~~~
+janice\_clear\_detections\_group
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Free any memory associated with a :ref:`JaniceDetectionsGroup` object.
+
+Signature
+^^^^^^^^^
+
+::
+    
+    JANICE_EXPORT JaniceError janice_clear_detections_group(JaniceDetectionsGroup\* group);
+
+.. _janice_clear_track:
+
+janice\_clear\_track
+~~~~~~~~~~~~~~~~~~~~
 
 Free any memory associated with a :ref:`JaniceTrack` object.
 
@@ -934,58 +823,74 @@ Signature
 
 ::
 
-    JANICE_EXPORT JaniceError janice_free_track(JaniceTrack* track);
+    JANICE_EXPORT JaniceError janice_clear_track(JaniceTrack* track);
 
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+-------+--------------------+-------------------------------------------------+
-| Name  | Type               | Description                                     |
-+=======+====================+=================================================+
-| track | :ref:`JaniceTrack` | The track object to free. Best practice dictates|
-|       |                    | the pointer should be set to *NULL* after it is |
-|       |                    | freed.                                          |
-+-------+--------------------+-------------------------------------------------+
++-------+--------------------+----------------------------+
+| Name  |        Type        |        Description         |
++=======+====================+============================+
+| track | :ref:`JaniceTrack` | The track object to clear. |
++-------+--------------------+----------------------------+
 
-.. _janice\_free\_tracks:
+.. _janice_clear_tracks:
 
-janice\_free\_tracks
-~~~~~~~~~~~~~~~~~~~~
+janice\_clear\_tracks
+~~~~~~~~~~~~~~~~~~~~~
 
-Free any memory associated with an array of :ref:`JaniceTrack` objects.
+Free any memory associated with a of :ref:`JaniceTracks` object.
 
 Signature
 ^^^^^^^^^
 
 ::
 
-    JANICE_EXPORT JaniceError janice_free_tracks(JaniceTracks* tracks,
-                                                 uint32_t num_tracks);
+    JANICE_EXPORT JaniceError janice_clear_tracks(JaniceTracks* tracks);
 
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+------------+---------------------+-------------------------------------------+
-| Name       | Type                | Description                               |
-+============+=====================+===========================================+
-| tracks     | :ref:`JaniceTracks` | An array of track objects to free. Best   |
-|            |                     | practice dictates the pointer should be   |
-|            |                     | set to *NULL* after the object is freed.  |
-+------------+---------------------+-------------------------------------------+
-| num_tracks | uint32_t            | The number of elements in *tracks*.       |
-+------------+---------------------+-------------------------------------------+
++--------+-----------------------+----------------------------+
+|  Name  |         Type          |        Description         |
++========+=======================+============================+
+| tracks | :ref:`JaniceTracks`\* | A tracks objects to clear. |
++--------+-----------------------+----------------------------+
 
-.. _janice\_free\_attribute:
+.. _janice_clear_tracks_group:
+
+janice\_clear\_tracks\_group
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Free any memory associated with a :ref:`JaniceTracksGroup` object.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_clear_tracks_group(JaniceTracksGroup* group);
+
+Parameters
+^^^^^^^^^^
+
++-------+----------------------------+--------------------------+
+| Name  |            Type            |       Description        |
++=======+============================+==========================+
+| group | :ref:`JaniceTracksGroup`\* | A tracks group to clear. |
++-------+----------------------------+--------------------------+
+
+.. _janice_free_attribute:
 
 janice\_free\_attribute
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -1002,48 +907,13 @@ Signature
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+-----------+--------------------------+---------------------------------------+
-| Name      | Type                     | Description                           |
-+===========+==========================+=======================================+
-| attribute | :ref:`JaniceAttribute`\* | The attribute to free. Best practice  |
-|           |                          | dictates the pointer should be set to |
-|           |                          | *NULL* after it is freed.             |
-+-----------+--------------------------+---------------------------------------+
-
-.. _janice\_free\_media\_ids:
-
-janice\_free\_media\_ids
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-Free any memory associated with an array of media ids.
-
-Signature
-^^^^^^^^^
-
-::
-
-    JANICE_EXPORT JaniceError janice_free_media_ids(JaniceMediaIds* ids,
-                                                    uint32_t num_ids);
-
-Thread Safety
-^^^^^^^^^^^^^
-
-This function is reentrant.
-
-Parameters
-^^^^^^^^^^
-
-+---------+-----------------------+-------------------------------------------+
-| Name    | Type                  | Description                               |
-+=========+=======================+===========================================+
-| ids     | :ref:`JaniceMediaIds` | The array of media ids to free. Best      |
-|         |                       | practice dictates the pointer should be   |
-|         |                       | set to *NULL* after it is freed.          |
-+---------+-----------------------+-------------------------------------------+
-| num_ids | uint32_t              | The number of elements in *ids*.          |
-+---------+-----------------------+-------------------------------------------+
++-----------+--------------------------+------------------------+
+|   Name    |           Type           |      Description       |
++===========+==========================+========================+
+| attribute | :ref:`JaniceAttribute`\* | The attribute to free. |
++-----------+--------------------------+------------------------+

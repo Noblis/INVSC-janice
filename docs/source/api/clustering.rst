@@ -15,69 +15,6 @@ single individual are placed in a cluster.
 Structs
 -------
 
-.. _JaniceMediaClusterItem:
-
-JaniceMediaClusterItem 
-~~~~~~~~~~~~~~~~~~~~~~
-
-A structure that connects an input media and location with an output cluster. 
-Because multiple detections could occur in a single piece of media a 
-:ref:`JaniceRect` and a frame index are included to identify which detection 
-this item refers to.
-
-Fields 
-^^^^^^
-
-+-------------+------------------------+---------------------------------------+
-| Name        | Type                   | Description                           |
-+=============+========================+=======================================+
-| cluster\_id | :ref:`JaniceClusterId` | A unique identifier for the cluster   |
-|             |                        | this item belongs to. Items belonging |
-|             |                        | to the same cluster should have the   |
-|             |                        | the id.                               |
-+-------------+------------------------+---------------------------------------+
-| media\_id   | :ref:`JaniceMediaId`   | A unique identifier for the media     |
-|             |                        | object this item corresponds to.      |
-+-------------+------------------------+---------------------------------------+
-| confidence  | double                 | The confidence that this item belongs |
-|             |                        | to this cluster.                      |
-+-------------+------------------------+---------------------------------------+
-| rect        | :ref:`JaniceRect`      | The location of the clustered object  |
-|             |                        | in a frame or image.                  |
-+-------------+------------------------+---------------------------------------+
-| frame       | uint32\_t              | The frame index of the clustered      |
-|             |                        | object if the media is a video,       |
-|             |                        | otherwise 0.                          |
-+-------------+------------------------+---------------------------------------+
-
-.. _JaniceTemplateClusterItem:
-
-JaniceTemplateClusterItem 
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-A structure that connects an input template with an output cluster.
-
-Fields 
-^^^^^^
-
-+-----------+---------------------------+--------------------------------------+
-| Name      | Type                      | Description                          |
-+=============+=========================+======================================+
-| cluster\_id | :ref:`JaniceClusterId`  | A unique identifier for the cluster  |
-|             |                         | this item belongs to. Items belonging|
-|             |                         | to the same cluster should have the  |
-|             |                         | same id.                             |
-+-------------+-------------------------+--------------------------------------+
-| tmpl\_id    | :ref:`JaniceTemplateId` | A unique identifier for the template |
-|             |                         | object this item corresponds to.     |
-+-------------+-------------------------+--------------------------------------+
-| confidence  | double                  | The confidence that this item belongs|
-|             |                         | to this cluster.                     |
-+-------------+-------------------------+--------------------------------------+
-
-Typedefs
---------
-
 .. _JaniceClusterId:
 
 JaniceClusterId 
@@ -90,116 +27,160 @@ Signature
 
 ::
 
-    typedef uint32_t JaniceClusterId;
+    typedef size_t JaniceClusterId;
 
-.. _JaniceMediaClusterItems:
+.. _JaniceClusterIds:
 
-JaniceMediaClusterItems 
+JaniceClusterIds
+~~~~~~~~~~~~~~~~
+
+A structure to represent a list of :ref:`JaniceClusterId` objects.
+
+Fields
+^^^^^^
+
++--------+--------------------------+---------------------------------+
+|  Name  |           Type           |           Description           |
++========+==========================+=================================+
+| ids    | :ref:`JaniceClusterId`\* | An array of cluster id objects. |
++--------+--------------------------+---------------------------------+
+| length | size\_t                  | The number of elements in *ids* |
++--------+--------------------------+---------------------------------+
+
+.. _JaniceClusterIdsGroup:
+
+JaniceClusterIdsGroup
+~~~~~~~~~~~~~~~~~~~~~
+
+A structure to represent a list of :ref:`JaniceClusterIds` objects.
+
+Fields
+^^^^^^
+
++--------+---------------------------+-----------------------------------+
+|  Name  |           Type            |            Description            |
++========+===========================+===================================+
+| group  | :ref:`JaniceClusterIds`\* | An array of cluster ids objects.  |
++--------+---------------------------+-----------------------------------+
+| length | size\_t                   | The number of elements in *group* |
++--------+---------------------------+-----------------------------------+
+
+.. _JaniceClusterConfidence:
+
+JaniceClusterConfidence
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-An array of :ref:`JaniceMediaClusterItem` objects.
+A value representing the confidence that an item belongs to a cluster.
 
 Signature 
 ^^^^^^^^^
 
 ::
 
-    typedef struct JaniceMediaClusterItem* JaniceMediaClusterItems;
+    typedef double JaniceClusterConfidence;
 
-.. _JaniceTemplateClusterItems:
+.. _JaniceClusterConfidences:
 
-JaniceTemplateClusterItems 
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+JaniceClusterConfidences
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-An array of :ref:`JaniceTemplateClusterItem` objects.
+A structure to represent a list of :ref:`JaniceClusterConfidence` objects.
 
-Signature 
-^^^^^^^^^
+Fields
+^^^^^^
 
-::
++-------------+----------------------------------+-----------------------------------------+
+|    Name     |               Type               |               Description               |
++=============+==================================+=========================================+
+| confidences | :ref:`JaniceClusterConfidence`\* | An array of cluster confidence objects. |
++-------------+----------------------------------+-----------------------------------------+
+| length      | size\_t                          | The number of elements in *confidences* |
++-------------+----------------------------------+-----------------------------------------+
 
-    typedef struct JaniceTemplateClusterItem* JaniceTemplateClusterItems;
+.. _JaniceClusterConfidencesGroup:
+
+JaniceClusterConfidencesGroup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A structure to represent a list of :ref:`JaniceClusterConfidences` objects.
+
+Fields
+^^^^^^
+
++--------+-----------------------------------+------------------------------------------+
+|  Name  |               Type                |               Description                |
++========+===================================+==========================================+
+| group  | :ref:`JaniceClusterConfidences`\* | An array of cluster confidences objects. |
++--------+-----------------------------------+------------------------------------------+
+| length | size\_t                           | The number of elements in *group*        |
++--------+-----------------------------------+------------------------------------------+
 
 Function
 --------
 
-.. _janice\_cluster\_media:
+.. _janice_cluster_media:
 
 janice\_cluster\_media
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Cluster a collection of media objects into groups. Each media object may
-contain 0 or more objects of interest. To distinguish between these
-objects the output cluster contains an object location.
+contain 0 or more objects of interest. The output is arranged so that each
+output structure has *N* sublists where *N* is the number of input media
+and the *ith* sublist contains information for objects found in the *ith*
+media.
+
+.. _cluster_confidence:
+
+Cluster Confidence
+^^^^^^^^^^^^^^^^^^
+
+Along with a cluster assignment, this API supports the concept of a cluster
+confidence. A cluster confidence is a value indicating a liklihood that the
+object of interest actually belongs to a cluster. For example, one possible 
+implementation of a cluster confidence is the negative distance of an object 
+from the cluster centroid. One use case for this value, is for end users to
+manually scrub cluster results by dynamically orphaning elements with lower
+confidence values. The cluster confidence is subject to the following contraints:
+
+1. A higher value indicates greater confidence of cluster membership
+2. No meaning can be assigned to an individual confidence, it is only
+   relevant when being compared with other confidences generated by
+   the same algorithm.
 
 Signature 
 ^^^^^^^^^
 
 ::
 
-    JANICE_EXPORT JaniceError janice_cluster_media(JaniceConstMedias input,
-                                                   const JaniceMediaIds input_ids,
-                                                   uint32_t num_inputs,
-                                                   uint32_t hint,
-                                                   JaniceMediaClusterItems* clusters,
-                                                   uint32_t* num_clusters);
+    JANICE_EXPORT JaniceError janice_cluster_media(JaniceMediaIterators media,
+                                                   JaniceContext context,
+                                                   JaniceClusterIdsGroup* cluster_ids,
+                                                   JaniceClusterConfidencesGroup* cluster_confidences,
+                                                   JaniceTracksGroup* tracks);
 
 Thread Safety 
 ^^^^^^^^^^^^^
 
-This function is reentrant.
-
-.. _clustering_hint:
-
-Hint 
-^^^^
-
-Clustering is generally considered to be an ill-defined problem, and
-most algorithms require some help determining the appropriate number of
-clusters. The hint parameter helps influence the number of clusters,
-though the implementation is free to ignore it. The goal of the hint is
-to provide user input for two use cases:
-
-1. If the hint is between 0 - 1 it should be regarded as a purity
-   requirement for the algorithm. A 1 indicates the user wants perfectly
-   pure clusters, even if that means more clusters are returned. A 0
-   indicates that the user wants very few clusters returned and accepts
-   there may be some errors.
-2. If the hint is > 1 it represents an estimated upper bound on the
-   number of object types in the set.
+This function is :ref:`reentrant`.
 
 Parameters 
 ^^^^^^^^^^
 
-+---------------+-----------------------------------+---------------------------------------------+
-| Name          | Type                              | Description                                 |
-+===============+===================================+=============================================+
-| input         | :ref:`JaniceMediaIterators`       | An array of media objects to cluster.       |
-+---------------+-----------------------------------+---------------------------------------------+
-| input\_ids    | const :ref:`JaniceMediaIds`       | An array of unique indentifiers for the     |
-|               |                                   | input objects. This array must be the same  |
-|               |                                   | size as *input*. The *ith* id should        |
-|               |                                   | correspond to the *ith* media object in     |
-|               |                                   | *input*.                                    |
-+---------------+-----------------------------------+---------------------------------------------+
-| num\_inputs   | uint32\_t                         | The size of the *input* and *input\_ids*    |
-|               |                                   | arrays.                                     |
-+---------------+-----------------------------------+---------------------------------------------+
-| hint          | uint32\_t                         | A :ref:`clustering_hint` to the clustering  |
-|               |                                   | algorithm.                                  |
-+---------------+-----------------------------------+---------------------------------------------+
-| clusters      | :ref:`JaniceMediaClusterItems` \* | An uninitialized array of cluster items to  |
-|               |                                   | store the result of clustering. The         |
-|               |                                   | implementor should allocate this object     |
-|               |                                   | during the function call. The user is       |
-|               |                                   | responsible for freeing the object by       |
-|               |                                   | calling                                     |
-|               |                                   | :ref:`janice\_free\_media\_cluster\_items`. |
-+---------------+-----------------------------------+---------------------------------------------+
-| num\_clusters | uint32\_t\*                       | The size of the *clusters* array.           |
-+---------------+-----------------------------------+---------------------------------------------+
++----------------------+----------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|         Name         |                  Type                  |                                                                                                                                                                                                                                                                                      Description                                                                                                                                                                                                                                                                                      |
++======================+========================================+=======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
+| media                | :ref:`JaniceMediaIterators`            | An array of media to cluster.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
++----------------------+----------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| context              | :ref:`JaniceContext`                   | A context object with relevant hyperparameters set.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
++----------------------+----------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| cluster\_ids         | :ref:`JaniceClusterIdsGroup`\*         | An output structure to hold cluster ids. Objects with the same cluster id are members of the same cluster. This structure must have *N* sublists, where *N* is the number of elements in *media*. The *ith* sublist contains cluster ids for all objects of interest found in the *ith* media. If no objects of interest are found in a media then the corresponding sublist should have length 0. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling :ref:`janice_clear_cluster_ids_group`.   |
++----------------------+----------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| cluster\_confidences | :ref:`JaniceClusterConfidencesGroup`\* | An output structure to hold :ref:`cluster_confidence`. This structure must have *N* sublists, where *N* is the number of elements in *media*. The *ith* sublist contains cluster confidences for all objects of interest found in the *ith* media. The *jth* confidence in the *ith* sublist refers to the same object as the *jth* id in the *ith* sublist of *ids*. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling :ref:`janice_clear_cluster_confidences_group`.                        |
++----------------------+----------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| tracks               | :ref:`JaniceTracksGroup`\*             | Location information for each clustered object. This structure must have *N* sublists, where *N* is the number of elements in *media*. The *ith* sublist contains tracks for all objects of interest found in the *ith* media. The *jth* track in the *ith* sublist refers to the same object as the *jth* id in the *ith* sublist of *ids* and the *jth* confidence in the *ith* sublist of confidences. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling :ref:`janice_clear_tracks_group`. |
++----------------------+----------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-.. _janice\_cluster\_templates:
+.. _janice_cluster_templates:
 
 janice\_cluster\_templates 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -211,101 +192,129 @@ Signature
 
 ::
 
-    JANICE_EXPORT JaniceError janice_cluster_templates(JaniceConstTemplates input,
-                                                       const JaniceTemplateIds input_ids,
-                                                       uint32_t num_inputs,
-                                                       uint32_t hint,
-                                                       JaniceTemplateClusterItems* clusters,
-                                                       uint32_t* num_clusters);
+    JANICE_EXPORT JaniceError janice_cluster_templates(JaniceTemplates tmpls,
+                                                       JaniceContext context,
+                                                       JaniceClusterIds* cluster_ids,
+                                                       JaniceClusterConfidences* cluster_confidences);
 
 Thread Safety 
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters 
 ^^^^^^^^^^
 
-+---------------+--------------------------------------+------------------------------------------------+
-| Name          | Type                                 | Description                                    |
-+===============+======================================+================================================+
-| input         | :ref:`JaniceConstTemplates`          | An array of template objects to cluster.       |
-+---------------+--------------------------------------+------------------------------------------------+
-| input\_ids    | const :ref:`JaniceTemplateIds`       | An array of unique indentifiers for the input  |
-|               |                                      | objects. This array must be the same size as   |
-|               |                                      | *input*. The *ith* id should correspond to the |
-|               |                                      | *ith* media object in *input*.                 |
-+---------------+--------------------------------------+------------------------------------------------+
-| num\_inputs   | uint32\_t                            | The size of the *input* and *input\_ids*       |
-|               |                                      | arrays.                                        |
-+---------------+--------------------------------------+------------------------------------------------+
-| hint          | uint32\_t                            | A :ref:`clustering_hint` to the algorithm. The |
-|               |                                      | implementor may ignore this value if they      |
-|               |                                      | choose.                                        |
-+---------------+--------------------------------------+------------------------------------------------+
-| clusters      | :ref:`JaniceTemplateClusterItems` \* | An uninitialized array to hold the cluster     |
-|               |                                      | output. The implementor should allocate this   |
-|               |                                      | object during the function call. The user is   |
-|               |                                      | for freeing the object by calling              |
-|               |                                      | :ref:`janice\_free\_template\_cluster\_items`. |
-+---------------+--------------------------------------+------------------------------------------------+
-| num\_clusters | uint32\_t\*                          | The size of the *clusters* array.              |
-+---------------+--------------------------------------+------------------------------------------------+
++----------------------+-----------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|         Name         |               Type                |                                                                                                                                                                                                                                             Description                                                                                                                                                                                                                                             |
++======================+===================================+=====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
+| tmpls                | :ref:`JaniceTemplates`            | An array of templates to cluster. Each template was created with the *JaniceCluster* role.                                                                                                                                                                                                                                                                                                                                                                                                          |
++----------------------+-----------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| context              | :ref:`JaniceContext`              | A context object with relevant hyperparameters set.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
++----------------------+-----------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| cluster\_ids         | :ref:`JaniceClusterIds`\*         | An output structure to hold cluster ids. Templates assigned the same cluster id are members of the same cluster. This structure must have the same number of elements as *tmpls*. The *ith* cluster id corresponds to the *ith* template object. Objects that can't be clustered should be assigned a unique cluster id. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling :ref:`janice_clear_cluster_ids`. |
++----------------------+-----------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| cluster\_confidences | :ref:`JaniceClusterConfidences`\* | An output structure to hold :ref:`cluster_confidence`. This structure must have the same number of elements as *tmpls*. The *ith* cluster confidence corresponds to the *ith* template object. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling :ref:`janice_clear_cluster_confidences`.                                                                                                                   |
++----------------------+-----------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-.. _janice\_free\_media\_cluster\_items:
+.. _janice_clear_cluster_ids:
 
-janice\_free\_media\_cluster\_items 
+janice\_clear\_cluster\_ids
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Free any memory associated with a of :ref:`JaniceClusterIds` object.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_clear_cluster_ids(JaniceClusterIds* ids);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is :ref:`reentrant`.
+
+Parameters
+^^^^^^^^^^
+
++------+---------------------------+--------------------------------+
+| Name |           Type            |          Description           |
++======+===========================+================================+
+| ids  | :ref:`JaniceClusterIds`\* | A cluster ids object to clear. |
++------+---------------------------+--------------------------------+
+
+.. _janice_clear_cluster_ids_group:
+
+janice\_clear\_cluster\_ids\_group
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Free any memory associated with a :ref:`JaniceClusterIdsGroup` object.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_clear_cluster_ids_group(JaniceClusterIdsGroup* group);
+
+Parameters
+^^^^^^^^^^
+
++-------+--------------------------------+-------------------------------+
+| Name  |              Type              |          Description          |
++=======+================================+===============================+
+| group | :ref:`JaniceClusterIdsGroup`\* | A cluster ids group to clear. |
++-------+--------------------------------+-------------------------------+
+
+.. _janice_clear_cluster_confidences:
+
+janice\_clear\_cluster\_confidences
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Free any memory associated with a :ref:`JaniceMediaClusterItems` object.
+Free any memory associated with a of :ref:`JaniceClusterConfidences` object.
 
-Signature 
+Signature
 ^^^^^^^^^
 
 ::
 
-    JANICE_EXPORT JaniceError janice_free_media_cluster_items(JaniceMediaClusterItems* clusters);
+    JANICE_EXPORT JaniceError janice_clear_cluster_confidences(JaniceClusterConfidences* confidences);
 
-Thread Safety 
+Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
-Parameters 
+Parameters
 ^^^^^^^^^^
 
-+------------+-----------------------------------+-----------------------------+
-| Name       | Type                              | Description                 |
-+============+===================================+=============================+
-| clusters   | :ref:`JaniceMediaClusterItems` \* | The media cluster object to |
-|            |                                   | free.                       |
-+------------+-----------------------------------+-----------------------------+
++-------------+-----------------------------------+----------------------------------------+
+|    Name     |               Type                |              Description               |
++=============+===================================+========================================+
+| confidences | :ref:`JaniceClusterConfidences`\* | A cluster confidences object to clear. |
++-------------+-----------------------------------+----------------------------------------+
 
-.. _janice\_free\_template\_cluster\_items:
+.. _janice_clear_cluster_confidences_group:
 
-janice\_free\_template\_cluster\_items 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+janice\_clear\_cluster\_confidences\_group
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Free any memory associated with a :ref:`JaniceTemplateClusterItems` object.
+Free any memory associated with a :ref:`JaniceClusterConfidencesGroup` object.
 
-Signature 
+Signature
 ^^^^^^^^^
 
 ::
 
-    JANICE_EXPORT JaniceError janice_free_template_cluster_items(JaniceTemplateClusterItems* clusters);
+    JANICE_EXPORT JaniceError janice_clear_cluster_confidences_group(JaniceClusterConfidencesGroup* group);
 
-Thread Safety 
-^^^^^^^^^^^^^
-
-This function is reentrant.
-
-Parameters 
+Parameters
 ^^^^^^^^^^
 
-+------------+--------------------------------------+--------------------------+
-| Name       | Type                                 | Description              |
-+============+======================================+==========================+
-| clusters   | :ref:`JaniceTemplateClusterItems` \* | The template cluster     |
-|            |                                      | object to free.          |
-+------------+--------------------------------------+--------------------------+
++-------+----------------------------------------+---------------------------------------+
+| Name  |                  Type                  |              Description              |
++=======+========================================+=======================================+
+| group | :ref:`JaniceClusterConfidencesGroup`\* | A cluster confidences group to clear. |
++-------+----------------------------------------+---------------------------------------+

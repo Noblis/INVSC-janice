@@ -14,6 +14,7 @@ Welcome to JanICE's documentation!
    api/errors.rst
    api/initialization.rst
    api/io.rst
+   api/context.rst
    api/train.rst
    api/detection.rst
    api/enrollment.rst

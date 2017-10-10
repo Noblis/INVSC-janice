@@ -7,20 +7,19 @@ Overview
 --------
 
 This API defines two possible types of comparisons, 1:1 and 1:N. These are
-represented by the :ref:`janice\_verify` and :ref:`janice\_search` functions
+represented by the :ref:`janice_verify` and :ref:`janice_search` functions
 respectively. The API quantifies the relationship between two templates as a
-single number called a :ref:`comparison\_sim\_score`.
+single number called a :ref:`similarity_score`.
 
-Typedefs
---------
+Structs
+-------
 
 .. _JaniceSimilarity:
 
 JaniceSimilarity
 ~~~~~~~~~~~~~~~~
 
-A number representing the similarity between two templates. See
-[functions.md#JaniceVerifySimilarityScore] for more information.
+A number representing the similarity between two templates. See :ref:`similarity_score` for more information.
 
 Signature
 ^^^^^^^^^
@@ -32,35 +31,43 @@ Signature
 .. _JaniceSimilarities:
 
 JaniceSimilarities
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
-An array of :ref:`JaniceSimilarity` objects.
+A structure representing a list of :ref:`JaniceSimilarity` objects.
 
-Signature
-^^^^^^^^^
+Fields
+^^^^^^
 
-::
++--------------+---------------------------+-------------------------------------------+
+|     Name     |           Type            |                Description                |
++==============+===========================+===========================================+
+| similarities | :ref:`JaniceSimilarity`\* | An array of similarity objects.           |
++--------------+---------------------------+-------------------------------------------+
+| length       | size\_t                   | The number of elements in *similarities*. |
++--------------+---------------------------+-------------------------------------------+
 
-    typedef JaniceSimilarity* JaniceSimilarities;
+.. _JaniceSimilaritiesGroup:
 
-.. _JaniceSearchTemplateIds:
-
-JaniceSearchTemplateIds
+JaniceSimilaritiesGroup
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-An array of :ref:`JaniceTemplateId` objects.
+A structure representing a list of :ref:`JaniceSimilarities` objects.
 
-Signature
-^^^^^^^^^
+Fields
+^^^^^^
 
-::
-
-    typedef JaniceTemplateId* JaniceSearchTemplateIds;
++--------+-----------------------------+------------------------------------+
+|  Name  |            Type             |            Description             |
++========+=============================+====================================+
+| group  | :ref:`JaniceSimilarities`\* | An array of similarities objects.  |
++--------+-----------------------------+------------------------------------+
+| length | size\_t                     | The number of elements in *group*. |
++--------+-----------------------------+------------------------------------+
 
 Functions
 ---------
 
-.. _janice\_verify:
+.. _janice_verify:
 
 janice\_verify
 ~~~~~~~~~~~~~~
@@ -80,9 +87,9 @@ Signature
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
-.. _comparison_sim_score:
+.. _similarity_score:
 
 Similarity Score
 ^^^^^^^^^^^^^^^^
@@ -91,29 +98,21 @@ This API expects that the comparison of two templates results in a
 single value that quantifies the similarity between them. A similarity
 score is constrained by the following requirements:
 
-::
-
-    1. Higher scores indicate greater similarity
-    2. Scores can be asymmetric. This mean verify(a, b) does not necessarily
-       equal verify(b, a)
+1. Higher scores indicate greater similarity
+2. Scores can be asymmetric. This mean verify(a, b) does not necessarily equal verify(b, a)
 
 Parameters
 ^^^^^^^^^^
 
-+--------------+----------------------------+----------------------------------+
-| Name         | Type                       | Description                      |
-+==============+============================+==================================+
-| reference    | :ref:`JaniceConstTemplate` | A reference template. This       |
-|              |                            | template was created with the    |
-|              |                            | *Janice11Reference* role.        |
-+--------------+----------------------------+----------------------------------+
-| verification | :ref:`JaniceConstTemplate` | A verification template. This    |
-|              |                            | this template was created with   |
-|              |                            | the *Janice11Verification* role. |
-+--------------+----------------------------+----------------------------------+
-| similarity   | :ref:`JaniceSimilarity` \* | A similarity score. See          |
-|              |                            | :ref:`comparison_sim_score`.     |
-+--------------+----------------------------+----------------------------------+
++--------------+---------------------------+-----------------------------------------------------------------------------------------------+
+|     Name     |           Type            |                                          Description                                          |
++==============+===========================+===============================================================================================+
+| reference    | :ref:`JaniceTemplate`     | A reference template. This template was created with the *Janice11Reference* role.            |
++--------------+---------------------------+-----------------------------------------------------------------------------------------------+
+| verification | :ref:`JaniceTemplate`     | A verification template. This this template was created with the *Janice11Verification* role. |
++--------------+---------------------------+-----------------------------------------------------------------------------------------------+
+| similarity   | :ref:`JaniceSimilarity`\* | A similarity score. See :ref:`similarity_score`.                                              |
++--------------+---------------------------+-----------------------------------------------------------------------------------------------+
 
 Example
 ^^^^^^^
@@ -128,18 +127,66 @@ Example
     if (janice_verify(reference, verification, &similarity) != JANICE_SUCCESS)
         // ERROR!
 
-.. _janice\_search:
+.. _janice_verify_batch:
+
+janice\_verify\_batch
+~~~~~~~~~~~~~~~~~~~~~
+
+Compute a batch of reference templates with a batch of verification templates. 
+The *ith* in the reference batch is compared with the *ith* template in the 
+verification batch. Batch processing can often be more efficient than serial 
+processing, particularly if a GPU or co-processor is being utilized.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_verify_batch(JaniceTemplates references,
+                                                  JaniceTemplates verifications,
+                                                  JaniceSimilarities* similarities);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is :ref:`reentrant`.
+
+Parameters
+^^^^^^^^^^
+
++---------------+-----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|     Name      |            Type             |                                                                                                                                                                Description                                                                                                                                                                |
++===============+=============================+===========================================================================================================================================================================================================================================================================================================================================+
+| references    | :ref:`JaniceTemplates`      | An array of reference templates. Each template was created with the *Janice11Reference* role.                                                                                                                                                                                                                                             |
++---------------+-----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| verifications | :ref:`JaniceTemplates`      | An array of verification templates. Each template was created with the *Janice11Verification* role. The number of elements in *verifications* must equal the number of elements in *references*.                                                                                                                                          |
++---------------+-----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| similarities  | :ref:`JaniceSimilarities`\* | A struct to hold the output similarity scores. There must be the same number of similarity scores output as there are *references* and *verifications*. The implementor should allocate the internal members of this object during the call. The user is responsible for clearing the object by calling :ref:`janice_clear_similarities`. |
++---------------+-----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. _janice_search:
 
 janice\_search
 ~~~~~~~~~~~~~~
 
-Compute 1-N search results between a query template object and a target
-gallery object. The function allocates two arrays of equal size, one containing
-:ref:`comparison_sim_score` and the other containing the unique id of the
-template the score was computed with (along with the query). Often it is
-desirable (and perhaps computationally efficient) to only see the top K scores
-out of N possible templates. The option to set a K is provided to the user as
-part of the function parameters.
+Compute 1-N search results between a query template object and a target gallery 
+object. When running searches, users will often only want the top N results, or
+will only want results above a predefined threshold. This function must respect
+the *threshold* and *max_returns* fields of a :ref:`JaniceContext` object to
+facilitate these use cases. Implementors must always respect the passed threshold
+(i.e. a score below the given threshold should never be returned). If users would
+not like to specify a threshold they can set the member to **-DOUBLE_MAX**. If
+the *max_returns* member is non-zero implementors should respect both the threshold
+and the number of desired returns (i.e. return the top K scores above the given
+threshold). Users who would like to see all valid returns should set *max_returns*
+to 0.
+
+This function allocates two structures with the same number of elements.
+*similarities* is a :ref:`JaniceSimilarities` object with an arra of 
+:ref:`similarity_score`, sorted in descending order. The second is a
+:ref:`JaniceTemplateIds` where the *ith* template id gives the unique
+identifier for the gallery template that produces the *ith* similarity
+score when compared with the probe. 
 
 Signature
 ^^^^^^^^^
@@ -148,63 +195,31 @@ Signature
 
     JANICE_EXPORT JaniceError janice_search(JaniceConstTemplate probe,
                                             JaniceConstGallery gallery,
-                                            uint32_t num_requested,
+                                            JaniceContext context,
                                             JaniceSimilarities* similarities,
-                                            JaniceSearchTemplateIds* ids,
-                                            uint32_t* num_returned);
+                                            JaniceTemplateIds* ids);
 
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+----------------+-----------------------------------+------------------------------------+
-| Name           | Type                              | Description                        |
-+================+===================================+====================================+
-| probe          | :ref:`JaniceConstTemplate`        | A template to use as a query. The  |
-|                |                                   | template was created with the      |
-|                |                                   | Janice1NProbe role.                |
-+----------------+-----------------------------------+------------------------------------+
-| gallery        | :ref:`JaniceConstGallery`         | A gallery object to search against.|
-+----------------+-----------------------------------+------------------------------------+
-| num\_requested | uint32\_t                         | The number of requested number of  |
-|                |                                   | returns. If the user would like as |
-|                |                                   | many returns as there are templates|
-|                |                                   | in the gallery they can set this to|
-|                |                                   | 0.                                 |
-+----------------+-----------------------------------+------------------------------------+
-| similarities   | :ref`JaniceSimilarities` \*       | An uninitialized array of          |
-|                |                                   | similarity scores. The scores must |
-|                |                                   | be in descending order (i.e. the   |
-|                |                                   | highest score is stored at index   |
-|                |                                   | 0). The implementor should allocate|
-|                |                                   | this object during the function    |
-|                |                                   | call. The user is responsible for  |
-|                |                                   | freeing the object with            |
-|                |                                   | :ref:`janice\_free\_similarities`. |
-+----------------+-----------------------------------+------------------------------------+
-| ids            | :ref:`JaniceSearchTemplateIds` \* | An uninitialized array of unique   |
-|                |                                   | ids identifying the target         |
-|                |                                   | templates associated with each     |
-|                |                                   | score in *similarities*. This array|
-|                |                                   | must be the same size as           |
-|                |                                   | *similarities*. The *ith* id in    |
-|                |                                   | this array corresponds with the    |
-|                |                                   | *ith* similarity in *similarities*.|
-|                |                                   | The implementor should allocate    |
-|                |                                   | this object during the function    |
-|                |                                   | call. The user is responsible for  |
-|                |                                   | freeing the object by calling      |
-|                |                                   | :ref:`janice\_free\_search\_ids`.  |
-+----------------+-----------------------------------+------------------------------------+
-| num\_returned  | uint32\_t\*                       | The number of elements in the      |
-|                |                                   | *similarities* and *ids* arrays.   |
-|                |                                   | This number can be different from  |
-|                |                                   | *num\_requested*.                  |
-+----------------+-----------------------------------+------------------------------------+
++--------------+-----------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|     Name     |            Type             |                                                                                                                                                                 Description                                                                                                                                                                  |
++==============+=============================+==============================================================================================================================================================================================================================================================================================================================================+
+| probe        | :ref:`JaniceTemplate`       | A query template. The template was created with the *Janice1NProbe* role.                                                                                                                                                                                                                                                                    |
++--------------+-----------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| gallery      | :ref:`JaniceGallery`        | A gallery object to search against.                                                                                                                                                                                                                                                                                                          |
++--------------+-----------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| context      | :ref:`JaniceContext`        | A context object with relevant hyperparameters set.                                                                                                                                                                                                                                                                                          |
++--------------+-----------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| similarities | :ref:`JaniceSimilarities`\* | A structure to hold the output similarity scores, sorted in descending order. This structure should have the same number of elements as *ids*. The implementor should allocate the internal members of this object during the call. The user is responsible for clearing the object by calling :ref:`janice_clear_similarities`.             |
++--------------+-----------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ids          | :ref:`JaniceTemplateIds`\*  | A structure to hold the gallery template ids associated with the *similarities*. This structure should have the same number of elements as *similarities*. The implementor should allocate the internal members of this object during the call. The user is responsible for clearing the object by calling :ref:`janice_clear_template_ids`. |
++--------------+-----------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Example
 ^^^^^^^
@@ -215,22 +230,74 @@ Example
                            // previously
     JaniceGallery gallery; // Where gallery is a valid gallery object created
                            // previously
-    const uint32_t num_requested = 50; // Request the top 50 matches
-
-    JaniceSimilarities similarities = NULL;
-    JaniceSearchTemplateIds ids = NULL;
-    uint32_t num_returned;
-
-    // Run search
-    if (janice_search(probe, gallery, num_requested, &similarities, &ids, &num_returned) != JANICE_SUCCESS)
+    
+    JaniceContext context = nullptr;
+    if (janice_create_context(JaniceDetectAll, // detection policy, this shouldn't impact search
+                              0, // min_object_size, this shouldn't impact search
+                              Janice1NProbe, // enrollment type, this shouldn't impact search
+                              0.7, // threshold, get all matches scoring above 0.7
+                              50, // max_returns, get the top 50 matches scoring above the set threshold
+                              0, // hint, this shouldn't impact search
+                              &context) != JANICE_SUCCESS)
         // ERROR!
 
-    num_requested == num_returned; // This might not be true!
+    JaniceSimilarities similarities;
+    JaniceTemplateIds ids;
 
-.. _janice\_free\_similarities:
+    // Run search
+    if (janice_search(probe, gallery, context, &similarities, &ids) != JANICE_SUCCESS)
+        // ERROR!
 
-janice\_free\_similarities
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. _janice_search_batch:
+
+janice\_search\_batch
+~~~~~~~~~~~~~~~~~~~~~
+
+Compute 1-N search results between a batch of probe templates and a single
+gallery. Given *N* probe templates in a batch, this function should return
+a single :ref:`JaniceSimilaritiesGroup` with N sublists and a single
+:ref:`JaniceTemplateIdsGroup` with N sublists. Each sublist must conform to
+the behavior defined in :ref:`janice\_search`. Batch processing can often be 
+more efficient than serial processing, particularly if a GPU or co-processor 
+is being utilized.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_search_batch(JaniceTemplates probes,
+                                                  JaniceGallery gallery,
+                                                  JaniceContext context,
+                                                  JaniceSimilaritiesGroup* similarities,
+                                                  JaniceTemplateIdsGroup* ids);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is :ref:`reentrant`.
+
+Parameters
+^^^^^^^^^^
+
++--------------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|     Name     |               Type               |                                                                                                                                                                               Description                                                                                                                                                                               |
++==============+==================================+=========================================================================================================================================================================================================================================================================================================================================================================+
+| probes       | :ref:`JaniceTemplates`           | An array of probe templates to search with. Each template was created with the *Janice1NProbe* role.                                                                                                                                                                                                                                                                    |
++--------------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| gallery      | :ref:`JaniceGallery`             | The gallery to search against.                                                                                                                                                                                                                                                                                                                                          |
++--------------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| context      | :ref:`JaniceContext`             | A context object with relevant hyperparameters set.                                                                                                                                                                                                                                                                                                                     |
++--------------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| similarities | :ref:`JaniceSimilaritiesGroup`\* | A structure to hold the output similarities. Given *N* probes, there should be *N* sublists in the output, where the *ith* sublist gives the similarity scores of the *ith* probe. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling :ref:`janice_clear_similarities_group`.    |
++--------------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ids          | :ref:`JaniceTemplateIdsGroup`\*  | A structure to hold the output template ids. Given *N* probes, there should be *N* sublists in the output, where the *ith* sublist gives the gallery template ids of the *ith* probe. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling :ref:`janice_clear_template_ids_group`. |
++--------------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. _janice_clear_similarities:
+
+janice\_clear\_similarities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Free any memory associated with a :ref:`JaniceSimilarities` object.
 
@@ -239,47 +306,41 @@ Signature
 
 ::
 
-    JANICE_EXPORT JaniceError janice_free_similarities(JaniceSimilarities* similarities);
+    JANICE_EXPORT JaniceError janice_clear_similarities(JaniceSimilarities* similarities);
 
 Thread Safety
 ^^^^^^^^^^^^^
 
-This function is reentrant.
+This function is :ref:`reentrant`.
 
 Parameters
 ^^^^^^^^^^
 
-+----------------+------------------------------+------------------------------+
-| Name           | Type                         | Description                  |
-+================+==============================+==============================+
-| similarities   | :ref:`JaniceSimilarities` \* | An array of similarities to  |
-|                |                              | free.                        |
-+----------------+------------------------------+------------------------------+
++--------------+-----------------------------+----------------------------------+
+|     Name     |            Type             |           Description            |
++==============+=============================+==================================+
+| similarities | :ref:`JaniceSimilarities`\* | An similarities object to clear. |
++--------------+-----------------------------+----------------------------------+
 
-.. _janice\_free\_search\_ids:
+.. _janice_clear_similarities_group:
 
-janice\_free\_search\_ids
-~~~~~~~~~~~~~~~~~~~~~~~~~
+janice\_clear\_similarities\_group
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Free any memory associated with a :ref:`JaniceSearchTemplateIds` object.
+Free any memory associated with a :ref:`JaniceSimilaritiesGroup` object.
 
 Signature
 ^^^^^^^^^
 
 ::
 
-    JANICE_EXPORT JaniceError janice_free_search_ids(JaniceSearchTemplateIds* ids);
-
-Thread Safety
-^^^^^^^^^^^^^
-
-This function is reentrant.
+    JANICE_EXPORT JaniceError janice_clear_similarities_group(JaniceSimilaritiesGroup* group);
 
 Parameters
 ^^^^^^^^^^
 
-+--------+-----------------------------------+--------------------------+
-| Name   | Type                              | Description              |
-+========+===================================+==========================+
-| ids    | :ref:`JaniceSearchTemplateIds` \* | An array of ids to free. |
-+--------+-----------------------------------+--------------------------+
++-------+----------------------------------+--------------------------------+
+| Name  |               Type               |          Description           |
++=======+==================================+================================+
+| group | :ref:`JaniceSimilaritiesGroup`\* | A similarities group to clear. |
++-------+----------------------------------+--------------------------------+
