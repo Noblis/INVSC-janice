@@ -56,8 +56,8 @@ The error codes are enumerated using the <a class="reference internal" href="#ja
 <p>The error codes defined in the JanICE <em>C</em> API</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="47%" />
-<col width="53%" />
+<col width="39%" />
+<col width="61%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Code</th>
@@ -89,35 +89,47 @@ The error codes are enumerated using the <a class="reference internal" href="#ja
 <tr class="row-odd"><td>JANICE_INVALID_GPU</td>
 <td>The GPU is not functioning</td>
 </tr>
-<tr class="row-even"><td>JANICE_OPEN_ERROR</td>
+<tr class="row-even"><td>JANICE_BAD_ARGUMENT</td>
+<td>An argument to a JanICE function is invalid</td>
+</tr>
+<tr class="row-odd"><td>JANICE_OPEN_ERROR</td>
 <td>Failed to open a file</td>
 </tr>
-<tr class="row-odd"><td>JANICE_READ_ERROR</td>
+<tr class="row-even"><td>JANICE_READ_ERROR</td>
 <td>Failed to read from a file</td>
 </tr>
-<tr class="row-even"><td>JANICE_WRITE_ERROR</td>
+<tr class="row-odd"><td>JANICE_WRITE_ERROR</td>
 <td>Failed to write to a file</td>
 </tr>
-<tr class="row-odd"><td>JANICE_PARSE_ERROR</td>
+<tr class="row-even"><td>JANICE_PARSE_ERROR</td>
 <td>Failed to parse a file</td>
 </tr>
-<tr class="row-even"><td>JANICE_INVALID_MEDIA</td>
+<tr class="row-odd"><td>JANICE_INVALID_MEDIA</td>
 <td>Failed to decode a media file</td>
 </tr>
-<tr class="row-odd"><td>JANICE_DUPLICATE_ID</td>
+<tr class="row-even"><td>JANICE_OUT_OF_BOUNDS_ACCESS</td>
+<td>Out of bounds access into a buffer.</td>
+</tr>
+<tr class="row-odd"><td>JANICE_MEDIA_AT_END</td>
+<td>A media iterator has reached the end of its data.</td>
+</tr>
+<tr class="row-even"><td>JANICE_INVALID_ATTRIBUTE_KEY</td>
+<td>An invalid attribute key was provided.</td>
+</tr>
+<tr class="row-odd"><td>JANICE_MISSING_ATTRIBUTE</td>
+<td>A value for a valid attribute key is not available.</td>
+</tr>
+<tr class="row-even"><td>JANICE_DUPLICATE_ID</td>
 <td>Template id already exists in a gallery</td>
 </tr>
-<tr class="row-even"><td>JANICE_MISSING_ID</td>
+<tr class="row-odd"><td>JANICE_MISSING_ID</td>
 <td>Template id can’t be found</td>
 </tr>
-<tr class="row-odd"><td>JANICE_MISSING_FILE_NAME</td>
+<tr class="row-even"><td>JANICE_MISSING_FILE_NAME</td>
 <td>An expected file name is not given</td>
 </tr>
-<tr class="row-even"><td>JANICE_INCORRECT_ROLE</td>
+<tr class="row-odd"><td>JANICE_INCORRECT_ROLE</td>
 <td>Incorrect template role</td>
-</tr>
-<tr class="row-odd"><td>JANICE_FAILURE_TO_ENROLL</td>
-<td>Could not construct a template</td>
 </tr>
 <tr class="row-even"><td>JANICE_FAILURE_TO_SERIALIZE</td>
 <td>Could not serialize a data structure</td>
@@ -148,15 +160,15 @@ The error codes are enumerated using the <a class="reference internal" href="#ja
 </div>
 <div class="section" id="thread-safety">
 <h4>Thread Safety<a class="headerlink" href="#thread-safety" title="Permalink to this headline">¶</a></h4>
-<p>This function is thread safe.</p>
+<p>This function is <a class="reference internal" href="concepts.html#thread-safe"><span class="std std-ref">Thread Safe</span></a>.</p>
 </div>
 <div class="section" id="parameters">
 <h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="20%" />
-<col width="43%" />
-<col width="37%" />
+<col width="17%" />
+<col width="48%" />
+<col width="36%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -208,11 +220,12 @@ a null-terminated list of characters that describe the input error.</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="initialization.html">Initialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context.html">Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="detection.html">Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="enrollment.html">Enrollment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison / Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="clustering.html">Clustering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>

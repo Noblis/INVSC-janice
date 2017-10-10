@@ -24,7 +24,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Detection" href="detection.html" />
-    <link rel="prev" title="I/O" href="io.html" />
+    <link rel="prev" title="Context" href="context.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -44,27 +44,32 @@
 <h1>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="janice-train">
-<span id="id1"></span><h3>janice_train<a class="headerlink" href="#janice-train" title="Permalink to this headline">¶</a></h3>
-<p>Train an implementation using new data.</p>
+<div class="section" id="janice-fine-tune">
+<span id="id1"></span><h3>janice_fine_tune<a class="headerlink" href="#janice-fine-tune" title="Permalink to this headline">¶</a></h3>
+<p>Fine tune an implementation using new data. This function can be used to adapt
+an algorithm to a new domain. It is optional and can return
+<em>JANICE_NOT_IMPLEMENTED</em>. Artifacts created from fine tuning should be stored
+on disk and will be loaded in a successive initialization of the API.</p>
 <div class="section" id="signature">
 <h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_train</span><span class="p">(</span><span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">data_prefix</span><span class="p">,</span>
-                                       <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">data_list</span><span class="p">);</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_fine_tune</span><span class="p">(</span><span class="n">JaniceMediaIterators</span> <span class="n">media</span><span class="p">,</span>
+                                           <span class="n">JaniceTracksGroup</span> <span class="n">group</span><span class="p">,</span>
+                                           <span class="nb">int</span><span class="o">**</span> <span class="n">labels</span><span class="p">,</span>
+                                           <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">output_prefix</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="thread-safety">
 <h4>Thread Safety<a class="headerlink" href="#thread-safety" title="Permalink to this headline">¶</a></h4>
-<p>This function is thread unsafe.</p>
+<p>This function is <a class="reference internal" href="concepts.html#thread-unsafe"><span class="std std-ref">Thread Unsafe</span></a>.</p>
 </div>
 <div class="section" id="parameters">
 <h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="18%" />
-<col width="20%" />
-<col width="62%" />
+<col width="4%" />
+<col width="8%" />
+<col width="88%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -73,23 +78,24 @@
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>data_prefix</td>
-<td>const char*</td>
-<td>A prefix path pointing to the locations of
-the training data.</td>
+<tr class="row-even"><td>media</td>
+<td><a class="reference internal" href="io.html#janicemediaiterators"><span class="std std-ref">JaniceMediaIterators</span></a></td>
+<td>A list of media objects to fine tune with.</td>
 </tr>
-<tr class="row-odd"><td>data_train</td>
+<tr class="row-odd"><td>tracks</td>
+<td><a class="reference internal" href="detection.html#janicetracksgroup"><span class="std std-ref">JaniceTracksGroup</span></a></td>
+<td>A collection of location information for objects in the fine tuning data. There must be the same number of sublists in this structure as there are elements in <em>media</em>. The tracks in the <em>ith</em> sublist of this structure give locations in the <em>ith</em> media object.</td>
+</tr>
+<tr class="row-even"><td>labels</td>
+<td>int**</td>
+<td>A list of lists of labels for objects in the fine tuning data. <em>labels[i][j]</em> should give the label for the <em>jth</em> track in the <em>ith</em> sublist of <em>tracks</em>.</td>
+</tr>
+<tr class="row-odd"><td>output_prefix</td>
 <td>const char*</td>
-<td>A list of training data and labels. The
-format is currently unspecified.</td>
+<td>A path to an existing directory with write access for the application. After successful fine tuning, this directory should be populated with all files necessary to initialize the API. Future calls to the API can use the fine tuned algorithm by passing <em>output_prefix</em> as the <em>sdk_path</em> parameter in <a class="reference internal" href="initialization.html#janice-initialize"><span class="std std-ref">janice_initialize</span></a>.</td>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section" id="notes">
-<h4>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h4>
-<p><strong>This function is untested, unstable and most likely subject to breaking
-changes in future releases.</strong></p>
 </div>
 </div>
 </div>
@@ -116,6 +122,7 @@ changes in future releases.</strong></p>
 <li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="initialization.html">Initialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context.html">Context</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Training</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
 </ul>
@@ -123,7 +130,7 @@ changes in future releases.</strong></p>
 <li class="toctree-l1"><a class="reference internal" href="detection.html">Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="enrollment.html">Enrollment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison / Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="clustering.html">Clustering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>
@@ -132,7 +139,7 @@ changes in future releases.</strong></p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="io.html" title="previous chapter">I/O</a></li>
+      <li>Previous: <a href="context.html" title="previous chapter">Context</a></li>
       <li>Next: <a href="detection.html" title="next chapter">Detection</a></li>
   </ul></li>
 </ul>

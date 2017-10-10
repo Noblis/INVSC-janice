@@ -62,15 +62,15 @@ other calls to the API.</p>
 </div>
 <div class="section" id="thread-safety">
 <h4>Thread Safety<a class="headerlink" href="#thread-safety" title="Permalink to this headline">¶</a></h4>
-<p>This function is thread unsafe.</p>
+<p>This function is <a class="reference internal" href="concepts.html#thread-unsafe"><span class="std std-ref">Thread Unsafe</span></a>.</p>
 </div>
 <div class="section" id="parameters">
 <h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="18%" />
-<col width="20%" />
-<col width="62%" />
+<col width="6%" />
+<col width="6%" />
+<col width="88%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -81,42 +81,27 @@ other calls to the API.</p>
 <tbody valign="top">
 <tr class="row-even"><td>sdk_path</td>
 <td>const char*</td>
-<td>Path to a <em>read-only</em> directory containing
-the JanICE compliant SDK as specified by the
-implementor.</td>
+<td>Path to a <em>read-only</em> directory containing the JanICE compliant SDK as specified by the implementor.</td>
 </tr>
 <tr class="row-odd"><td>temp_path</td>
 <td>const char*</td>
-<td>Path to an existing empty <em>read-write</em>
-directory for use as temporary file storage
-by the implementation. This path must be
-guaranteed until <a class="reference internal" href="#janice-finalize"><span class="std std-ref">janice_finalize</span></a>.</td>
+<td>Path to an existing empty <em>read-write</em> directory for use as temporary file storage by the implementation. This path must be guaranteed until <a class="reference internal" href="#janice-finalize"><span class="std std-ref">janice_finalize</span></a>.</td>
 </tr>
 <tr class="row-even"><td>algorithm</td>
 <td>const char*</td>
-<td>An empty string indicating the default
-algorithm, or an implementation defined
-containing an alternative configuration.</td>
+<td>An empty string indicating the default algorithm, or an implementation defined containing an alternative configuration.</td>
 </tr>
 <tr class="row-odd"><td>num_threads</td>
 <td>const int</td>
-<td>The number of threads the implementation is
-allowed to use. A value of ‘-1’ indicates
-that the implementation should use all
-available hardware.</td>
+<td>The number of threads the implementation is allowed to use. A value of ‘-1’ indicates that the implementation should use all available hardware.</td>
 </tr>
 <tr class="row-even"><td>gpus</td>
 <td>const int*</td>
-<td>A list of indices of GPUs available to the
-implementation. The length of the list is
-given by <em>num_gpus</em>. If the implementor does
-not require a GPU in their solution they can
-ignore this parameter.</td>
+<td>A list of indices of GPUs available to the implementation. The length of the list is given by <em>num_gpus</em>. If the implementor does not require a GPU in their solution they can ignore this parameter.</td>
 </tr>
 <tr class="row-odd"><td>num_gpus</td>
 <td>const int</td>
-<td>The length of the <em>gpus</em> array. If no GPUs
-are available this should be set to 0.</td>
+<td>The length of the <em>gpus</em> array. If no GPUs are available this should be set to 0.</td>
 </tr>
 </tbody>
 </table>
@@ -137,15 +122,15 @@ convention for this API.</p>
 </div>
 <div class="section" id="id4">
 <h4>Thread Safety<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
 <div class="section" id="id5">
 <h4>Parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="14%" />
-<col width="23%" />
-<col width="64%" />
+<col width="11%" />
+<col width="21%" />
+<col width="67%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -156,15 +141,15 @@ convention for this API.</p>
 <tbody valign="top">
 <tr class="row-even"><td>major</td>
 <td>uint32_t*</td>
-<td>The supported major version of the API</td>
+<td>The supported major version of the API.</td>
 </tr>
 <tr class="row-odd"><td>minor</td>
 <td>uint32_t*</td>
-<td>The supported minor version of the API</td>
+<td>The supported minor version of the API.</td>
 </tr>
 <tr class="row-even"><td>patch</td>
 <td>uint32_t*</td>
-<td>The supported patch version of the API</td>
+<td>The supported patch version of the API.</td>
 </tr>
 </tbody>
 </table>
@@ -183,15 +168,15 @@ convention for this API.</p>
 </div>
 <div class="section" id="id7">
 <h4>Thread Safety<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
 <div class="section" id="id8">
 <h4>Parameters<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="27%" />
-<col width="57%" />
+<col width="14%" />
+<col width="25%" />
+<col width="61%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -202,15 +187,15 @@ convention for this API.</p>
 <tbody valign="top">
 <tr class="row-even"><td>major</td>
 <td>uint32_t*</td>
-<td>The major version of the SDK</td>
+<td>The major version of the SDK.</td>
 </tr>
 <tr class="row-odd"><td>minor</td>
 <td>uint32_t*</td>
-<td>The minor version of the SDK</td>
+<td>The minor version of the SDK.</td>
 </tr>
 <tr class="row-even"><td>patch</td>
 <td>uint32_t*</td>
-<td>The patch version of the SDK</td>
+<td>The patch version of the SDK.</td>
 </tr>
 </tbody>
 </table>
@@ -228,7 +213,7 @@ application. This should be called once after all other API calls.</p>
 </div>
 <div class="section" id="id11">
 <h4>Thread Safety<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
-<p>This function is thread unsafe.</p>
+<p>This function is <a class="reference internal" href="concepts.html#thread-unsafe"><span class="std std-ref">Thread Unsafe</span></a>.</p>
 </div>
 </div>
 </div>
@@ -258,11 +243,12 @@ application. This should be called once after all other API calls.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context.html">Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="detection.html">Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="enrollment.html">Enrollment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison / Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="clustering.html">Clustering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>

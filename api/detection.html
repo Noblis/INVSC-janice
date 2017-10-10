@@ -66,9 +66,9 @@ was found in.</p>
 <h4>Fields<a class="headerlink" href="#fields" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="15%" />
-<col width="20%" />
-<col width="65%" />
+<col width="13%" />
+<col width="18%" />
+<col width="68%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -97,92 +97,12 @@ was found in.</p>
 </table>
 </div>
 </div>
-<div class="section" id="janicedetectioniteratortype">
-<span id="id3"></span><h3>JaniceDetectionIteratorType<a class="headerlink" href="#janicedetectioniteratortype" title="Permalink to this headline">¶</a></h3>
-<p>An opaque pointer to an iterator class through a detection. If the
-detection was computed from an image, the iterator should only move over
-a single value. If the detection was computed from a video, the iterator
-should move over an array of elements, the length of which is less than
-or equal to the number of frames in the video, and might be sparse (i.e.
-frames can be skipped).</p>
-</div>
-<div class="section" id="janicedetectiontype">
-<span id="id4"></span><h3>JaniceDetectionType<a class="headerlink" href="#janicedetectiontype" title="Permalink to this headline">¶</a></h3>
-<p>An opaque pointer to a struct that represents a detection. See <a class="reference internal" href="#detection"><span class="std std-ref">Detection</span></a>
-for more information.</p>
-</div>
-</div>
-<div class="section" id="typedefs">
-<h2>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="janicedetectioniterator">
-<span id="id5"></span><h3>JaniceDetectionIterator<a class="headerlink" href="#janicedetectioniterator" title="Permalink to this headline">¶</a></h3>
-<p>A pointer to a <a class="reference internal" href="#janicedetectioniteratortype"><span class="std std-ref">JaniceDetectionIteratorType</span></a> object.</p>
-<div class="section" id="signature">
-<h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="n">JaniceDetectionIteratorType</span><span class="o">*</span> <span class="n">JaniceDetectionIterator</span><span class="p">;</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="janicedetection">
-<span id="id6"></span><h3>JaniceDetection<a class="headerlink" href="#janicedetection" title="Permalink to this headline">¶</a></h3>
-<p>A pointer to a <a class="reference internal" href="#janicedetectiontype"><span class="std std-ref">JaniceDetectionType</span></a> object.</p>
-<div class="section" id="id7">
-<h4>Signature<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="n">JaniceDetectionType</span><span class="o">*</span> <span class="n">JaniceDetection</span><span class="p">;</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="janiceconstdetection">
-<span id="id8"></span><h3>JaniceConstDetection<a class="headerlink" href="#janiceconstdetection" title="Permalink to this headline">¶</a></h3>
-<p>A pointer to a constant <a class="reference internal" href="#janicedetectiontype"><span class="std std-ref">JaniceDetectionType</span></a> object.</p>
-<div class="section" id="id9">
-<h4>Signature<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">const</span> <span class="n">struct</span> <span class="n">JaniceDetectionType</span><span class="o">*</span> <span class="n">JaniceConstDetection</span><span class="p">;</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="janicedetections">
-<span id="id10"></span><h3>JaniceDetections<a class="headerlink" href="#janicedetections" title="Permalink to this headline">¶</a></h3>
-<p>An array of <a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a> objects.</p>
-<div class="section" id="id11">
-<h4>Signature<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="n">JaniceDetection</span><span class="o">*</span> <span class="n">JaniceDetections</span><span class="p">;</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="janiceconstdetections">
-<span id="id12"></span><h3>JaniceConstDetections<a class="headerlink" href="#janiceconstdetections" title="Permalink to this headline">¶</a></h3>
-<p>An array of <a class="reference internal" href="#janiceconstdetection"><span class="std std-ref">JaniceConstDetection</span></a> objects.</p>
-<div class="section" id="id13">
-<h4>Signature<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="n">JaniceConstDetection</span><span class="o">*</span> <span class="n">JaniceConstDetections</span><span class="p">;</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="section" id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="janice-detection-it-next">
-<span id="id14"></span><h3>janice_detection_it_next<a class="headerlink" href="#janice-detection-it-next" title="Permalink to this headline">¶</a></h3>
-<p>Get the next element in a detection track.</p>
-<div class="section" id="id15">
-<h4>Signature<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_detection_it_next</span><span class="p">(</span><span class="n">JaniceDetectionIterator</span> <span class="n">it</span><span class="p">,</span>
-                                                   <span class="n">JaniceRect</span><span class="o">*</span> <span class="n">rect</span><span class="p">,</span>
-                                                   <span class="n">uint32_t</span><span class="o">*</span> <span class="n">frame</span><span class="p">,</span>
-                                                   <span class="nb">float</span><span class="o">*</span> <span class="n">confidence</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="thread-safety">
-<h4>Thread Safety<a class="headerlink" href="#thread-safety" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
-</div>
+<div class="section" id="janicetrack">
+<span id="id3"></span><h3>JaniceTrack<a class="headerlink" href="#janicetrack" title="Permalink to this headline">¶</a></h3>
+<p>A structure to represent a track through a <a class="reference internal" href="io.html#janicemediaiterator"><span class="std std-ref">JaniceMediaIterator</span></a> object.
+Tracks may be sparse (i.e. frames do not need to be sequential). Tracks are
+meant to follow a single object or area of interest, for example a face through
+multiple frames of a video.</p>
 <div class="section" id="confidence">
 <span id="detection-confidence"></span><h4>Confidence<a class="headerlink" href="#confidence" title="Permalink to this headline">¶</a></h4>
 <p>The confidence value indicates a likelihood that the rectangle actually
@@ -191,146 +111,239 @@ and often only has meaning relative to other confidence values from the
 same algorithm. The only restriction is that a larger confidence value
 indicates a greater likelihood that the rectangle bounds an object.</p>
 </div>
+<div class="section" id="id4">
+<h4>Fields<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="10%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>rects</td>
+<td><a class="reference internal" href="#janicerect"><span class="std std-ref">JaniceRect</span></a>*</td>
+<td>A list of rectangles surrounding areas of interest in the media. This list should be <em>length</em> elements.</td>
+</tr>
+<tr class="row-odd"><td>confidences</td>
+<td>float*</td>
+<td>A confidence to associate with each rectangle in <em>rects</em>. See <a class="reference internal" href="#detection-confidence"><span class="std std-ref">Confidence</span></a> for details about confidence values in this API. This list should be <em>length</em> elements.</td>
+</tr>
+<tr class="row-even"><td>frames</td>
+<td>uint32_t*</td>
+<td>The frame indices associated with each rectangle in <em>rects</em>. A track may be sparse and the indicies in this list are required to be sequential. This list should be <em>length</em> elements.</td>
+</tr>
+<tr class="row-odd"><td>length</td>
+<td>size_t</td>
+<td>The number of rectangles, confidences, and frames in this structure.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janicetracks">
+<span id="id5"></span><h3>JaniceTracks<a class="headerlink" href="#janicetracks" title="Permalink to this headline">¶</a></h3>
+<p>A structure representing a list of <a class="reference internal" href="#janicetrack"><span class="std std-ref">JaniceTrack</span></a> objects.</p>
+<div class="section" id="id6">
+<h4>Fields<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="33%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>tracks</td>
+<td><a class="reference internal" href="#janicetrack"><span class="std std-ref">JaniceTrack</span></a>*</td>
+<td>An array of track objects</td>
+</tr>
+<tr class="row-odd"><td>length</td>
+<td>size_t</td>
+<td>The number of elements in <em>tracks</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janicetracksgroup">
+<span id="id7"></span><h3>JaniceTracksGroup<a class="headerlink" href="#janicetracksgroup" title="Permalink to this headline">¶</a></h3>
+<p>A structure representing a list of <a class="reference internal" href="#janicetracks"><span class="std std-ref">JaniceTracks</span></a> objects.</p>
+<div class="section" id="id8">
+<h4>Fields<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="35%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>group</td>
+<td><a class="reference internal" href="#janicetracks"><span class="std std-ref">JaniceTracks</span></a>*</td>
+<td>An array of tracks objects</td>
+</tr>
+<tr class="row-odd"><td>length</td>
+<td>size_t</td>
+<td>The number of elements in <em>group</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janicebuffer">
+<span id="id9"></span><h3>JaniceBuffer<a class="headerlink" href="#janicebuffer" title="Permalink to this headline">¶</a></h3>
+<p>An array of uint8_t</p>
+<div class="section" id="signature">
+<h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">uint8_t</span><span class="o">*</span> <span class="n">JaniceBuffer</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janicedetectiontype">
+<span id="id10"></span><h3>JaniceDetectionType<a class="headerlink" href="#janicedetectiontype" title="Permalink to this headline">¶</a></h3>
+<p>An opaque pointer to a struct that represents a detection. See <a class="reference internal" href="#detection"><span class="std std-ref">Detection</span></a>
+for more information.</p>
+</div>
+<div class="section" id="janicedetection">
+<span id="id11"></span><h3>JaniceDetection<a class="headerlink" href="#janicedetection" title="Permalink to this headline">¶</a></h3>
+<p>A pointer to a <a class="reference internal" href="#janicedetectiontype"><span class="std std-ref">JaniceDetectionType</span></a> object.</p>
+<div class="section" id="id12">
+<h4>Signature<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="n">JaniceDetectionType</span><span class="o">*</span> <span class="n">JaniceDetection</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janicedetections">
+<span id="id13"></span><h3>JaniceDetections<a class="headerlink" href="#janicedetections" title="Permalink to this headline">¶</a></h3>
+<p>A structure to represent a list of <a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a> objects.</p>
+<div class="section" id="id14">
+<h4>Fields<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="33%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>detections</td>
+<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a>*</td>
+<td>An array of detection objects.</td>
+</tr>
+<tr class="row-odd"><td>length</td>
+<td>size_t</td>
+<td>The number of elements in <em>detections</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janicedetectionsgroup">
+<span id="id15"></span><h3>JaniceDetectionsGroup<a class="headerlink" href="#janicedetectionsgroup" title="Permalink to this headline">¶</a></h3>
+<p>A structure to represent a list of <a class="reference internal" href="#janicedetections"><span class="std std-ref">JaniceDetections</span></a> objects.</p>
+<div class="section" id="id16">
+<h4>Fields<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="37%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>group</td>
+<td><a class="reference internal" href="#janicedetections"><span class="std std-ref">JaniceDetections</span></a></td>
+<td>An array of detections objects.</td>
+</tr>
+<tr class="row-odd"><td>length</td>
+<td>size_t</td>
+<td>The number of elements in <em>group</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janiceattribute">
+<span id="id17"></span><h3>JaniceAttribute<a class="headerlink" href="#janiceattribute" title="Permalink to this headline">¶</a></h3>
+<p>A null-terminated string with an implementation defined format representing
+an attribute or a detection, template or gallery object. Implementations are
+free to define and implement attributes of their choice. For example, with face
+recognition an attribute might be:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Gender</li>
+<li>Age</li>
+<li>Ethnicity</li>
+<li>Glasses</li>
+<li>etc.</li>
+</ul>
+</div></blockquote>
+<div class="section" id="id18">
+<h4>Signature<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">char</span><span class="o">*</span> <span class="n">JaniceAttribute</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="janice-create-detection-from-rect">
+<span id="id19"></span><h3>janice_create_detection_from_rect<a class="headerlink" href="#janice-create-detection-from-rect" title="Permalink to this headline">¶</a></h3>
+<p>Create a detection from a known rectangle. This is useful if a human has
+identified an object of interest and would like to run subsequent API
+functions on it. In the case where the input media is a video the given
+rectangle is considered an initial sighting of an object or region of interest.
+The implementation may detect additional sightings of the object in successive
+frames.</p>
+<div class="section" id="id20">
+<h4>Signature<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_create_detection_from_rect</span><span class="p">(</span><span class="n">JaniceMediaIterator</span> <span class="n">media</span><span class="p">,</span>
+                                                            <span class="n">const</span> <span class="n">JaniceRect</span> <span class="n">rect</span><span class="p">,</span>
+                                                            <span class="n">uint32_t</span> <span class="n">frame</span><span class="p">,</span>
+                                                            <span class="n">JaniceDetection</span><span class="o">*</span> <span class="n">detection</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="thread-safety">
+<h4>Thread Safety<a class="headerlink" href="#thread-safety" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
 <div class="section" id="parameters">
 <h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="18%" />
-<col width="43%" />
-<col width="38%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Type</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>it</td>
-<td><a class="reference internal" href="#janicedetectioniterator"><span class="std std-ref">JaniceDetectionIterator</span></a></td>
-<td>A detection iterator
-object.</td>
-</tr>
-<tr class="row-odd"><td>rect</td>
-<td><a class="reference internal" href="#janicerect"><span class="std std-ref">JaniceRect</span></a> *</td>
-<td>The location of a object of
-interest.</td>
-</tr>
-<tr class="row-even"><td>frame</td>
-<td>uint32_t *</td>
-<td>The frame index for an
-object of interest.</td>
-</tr>
-<tr class="row-odd"><td>confidence</td>
-<td>float *</td>
-<td>The
-<a class="reference internal" href="#detection-confidence"><span class="std std-ref">Confidence</span></a>
-of the location.</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="janice-detection-it-reset">
-<span id="id16"></span><h3>janice_detection_it_reset<a class="headerlink" href="#janice-detection-it-reset" title="Permalink to this headline">¶</a></h3>
-<p>Reset an iterator back to its initial state.</p>
-<div class="section" id="id17">
-<h4>Signature<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_detection_it_reset</span><span class="p">(</span><span class="n">JaniceDetectionIterator</span> <span class="n">it</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="id18">
-<h4>Thread Safety<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
-</div>
-<div class="section" id="id19">
-<h4>Parameters<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
-<table border="1" class="docutils">
-<colgroup>
+<col width="4%" />
 <col width="11%" />
-<col width="44%" />
-<col width="45%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Type</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>it</td>
-<td><a class="reference internal" href="#janicedetectioniterator"><span class="std std-ref">JaniceDetectionIterator</span></a></td>
-<td>The iterator object to reset.</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="janice-free-detection-it">
-<span id="id20"></span><h3>janice_free_detection_it<a class="headerlink" href="#janice-free-detection-it" title="Permalink to this headline">¶</a></h3>
-<p>Free any memory associated with a detection iterator object.</p>
-<div class="section" id="id21">
-<h4>Signature<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_detection_it</span><span class="p">(</span><span class="n">JaniceDetectionIterator</span><span class="o">*</span> <span class="n">it</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="id22">
-<h4>Thread Safety<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
-</div>
-<div class="section" id="id23">
-<h4>Parameters<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h4>
-<table border="1" class="docutils">
-<colgroup>
-<col width="10%" />
-<col width="48%" />
-<col width="42%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Type</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>it</td>
-<td><a class="reference internal" href="#janicedetectioniterator"><span class="std std-ref">JaniceDetectionIterator</span></a> *</td>
-<td>The iterator object to free.</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="janice-create-detection">
-<span id="id24"></span><h3>janice_create_detection<a class="headerlink" href="#janice-create-detection" title="Permalink to this headline">¶</a></h3>
-<p>Create a detection from a known rectangle. This is useful if a human has
-identified an object of interest and would like to run subsequent API
-functions on it. In the case where the input media is a video the given
-rectangle is considered an initial sighting of the object of interest.
-The implementation may detect additional sightings of the object in
-successive frames.</p>
-<div class="section" id="id25">
-<h4>Signature<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_create_detection</span><span class="p">(</span><span class="n">JaniceMediaIterator</span> <span class="n">media</span><span class="p">,</span>
-                                                  <span class="n">const</span> <span class="n">JaniceRect</span> <span class="n">rect</span><span class="p">,</span>
-                                                  <span class="n">uint32_t</span> <span class="n">frame</span><span class="p">,</span>
-                                                  <span class="n">JaniceDetection</span><span class="o">*</span> <span class="n">detection</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="id26">
-<h4>Thread Safety<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
-</div>
-<div class="section" id="id27">
-<h4>Parameters<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
-<table border="1" class="docutils">
-<colgroup>
-<col width="14%" />
-<col width="37%" />
-<col width="49%" />
+<col width="84%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -341,30 +354,19 @@ successive frames.</p>
 <tbody valign="top">
 <tr class="row-even"><td>media</td>
 <td><a class="reference internal" href="io.html#janicemediaiterator"><span class="std std-ref">JaniceMediaIterator</span></a></td>
-<td>A media object to create the
-detection from.</td>
+<td>A media object to create the detection from.</td>
 </tr>
 <tr class="row-odd"><td>rect</td>
 <td>const <a class="reference internal" href="#janicerect"><span class="std std-ref">JaniceRect</span></a></td>
-<td>A rectangle that bounds the object
-of interest.</td>
+<td>A rectangle that bounds the object of interest.</td>
 </tr>
 <tr class="row-even"><td>frame</td>
 <td>uint32_t</td>
-<td>An index to the frame in the media
-where the object of interest appears
-If the media is an image this should
-be 0.</td>
+<td>An index to the frame in the media where the object of interest appears. If the media is an image this should be 0.</td>
 </tr>
 <tr class="row-odd"><td>detection</td>
 <td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a>*</td>
-<td>An uninitialized pointer to a
-detection object. The object should
-allocated by the implementor during
-function execution. The user is
-responsible for freeing the object
-using <a class="reference internal" href="#janice-free-detection"><span class="std std-ref">janice_free_detection</span></a>
-.</td>
+<td>An uninitialized pointer to a detection object. The object should allocated by the implementor during function execution. The user is responsible for freeing the object using <a class="reference internal" href="#janice-free-detection"><span class="std std-ref">janice_free_detection</span></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -386,37 +388,73 @@ if (janice_create_detection(media, rect, 0 /* frame */, &amp;detection) != JANIC
 </div>
 </div>
 </div>
-<div class="section" id="janice-detect">
-<span id="id28"></span><h3>janice_detect<a class="headerlink" href="#janice-detect" title="Permalink to this headline">¶</a></h3>
-<p>Automatically detect objects in a media object. See <a class="reference internal" href="#detection"><span class="std std-ref">Detection</span></a> for an
-overview of detection in the context of this API.</p>
-<div class="section" id="id29">
-<h4>Signature<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_detect</span><span class="p">(</span><span class="n">JaniceMediaIterator</span> <span class="n">media</span><span class="p">,</span>
-                                        <span class="n">uint32_t</span> <span class="n">min_object_size</span><span class="p">,</span>
-                                        <span class="n">JaniceDetections</span><span class="o">*</span> <span class="n">detections</span><span class="p">,</span>
-                                        <span class="n">uint32_t</span><span class="o">*</span> <span class="n">num_detections</span><span class="p">);</span>
+<div class="section" id="janice-create-detection-from-track">
+<span id="id21"></span><h3>janice_create_detection_from_track<a class="headerlink" href="#janice-create-detection-from-track" title="Permalink to this headline">¶</a></h3>
+<p>Create a detection from a known track. This is useful if a human has
+identified an object of interest and would like to run subsequent API
+functions on it.</p>
+<div class="section" id="id22">
+<h4>Signature<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_create_detection_from_track</span><span class="p">(</span><span class="n">JaniceMediaIterator</span> <span class="n">media</span><span class="p">,</span>
+                                                             <span class="n">const</span> <span class="n">JaniceTrack</span> <span class="n">track</span><span class="p">,</span>
+                                                             <span class="n">JaniceDetection</span><span class="o">*</span> <span class="n">detection</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id30">
-<h4>Thread Safety<a class="headerlink" href="#id30" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<div class="section" id="id23">
+<h4>Thread Safety<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="minimum-object-size">
-<span id="detection-min-object-size"></span><h4>Minimum Object Size<a class="headerlink" href="#minimum-object-size" title="Permalink to this headline">¶</a></h4>
-<p>This function specifies a minimum object size as one of its parameters.
-This value indicates the minimum size of objects that the user would
-like to see detected. Often, increasing the minimum size can improve
-runtime of algorithms. The size is in pixels and corresponds to the
-length of the smaller side of the rectangle. This means a detection will
-be returned if and only if its smaller side is larger than the value
-specified. If the user does not wish to specify a minimum width 0 can be
-provided.</p>
+<div class="section" id="id24">
+<h4>Parameters<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="11%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>media</td>
+<td><a class="reference internal" href="io.html#janicemediaiterator"><span class="std std-ref">JaniceMediaIterator</span></a></td>
+<td>A media object to create the detection from.</td>
+</tr>
+<tr class="row-odd"><td>track</td>
+<td><a class="reference internal" href="#janicetrack"><span class="std std-ref">JaniceTrack</span></a></td>
+<td>A track bounding a region of through 1 or more frames.</td>
+</tr>
+<tr class="row-even"><td>detection</td>
+<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a>*</td>
+<td>An uninitialized pointer to a detection object. The object should allocated by the implementor during function execution. The user is responsible for freeing the object by calling <a class="reference internal" href="#janice-free-detection"><span class="std std-ref">janice_free_detection</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-detect">
+<span id="id25"></span><h3>janice_detect<a class="headerlink" href="#janice-detect" title="Permalink to this headline">¶</a></h3>
+<p>Automatically detect objects in a media object. See <a class="reference internal" href="#detection"><span class="std std-ref">Detection</span></a> for an
+overview of detection in the context of this API.</p>
+<div class="section" id="id26">
+<h4>Signature<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_detect</span><span class="p">(</span><span class="n">JaniceMediaIterator</span> <span class="n">media</span><span class="p">,</span>
+                                        <span class="n">JaniceContext</span> <span class="n">context</span><span class="p">,</span>
+                                        <span class="n">JaniceDetections</span><span class="o">*</span> <span class="n">detections</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id27">
+<h4>Thread Safety<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
 <div class="section" id="tracking">
-<h4>Tracking<a class="headerlink" href="#tracking" title="Permalink to this headline">¶</a></h4>
-<p>When the input media is a video many implementations will implement a
+<span id="detection-tracking"></span><h4>Tracking<a class="headerlink" href="#tracking" title="Permalink to this headline">¶</a></h4>
+<p>When the input media is a video, implementations may implement a
 form of object tracking to correlate multiple sightings of the same
 object into a single structure. There are a number of approaches and
 algorithms to implement object tracking. This API makes NO attempt to
@@ -428,13 +466,13 @@ implementation documentation, it might be beneficial to perform a
 post-processing clustering step on the results tracks, which could help
 correlate multiple tracks of the same object.</p>
 </div>
-<div class="section" id="id31">
-<h4>Parameters<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id28">
+<h4>Parameters<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="19%" />
-<col width="35%" />
-<col width="46%" />
+<col width="5%" />
+<col width="11%" />
+<col width="84%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -445,71 +483,109 @@ correlate multiple tracks of the same object.</p>
 <tbody valign="top">
 <tr class="row-even"><td>media</td>
 <td><a class="reference internal" href="io.html#janicemediaiterator"><span class="std std-ref">JaniceMediaIterator</span></a></td>
-<td>A media object to run detection
-on.</td>
+<td>A media object to run detection on.</td>
 </tr>
-<tr class="row-odd"><td>min_object_
-size</td>
-<td>uint32_t</td>
-<td>A minimum object size. See
-<a class="reference internal" href="#detection-min-object-size"><span class="std std-ref">Minimum Object Size</span></a></td>
+<tr class="row-odd"><td>context</td>
+<td><a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a></td>
+<td>A context object with relevant hyperparameters set.</td>
 </tr>
 <tr class="row-even"><td>detections</td>
-<td><a class="reference internal" href="#janicedetections"><span class="std std-ref">JaniceDetections</span></a> *</td>
-<td>An uninitialized array to hold
-all of the detections detected
-in the media object. This
-object should be allocated by
-the implementor during the
-call. The user is required to
-free the object by calling
-<a class="reference internal" href="#janice-free-detections"><span class="std std-ref">janice_free_detections</span></a>.</td>
-</tr>
-<tr class="row-odd"><td>num_
-detections</td>
-<td>uint32_t*</td>
-<td>The number of detections
-returned in the <em>detections</em>
-array.</td>
+<td><a class="reference internal" href="#janicedetections"><span class="std std-ref">JaniceDetections</span></a>*</td>
+<td>A struct to hold the resulting detections. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling <a class="reference internal" href="#janice-clear-detections"><span class="std std-ref">janice_clear_detections</span></a></td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="id32">
-<h4>Example<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceMedia media; // Where media is a valid media object created previously
-const uint32_t min_object_size = 24; // Only find objects where the smaller
-                                     // side is &gt; 24 pixels
-JaniceDetection* detections = NULL; // best practice to initialize to NULL
-uint32_t num_detections; // Will be populated with the size of detections
+<div class="section" id="id29">
+<h4>Example<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceContext context = nullptr;
+if (janice_create_context(JaniceDetectAll, // detection policy
+                          24, // min_object_size, only find objects where the smaller side &gt; 24 pixels
+                          Janice1NProbe, // enrollment type, this shouldn&#39;t impact detection
+                          0, // threshold, this shouldn&#39;t impact detection
+                          0, // max_returns, this shouldn&#39;t impact detection
+                          0, // hint, this shouldn&#39;t impact detection
+                          &amp;context) != JANICE_SUCCESS)
+    // ERROR!
 
-if (janice_detect(media, min_object_size, &amp;detections, &amp;num_detections) != JANICE_SUCCESS)
+JaniceMedia media; // Where media is a valid media object created previously
+JaniceDetections detections;
+if (janice_detect(media, context, &amp;detections) != JANICE_SUCCESS)
     // ERROR!
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="janice-create-detection-it">
-<span id="id33"></span><h3>janice_create_detection_it<a class="headerlink" href="#janice-create-detection-it" title="Permalink to this headline">¶</a></h3>
-<p>Create an iterator to iterate over detection elements.</p>
-<div class="section" id="id34">
-<h4>Signature<a class="headerlink" href="#id34" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_create_detection_it</span><span class="p">(</span><span class="n">JaniceConstDetection</span> <span class="n">detection</span><span class="p">,</span>
-                                                     <span class="n">JaniceDetectionIterator</span><span class="o">*</span> <span class="n">it</span><span class="p">);</span>
+<div class="section" id="janice-detect-batch">
+<span id="id30"></span><h3>janice_detect_batch<a class="headerlink" href="#janice-detect-batch" title="Permalink to this headline">¶</a></h3>
+<p>Detect faces in a batch of media objects. Batch processing can often be more
+efficient than serial processing, particularly if a GPU or co-processor is being
+utilized.</p>
+<div class="section" id="id31">
+<h4>Signature<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_detect_batch</span><span class="p">(</span><span class="n">JaniceMediaIterators</span> <span class="n">media</span><span class="p">,</span>
+                                              <span class="n">JaniceContext</span> <span class="n">context</span><span class="p">,</span>
+                                              <span class="n">JaniceDetectionsGroup</span><span class="o">*</span> <span class="n">detections</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id35">
-<h4>Thread Safety<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<div class="section" id="id32">
+<h4>Thread Safety<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id36">
-<h4>Parameters<a class="headerlink" href="#id36" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id33">
+<h4>Parameters<a class="headerlink" href="#id33" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="14%" />
-<col width="43%" />
-<col width="43%" />
+<col width="2%" />
+<col width="5%" />
+<col width="93%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>media</td>
+<td><a class="reference internal" href="io.html#janicemediaiterators"><span class="std std-ref">JaniceMediaIterators</span></a></td>
+<td>An array of media iterators to run detection on.</td>
+</tr>
+<tr class="row-odd"><td>context</td>
+<td><a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a></td>
+<td>A context object with relevant hyperparameters set.</td>
+</tr>
+<tr class="row-even"><td>detections</td>
+<td><a class="reference internal" href="#janicedetectionsgroup"><span class="std std-ref">JaniceDetectionsGroup</span></a>*</td>
+<td>A list of lists of detection objects. Each input media iterator can contain 0 or more possible detections. This output structure should mirror the input such that the sublist at index <em>i</em> should contain all of the detections found in media iterator <em>i</em>. If no detections are found in a particular media object an entry must still be present in the top-level output list and the sublist should have a length of 0. The implementor should allocate the internal members of this object during the call. The user is responsible for clearing the object by calling <a class="reference internal" href="#janice-clear-detections-group"><span class="std std-ref">janice_clear_detections_group</span></a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-detection-get-track">
+<span id="id34"></span><h3>janice_detection_get_track<a class="headerlink" href="#janice-detection-get-track" title="Permalink to this headline">¶</a></h3>
+<p>Get a track object from a detection. The returned track should contain all
+rectangles, confidences, and frame indicies stored in the detection.</p>
+<div class="section" id="id35">
+<h4>Signature<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_detection_get_track</span><span class="p">(</span><span class="n">JaniceDetection</span> <span class="n">detection</span><span class="p">,</span>
+                                                     <span class="n">JaniceTrack</span><span class="o">*</span> <span class="n">track</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id36">
+<h4>Thread Safety<a class="headerlink" href="#id36" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id37">
+<h4>Parameters<a class="headerlink" href="#id37" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="11%" />
+<col width="84%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -519,48 +595,89 @@ if (janice_detect(media, min_object_size, &amp;detections, &amp;num_detections) 
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>detection</td>
-<td><a class="reference internal" href="#janiceconstdetection"><span class="std std-ref">JaniceConstDetection</span></a></td>
-<td>The detection object to
-create an iterator from.</td>
+<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a></td>
+<td>The detection to get the track from.</td>
 </tr>
-<tr class="row-odd"><td>it</td>
-<td><a class="reference internal" href="#janicedetectioniterator"><span class="std std-ref">JaniceDetectionIterator</span></a> *</td>
-<td>An uninitialized detection
-iterator object. The
-implementor should allocate
-this object during the
-function call. Users are
-required to free the object
-with
-<a class="reference internal" href="#janice-free-detection-it"><span class="std std-ref">janice_free_detection_it</span></a>
-.</td>
+<tr class="row-odd"><td>track</td>
+<td><a class="reference internal" href="#janicetrack"><span class="std std-ref">JaniceTrack</span></a>*</td>
+<td>An uninitialized track object. This object should be allocated by the implementor during the call. The user is responsible for free this object by calling <a class="reference internal" href="#janice-clear-track"><span class="std std-ref">janice_clear_track</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-detection-get-attribute">
+<span id="id38"></span><h3>janice_detection_get_attribute<a class="headerlink" href="#janice-detection-get-attribute" title="Permalink to this headline">¶</a></h3>
+<p>Get an attribute from a detection. Attributes are additional metadata that an
+implementation might have when creating a detection. Examples from face
+detection include gender, ethnicity, and / or landmark locations. Implementors
+are responsible for providing documentation on any attributes they support,
+valid key values and possible return values.</p>
+<div class="section" id="id39">
+<h4>Signature<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_detection_get_attribute</span><span class="p">(</span><span class="n">JaniceDetection</span> <span class="n">detection</span><span class="p">,</span>
+                                                         <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">key</span><span class="p">,</span>
+                                                         <span class="n">JaniceAttribute</span><span class="o">&amp;</span> <span class="n">value</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id40">
+<h4>Thread Safety<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id41">
+<h4>Parameters<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="10%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>detection</td>
+<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a></td>
+<td>The detection object to extract the attribute from.</td>
+</tr>
+<tr class="row-odd"><td>key</td>
+<td>const char*</td>
+<td>A key to look up a specific attribute. Valid keys must be defined and documented by the implementor.</td>
+</tr>
+<tr class="row-even"><td>value</td>
+<td><a class="reference internal" href="#janiceattribute"><span class="std std-ref">JaniceAttribute</span></a>*</td>
+<td>An uninitialized char* to hold the value of the attribute. This object should be allocated by the implementor during the function call. The user is responsible for the object by calling <a class="reference internal" href="#janice-free-attribute"><span class="std std-ref">janice_free_attribute</span></a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="janice-serialize-detection">
-<span id="id37"></span><h3>janice_serialize_detection<a class="headerlink" href="#janice-serialize-detection" title="Permalink to this headline">¶</a></h3>
+<span id="id42"></span><h3>janice_serialize_detection<a class="headerlink" href="#janice-serialize-detection" title="Permalink to this headline">¶</a></h3>
 <p>Serialize a <a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a> object to a flat buffer.</p>
-<div class="section" id="id38">
-<h4>Signature<a class="headerlink" href="#id38" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_serialize_detection</span><span class="p">(</span><span class="n">JaniceConstDetection</span> <span class="n">detection</span><span class="p">,</span>
+<div class="section" id="id43">
+<h4>Signature<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_serialize_detection</span><span class="p">(</span><span class="n">JaniceDetection</span> <span class="n">detection</span><span class="p">,</span>
                                                      <span class="n">JaniceBuffer</span><span class="o">*</span> <span class="n">data</span><span class="p">,</span>
                                                      <span class="n">size_t</span><span class="o">*</span> <span class="nb">len</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id39">
-<h4>Thread Safety<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<div class="section" id="id44">
+<h4>Thread Safety<a class="headerlink" href="#id44" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id40">
-<h4>Parameters<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id45">
+<h4>Parameters<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="17%" />
-<col width="38%" />
-<col width="45%" />
+<col width="5%" />
+<col width="10%" />
+<col width="85%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -570,29 +687,22 @@ with
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>detection</td>
-<td><a class="reference internal" href="#janiceconstdetection"><span class="std std-ref">JaniceConstDetection</span></a></td>
+<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a></td>
 <td>A detection object to serialize</td>
 </tr>
 <tr class="row-odd"><td>data</td>
-<td><a class="reference internal" href="io.html#janicebuffer"><span class="std std-ref">JaniceBuffer</span></a> *</td>
-<td>An uninitialized buffer to hold
-the flattened data. The
-implementor should allocate this
-object during the function call.
-The user is required to free the
-object with
-<a class="reference internal" href="io.html#janice-free-buffer"><span class="std std-ref">janice_free_buffer</span></a>.</td>
+<td><a class="reference internal" href="#janicebuffer"><span class="std std-ref">JaniceBuffer</span></a>*</td>
+<td>An uninitialized buffer to hold the flattened data. The implementor should allocate this object during the function call. The user is required to free the object with <a class="reference internal" href="#janice-free-buffer"><span class="std std-ref">janice_free_buffer</span></a>.</td>
 </tr>
 <tr class="row-even"><td>len</td>
 <td>size_t*</td>
-<td>The length of the flat buffer
-after it is filled.</td>
+<td>The length of the flat buffer after it is filled.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="id41">
-<h4>Example<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id46">
+<h4>Example<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JaniceDetection</span> <span class="n">detection</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">detection</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="n">detection</span> <span class="n">created</span>
                            <span class="o">//</span> <span class="n">previously</span><span class="o">.</span>
 
@@ -604,27 +714,27 @@ after it is filled.</td>
 </div>
 </div>
 <div class="section" id="janice-deserialize-detection">
-<span id="id42"></span><h3>janice_deserialize_detection<a class="headerlink" href="#janice-deserialize-detection" title="Permalink to this headline">¶</a></h3>
+<span id="id47"></span><h3>janice_deserialize_detection<a class="headerlink" href="#janice-deserialize-detection" title="Permalink to this headline">¶</a></h3>
 <p>Deserialize a <a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a> object from a flat buffer.</p>
-<div class="section" id="id43">
-<h4>Signature<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id48">
+<h4>Signature<a class="headerlink" href="#id48" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_deserialize_detection</span><span class="p">(</span><span class="n">const</span> <span class="n">JaniceBuffer</span> <span class="n">data</span><span class="p">,</span>
                                                        <span class="n">size_t</span> <span class="nb">len</span><span class="p">,</span>
                                                        <span class="n">JaniceDetection</span><span class="o">*</span> <span class="n">detection</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id44">
-<h4>Thread Safety<a class="headerlink" href="#id44" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<div class="section" id="id49">
+<h4>Thread Safety<a class="headerlink" href="#id49" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id45">
-<h4>Parameters<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id50">
+<h4>Parameters<a class="headerlink" href="#id50" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="14%" />
-<col width="36%" />
-<col width="50%" />
+<col width="5%" />
+<col width="12%" />
+<col width="83%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -634,28 +744,22 @@ after it is filled.</td>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>data</td>
-<td>const <a class="reference internal" href="io.html#janicebuffer"><span class="std std-ref">JaniceBuffer</span></a></td>
-<td>A buffer containing data from a
-flattened detection object.</td>
+<td>const <a class="reference internal" href="#janicebuffer"><span class="std std-ref">JaniceBuffer</span></a></td>
+<td>A buffer containing data from a flattened detection object.</td>
 </tr>
 <tr class="row-odd"><td>len</td>
 <td>size_t</td>
 <td>The length of the flat buffer.</td>
 </tr>
 <tr class="row-even"><td>detection</td>
-<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a> *</td>
-<td>An uninitialized detection object.
-This object should be allocated by
-the implementor during the function
-call. Users are required to free the
-object with
-<a class="reference internal" href="#janice-free-detection"><span class="std std-ref">janice_free_detection</span></a>.</td>
+<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a>*</td>
+<td>An uninitialized detection object. This object should be allocated by the implementor during the function call. Users are required to free the object with <a class="reference internal" href="#janice-free-detection"><span class="std std-ref">janice_free_detection</span></a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="id46">
-<h4>Example<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id51">
+<h4>Example<a class="headerlink" href="#id51" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">size_t</span> <span class="n">buffer_len</span> <span class="o">=</span> <span class="n">K</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">K</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">known</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="n">buffer</span>
 <span class="n">JaniceBuffer</span> <span class="n">buffer</span><span class="p">[</span><span class="n">buffer_len</span><span class="p">];</span>
 
@@ -671,7 +775,7 @@ object with
 </div>
 </div>
 <div class="section" id="janice-read-detection">
-<span id="id47"></span><h3>janice_read_detection<a class="headerlink" href="#janice-read-detection" title="Permalink to this headline">¶</a></h3>
+<span id="id52"></span><h3>janice_read_detection<a class="headerlink" href="#janice-read-detection" title="Permalink to this headline">¶</a></h3>
 <p>Read a detection from a file on disk. This method is functionally
 equivalent to the following-</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">size_t</span> <span class="n">buffer_len</span> <span class="o">=</span> <span class="n">K</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">K</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">known</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="n">buffer</span>
@@ -688,23 +792,23 @@ equivalent to the following-</p>
 </div>
 <p>It is provided for memory efficiency and ease of use when reading from
 disk.</p>
-<div class="section" id="id48">
-<h4>Signature<a class="headerlink" href="#id48" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id53">
+<h4>Signature<a class="headerlink" href="#id53" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_read_detection</span><span class="p">(</span><span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">filename</span><span class="p">,</span>
                                                 <span class="n">JaniceDetection</span><span class="o">*</span> <span class="n">detection</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id49">
-<h4>Thread Safety<a class="headerlink" href="#id49" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<div class="section" id="id54">
+<h4>Thread Safety<a class="headerlink" href="#id54" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id50">
-<h4>Parameters<a class="headerlink" href="#id50" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id55">
+<h4>Parameters<a class="headerlink" href="#id55" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="17%" />
-<col width="35%" />
+<col width="15%" />
+<col width="36%" />
 <col width="49%" />
 </colgroup>
 <thead valign="bottom">
@@ -719,14 +823,14 @@ disk.</p>
 <td>The path to a file on disk</td>
 </tr>
 <tr class="row-odd"><td>detection</td>
-<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a> *</td>
+<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a>*</td>
 <td>An uninitialized detection object.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="id51">
-<h4>Example<a class="headerlink" href="#id51" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id56">
+<h4>Example<a class="headerlink" href="#id56" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span>JaniceDetection detection = NULL;
 if (janice_read_detection(&quot;example.detection&quot;, &amp;detection) != JANICE_SUCCESS)
     // ERROR!
@@ -735,7 +839,7 @@ if (janice_read_detection(&quot;example.detection&quot;, &amp;detection) != JANI
 </div>
 </div>
 <div class="section" id="janice-write-detection">
-<span id="id52"></span><h3>janice_write_detection<a class="headerlink" href="#janice-write-detection" title="Permalink to this headline">¶</a></h3>
+<span id="id57"></span><h3>janice_write_detection<a class="headerlink" href="#janice-write-detection" title="Permalink to this headline">¶</a></h3>
 <p>Write a detection to a file on disk. This method is functionally
 equivalent to the following-</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JaniceDetection</span> <span class="n">detection</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">detection</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="n">detection</span> <span class="n">created</span>
@@ -753,24 +857,24 @@ equivalent to the following-</p>
 </div>
 <p>It is provided for memory efficiency and ease of use when writing to
 disk.</p>
-<div class="section" id="id53">
-<h4>Signature<a class="headerlink" href="#id53" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_write_detection</span><span class="p">(</span><span class="n">JaniceConstDetection</span> <span class="n">detection</span><span class="p">,</span>
+<div class="section" id="id58">
+<h4>Signature<a class="headerlink" href="#id58" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_write_detection</span><span class="p">(</span><span class="n">JaniceDetection</span> <span class="n">detection</span><span class="p">,</span>
                                                  <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">filename</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="threadsafety">
 <h4>ThreadSafety<a class="headerlink" href="#threadsafety" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id54">
-<h4>Parameters<a class="headerlink" href="#id54" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id59">
+<h4>Parameters<a class="headerlink" href="#id59" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="17%" />
-<col width="38%" />
-<col width="45%" />
+<col width="15%" />
+<col width="32%" />
+<col width="53%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -780,9 +884,8 @@ disk.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>detection</td>
-<td><a class="reference internal" href="#janiceconstdetection"><span class="std std-ref">JaniceConstDetection</span></a></td>
-<td>The detection object to write to
-disk.</td>
+<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a></td>
+<td>The detection object to write to disk.</td>
 </tr>
 <tr class="row-odd"><td>filename</td>
 <td>const char*</td>
@@ -791,8 +894,8 @@ disk.</td>
 </tbody>
 </table>
 </div>
-<div class="section" id="id55">
-<h4>Example<a class="headerlink" href="#id55" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id60">
+<h4>Example<a class="headerlink" href="#id60" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span>JaniceDetection detection; // Where detection is a valid detection created
                            // previously
 if (janice_write_detection(detection, &quot;example.detection&quot;) != JANICE_SUCCESS)
@@ -801,26 +904,62 @@ if (janice_write_detection(detection, &quot;example.detection&quot;) != JANICE_S
 </div>
 </div>
 </div>
+<div class="section" id="janice-free-buffer">
+<span id="id61"></span><h3>janice_free_buffer<a class="headerlink" href="#janice-free-buffer" title="Permalink to this headline">¶</a></h3>
+<p>Release the memory for an allocated buffer.</p>
+<div class="section" id="id62">
+<h4>Signature<a class="headerlink" href="#id62" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_buffer</span><span class="p">(</span><span class="n">JaniceBuffer</span><span class="o">*</span> <span class="n">buffer</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id63">
+<h4>Thread Safety<a class="headerlink" href="#id63" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a></p>
+</div>
+<div class="section" id="id64">
+<h4>Parameters<a class="headerlink" href="#id64" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="45%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>buffer</td>
+<td><a class="reference internal" href="#janicebuffer"><span class="std std-ref">JaniceBuffer</span></a>*</td>
+<td>The buffer to free</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="section" id="janice-free-detection">
-<span id="id56"></span><h3>janice_free_detection<a class="headerlink" href="#janice-free-detection" title="Permalink to this headline">¶</a></h3>
+<span id="id65"></span><h3>janice_free_detection<a class="headerlink" href="#janice-free-detection" title="Permalink to this headline">¶</a></h3>
 <p>Free any memory associated with a <a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a> object.</p>
-<div class="section" id="id57">
-<h4>Signature<a class="headerlink" href="#id57" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id66">
+<h4>Signature<a class="headerlink" href="#id66" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_detection</span><span class="p">(</span><span class="n">JaniceDetection</span><span class="o">*</span> <span class="n">detection</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id58">
-<h4>Thread Safety<a class="headerlink" href="#id58" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<div class="section" id="id67">
+<h4>Thread Safety<a class="headerlink" href="#id67" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id59">
-<h4>Parameters<a class="headerlink" href="#id59" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id68">
+<h4>Parameters<a class="headerlink" href="#id68" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="36%" />
-<col width="49%" />
+<col width="17%" />
+<col width="39%" />
+<col width="44%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -830,17 +969,14 @@ if (janice_write_detection(detection, &quot;example.detection&quot;) != JANICE_S
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>detection</td>
-<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a> *</td>
-<td>A detection object to free. Best
-practice dictates the pointer
-should be set to <em>NULL</em> after it is
-freed.</td>
+<td><a class="reference internal" href="#janicedetection"><span class="std std-ref">JaniceDetection</span></a>*</td>
+<td>A detection object to free.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="id60">
-<h4>Example<a class="headerlink" href="#id60" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id69">
+<h4>Example<a class="headerlink" href="#id69" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span>JaniceDetection detection; // Where detection is a valid detection object
                            // created previously
 if (janice_free_detection(&amp;detection) != JANICE_SUCCESS)
@@ -849,27 +985,26 @@ if (janice_free_detection(&amp;detection) != JANICE_SUCCESS)
 </div>
 </div>
 </div>
-<div class="section" id="janice-free-detections">
-<span id="id61"></span><h3>janice_free_detections<a class="headerlink" href="#janice-free-detections" title="Permalink to this headline">¶</a></h3>
-<p>Free any memory associated with a:ref:<cite>JaniceDetections</cite> object.</p>
-<div class="section" id="id62">
-<h4>Signature<a class="headerlink" href="#id62" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_detections</span><span class="p">(</span><span class="n">JaniceDetections</span><span class="o">*</span> <span class="n">detection</span><span class="p">,</span>
-                                                 <span class="n">uint32_t</span> <span class="n">num_detections</span><span class="p">);</span>
+<div class="section" id="janice-clear-detections">
+<span id="id70"></span><h3>janice_clear_detections<a class="headerlink" href="#janice-clear-detections" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janicedetections"><span class="std std-ref">JaniceDetections</span></a> object.</p>
+<div class="section" id="id71">
+<h4>Signature<a class="headerlink" href="#id71" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_detections</span><span class="p">(</span><span class="n">JaniceDetections</span><span class="o">*</span> <span class="n">detections</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id63">
-<h4>Thread Safety<a class="headerlink" href="#id63" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<div class="section" id="id72">
+<h4>Thread Safety<a class="headerlink" href="#id72" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id64">
-<h4>Parameters<a class="headerlink" href="#id64" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id73">
+<h4>Parameters<a class="headerlink" href="#id73" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="37%" />
-<col width="47%" />
+<col width="17%" />
+<col width="40%" />
+<col width="43%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -880,10 +1015,157 @@ if (janice_free_detection(&amp;detection) != JANICE_SUCCESS)
 <tbody valign="top">
 <tr class="row-even"><td>detections</td>
 <td><a class="reference internal" href="#janicedetections"><span class="std std-ref">JaniceDetections</span></a> *</td>
-<td>An array of detections to free.
-Best practice dictates the pointer
-should be set to <em>NULL</em> after it
-is freed.</td>
+<td>A detection object to clear.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-clear-detections-group">
+<span id="id74"></span><h3>janice_clear_detections_group<a class="headerlink" href="#janice-clear-detections-group" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janicedetectionsgroup"><span class="std std-ref">JaniceDetectionsGroup</span></a> object.</p>
+<div class="section" id="id75">
+<h4>Signature<a class="headerlink" href="#id75" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_detections_group</span><span class="p">(</span><span class="n">JaniceDetectionsGroup</span>\<span class="o">*</span> <span class="n">group</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-clear-track">
+<span id="id76"></span><h3>janice_clear_track<a class="headerlink" href="#janice-clear-track" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janicetrack"><span class="std std-ref">JaniceTrack</span></a> object.</p>
+<div class="section" id="id77">
+<h4>Signature<a class="headerlink" href="#id77" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_track</span><span class="p">(</span><span class="n">JaniceTrack</span><span class="o">*</span> <span class="n">track</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id78">
+<h4>Thread Safety<a class="headerlink" href="#id78" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id79">
+<h4>Parameters<a class="headerlink" href="#id79" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="36%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>track</td>
+<td><a class="reference internal" href="#janicetrack"><span class="std std-ref">JaniceTrack</span></a></td>
+<td>The track object to clear.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-clear-tracks">
+<span id="id80"></span><h3>janice_clear_tracks<a class="headerlink" href="#janice-clear-tracks" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a of <a class="reference internal" href="#janicetracks"><span class="std std-ref">JaniceTracks</span></a> object.</p>
+<div class="section" id="id81">
+<h4>Signature<a class="headerlink" href="#id81" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_tracks</span><span class="p">(</span><span class="n">JaniceTracks</span><span class="o">*</span> <span class="n">tracks</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id82">
+<h4>Thread Safety<a class="headerlink" href="#id82" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id83">
+<h4>Parameters<a class="headerlink" href="#id83" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="14%" />
+<col width="39%" />
+<col width="47%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>tracks</td>
+<td><a class="reference internal" href="#janicetracks"><span class="std std-ref">JaniceTracks</span></a>*</td>
+<td>A tracks objects to clear.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-clear-tracks-group">
+<span id="id84"></span><h3>janice_clear_tracks_group<a class="headerlink" href="#janice-clear-tracks-group" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janicetracksgroup"><span class="std std-ref">JaniceTracksGroup</span></a> object.</p>
+<div class="section" id="id85">
+<h4>Signature<a class="headerlink" href="#id85" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_tracks_group</span><span class="p">(</span><span class="n">JaniceTracksGroup</span><span class="o">*</span> <span class="n">group</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id86">
+<h4>Parameters<a class="headerlink" href="#id86" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="46%" />
+<col width="43%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>group</td>
+<td><a class="reference internal" href="#janicetracksgroup"><span class="std std-ref">JaniceTracksGroup</span></a>*</td>
+<td>A tracks group to clear.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-free-attribute">
+<span id="id87"></span><h3>janice_free_attribute<a class="headerlink" href="#janice-free-attribute" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with an attribute value.</p>
+<div class="section" id="id88">
+<h4>Signature<a class="headerlink" href="#id88" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_attribute</span><span class="p">(</span><span class="n">JaniceAttribute</span><span class="o">*</span> <span class="n">value</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id89">
+<h4>Thread Safety<a class="headerlink" href="#id89" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id90">
+<h4>Parameters<a class="headerlink" href="#id90" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="43%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>attribute</td>
+<td><a class="reference internal" href="#janiceattribute"><span class="std std-ref">JaniceAttribute</span></a>*</td>
+<td>The attribute to free.</td>
 </tr>
 </tbody>
 </table>
@@ -913,17 +1195,17 @@ is freed.</td>
 <li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="initialization.html">Initialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context.html">Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Detection</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#structs">Structs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#typedefs">Typedefs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="enrollment.html">Enrollment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison / Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="clustering.html">Clustering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>

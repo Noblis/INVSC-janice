@@ -52,62 +52,31 @@ this model of [multiple detections] -&gt; [single representation] contradicts th
 current paradigm of [single detection] -&gt; [single representation]. Implementors
 are free to implement whatever paradigm they choose internally (i.e. a JanICE
 template could be a simple list of single detection templates) provided
-the <a class="reference internal" href="comparison.html#comparison"><span class="std std-ref">Comparison</span></a> functions work appropriately.</p>
-</div>
-<div class="section" id="enumerations">
-<h2>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="janiceenrollmenttype">
-<span id="id2"></span><h3>JaniceEnrollmentType<a class="headerlink" href="#janiceenrollmenttype" title="Permalink to this headline">¶</a></h3>
-<p>Often times, the templates produced by algorithms will require different
-data for different use cases. The enrollment type indicates what the use
-case for the created template will be, allowing implementors to
-specialize their templates if they so desire. The use cases supported by
-the API are:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="29%" />
-<col width="71%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Type</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>Janice11Reference</td>
-<td>The template will be used as a reference template for
-1:1 verification.</td>
-</tr>
-<tr class="row-odd"><td>Janice11Verification</td>
-<td>The template will be used for verification against a
-reference template in 1:1 verification.</td>
-</tr>
-<tr class="row-even"><td>Janice1NProbe</td>
-<td>The template will be used as a probe template in 1:N
-search.</td>
-</tr>
-<tr class="row-odd"><td>Janice1NGallery</td>
-<td>The template will be enrolled into a gallery and
-searched against in 1:N search.</td>
-</tr>
-<tr class="row-even"><td>JaniceCluster</td>
-<td>The template will be used for clustering.</td>
-</tr>
-</tbody>
-</table>
+the <a class="reference internal" href="comparison.html#comparison"><span class="std std-ref">Comparison / Search</span></a> functions work appropriately.</p>
+<div class="section" id="failure-to-enroll">
+<span id="fte"></span><h3>Failure To Enroll<a class="headerlink" href="#failure-to-enroll" title="Permalink to this headline">¶</a></h3>
+<p>For computer vision use cases, it is common to implement quality checks that
+can cause a template to fail during enrollment if it is missing certain
+characteristics. In this API templates should fail to enroll (FTE) quietly.
+This means that successive operations using an FTE template should still work
+without error. For example, calling <a class="reference internal" href="comparison.html#janice-verify"><span class="std std-ref">janice_verify</span></a> with an FTE template
+and a successful template should still return a score, even if that score is a
+predetermined constant value like <strong>-FLOAT_MAX</strong>. Users can query a template to
+see if it failed to enroll using the <a class="reference internal" href="#janice-template-is-fte"><span class="std std-ref">janice_template_is_fte</span></a> function and
+may choose to manually discard it if they desire.</p>
 </div>
 </div>
 <div class="section" id="structs">
 <h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="janicetemplatetype">
-<span id="id3"></span><h3>JaniceTemplateType<a class="headerlink" href="#janicetemplatetype" title="Permalink to this headline">¶</a></h3>
+<span id="id2"></span><h3>JaniceTemplateType<a class="headerlink" href="#janicetemplatetype" title="Permalink to this headline">¶</a></h3>
 <p>An opaque pointer to a struct that represents a template.</p>
 </div>
 </div>
 <div class="section" id="typedefs">
 <h2>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="janicetemplate">
-<span id="id4"></span><h3>JaniceTemplate<a class="headerlink" href="#janicetemplate" title="Permalink to this headline">¶</a></h3>
+<span id="id3"></span><h3>JaniceTemplate<a class="headerlink" href="#janicetemplate" title="Permalink to this headline">¶</a></h3>
 <p>A pointer to a <a class="reference internal" href="#janicetemplatetype"><span class="std std-ref">JaniceTemplateType</span></a> object.</p>
 <div class="section" id="signature">
 <h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
@@ -116,62 +85,198 @@ searched against in 1:N search.</td>
 </div>
 </div>
 </div>
-<div class="section" id="janiceconsttemplate">
-<span id="id5"></span><h3>JaniceConstTemplate<a class="headerlink" href="#janiceconsttemplate" title="Permalink to this headline">¶</a></h3>
-<p>A pointer to a constant <a class="reference internal" href="#janicetemplatetype"><span class="std std-ref">JaniceTemplateType</span></a> object.</p>
-<div class="section" id="id6">
-<h4>Signature<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">const</span> <span class="n">struct</span> <span class="n">JaniceTemplateType</span><span class="o">*</span> <span class="n">JaniceConstTemplate</span><span class="p">;</span>
-</pre></div>
-</div>
-</div>
-</div>
 <div class="section" id="janicetemplates">
-<span id="id7"></span><h3>JaniceTemplates<a class="headerlink" href="#janicetemplates" title="Permalink to this headline">¶</a></h3>
-<p>An array of <a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> objects.</p>
-<div class="section" id="id8">
-<h4>Signature<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="n">JaniceTemplate</span><span class="o">*</span> <span class="n">JaniceTemplates</span><span class="p">;</span>
-</pre></div>
+<span id="id4"></span><h3>JaniceTemplates<a class="headerlink" href="#janicetemplates" title="Permalink to this headline">¶</a></h3>
+<p>A structure representing a list of <a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> objects.</p>
+<div class="section" id="fields">
+<h4>Fields<a class="headerlink" href="#fields" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="12%" />
+<col width="36%" />
+<col width="52%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>tmpls</td>
+<td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a>*</td>
+<td>An array of template objects.</td>
+</tr>
+<tr class="row-odd"><td>length</td>
+<td>size_t</td>
+<td>The number of elements in <em>tmpls</em>.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-</div>
-<div class="section" id="janiceconsttemplates">
-<span id="id9"></span><h3>JaniceConstTemplates<a class="headerlink" href="#janiceconsttemplates" title="Permalink to this headline">¶</a></h3>
-<p>An array of <a class="reference internal" href="#janiceconsttemplate"><span class="std std-ref">JaniceConstTemplate</span></a> objects.</p>
-<div class="section" id="id10">
-<h4>Signature<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">struct</span> <span class="n">JaniceConstTemplate</span><span class="o">*</span> <span class="n">JaniceConstTemplates</span><span class="p">;</span>
-</pre></div>
-</div>
+<div class="section" id="janicetemplatesgroup">
+<span id="id5"></span><h3>JaniceTemplatesGroup<a class="headerlink" href="#janicetemplatesgroup" title="Permalink to this headline">¶</a></h3>
+<p>A structure representing a list of <a class="reference internal" href="#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a> objects.</p>
+<div class="section" id="id6">
+<h4>Fields<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="37%" />
+<col width="51%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>group</td>
+<td><a class="reference internal" href="#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a>*</td>
+<td>An array of templates objects.</td>
+</tr>
+<tr class="row-odd"><td>length</td>
+<td>size_t</td>
+<td>The number of elements in <em>group</em>.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="janice-create-template">
-<span id="id11"></span><h3>janice_create_template<a class="headerlink" href="#janice-create-template" title="Permalink to this headline">¶</a></h3>
-<p>Create a <a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> object from an array of detections.</p>
-<div class="section" id="id12">
-<h4>Signature<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_create_template</span><span class="p">(</span><span class="n">JaniceConstDetections</span> <span class="n">detections</span><span class="p">,</span>
-                                                 <span class="n">uint32_t</span> <span class="n">num_detections</span><span class="p">,</span>
-                                                 <span class="n">JaniceEnrollmentType</span> <span class="n">role</span><span class="p">,</span>
-                                                 <span class="n">JaniceTemplate</span><span class="o">*</span> <span class="n">tmpl</span><span class="p">);</span>
+<div class="section" id="janice-enroll-from-media">
+<span id="id7"></span><h3>janice_enroll_from_media<a class="headerlink" href="#janice-enroll-from-media" title="Permalink to this headline">¶</a></h3>
+<p>Detect and enroll templates from a single media file. Detection should respect
+the provided minimum object size and detection policy. This function may
+produce 0 or more templates, depending on the number of objects found in the
+media.</p>
+<div class="section" id="id8">
+<h4>Signature<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_enroll_from_media</span><span class="p">(</span><span class="n">JaniceMediaIterator</span> <span class="n">media</span><span class="p">,</span>
+                                                   <span class="n">JaniceContext</span> <span class="n">context</span><span class="p">,</span>
+                                                   <span class="n">JaniceTemplates</span><span class="o">*</span> <span class="n">tmpls</span><span class="p">,</span>
+                                                   <span class="n">JaniceTracks</span><span class="o">*</span> <span class="n">tracks</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="thread-safety">
 <h4>Thread Safety<a class="headerlink" href="#thread-safety" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
 <div class="section" id="parameters">
 <h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="23%" />
-<col width="37%" />
-<col width="40%" />
+<col width="2%" />
+<col width="8%" />
+<col width="90%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>media</td>
+<td><a class="reference internal" href="io.html#janicemediaiterator"><span class="std std-ref">JaniceMediaIterator</span></a></td>
+<td>The media to detect and enroll templates from.</td>
+</tr>
+<tr class="row-odd"><td>context</td>
+<td><a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a></td>
+<td>A context object with relevant hyperparameters set.</td>
+</tr>
+<tr class="row-even"><td>tmpls</td>
+<td><a class="reference internal" href="#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a>*</td>
+<td>A struct to hold the templates enrolled from the media. The internal members of this object should be allocated by the implementor during the call. The user is required to clear this object by calling <a class="reference internal" href="#janice-clear-templates"><span class="std std-ref">janice_clear_templates</span></a></td>
+</tr>
+<tr class="row-odd"><td>tracks</td>
+<td><a class="reference internal" href="detection.html#janicetracks"><span class="std std-ref">JaniceTracks</span></a>*</td>
+<td>A struct to hold the detection information for each of the templates enrolled from the media. This object should have the same number of elements as <em>tmpls</em>. The internal members of this object should be allocated by the implementor during the call. The user is required to clear this object by calling <a class="reference internal" href="detection.html#janice-clear-tracks"><span class="std std-ref">janice_clear_tracks</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-enroll-from-media-batch">
+<span id="id9"></span><h3>janice_enroll_from_media_batch<a class="headerlink" href="#janice-enroll-from-media-batch" title="Permalink to this headline">¶</a></h3>
+<p>Detect and enroll templates from a batch of media objects. Batch processing can
+often be more efficient then serial processing of a collection of data,
+particularly if a GPU or co-processor is being utilized.</p>
+<div class="section" id="id10">
+<h4>Signature<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_enroll_from_media_batch</span><span class="p">(</span><span class="n">JaniceMediaIterators</span> <span class="n">media</span><span class="p">,</span>
+                                                         <span class="n">JaniceContext</span> <span class="n">context</span><span class="p">,</span>
+                                                         <span class="n">JaniceTemplatesGroup</span><span class="o">*</span> <span class="n">tmpls</span><span class="p">,</span>
+                                                         <span class="n">JaniceTracksGroup</span><span class="o">*</span> <span class="n">tracks</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id11">
+<h4>Thread Safety<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id12">
+<h4>Parameters<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="1%" />
+<col width="5%" />
+<col width="94%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>media</td>
+<td><a class="reference internal" href="io.html#janicemediaiterators"><span class="std std-ref">JaniceMediaIterators</span></a></td>
+<td>An array of media iterators to enroll.</td>
+</tr>
+<tr class="row-odd"><td>context</td>
+<td><a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a></td>
+<td>A context object with relevant hyperparameters set.</td>
+</tr>
+<tr class="row-even"><td>tmpls</td>
+<td><a class="reference internal" href="#janicetemplatesgroup"><span class="std std-ref">JaniceTemplatesGroup</span></a>*</td>
+<td>A list of lists of template objects. Each input media iterator can contain 0 or more possible templates. This output structure should mirror the input such that the sublist at index <em>i</em> should contain all of the templates enrolled from media iterator <em>i</em>. If no templates are enrolled from a particular media object an entry must still be present in the top-level output list and the sublist should have a length of 0. The implementor should allocate the internal members of this object during the call. The user is responsible for clearing the object by calling <a class="reference internal" href="#janice-clear-templates-group"><span class="std std-ref">janice_clear_templates_group</span></a>.</td>
+</tr>
+<tr class="row-odd"><td>tracks</td>
+<td><a class="reference internal" href="detection.html#janicetracksgroup"><span class="std std-ref">JaniceTracksGroup</span></a>*</td>
+<td>A list of lists of track objects. The top level list should have the same number of elements as <em>tmpls</em> and sublist <em>i</em> should have the same number of elements as <em>tmpls</em> sublist i. Each track in the sublist should provide the location information for where the corresponding template was enrolled from. The implementor should allocate the internal members of this object during the call. The user is responsible for clearing the object by calling <a class="reference internal" href="detection.html#janice-clear-tracks-group"><span class="std std-ref">janice_clear_tracks_group</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-enroll-from-detections">
+<span id="id13"></span><h3>janice_enroll_from_detections<a class="headerlink" href="#janice-enroll-from-detections" title="Permalink to this headline">¶</a></h3>
+<p>Create a <a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> object from an array of detections.</p>
+<div class="section" id="id14">
+<h4>Signature<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_enroll_from_detections</span><span class="p">(</span><span class="n">JaniceDetections</span> <span class="n">detections</span><span class="p">,</span>
+                                                        <span class="n">JaniceContext</span> <span class="n">context</span><span class="p">,</span>
+                                                        <span class="n">JaniceTemplate</span><span class="o">*</span> <span class="n">tmpl</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id15">
+<h4>Thread Safety<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id16">
+<h4>Parameters<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="11%" />
+<col width="84%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -181,72 +286,90 @@ searched against in 1:N search.</td>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>detections</td>
-<td><a class="reference internal" href="detection.html#janiceconstdetections"><span class="std std-ref">JaniceConstDetections</span></a></td>
+<td><a class="reference internal" href="detection.html#janicedetections"><span class="std std-ref">JaniceDetections</span></a></td>
 <td>An array of detection objects.</td>
 </tr>
-<tr class="row-odd"><td>num_detections</td>
-<td>uint32_t</td>
-<td>The number of input detections.</td>
+<tr class="row-odd"><td>context</td>
+<td><a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a></td>
+<td>A context object with relevant hyperparameters set.</td>
 </tr>
-<tr class="row-even"><td>role</td>
-<td><a class="reference internal" href="#janiceenrollmenttype"><span class="std std-ref">JaniceEnrollmentType</span></a></td>
-<td>The use case for the template</td>
-</tr>
-<tr class="row-odd"><td>tmpl</td>
-<td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> *</td>
-<td>An uninitialized template
-object. The implementor should
-allocate this object during the
-function call. The user is
-responsible for freeing the
-object by calling
-<a class="reference internal" href="#janice-free-template"><span class="std std-ref">janice_free_template</span></a>.</td>
+<tr class="row-even"><td>tmpl</td>
+<td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a>*</td>
+<td>An uninitialized template object. The implementor should allocate this object during the function call. The user is responsible for freeing the object by calling <a class="reference internal" href="#janice-free-template"><span class="std std-ref">janice_free_template</span></a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="example">
-<h4>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceDetections detections; // Where detections is a valid array of valid
-                             // detection objects created previously
-const uint32_t num_detections = K; // Where K is the number of detections in
-                                   // the detections array
-JaniceEnrollmentType role = Janice1NProbe; // This template will be used as a
-                                           // probe in 1-N search
-JaniceTemplate tmpl = NULL; // Best practice to initialize to NULL
-
-if (janice_create_template(detections, num_detections, rolw, &amp;tmpl) != JANICE_SUCCESS)
-    // ERROR!
+</div>
+<div class="section" id="janice-enroll-from-detections-batch">
+<span id="id17"></span><h3>janice_enroll_from_detections_batch<a class="headerlink" href="#janice-enroll-from-detections-batch" title="Permalink to this headline">¶</a></h3>
+<p>Create a set of <a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> objects from an array of detections. Batch
+processing can often be more efficient then serial processing of a collection of
+data, particularly if a GPU or co-processor is being utilized.</p>
+<div class="section" id="id18">
+<h4>Signature<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_enroll_from_detections_batch</span><span class="p">(</span><span class="n">JaniceDetectionsGroup</span> <span class="n">detections</span><span class="p">,</span>
+                                                              <span class="n">JaniceContext</span> <span class="n">context</span><span class="p">,</span>
+                                                              <span class="n">JaniceTemplates</span><span class="o">*</span> <span class="n">tmpls</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
+<div class="section" id="id19">
+<h4>Thread Safety<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="janice-template-get-attribute">
-<span id="id13"></span><h3>janice_template_get_attribute<a class="headerlink" href="#janice-template-get-attribute" title="Permalink to this headline">¶</a></h3>
-<p>Get a metadata value from a template using a key string. The valid set
-of keys is determined by the implementation and must be included in
-their delivered documentation. The possible return values for a valid
-key are also implementation specific. Invalid keys should return an
-error.</p>
-<div class="section" id="id14">
-<h4>Signature<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_template_get_attribute</span><span class="p">(</span><span class="n">JaniceConstTemplate</span> <span class="n">tmpl</span><span class="p">,</span>
-                                                        <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">attribute</span><span class="p">,</span>
-                                                        <span class="n">char</span><span class="o">**</span> <span class="n">value</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="id15">
-<h4>Thread Safety<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
-</div>
-<div class="section" id="id16">
-<h4>Parameters<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id20">
+<h4>Parameters<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="15%" />
-<col width="37%" />
-<col width="48%" />
+<col width="4%" />
+<col width="9%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>detections</td>
+<td><a class="reference internal" href="detection.html#janicedetectionsgroup"><span class="std std-ref">JaniceDetectionsGroup</span></a></td>
+<td>A list of lists of detection objects. Multiple detections can be enrolled into a single template, for example if detections correspond to multiple views of the object of interest. Each sublist in this object should contain all detections that should be enrolled into a single template.</td>
+</tr>
+<tr class="row-odd"><td>context</td>
+<td><a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a></td>
+<td>A context object with relevant hyperparameters set.</td>
+</tr>
+<tr class="row-even"><td>tmpls</td>
+<td><a class="reference internal" href="#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a>*</td>
+<td>A structure to hold the enrolled templates. This should have the same number of elements as <em>detections</em>. The implementor should allocate the internal members of this object during the call. The user is responsible for clearing the object by calling <a class="reference internal" href="#janice-clear-templates"><span class="std std-ref">janice_clear_templates</span></a>.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-template-is-fte">
+<span id="id21"></span><h3>janice_template_is_fte<a class="headerlink" href="#janice-template-is-fte" title="Permalink to this headline">¶</a></h3>
+<p>Query to see if a template has failed to enroll. See <a class="reference internal" href="#fte"><span class="std std-ref">Failure To Enroll</span></a> for additional information.</p>
+<div class="section" id="id22">
+<h4>Signature<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_template_is_fte</span><span class="p">(</span><span class="n">JaniceTemplate</span> <span class="n">tmpl</span><span class="p">,</span>
+                                                 <span class="nb">int</span><span class="o">*</span> <span class="n">fte</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id23">
+<h4>Thread Safety<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id24">
+<h4>Parameters<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="23%" />
+<col width="72%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -256,49 +379,89 @@ error.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>tmpl</td>
-<td><a class="reference internal" href="#janiceconsttemplate"><span class="std std-ref">JaniceConstTemplate</span></a></td>
-<td>A template object to query the
-attribute from.</td>
+<td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a></td>
+<td>The template object to query.</td>
 </tr>
-<tr class="row-odd"><td>attribute</td>
+<tr class="row-odd"><td>fte</td>
+<td>int*</td>
+<td>FTE flag. If the template has not failed to enroll this should equal 0.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-template-get-attribute">
+<span id="id25"></span><h3>janice_template_get_attribute<a class="headerlink" href="#janice-template-get-attribute" title="Permalink to this headline">¶</a></h3>
+<p>Get a metadata value from a template using a key string. The valid set
+of keys is determined by the implementation and must be included in
+their delivered documentation. The possible return values for a valid
+key are also implementation specific. Invalid keys should return an
+error.</p>
+<div class="section" id="id26">
+<h4>Signature<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_template_get_attribute</span><span class="p">(</span><span class="n">JaniceTemplate</span> <span class="n">tmpl</span><span class="p">,</span>
+                                                        <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">key</span><span class="p">,</span>
+                                                        <span class="n">JaniceAttribute</span><span class="o">*</span> <span class="n">value</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id27">
+<h4>Thread Safety<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id28">
+<h4>Parameters<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="10%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>tmpl</td>
+<td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a></td>
+<td>A template object to query the attribute from.</td>
+</tr>
+<tr class="row-odd"><td>key</td>
 <td>const char*</td>
-<td>The name of the attribute to query.</td>
+<td>A key to look up a specific attribute. Valid keys must be defined and documented by the implementor.</td>
 </tr>
 <tr class="row-even"><td>value</td>
-<td>char**</td>
-<td>An uninitialized pointer to hold
-the attribute value. The
-implementor should allocate this
-object during the function call.
-The returned value must be a null
-terminated string.</td>
+<td><a class="reference internal" href="detection.html#janiceattribute"><span class="std std-ref">JaniceAttribute</span></a>*</td>
+<td>An uninitialized char* to hold the value of the attribute. This object should be allocated by the implementor during the function call. The user is responsible for the object by calling <a class="reference internal" href="detection.html#janice-free-attribute"><span class="std std-ref">janice_free_attribute</span></a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="janice-serialize-template">
-<span id="id17"></span><h3>janice_serialize_template<a class="headerlink" href="#janice-serialize-template" title="Permalink to this headline">¶</a></h3>
+<span id="id29"></span><h3>janice_serialize_template<a class="headerlink" href="#janice-serialize-template" title="Permalink to this headline">¶</a></h3>
 <p>Serialize a <a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> object to a flat buffer.</p>
-<div class="section" id="id18">
-<h4>Signature<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_serialize_template</span><span class="p">(</span><span class="n">JaniceConstTemplate</span> <span class="n">tmpl</span><span class="p">,</span>
+<div class="section" id="id30">
+<h4>Signature<a class="headerlink" href="#id30" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_serialize_template</span><span class="p">(</span><span class="n">JaniceTemplate</span> <span class="n">tmpl</span><span class="p">,</span>
                                                     <span class="n">JaniceBuffer</span><span class="o">*</span> <span class="n">data</span><span class="p">,</span>
                                                     <span class="n">size_t</span><span class="o">*</span> <span class="nb">len</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id19">
-<h4>Thread Safety<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<div class="section" id="id31">
+<h4>Thread Safety<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id20">
-<h4>Parameters<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id32">
+<h4>Parameters<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="11%" />
-<col width="37%" />
-<col width="53%" />
+<col width="3%" />
+<col width="10%" />
+<col width="88%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -308,17 +471,12 @@ terminated string.</td>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>tmpl</td>
-<td><a class="reference internal" href="#janiceconsttemplate"><span class="std std-ref">JaniceConstTemplate</span></a></td>
+<td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a></td>
 <td>A template object to serialize</td>
 </tr>
 <tr class="row-odd"><td>data</td>
-<td><a class="reference internal" href="io.html#janicebuffer"><span class="std std-ref">JaniceBuffer</span></a> *</td>
-<td>An uninitialized buffer to hold the
-flattened data. The implementor should
-allocate this object during the
-function call. The user is responsible
-for freeing the object by calling
-<a class="reference internal" href="io.html#janice-free-buffer"><span class="std std-ref">janice_free_buffer</span></a></td>
+<td><a class="reference internal" href="detection.html#janicebuffer"><span class="std std-ref">JaniceBuffer</span></a>*</td>
+<td>An uninitialized buffer to hold the flattened data. The implementor should allocate this object during the function call. The user is responsible for freeing the object by calling <a class="reference internal" href="detection.html#janice-free-buffer"><span class="std std-ref">janice_free_buffer</span></a></td>
 </tr>
 <tr class="row-even"><td>len</td>
 <td>size_t*</td>
@@ -327,8 +485,8 @@ for freeing the object by calling
 </tbody>
 </table>
 </div>
-<div class="section" id="id21">
-<h4>Example<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="example">
+<h4>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JaniceTemplate</span> <span class="n">tmpl</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">tmpl</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="n">template</span> <span class="n">created</span>
                      <span class="o">//</span> <span class="n">previously</span><span class="o">.</span>
 
@@ -340,27 +498,27 @@ for freeing the object by calling
 </div>
 </div>
 <div class="section" id="janice-deserialize-template">
-<span id="id22"></span><h3>janice_deserialize_template<a class="headerlink" href="#janice-deserialize-template" title="Permalink to this headline">¶</a></h3>
+<span id="id33"></span><h3>janice_deserialize_template<a class="headerlink" href="#janice-deserialize-template" title="Permalink to this headline">¶</a></h3>
 <p>Deserialize a <a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> object from a flat buffer.</p>
-<div class="section" id="id23">
-<h4>Signature<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id34">
+<h4>Signature<a class="headerlink" href="#id34" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_deserialize_template</span><span class="p">(</span><span class="n">const</span> <span class="n">JaniceBuffer</span> <span class="n">data</span><span class="p">,</span>
                                                       <span class="n">size_t</span> <span class="nb">len</span><span class="p">,</span>
                                                       <span class="n">JaniceTemplate</span><span class="o">*</span> <span class="n">tmpl</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id24">
-<h4>Thread Safety<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<div class="section" id="id35">
+<h4>Thread Safety<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id25">
-<h4>Parameters<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id36">
+<h4>Parameters<a class="headerlink" href="#id36" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="9%" />
-<col width="36%" />
-<col width="55%" />
+<col width="3%" />
+<col width="12%" />
+<col width="85%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -370,27 +528,22 @@ for freeing the object by calling
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>data</td>
-<td>const <a class="reference internal" href="io.html#janicebuffer"><span class="std std-ref">JaniceBuffer</span></a></td>
-<td>A buffer containing data from a flattened
-template object.</td>
+<td>const <a class="reference internal" href="detection.html#janicebuffer"><span class="std std-ref">JaniceBuffer</span></a></td>
+<td>A buffer containing data from a flattened template object.</td>
 </tr>
 <tr class="row-odd"><td>len</td>
 <td>size_t</td>
 <td>The length of the flat buffer.</td>
 </tr>
 <tr class="row-even"><td>tmpl</td>
-<td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> *</td>
-<td>An uninitialized template object. The
-implementor should allocate this object
-during the function call. The user is
-responsible for freeing the object by
-calling <a class="reference internal" href="#janice-free-template"><span class="std std-ref">janice_free_template</span></a></td>
+<td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a>*</td>
+<td>An uninitialized template object. The implementor should allocate this object during the function call. The user is responsible for freeing the object by calling <a class="reference internal" href="#janice-free-template"><span class="std std-ref">janice_free_template</span></a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="id26">
-<h4>Example<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id37">
+<h4>Example<a class="headerlink" href="#id37" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">size_t</span> <span class="n">buffer_len</span> <span class="o">=</span> <span class="n">K</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">K</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">known</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="n">buffer</span>
 <span class="n">JaniceBuffer</span> <span class="n">buffer</span><span class="p">[</span><span class="n">buffer_len</span><span class="p">];</span>
 
@@ -406,7 +559,7 @@ calling <a class="reference internal" href="#janice-free-template"><span class="
 </div>
 </div>
 <div class="section" id="janice-read-template">
-<span id="id27"></span><h3>janice_read_template<a class="headerlink" href="#janice-read-template" title="Permalink to this headline">¶</a></h3>
+<span id="id38"></span><h3>janice_read_template<a class="headerlink" href="#janice-read-template" title="Permalink to this headline">¶</a></h3>
 <p>Read a template from a file on disk. This method is functionally
 equivalent to the following-</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">const</span> <span class="n">size_t</span> <span class="n">buffer_len</span> <span class="o">=</span> <span class="n">K</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">K</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">known</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="n">buffer</span>
@@ -423,24 +576,24 @@ equivalent to the following-</p>
 </div>
 <p>It is provided for memory efficiency and ease of use when reading from
 disk.</p>
-<div class="section" id="id28">
-<h4>Signature<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id39">
+<h4>Signature<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_read_template</span><span class="p">(</span><span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">filename</span><span class="p">,</span>
                                                <span class="n">JaniceTemplate</span><span class="o">*</span> <span class="n">tmpl</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id29">
-<h4>Thread Safety<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<div class="section" id="id40">
+<h4>Thread Safety<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id30">
-<h4>Parameters<a class="headerlink" href="#id30" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id41">
+<h4>Parameters<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="34%" />
-<col width="50%" />
+<col width="4%" />
+<col width="11%" />
+<col width="85%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -450,23 +603,18 @@ disk.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>filename</td>
-<td>const char *</td>
+<td>const char*</td>
 <td>The path to a file on disk</td>
 </tr>
 <tr class="row-odd"><td>tmpl</td>
-<td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> *</td>
-<td>An uninitialized template object. The
-implementor should allocate this
-object during the function call. The
-user is responsible for freeing the
-object by calling
-<a class="reference internal" href="#janice-free-template"><span class="std std-ref">janice_free_template</span></a></td>
+<td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a>*</td>
+<td>An uninitialized template object. The implementor should allocate this object during the function call. The user is responsible for freeing the object by calling <a class="reference internal" href="#janice-free-template"><span class="std std-ref">janice_free_template</span></a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="id31">
-<h4>Example<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id42">
+<h4>Example<a class="headerlink" href="#id42" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplate tmpl = NULL;
 if (janice_read_template(&quot;example.template&quot;, &amp;tmpl) != JANICE_SUCCESS)
     // ERROR!
@@ -475,7 +623,7 @@ if (janice_read_template(&quot;example.template&quot;, &amp;tmpl) != JANICE_SUCC
 </div>
 </div>
 <div class="section" id="janice-write-template">
-<span id="id32"></span><h3>janice_write_template<a class="headerlink" href="#janice-write-template" title="Permalink to this headline">¶</a></h3>
+<span id="id43"></span><h3>janice_write_template<a class="headerlink" href="#janice-write-template" title="Permalink to this headline">¶</a></h3>
 <p>Write a template to a file on disk. This method is functionally
 equivalent to the following-</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JaniceTemplate</span> <span class="n">tmpl</span><span class="p">;</span> <span class="o">//</span> <span class="n">Where</span> <span class="n">tmpl</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">valid</span> <span class="n">template</span> <span class="n">created</span>
@@ -493,74 +641,24 @@ equivalent to the following-</p>
 </div>
 <p>It is provided for memory efficiency and ease of use when writing to
 disk.</p>
-<div class="section" id="id33">
-<h4>Signature<a class="headerlink" href="#id33" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_write_template</span><span class="p">(</span><span class="n">JaniceConstTemplate</span> <span class="n">tmpl</span><span class="p">,</span>
+<div class="section" id="id44">
+<h4>Signature<a class="headerlink" href="#id44" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_write_template</span><span class="p">(</span><span class="n">JaniceTemplate</span> <span class="n">tmpl</span><span class="p">,</span>
                                                 <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">filename</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="threadsafety">
 <h4>ThreadSafety<a class="headerlink" href="#threadsafety" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id34">
-<h4>Parameters<a class="headerlink" href="#id34" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id45">
+<h4>Parameters<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
-<col width="37%" />
-<col width="47%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Type</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>tmpl</td>
-<td><a class="reference internal" href="#janiceconsttemplate"><span class="std std-ref">JaniceConstTemplate</span></a></td>
-<td>The template object to write to
-disk.</td>
-</tr>
-<tr class="row-odd"><td>filename</td>
-<td>const char*</td>
-<td>The path to a file on disk.</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="id35">
-<h4>Example<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplate tmpl; // Where tmpl is a valid template created
-                     // previously
-if (janice_write_template(tmpl, &quot;example.template&quot;) != JANICE_SUCCESS)
-    // ERROR!
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="janice-free-template">
-<span id="id36"></span><h3>janice_free_template<a class="headerlink" href="#janice-free-template" title="Permalink to this headline">¶</a></h3>
-<p>Free any memory associated with a <a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> object.</p>
-<div class="section" id="id37">
-<h4>Signature<a class="headerlink" href="#id37" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_template</span><span class="p">(</span><span class="n">JaniceTemplate</span><span class="o">*</span> <span class="n">tmpl</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="id38">
-<h4>Thread Safety<a class="headerlink" href="#id38" title="Permalink to this headline">¶</a></h4>
-<p>This function is reentrant.</p>
-</div>
-<div class="section" id="id39">
-<h4>Parameters<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h4>
-<table border="1" class="docutils">
-<colgroup>
-<col width="9%" />
-<col width="30%" />
-<col width="61%" />
+<col width="14%" />
+<col width="32%" />
+<col width="54%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -571,20 +669,135 @@ if (janice_write_template(tmpl, &quot;example.template&quot;) != JANICE_SUCCESS)
 <tbody valign="top">
 <tr class="row-even"><td>tmpl</td>
 <td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a></td>
-<td>A template object to free. Best practice
-dictates the pointer should be set to <em>NULL</em>
-after it is free.</td>
+<td>The template object to write to disk.</td>
+</tr>
+<tr class="row-odd"><td>filename</td>
+<td>const char*</td>
+<td>The path to a file on disk.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="id40">
-<h4>Example<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id46">
+<h4>Example<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplate tmpl; // Where tmpl is a valid template created
+                     // previously
+if (janice_write_template(tmpl, &quot;example.template&quot;) != JANICE_SUCCESS)
+    // ERROR!
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="janice-free-template">
+<span id="id47"></span><h3>janice_free_template<a class="headerlink" href="#janice-free-template" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a> object.</p>
+<div class="section" id="id48">
+<h4>Signature<a class="headerlink" href="#id48" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_template</span><span class="p">(</span><span class="n">JaniceTemplate</span><span class="o">*</span> <span class="n">tmpl</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id49">
+<h4>Thread Safety<a class="headerlink" href="#id49" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id50">
+<h4>Parameters<a class="headerlink" href="#id50" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="40%" />
+<col width="49%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>tmpl</td>
+<td><a class="reference internal" href="#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a></td>
+<td>A template object to free.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id51">
+<h4>Example<a class="headerlink" href="#id51" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplate tmpl; // Where tmpl is a valid template object created previously
 if (janice_free_template(&amp;tmpl) != JANICE_SUCCESS)
     // ERROR!
 </pre></div>
 </div>
+</div>
+</div>
+<div class="section" id="janice-clear-templates">
+<span id="id52"></span><h3>janice_clear_templates<a class="headerlink" href="#janice-clear-templates" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a of <a class="reference internal" href="#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a> object.</p>
+<div class="section" id="id53">
+<h4>Signature<a class="headerlink" href="#id53" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_templates</span><span class="p">(</span><span class="n">JaniceTemplates</span><span class="o">*</span> <span class="n">templates</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id54">
+<h4>Thread Safety<a class="headerlink" href="#id54" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id55">
+<h4>Parameters<a class="headerlink" href="#id55" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="41%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>tmpls</td>
+<td><a class="reference internal" href="#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a>*</td>
+<td>A templates objects to clear.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="janice-clear-templates-group">
+<span id="id56"></span><h3>janice_clear_templates_group<a class="headerlink" href="#janice-clear-templates-group" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janicetemplatesgroup"><span class="std std-ref">JaniceTemplatesGroup</span></a> object.</p>
+<div class="section" id="id57">
+<h4>Signature<a class="headerlink" href="#id57" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_templates_group</span><span class="p">(</span><span class="n">JaniceTemplatesGroup</span><span class="o">*</span> <span class="n">group</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id58">
+<h4>Parameters<a class="headerlink" href="#id58" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="46%" />
+<col width="43%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>group</td>
+<td><a class="reference internal" href="#janicetemplatesgroup"><span class="std std-ref">JaniceTemplatesGroup</span></a>*</td>
+<td>A templates group to clear.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -611,18 +824,18 @@ if (janice_free_template(&amp;tmpl) != JANICE_SUCCESS)
 <li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="initialization.html">Initialization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">I/O</a></li>
+<li class="toctree-l1"><a class="reference internal" href="context.html">Context</a></li>
 <li class="toctree-l1"><a class="reference internal" href="train.html">Training</a></li>
 <li class="toctree-l1"><a class="reference internal" href="detection.html">Detection</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Enrollment</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#enumerations">Enumerations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#structs">Structs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#typedefs">Typedefs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparison.html">Comparison / Search</a></li>
 <li class="toctree-l1"><a class="reference internal" href="clustering.html">Clustering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>
