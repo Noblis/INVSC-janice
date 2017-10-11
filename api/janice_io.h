@@ -12,13 +12,6 @@ extern "C" {
 #endif
 
 // ----------------------------------------------------------------------------
-// Buffer
-
-typedef uint8_t* JaniceBuffer;
-
-JANICE_EXPORT JaniceError janice_free_buffer(JaniceBuffer* buffer);
-
-// ----------------------------------------------------------------------------
 // Image
 
 struct JaniceImageType
@@ -27,17 +20,11 @@ struct JaniceImageType
     uint32_t rows;
     uint32_t cols;
 
-    JaniceBuffer data;
+    uint8_t* data;
     bool owner;
 };
 
 typedef struct JaniceImageType* JaniceImage;
-typedef const struct JaniceImageType* JaniceConstImage;
-
-inline uint8_t janice_image_access(JaniceConstImage image, uint32_t channel, uint32_t row, uint32_t col)
-{
-    return image->data[(row * image->cols * image->channels) + (col * image->channels) + channel];
-}
 
 // ----------------------------------------------------------------------------
 // Media Iterator
@@ -50,6 +37,7 @@ struct JANICE_EXPORT JaniceMediaIteratorType
     JaniceError (*seek)(JaniceMediaIteratorType*, uint32_t);
     JaniceError (* get)(JaniceMediaIteratorType*, JaniceImage*, uint32_t);
     JaniceError (*tell)(JaniceMediaIteratorType*, uint32_t*);
+    JaniceError (*reset)(JaniceMediaIteratorType*);
 
     JaniceError (*free_image)(JaniceImage*);
     JaniceError (*free)(JaniceMediaIteratorType**);
@@ -58,7 +46,12 @@ struct JANICE_EXPORT JaniceMediaIteratorType
 };
 
 typedef struct JaniceMediaIteratorType* JaniceMediaIterator;
-typedef JaniceMediaIterator* JaniceMediaIterators;
+
+struct JaniceMediaIterators
+{
+    JaniceMediaIterator* media;
+    uint32_t length;
+};
 
 #ifdef __cplusplus
 } // extern "C"

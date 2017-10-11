@@ -36,17 +36,28 @@ Thread Safety
 
 All functions are marked one of:
 
-+----------------+------------------------------------------------------------+
-| Type           | Description                                                |
-+================+============================================================+
-| Thread safe    | Can be called simultaneously from multiple threads, even   |
-|                | when the invocations use shared data.                      |
-+----------------+------------------------------------------------------------+
-| Reentrant      | Can be called simultaneously from multiple threads, but    |
-|                | only if each invocation uses its own data.                 |
-+----------------+------------------------------------------------------------+
-| Thread unsafe  | Can not be called simultaneously from multiple threads.    |
-+----------------+------------------------------------------------------------+
+.. _thread_safe:
+
+Thread Safe
+^^^^^^^^^^^
+
+Can be called simultaneously from multiple threads, even when the invocations
+use shared data.
+
+.. _reentrant:
+
+Reentrant
+^^^^^^^^^
+
+Can be called simultaneously from multiple threads, but only if each invocation
+uses its own data.
+
+.. _thread_unsafe:
+
+Thread Unsafe
+^^^^^^^^^^^^^
+
+Can not be called simultaneously from multiple threads.
 
 .. _compiling:
 
