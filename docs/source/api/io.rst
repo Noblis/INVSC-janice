@@ -21,7 +21,7 @@ of the API. This serves three purposes:
 
 To accomplish this goal the API defines a simple interface of two
 structures, :ref:`JaniceImageType` and :ref:`JaniceMediaIteratorType` which
-correspond to a single image or frame and an entire video respectively.
+correspond to a single image or frame and an entire media respectively.
 These interfaces allow pixel-level access for implementations and can be
 changed independently to work with new formats.
 
@@ -33,26 +33,38 @@ Structs
 JaniceImageType
 ~~~~~~~~~~~~~~~
 
-An interface representing a single frame or an image
+A structure representing a single frame or an image
 
 Fields
 ^^^^^^
 
-+-----------+---------------------+--------------------------------------------+
-| Name      | Type                | Description                                |
-+===========+=====================+============================================+
-| channels  | uint32\_t           | The number of channels in the image.       |
-+-----------+---------------------+--------------------------------------------+
-| rows      | uint32\_t           | The number of rows in the image.           |
-+-----------+---------------------+--------------------------------------------+
-| cols      | uint32\_t           | The number of columns in the image.        |
-+-----------+---------------------+--------------------------------------------+
-| data      | :ref:`JaniceBuffer` | A contiguous, row-major array containing   |
-|           |                     | pixel data.                                |
-+-----------+---------------------+--------------------------------------------+
-| owner     | bool                | True if the image owns its data and should |
-|           |                     | delete it, false otherwise.                |
-+-----------+---------------------+--------------------------------------------+
++----------+-----------+------------------------------------------------------------------------+
+|   Name   |   Type    |                              Description                               |
++==========+===========+========================================================================+
+| channels | uint32\_t | The number of channels in the image.                                   |
++----------+-----------+------------------------------------------------------------------------+
+| rows     | uint32\_t | The number of rows in the image.                                       |
++----------+-----------+------------------------------------------------------------------------+
+| cols     | uint32\_t | The number of columns in the image.                                    |
++----------+-----------+------------------------------------------------------------------------+
+| data     | uint8_t\* | A contiguous, row-major array containing pixel data.                   |
++----------+-----------+------------------------------------------------------------------------+
+| owner    | bool      | True if the image owns its data and should delete it, false otherwise. |
++----------+-----------+------------------------------------------------------------------------+
+
+.. _JaniceImage:
+
+JaniceImage
+~~~~~~~~~~~
+
+A pointer to a :ref:`JaniceImageType`.
+
+Signature
+^^^^^^^^^
+
+::
+
+    typedef struct JaniceImageType* JaniceImage;
 
 .. _JaniceMediaIteratorState:
 
@@ -74,84 +86,26 @@ enable lazy loading via function pointers.
 Fields
 ^^^^^^
 
-+---------+-----------------------------------+--------------------------------+
-| Name    | Type                              | Description                    |
-+=========+===================================+================================+
-| next    | :ref:`JaniceError`\(              | A function pointer that        |
-|         | :ref:`JaniceMediaIteratorType` \*,| advances the iterators one     |
-|         | :ref:`JaniceImage` \*\)           | frame. The next frame or video |
-|         |                                   | image should be stored in the  |
-|         |                                   | :ref:`JaniceImage` parameter.  |
-+---------+-----------------------------------+--------------------------------+
-| seek    | :ref:`JaniceError`\(              | A function pointer that        |
-|         | :ref:`JaniceMediaIteratorType` \*,| advances the iterator to a     |
-|         | uint32\_t\)                       | specific frame. This function  |
-|         |                                   | is not applicable to images.   |
-+---------+-----------------------------------+--------------------------------+
-| get     | :ref:`JaniceError`\(              | A function pointer that        |
-|         | :ref:`JaniceMediaIteratorType` \*,| advances the iterator to a     |
-|         | :ref:`JaniceImage`\*,             | specific frame and retrieves   |
-|         | uint32\_t\)                       | that frame. This function is   |
-|         |                                   | not applicable to images.      |
-+---------+-----------------------------------+--------------------------------+
-| tell    | :ref:`JaniceError`\(              | A function pointer to report   |
-|         | :ref:`JaniceMediaIteratorType` \*,| the current position of the    |
-|         | uint32\_t \*\)                    | iterator. This function is not |
-|         |                                   | applicable to images.          |
-+---------+-----------------------------------+--------------------------------+
-| free\_i | :ref:`JaniceError`\(              | A function pointer to free an  |
-|         | :ref:`JaniceImage` \*\)           | image allocated by *next* or   |
-|         |                                   | *get*.                         |
-+---------+-----------------------------------+--------------------------------+
-| free    | :ref:`JaniceError`\(              | A function pointer to free a   |
-|         | :ref:`JaniceMediaIteratorType`    | :ref:`JaniceMediaIteratorType` |
-|         | \*\*\)                            | object.                        |
-+---------+-----------------------------------+--------------------------------+
++-------------+-----------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|    Name     |                                          Type                                           |                                                                                                                                                                  Description                                                                                                                                                                   |
++=============+=========================================================================================+================================================================================================================================================================================================================================================================================================================================================+
+| next        | :ref:`JaniceError`\(:ref:`JaniceMediaIteratorType`\*, :ref:`JaniceImage`\*\)            | A function pointer that advances the iterator one frame. The next video frame or image should be stored in the :ref:`JaniceImage` parameter. If the next frame or image is stored in the image parameter this function should return *JANICE_SUCCESS*.                                                                                         |
++-------------+-----------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| seek        | :ref:`JaniceError`\(:ref:`JaniceMediaIteratorType`\*, uint32\_t\)                       | A function pointer that advances the iterator to a specific frame. If the iterator is a video and the seek is successful, this function should return *JANICE_SUCCESS*. If the iterator is an image, this function should return *JANICE_NOT_IMPLEMENTED*.                                                                                     |
++-------------+-----------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| get         | :ref:`JaniceError`\(:ref:`JaniceMediaIteratorType`\*, :ref:`JaniceImage`\*, uint32\_t\) | A function pointer that advances the iterator to a specific frame and stores that frame in the :ref:`JaniceImage` parameter. If the iterator is a video and the seek and subsequent retreival are successful, this function should return *JANICE_SUCCESS*. If the iterator is an image, this function should return *JANICE_NOT_IMPLEMENTED*. |
++-------------+-----------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| tell        | :ref:`JaniceError`\(:ref:`JaniceMediaIteratorType`\*, uint32\_t\*\)                     | A function pointer that reports the current position of the iterator. If the iterator is a video and the current position is successfully queried this function should return *JANICE_SUCCESS*. If the iterator is an image, this function should return *JANICE_NOT_IMPLEMENTED*.                                                             |
++-------------+-----------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| reset       | :ref:`JaniceError`\(:ref:`JaniceMediaIteratorType`\*\)                                  | A function that resets an iterator to an initial, valid state.                                                                                                                                                                                                                                                                                 |
++-------------+-----------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| free\_image | :ref:`JaniceError`\(:ref:`JaniceImage`\*\)                                              | A function pointer to free a :ref:`JaniceImage` object.                                                                                                                                                                                                                                                                                        |
++-------------+-----------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| free        | :ref:`JaniceError`\(:ref:`JaniceMediaIteratorType`\*\*\)                                | A function pointer to free a :ref:`JaniceMediaIteratorType` object.                                                                                                                                                                                                                                                                            |
++-------------+-----------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Typedefs
 --------
-
-.. _JaniceBuffer:
-
-JaniceBuffer
-~~~~~~~~~~~~
-
-An array of uint8\_t
-
-Signature
-^^^^^^^^^
-
-::
-
-    typedef uint8_t* JaniceBuffer;
-
-.. _JaniceImage:
-
-JaniceImage
-~~~~~~~~~~~
-
-A pointer to a :ref:`JaniceImageType` object.
-
-Signature
-^^^^^^^^^
-
-::
-
-    typedef struct JaniceImageType* JaniceImage;
-
-.. _JaniceConstImage:
-
-JaniceConstImage
-~~~~~~~~~~~~~~~~
-
-A pointer to a constant :ref:`JaniceImageType` object.
-
-Signature
-^^^^^^^^^
-
-::
-
-    typedef const struct JaniceImageType* JaniceConstImage;
 
 .. _JaniceMediaIterator:
 
@@ -172,80 +126,15 @@ Signature
 JaniceMediaIterators
 ~~~~~~~~~~~~~~~~~~~~
 
-A pointer to an array of :ref:`JaniceMediaIterator` objects.
+A structure representing a list of :ref:`JaniceMediaIterator` objects.
 
-Signature
-^^^^^^^^^
+Fields
+^^^^^^
 
-::
-
-    typedef struct JaniceMediaIterator* JaniceMediaIterators;
-
-
-Functions
----------
-
-.. _janice\_free\_buffer:
-
-janice\_free\_buffer
-~~~~~~~~~~~~~~~~~~~~
-
-Release the memory for an allocated buffer.
-
-Signature
-^^^^^^^^^
-
-::
-
-    JANICE_EXPORT JaniceError janice_free_buffer(JaniceBuffer* buffer);
-
-Thread Safety
-^^^^^^^^^^^^^
-
-This function is reentrant
-
-Parameters
-^^^^^^^^^^
-
-+----------+------------------------+----------------------+
-| Name     | Type                   | Description          |
-+==========+========================+======================+
-| buffer   | :ref:`JaniceBuffer` \* | The buffer to free   |
-+----------+------------------------+----------------------+
-
-.. _janice\_image\_access:
-
-janice\_image\_access
-~~~~~~~~~~~~~~~~~~~~~
-
-Get a pixel value at a given row, column and channel.
-
-Signature
-^^^^^^^^^
-
-::
-
-    inline uint8_t janice_image_access(JaniceConstImage image, uint32_t channel, uint32_t row, uint32_t col);
-
-Thread Safety
-^^^^^^^^^^^^^
-
-This function is reentrant
-
-Parameters
-^^^^^^^^^^
-
-+-----------+-------------------------+----------------------------------------+
-| Name      | Type                    | Description                            |
-+===========+=========================+========================================+
-| image     | :ref:`JaniceConstImage` | An image object                        |
-+-----------+-------------------------+----------------------------------------+
-| channel   | uint32\_t               | The channel to access. Must be less    |
-|           |                         | image->channels.                       |
-+-----------+-------------------------+----------------------------------------+
-| row       | uint32\_t               | The row to access. Must be less than   |
-|           |                         | image->rows.                           |
-+-----------+-------------------------+----------------------------------------+
-| col       | uint32\_t               | The column to access. Must be less     | 
-|           |                         | than image->cols.                      |
-+-----------+-------------------------+----------------------------------------+
++--------+------------------------------+-------------------------------------+
+|  Name  |             Type             |             Description             |
++========+==============================+=====================================+
+| media  | :ref:`JaniceMediaIterator`\* | An array of media iterator objects. |
++--------+------------------------------+-------------------------------------+
+| length | size_t                       | The number of elements in *media*   |
++--------+------------------------------+-------------------------------------+

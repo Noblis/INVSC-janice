@@ -8,6 +8,11 @@ endif(NOT OpenCV_FOUND)
 set(OpenCV_LIBS opencv_core opencv_highgui opencv_videoio opencv_imgcodecs)
 
 include_directories(.)
+include_directories(../../api/)
+
+message("Got libs ${OpenCV_LIBS}")
+message("Got path ${OpenCV_DIR}")
+
 
 add_library(janice_io_opencv SHARED janice_io_opencv.cpp)
 set_target_properties(janice_io_opencv PROPERTIES
