@@ -48,8 +48,8 @@ int check_media_iterator(const char* filename)
     // Variables to be filled during iterator calls
     JaniceImage image = nullptr;
     uint32_t frame;
-    CHECK(it->next(it, &image) == JANICE_MEDIA_AT_END,
-          "Calling next on a media iterator for an image should return JANICE_MEDIA_AT_END",
+    CHECK(it->next(it, &image) == JANICE_SUCCESS,
+          "Calling next on a media iterator for an image should return JANICE_SUCCESS",
           // Cleanup
           [&]() {
               it->free(&it);
@@ -91,25 +91,29 @@ int check_media_iterator(const char* filename)
 // ----------------------------------------------------------------------------
 // Check image pixel values
 
-static inline int check_pixel(JaniceConstImage image,
+static inline int check_pixel(JaniceImage image,
                                uint32_t x,
                                uint32_t y,
                                uint8_t red,
                                uint8_t green,
                                uint8_t blue)
 {
+    auto get_pixel = [](JaniceImage image, int channel, int row, int col) {
+        return image->data[(row * image->cols * image->channels) + (col * image->channels) + channel];
+    };
+
     // Check the blue pixel first, remember OpenCV stores images in BGR order
-    CHECK(janice_image_access(image, 0, y, x) == blue,
+    CHECK(get_pixel(image, 0, y, x) == blue,
           "Blue pixel doesn't match.",
           [](){})
 
     // Check the green pixel
-    CHECK(janice_image_access(image, 1, y, x) == green,
+    CHECK(get_pixel(image, 1, y, x) == green,
           "Green pixel doesn't match.",
           [](){})
 
     // Check the red pixel
-    CHECK(janice_image_access(image, 2, y, x) == red,
+    CHECK(get_pixel(image, 2, y, x) == red,
           "Red pixel doesn't match.",
           [](){})
 
