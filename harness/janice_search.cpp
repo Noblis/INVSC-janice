@@ -50,9 +50,9 @@ int main(int argc, char* argv[])
     // TODO: Right now we only allow a single GPU to be used
     JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1))
 
-    JaniceDetectionPolicy policy;
+    JaniceDetectionPolicy policy = JaniceDetectAll; // This is ignored
     uint32_t min_object_size = 0;
-    JaniceEnrollmentType role;
+    JaniceEnrollmentType role = Janice1NProbe; // This is ignored
     double hint = 0.0;
 
     JaniceContext context = nullptr;

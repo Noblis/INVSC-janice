@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
     JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1))
 
     // Unused defaults for context parameters
-    JaniceDetectionPolicy policy;
+    JaniceDetectionPolicy policy = JaniceDetectAll;
     uint32_t min_object_size = 20;
     double threshold = 0;
     uint32_t max_returns = 0;
