@@ -136,7 +136,7 @@ Signature
 JaniceDetectionType
 ~~~~~~~~~~~~~~~~~~~
 
-An opaque pointer to a struct that represents a detection. See :ref:`detection`
+A struct that represents a detection. See :ref:`detection`
 for more information.
 
 .. _JaniceDetection:

@@ -30,7 +30,7 @@ Structs
 JaniceGalleryType 
 ~~~~~~~~~~~~~~~~~
 
-An opaque pointer to a struct that represents a gallery.
+A struct that represents a gallery.
 
 Typedefs
 --------

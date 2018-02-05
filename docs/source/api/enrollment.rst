@@ -39,7 +39,7 @@ Structs
 JaniceTemplateType
 ~~~~~~~~~~~~~~~~~~
 
-An opaque pointer to a struct that represents a template.
+A struct that represents a template.
 
 Typedefs
 --------

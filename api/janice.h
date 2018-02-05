@@ -9,7 +9,7 @@ extern "C" {
 
 #define JANICE_VERSION_MAJOR 5
 #define JANICE_VERSION_MINOR 0
-#define JANICE_VERSION_PATCH 0
+#define JANICE_VERSION_PATCH 1
 
 // ----------------------------------------------------------------------------
 // The JanICE API is an open source API that provides a common interface
