@@ -15,6 +15,7 @@ if (${JANICE_WITH_EVAL_HARNESS} AND (JANICE_IO_IMPLEMENTATION) AND (JANICE_IMPLE
       janice_search.cpp
       janice_cluster_templates.cpp
       janice_cluster_media.cpp
+      janice_verify.cpp
       )
 
   # Loop over the utils, rather than having a separate rule for each.
