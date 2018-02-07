@@ -63,22 +63,21 @@ int main(int argc, char* argv[])
     JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, max_returns, hint, &context))
 
     // Parse the images file
-    io::CSVReader<1> *images = new io::CSVReader<1>(images_file);
-    images->read_header(io::ignore_extra_column, "FILENAME");
+    io::CSVReader<1> images(images_file);
+    images.read_header(io::ignore_extra_column, "FILENAME");
 
     std::vector<std::string> filenames;
     std::vector<JaniceMediaIterator> media;
 
     // Load filenames into a vector
     std::string filename;
-    while (images->read_row(filename)) {
+    while (images.read_row(filename)) {
         JaniceMediaIterator it;
         JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + filename).c_str(), &it))
 
         filenames.push_back(filename);
         media.push_back(it);
     }
-    delete images;
 
     // Convert the vector into a C-style struct
     JaniceMediaIterators media_list;
