@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 
     // Parse the metadata file
     io::CSVReader<7> metadata(input_file);
-    metadata.read_header(io::ignore_extra_column, "file", "templateId", "subjectId", "Face_X", "Face_Y", "Face_Width", "Face_Height");
+    metadata.read_header(io::ignore_extra_column, "FILENAME", "TEMPLATE_ID", "SUBJECT_ID", "FACE_X", "FACE_Y", "FACE_WIDTH", "FACE_HEIGHT");
 
     std::unordered_map<int, std::vector<JaniceDetection>> detections_lut;
     std::unordered_map<int, int> subject_id_lut;

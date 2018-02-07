@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
 
     // Load the gallery
     io::CSVReader<3> gallery_metadata(gallery_file);
-    gallery_metadata.read_header(io::ignore_extra_column, "file", "templateId", "subjectId");
+    gallery_metadata.read_header(io::ignore_extra_column, "FILENAME", "TEMPLATE_ID", "SUBJECT_ID");
 
     std::unordered_map<int, int> subject_id_lut;
 
@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
 
     // Parse the probe file
     io::CSVReader<3> probe_metadata(probe_file);
-    probe_metadata.read_header(io::ignore_extra_column, "file", "templateId", "subjectId");
+    probe_metadata.read_header(io::ignore_extra_column, "FILENAME", "TEMPLATE_ID", "SUBJECT_ID");
 
     while (probe_metadata.read_row(filename, template_id, subject_id)) {
         JaniceTemplate tmpl;
