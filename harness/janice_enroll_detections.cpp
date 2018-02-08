@@ -6,6 +6,10 @@
 
 #include <unordered_map>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 void print_usage()
 {
     printf("Usage: janice_enroll_detections sdk_path temp_path data_path input_file role output_path [-algorithm <algorithm>] [-threads <int>] [-gpu <int>]\n");
@@ -26,7 +30,7 @@ int main(int argc, char* argv[])
     const std::string data_path   = argv[3];
     const std::string input_file  = argv[4];
     const std::string role_str    = argv[5];
-    const std::string output_path = argv[6];
+    std::string output_path = argv[6];
 
     std::string algorithm;
     int num_threads, gpu;
@@ -131,8 +135,25 @@ int main(int argc, char* argv[])
     delete[] detections_group.group;
 
     // Write the templates to disk
-    FILE* output = fopen((output_path + "/templates.csv").c_str(), "w+");
-    fprintf(output, "file,templateId,subjectId\n");
+    struct stat stat_buf;
+    if (*(output_path.end()) == '/') {
+      output_path = output_path.substr(0, output_path.length() - 1);
+    }
+    std::string output_file_name(output_path);
+    // taa: If we were given the name of an existing directory, we'll append "templates.csv"
+    // and use that. Otherwise, we take the output_path as a file name, and use it unmodified.
+    if (stat(output_path.c_str(), &stat_buf) == 0 &&
+        (stat_buf.st_mode & S_IFDIR) != 0) {
+      output_file_name = output_path + "/templates.csv";
+    }
+    else {
+      size_t last_slash = output_path.rfind("/");
+      // We need the directory part to write the templates.
+      output_path = output_path.substr(0, last_slash);
+    }
+    FILE* output = fopen(output_file_name.c_str(), "w+");
+    // taa: Use old-style headers.
+    fprintf(output, "FILENAME,TEMPLATE_ID,SUBJECT_ID\n");
 
     for (size_t i = 0; i < tmpls.length; ++i) {
         std::string tmpl_file = output_path + "/" + std::to_string(template_ids[i]) + ".tmpl";
@@ -140,6 +161,9 @@ int main(int argc, char* argv[])
 
         fprintf(output, "%s,%d,%d\n", tmpl_file.c_str(), template_ids[i], subject_id_lut[template_ids[i]]);
     }
+
+    // Close the file
+    fclose(output);
 
     // Free the templates
     JANICE_ASSERT(janice_clear_templates(&tmpls))

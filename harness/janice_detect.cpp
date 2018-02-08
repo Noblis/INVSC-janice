@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
     
     // Write the detection files to disk
     FILE* output = fopen(output_file.c_str(), "w+");
-    fprintf(output, "file,frame,Face_X,Face_Y,Face_Width,Face_Height,Confidence\n");
+    fprintf(output, "FILENAME,FRAME,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE\n");
 
     for (size_t i = 0; i < detections_group.length; ++i) {
         JaniceDetections detections = detections_group.group[i];
