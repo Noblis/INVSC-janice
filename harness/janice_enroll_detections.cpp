@@ -126,6 +126,8 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
+    janice_clear_detections_group(&detections_group);
+#if 0
     // Clear the detections
     for (size_t i = 0; i < detections_group.length; ++i) {
         for (size_t j = 0; j < detections_group.group[i].length; ++j)
@@ -133,6 +135,7 @@ int main(int argc, char* argv[])
         delete[] detections_group.group[i].detections;
     }
     delete[] detections_group.group;
+#endif
 
     // Write the templates to disk
     struct stat stat_buf;
