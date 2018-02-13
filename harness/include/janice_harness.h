@@ -9,6 +9,8 @@
 #include <vector>
 #include <thread>
 #include <cstring>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #define JANICE_ASSERT(func)                 \
 {                                           \
@@ -29,6 +31,11 @@ inline std::string get_ext(const std::string& filename)
     if (idx != std::string::npos)
         return filename.substr(idx + 1);
     return "";
+}
+
+inline bool file_exists(const std::string &filename)
+{
+  return (access(filename.c_str(), F_OK) != -1);
 }
 
 inline bool parse_optional_args(int argc, char** argv, int min_args, int /*max_args*/, std::string& algorithm, int& num_threads, int& gpu)

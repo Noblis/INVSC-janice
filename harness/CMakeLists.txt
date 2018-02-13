@@ -9,6 +9,7 @@ if (${JANICE_WITH_EVAL_HARNESS} AND (JANICE_IO_IMPLEMENTATION) AND (JANICE_IMPLE
   include_directories(include)
 
   set(UTILS
+      janice_create_gallery.cpp
       janice_detect.cpp
       janice_enroll_media.cpp
       janice_enroll_detections.cpp
