@@ -72,6 +72,8 @@ int main(int argc, char* argv[])
     JANICE_ASSERT(janice_free_template(&tmpl));
     subject_id_lut[template_id] = subject_id;
   }
+
+  JANICE_ASSERT(janice_gallery_prepare(gallery));
   
   JANICE_ASSERT(janice_write_gallery(gallery, gallery_file.c_str()));
   
