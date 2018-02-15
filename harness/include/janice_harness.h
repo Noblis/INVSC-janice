@@ -12,13 +12,16 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#define STRINGIFY2(x) #x
+#define STRINGIFY(x) STRINGIFY2(x)
 #define JANICE_ASSERT(func)                 \
 {                                           \
     JaniceError rc = (func);                \
     if (rc != JANICE_SUCCESS) {             \
-        printf("Janice function failed!\n"  \
+        printf("Janice function %s failed!\n"  \
                "    Error: %s\n"            \
                "    Location: %s:%d\n",     \
+               STRINGIFY(func),             \
                janice_error_to_string(rc),  \
                __FILE__, __LINE__);         \
         exit(EXIT_FAILURE);                 \
