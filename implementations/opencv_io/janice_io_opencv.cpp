@@ -2,8 +2,8 @@
 
 #include <opencv2/highgui/highgui.hpp>
 
-// ----------------------------------------------------------------------------
-// JaniceMediaIterator
+namespace
+{
 
 struct JaniceMediaIteratorStateType
 {
@@ -62,6 +62,26 @@ static inline JaniceError cv_mat_to_janice_image(cv::Mat& m, JaniceImage* _image
     image->owner = true;
 
     *_image = image;
+
+    return JANICE_SUCCESS;
+}
+
+JaniceError is_video(JaniceMediaIterator it, bool* video)
+{
+    JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
+    *video = state->video.isOpened();
+
+    return JANICE_SUCCESS;
+}
+
+JaniceError get_frame_rate(JaniceMediaIterator it, float* frame_rate)
+{
+    JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
+
+    if (!state->video.isOpened())
+        return JANICE_INVALID_MEDIA;
+
+    *frame_rate = state->video.get(CV_CAP_PROP_FPS);
 
     return JANICE_SUCCESS;
 }
@@ -134,15 +154,9 @@ JaniceError seek(JaniceMediaIterator it, uint32_t frame)
             return rc;
     }
     
-    if (!state->video.isOpened()) {
-        // for stills, we still allow seek(0) as an idiom for reset
-        if (frame != 0)
-            return JANICE_OUT_OF_BOUNDS_ACCESS;
-        else {
-            state->at_end = false;
-            return JANICE_SUCCESS;
-        }
-    }
+    // Image - return INVALID_MEDIA
+    if (!state->video.isOpened())
+        return JANICE_INVALID_MEDIA;
     
     if (frame >= state->video.get(CV_CAP_PROP_FRAME_COUNT)) // invalid index
         return JANICE_OUT_OF_BOUNDS_ACCESS;
@@ -154,18 +168,37 @@ JaniceError seek(JaniceMediaIterator it, uint32_t frame)
     return JANICE_SUCCESS;
 }
 
-// get the specified frame (aka seek + next)
+// get the specified frame. This is a stateless operation so it resets the
+// frame position after the get.
 JaniceError get(JaniceMediaIterator it, JaniceImage* image, uint32_t frame)
 {
-    // don't need to check it->initialized, seek will do it.
+    JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
+
+    if (!state->initialized) {
+        cv::Mat useless;
+        JaniceError rc = initialize_media_iterator(it, useless);
+        if (rc != JANICE_SUCCESS)
+            return rc;
+    }
+
+    // Image - return INVALID_MEDIA
+    if (!state->video.isOpened())
+        return JANICE_INVALID_MEDIA;
+
+    uint32_t curr_frame = (uint32_t) state->video.get(CV_CAP_PROP_POS_FRAMES);
 
     // First we seek
     JaniceError ret = seek(it, frame);
     if (ret != JANICE_SUCCESS)
-        return ret;
+        return ret; // This leaves the iterator in an undefined state
 
     // Then we get the frame
-    return next(it, image);
+    ret = next(it, image);
+    if (ret != JANICE_SUCCESS)
+        return ret; // This leaves the iterator in an undefined state
+
+    // Then we reset the position
+    return seek(it, curr_frame);
 }
 
 // say what frame we are currently on.
@@ -189,7 +222,7 @@ JaniceError tell(JaniceMediaIterator it, uint32_t* frame)
 
 JaniceError free_image(JaniceImage* image)
 {
-    if ((*image)->owner)
+    if (image && (*image)->owner)
         free((*image)->data);
     delete (*image);
 
@@ -198,17 +231,32 @@ JaniceError free_image(JaniceImage* image)
 
 JaniceError free_iterator(JaniceMediaIterator* it)
 {
-    delete (JaniceMediaIteratorStateType*) (*it)->_internal;
-    delete (*it);
-    *it = nullptr;
+    if (it && (*it)->_internal) {
+        delete (JaniceMediaIteratorStateType*) (*it)->_internal;
+        delete (*it);
+        *it = nullptr;
+    }
 
     return JANICE_SUCCESS;
 }
 
-JaniceError reset(JaniceMediaIteratorType* it)
+JaniceError reset(JaniceMediaIterator it)
 {
-    return it->seek(it,0);
+    JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
+
+    // If not initialized the next use of the class will initialize so don't need to reset
+    if (!state->initialized)
+        return JANICE_SUCCESS;
+
+    if (!state->video.isOpened()) {
+        state->at_end = false; // Reload the image next time
+        return JANICE_SUCCESS;
+    }
+
+    return seek(it, 0); // Reset the video to the first frame
 }
+
+} // anoymous namespace
 
 // ----------------------------------------------------------------------------
 // OpenCV I/O only, create an opencv_io media iterator 
@@ -216,6 +264,9 @@ JaniceError reset(JaniceMediaIteratorType* it)
 JaniceError janice_io_opencv_create_media_iterator(const char* filename, JaniceMediaIterator* _it)
 {
     JaniceMediaIterator it = new JaniceMediaIteratorType();
+
+    it->is_video = &is_video;
+    it->get_frame_rate =  &get_frame_rate;
 
     it->next = &next;
     it->seek = &seek;

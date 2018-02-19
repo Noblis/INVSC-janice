@@ -65,12 +65,15 @@ the API are:
 Structs
 -------
 
-.. _JaniceContextType:
+.. _JaniceContext:
 
-JaniceContextType
-~~~~~~~~~~~~~~~~~
+JaniceContext
+~~~~~~~~~~~~~
 
-A context object that manages hyperparameters for JanICE functions.
+A structure to hold hyperparameters. These hyperparameters may be set by the
+user to control execution of the implementation algorithms. Users should consult
+the relevant documentation for accepted values or ranges for these hyperparameters.
+Implementors should ensure the provided values are acceptable before using them.
 
 .. _detection_min_object_size:
 
@@ -124,81 +127,24 @@ Fields
 | hint              | double                       | A hint to a clustering algorithm. See :ref:`clustering_hint` for additional information                 |
 +-------------------+------------------------------+---------------------------------------------------------------------------------------------------------+
 
-.. _JaniceContext:
-
-JaniceContext
-~~~~~~~~~~~~~
-
-A pointer to a :ref:`JaniceContextType`.
-
-Signature
-^^^^^^^^^
-
-::
-
-    typedef JaniceContextType* JaniceContext;
-
 Functions
 ---------
 
-.. _janice_create_context:
+.. _janice_init_default_context:
 
-janice\_create\_context
-~~~~~~~~~~~~~~~~~~~~~~~
+janice\_init\_default\_context
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Create a context object using the specified hyperparameters.
+Initialize hyperparameters of a context object with sensible defaults.
+The context object should be created by the user prior to calling this function.
 
 Signature
 ^^^^^^^^^
 
 ::
 
-    JANICE_EXPORT JaniceError janice_create_context(JaniceDetectionPolicy policy,
-                                                    uint32_t min_object_size,
-                                                    JaniceEnrollmentType role,
-                                                    double threshold,
-                                                    uint32_t max_returns,
-                                                    double hint,
-                                                    JaniceContext* context);
+    JANICE_EXPORT JaniceError janice_init_default_context(JaniceContext* context);
                                         
-Thread Safety
-^^^^^^^^^^^^^
-
-This function is :ref:`reentrant`.
-
-Parameters
-^^^^^^^^^^
-
-+-------------------+------------------------------+---------------------------------------------------------------------------------------------------------+
-|       Name        |             Type             |                                               Description                                               |
-+===================+==============================+=========================================================================================================+
-| policy            | :ref:`JaniceDetectionPolicy` | The detection policy                                                                                    |
-+-------------------+------------------------------+---------------------------------------------------------------------------------------------------------+
-| min\_object\_size | uint32\_t                    | The minumum object size of a detection. See :ref:`detection_min_object_size` for additional information |
-+-------------------+------------------------------+---------------------------------------------------------------------------------------------------------+
-| role              | :ref:`JaniceEnrollmentType`  | The enrollment type for a template                                                                      |
-+-------------------+------------------------------+---------------------------------------------------------------------------------------------------------+
-| threshold         | double                       | The minimum acceptable score for a search result.                                                       |
-+-------------------+------------------------------+---------------------------------------------------------------------------------------------------------+
-| max\_returns      | uint32\_t                    | The maximum number of results a single search should return                                             |
-+-------------------+------------------------------+---------------------------------------------------------------------------------------------------------+
-| hint              | double                       | A hint to a clustering algorithm. See :ref:`clustering_hint` for additional information                 |
-+-------------------+------------------------------+---------------------------------------------------------------------------------------------------------+
-
-.. _janice_free_context:
-
-janice\_free\_context
-~~~~~~~~~~~~~~~~~~~~~
-
-Free a :ref:`JaniceContext` object.
-
-Signature
-^^^^^^^^^
-
-::
-
-    JANICE_EXPORT JaniceError janice_free_context(JaniceContext* context);
-
 Thread Safety
 ^^^^^^^^^^^^^
 
@@ -210,5 +156,5 @@ Parameters
 +---------+------------------------+----------------------------+
 |  Name   |          Type          |        Description         |
 +=========+========================+============================+
-| context | :ref:`JaniceContext`\* | The context object to free |
+| context | :ref:`JaniceContext\*` | The context to initialize. |
 +---------+------------------------+----------------------------+

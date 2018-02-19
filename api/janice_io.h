@@ -33,6 +33,9 @@ typedef void* JaniceMediaIteratorState;
 
 struct JANICE_EXPORT JaniceMediaIteratorType
 {
+    JaniceError (*is_video)(JaniceMediaIteratorType*, bool*);
+    JaniceError (*get_frame_rate)(JaniceMediaIteratorType*, float*);
+
     JaniceError (*next)(JaniceMediaIteratorType*, JaniceImage*);
     JaniceError (*seek)(JaniceMediaIteratorType*, uint32_t);
     JaniceError (* get)(JaniceMediaIteratorType*, JaniceImage*, uint32_t);

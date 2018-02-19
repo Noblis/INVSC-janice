@@ -2,147 +2,197 @@
 #include <janice_io_opencv.h>
 #include <janice_harness.h>
 
+#include <arg_parser/args.hpp>
 #include <fast-cpp-csv-parser/csv.h>
 
 #include <unordered_map>
-
-void print_usage()
-{
-    printf("Usage: janice_enroll_detections sdk_path temp_path data_path input_file role output_path [-algorithm <algorithm>] [-threads <int>] [-gpu <int>]\n");
-}
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
-    const int min_args = 7;
-    const int max_args = 13;
+    args::ArgumentParser parser("Run feature extraction on a set of media with detections.");
+    args::HelpFlag help(parser, "help", "Display this help menu.", {'h', "help"});
 
-    if (argc < min_args || argc > max_args) {
-        print_usage();
-        exit(EXIT_FAILURE);
+    args::Positional<std::string> media_file(parser, "media_file", "A path to an IJB-C compliant csv file. The IJB-C file format is defined at https://noblis.github.io/janice/harness.html#fileformat");
+    args::Positional<std::string> dst_path(parser, "dst_path", "A path to an existing directory where the enrolled templates will be written. The directory must be writable.");
+    args::Positional<std::string> output_file(parser, "output_file", "A path to an output file. A file will be created if it doesn't already exist. The file location must be writable.");
+
+    args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
+    args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
+    args::ValueFlag<std::string> data_path(parser, "string", "A path to prepend to all image files before loading them", {'d', "data_path"}, "./");
+    args::ValueFlag<std::string> role(parser, "string", "The enrollment role the algorithm should use. Options are [Reference11 | Verification11 | Probe1N | Gallery1N | Cluster]", {'r', "role"}, "Probe1N");
+    args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
+    args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
+    args::ValueFlag<int>         batch_size(parser, "int", "The size of a single batch. A larger batch size may run faster but will use more CPU resources.", {'b', "batch_size"}, 128);
+    args::ValueFlag<std::vector<int>, GPUReader> gpus(parser, "int,int,int", "The GPU indices of the CUDA-compliant GPU cards the implementation should use while running detection", {'g', "gpus"}, std::vector<int>());
+
+    try {
+        parser.ParseCLI(argc, argv);
+    } catch (args::Help) {
+        std::cout << parser;
+        return 0;
+    } catch (args::ParseError& e) {
+        std::cerr << e.what() << std::endl;
+        std::cerr << parser;
+        return 1;
+    } catch (args::ValidationError& e) {
+        std::cerr << e.what() << std::endl;
+        std::cerr << parser;
+        return 1;
     }
 
-    const std::string sdk_path    = argv[1];
-    const std::string temp_path   = argv[2];
-    const std::string data_path   = argv[3];
-    const std::string input_file  = argv[4];
-    const std::string role_str    = argv[5];
-    const std::string output_path = argv[6];
-
-    std::string algorithm;
-    int num_threads, gpu;
-    if (!parse_optional_args(argc, argv, min_args, max_args, algorithm, num_threads, gpu))
-        exit(EXIT_FAILURE);
-    
-    // Check input
-    if (get_ext(input_file) != "csv") {
-        printf("input_file must be \".csv\" format.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    // Convert role
-    JaniceEnrollmentType role;
-    if      (role_str == "Reference")    role = Janice11Reference;
-    else if (role_str == "Verification") role = Janice11Verification;
-    else if (role_str == "Probe")        role = Janice1NProbe;
-    else if (role_str == "Gallery")      role = Janice1NGallery;
-    else if (role_str == "Cluster")      role = JaniceCluster;
-    else {
-        printf("Invalid template role. Valid roles are [Reference | Verification | Probe | Gallery | Cluster]\n");
-        exit(EXIT_FAILURE);
+    if (!media_file || !dst_path || !output_file) {
+        std::cout << parser;
+        return 1;
     }
 
     // Initialize the API
-    // TODO: Right now we only allow a single GPU to be used
-    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1))
+    JANICE_ASSERT(janice_initialize(args::get(sdk_path).c_str(),
+                                    args::get(temp_path).c_str(),
+                                    args::get(algorithm).c_str(),
+                                    args::get(num_threads),
+                                    args::get(gpus).data(),
+                                    args::get(gpus).size()))
 
-    // Unused defaults for context parameters
-    JaniceDetectionPolicy policy = JaniceDetectAll;
-    uint32_t min_object_size = 0;
-    double threshold = 0;
-    uint32_t max_returns = 0;
-    double hint = 0;
+    JaniceContext context;
+    JANICE_ASSERT(janice_init_default_context(&context))
 
-    JaniceContext context = nullptr;
-    JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, max_returns, hint, &context))
-
-    // Parse the metadata file
-    io::CSVReader<7> metadata(input_file);
-    metadata.read_header(io::ignore_extra_column, "file", "templateId", "subjectId", "Face_X", "Face_Y", "Face_Width", "Face_Height");
-
-    std::unordered_map<int, std::vector<JaniceDetection>> detections_lut;
-    std::unordered_map<int, int> subject_id_lut;
-
-    // Load the metadata
-    std::string filename;
-    int template_id, subject_id;
-    JaniceRect rect;
-    while (metadata.read_row(filename, template_id, subject_id, rect.x, rect.y, rect.width, rect.height)) {
-        JaniceMediaIterator media;
-        JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + filename).c_str(), &media))
-
-        JaniceDetection detection;
-        JANICE_ASSERT(janice_create_detection_from_rect(media, rect, 0, &detection))
-
-        if (detections_lut.find(template_id) == detections_lut.end()) {
-            detections_lut.insert(std::make_pair(template_id, std::vector<JaniceDetection>{detection}));
-        } else {
-            detections_lut[template_id].push_back(detection);
-        }
-
-        subject_id_lut[template_id] = subject_id;
-
-        JANICE_ASSERT(media->free(&media))
-    }
-
-    // Convert the LUT into a detections group object
-    JaniceDetectionsGroup detections_group;
-    detections_group.group = new JaniceDetections[detections_lut.size()];
-    detections_group.length = detections_lut.size();
-
-    std::vector<int> template_ids; // Store template ids to maintain a consistent ordering
-
-    size_t idx = 0; // map template id range to 0-N
-    for (auto entry : detections_lut) {
-        detections_group.group[idx].length   = entry.second.size();
-        detections_group.group[idx].detections = new JaniceDetection[entry.second.size()];
-        for (size_t i = 0; i < entry.second.size(); ++i)
-            detections_group.group[idx].detections[i] = entry.second[i];
-        ++idx;
-
-        template_ids.push_back(entry.first);
-    }
-
-    // Run batch enrollment
-    JaniceTemplates tmpls;
-    JANICE_ASSERT(janice_enroll_from_detections_batch(detections_group, context, &tmpls))
-
-    // Assert we got the correct number of templates (1 list for each media)
-    if (tmpls.length != detections_group.length) {
-        printf("Incorrect return value. The number of templates should match the number of detection lists\n");
+    if      (args::get(role) == "Reference11")    context.role = Janice11Reference;
+    else if (args::get(role) == "Verification11") context.role = Janice11Verification;
+    else if (args::get(role) == "Probe1N")        context.role = Janice1NProbe;
+    else if (args::get(role) == "Gallery1N")      context.role = Janice1NGallery;
+    else if (args::get(role) == "Cluster")        context.role = JaniceCluster;
+    else {
+        printf("Invalid enrollment role. Valid enrollment role are [Reference11, Verification11, Probe1N, Gallery1N, Cluster]\n");
         exit(EXIT_FAILURE);
     }
 
-    // Clear the detections
-    for (size_t i = 0; i < detections_group.length; ++i) {
-        for (size_t j = 0; j < detections_group.group[i].length; ++j)
-            JANICE_ASSERT(janice_free_detection(&detections_group.group[i].detections[j]));
-        delete[] detections_group.group[i].detections;
+    // Parse the metadata file
+    io::CSVReader<8> metadata(args::get(media_file));
+    metadata.read_header(io::ignore_extra_column, "FILENAME", "TEMPLATE_ID", "SUBJECT_ID", "SIGHTING_ID", "FACE_X", "FACE_Y", "FACE_WIDTH", "FACE_HEIGHT");
+
+    std::unordered_map<int, std::vector<std::pair<std::string, JaniceRect>>> sighting_id_filename_lut;
+    std::unordered_map<int, JaniceTemplateId> sighting_id_template_id_lut;
+    std::unordered_map<JaniceTemplateId, int> template_id_subject_id_lut;
+
+    {
+        std::string filename;
+        JaniceTemplateId template_id;
+        int subject_id;
+        int sighting_id;
+        JaniceRect rect;
+
+        while (metadata.read_row(filename, template_id, subject_id, sighting_id, rect.x, rect.y, rect.width, rect.height)) {
+            sighting_id_filename_lut[sighting_id].push_back(std::make_pair(args::get(data_path) + filename, rect));
+            sighting_id_template_id_lut[sighting_id] = template_id;
+            template_id_subject_id_lut[template_id] = subject_id;
+        }
     }
-    delete[] detections_group.group;
 
-    // Write the templates to disk
-    FILE* output = fopen((output_path + "/templates.csv").c_str(), "w+");
-    fprintf(output, "file,templateId,subjectId\n");
+    std::unordered_map<JaniceTemplateId, std::vector<std::pair<JaniceMediaIterator, JaniceTrack>>> template_id_media_it_lut;
 
-    for (size_t i = 0; i < tmpls.length; ++i) {
-        std::string tmpl_file = output_path + "/" + std::to_string(template_ids[i]) + ".tmpl";
-        JANICE_ASSERT(janice_write_template(tmpls.tmpls[i], tmpl_file.c_str()))
+    for (auto entry : sighting_id_filename_lut) {
+        JaniceMediaIterator it;
 
-        fprintf(output, "%s,%d,%d\n", tmpl_file.c_str(), template_ids[i], subject_id_lut[template_ids[i]]);
+        JaniceTrack track;
+        track.rects = new JaniceRect[entry.second.size()];
+        track.confidences = new float[entry.second.size()];
+        track.frames = new uint32_t[entry.second.size()];
+        track.length = entry.second.size();
+
+        if (entry.second.size() == 1) {
+            JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].first.c_str(), &it));
+
+            track.rects[0] = entry.second[0].second;
+            track.confidences[0] = 1.0;
+            track.frames[0] = 0;
+        } else {
+            const char** filenames = new const char*[entry.second.size()];
+            for (size_t i = 0; i < entry.second.size(); ++i) {
+                filenames[i] = entry.second[i].first.c_str();
+
+                track.rects[i] = entry.second[i].second;
+                track.confidences[i] = 1.0;
+                track.frames[i] = i;
+            }
+
+            JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, track.frames, track.length, &it));
+
+            delete[] filenames;
+        }
+
+        template_id_media_it_lut[sighting_id_template_id_lut[entry.first]].push_back(std::make_pair(it, track));
     }
 
-    // Free the templates
-    JANICE_ASSERT(janice_clear_templates(&tmpls))
+    int num_batches = template_id_media_it_lut.size() / args::get(batch_size) + 1;
+
+    FILE* output = fopen(args::get(output_file).c_str(), "w+");
+    fprintf(output, "FILENAME,TEMPLATE_ID,SUBJECT_ID\n");
+
+    auto it = template_id_media_it_lut.begin();
+    int pos = 0;
+    for (int i = 0; i < num_batches; ++i) {
+        int current_batch_size = std::min(args::get(batch_size), (int) template_id_media_it_lut.size() - pos);
+
+        JaniceDetectionsGroup detections_group;
+        detections_group.group = new JaniceDetections[current_batch_size];
+        detections_group.length = current_batch_size;
+
+        std::vector<int> batch_template_ids;
+        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
+            const JaniceTemplateId& template_id = it->first;
+            const std::vector<std::pair<JaniceMediaIterator, JaniceTrack>>& d_info = it->second;
+
+            detections_group.group[batch_idx].detections = new JaniceDetection[d_info.size()];
+            detections_group.group[batch_idx].length     = d_info.size();
+
+            for (int detection_idx = 0; detection_idx < d_info.size(); ++detection_idx) {
+                JaniceDetection detection;
+                JANICE_ASSERT(janice_create_detection_from_track(d_info[detection_idx].first, d_info[detection_idx].second, &detection))
+                detections_group.group[batch_idx].detections[detection_idx] = detection;
+            }
+
+            batch_template_ids.push_back(template_id);
+            ++it;
+        }
+
+        JaniceTemplates tmpls;
+        JANICE_ASSERT(janice_enroll_from_detections_batch(detections_group, context, &tmpls))
+
+        // Assert we got the correct number of templates (1 tmpl per detection subgroup)
+        if (tmpls.length != current_batch_size) {
+            printf("Incorrect return value. The number of templates should match the current batch size\n");
+            exit(EXIT_FAILURE);
+        }
+
+        for (int tmpl_idx = 0; tmpl_idx < tmpls.length; ++tmpl_idx) {
+            std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(batch_template_ids[tmpl_idx]) + ".tmpl";
+            JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()))
+
+            fprintf(output, "%s,%d,%d\n", tmpl_file.c_str(), batch_template_ids[i], template_id_subject_id_lut[batch_template_ids[i]]);
+        }
+
+        // Cleanup detections group
+        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
+            for (size_t detection_idx = 0; detection_idx < detections_group.group[batch_idx].length; ++detection_idx)
+                JANICE_ASSERT(janice_free_detection(&detections_group.group[batch_idx].detections[detection_idx]))
+            delete[] detections_group.group[batch_idx].detections;
+        }
+        delete[] detections_group.group;
+
+        JANICE_ASSERT(janice_clear_templates(&tmpls))
+
+        pos += current_batch_size;
+    }
+
+    for (auto& entry : template_id_media_it_lut) {
+        for (std::pair<JaniceMediaIterator, JaniceTrack>& tmpl : entry.second) {
+            JANICE_ASSERT(tmpl.first->free(&tmpl.first))
+            delete[] tmpl.second.rects;
+            delete[] tmpl.second.confidences;
+            delete[] tmpl.second.frames;
+        }
+    }
 
     // Finalize the API
     JANICE_ASSERT(janice_finalize())

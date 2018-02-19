@@ -32,17 +32,17 @@ A simple struct that represents a rectangle
 Fields
 ^^^^^^
 
-+--------+-----------+-----------------------------------------+
-|  Name  |   Type    |               Description               |
-+========+===========+=========================================+
-| x      | uint32\_t | The x offset of the rectangle in pixels |
-+--------+-----------+-----------------------------------------+
-| y      | uint32\_t | The y offset of the rectangle in pixels |
-+--------+-----------+-----------------------------------------+
-| width  | uint32\_t | The width of the rectangle in pixels    |
-+--------+-----------+-----------------------------------------+
-| height | uint32\_t | The height of the rectangle in pixels   |
-+--------+-----------+-----------------------------------------+
++--------+------+-----------------------------------------+
+|  Name  | Type |               Description               |
++========+======+=========================================+
+| x      | int  | The x offset of the rectangle in pixels |
++--------+------+-----------------------------------------+
+| y      | int  | The y offset of the rectangle in pixels |
++--------+------+-----------------------------------------+
+| width  | int  | The width of the rectangle in pixels    |
++--------+------+-----------------------------------------+
+| height | int  | The height of the rectangle in pixels   |
++--------+------+-----------------------------------------+
 
 .. _JaniceTrack:
 

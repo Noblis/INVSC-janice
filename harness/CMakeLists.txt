@@ -20,16 +20,23 @@ if (${JANICE_WITH_EVAL_HARNESS} AND (JANICE_IO_IMPLEMENTATION) AND (JANICE_IMPLE
   add_executable(janice_enroll_detections janice_enroll_detections.cpp)
   target_link_libraries(janice_enroll_detections ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
 
+  # Create Gallery
+  add_executable(janice_create_gallery janice_create_gallery.cpp)
+  target_link_libraries(janice_create_gallery ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
+
+  # Verification
+  add_executable(janice_verify janice_verify.cpp)
+  target_link_libraries(janice_verify ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
+
   # Search
   add_executable(janice_search janice_search.cpp)
   target_link_libraries(janice_search ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
 
   # Cluster pre-done template
-  add_executable(janice_cluster_templates janice_cluster_templates.cpp)
-  target_link_libraries(janice_cluster_templates ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
+  #add_executable(janice_cluster_templates janice_cluster_templates.cpp)
+  #target_link_libraries(janice_cluster_templates ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
 
-  # Do feature extractiOn + clustering from meida
-  add_executable(janice_cluster_media janice_cluster_media.cpp)
-  target_link_libraries(janice_cluster_media ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
-
+  # Do feature extraction + clustering from media
+  #add_executable(janice_cluster_media janice_cluster_media.cpp)
+  #target_link_libraries(janice_cluster_media ${JANICE_IO_IMPLEMENTATION} ${JANICE_IMPLEMENTATION})
 endif()

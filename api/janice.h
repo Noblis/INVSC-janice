@@ -7,9 +7,9 @@
 extern "C" {
 #endif
 
-#define JANICE_VERSION_MAJOR 5
+#define JANICE_VERSION_MAJOR 6
 #define JANICE_VERSION_MINOR 0
-#define JANICE_VERSION_PATCH 1
+#define JANICE_VERSION_PATCH 0
 
 // ----------------------------------------------------------------------------
 // The JanICE API is an open source API that provides a common interface
@@ -61,7 +61,7 @@ enum JaniceEnrollmentType
     JaniceCluster = 4
 };
 
-struct JaniceContextType
+struct JaniceContext
 {
     // Detection parameters
     JaniceDetectionPolicy policy;
@@ -78,17 +78,7 @@ struct JaniceContextType
     double hint;
 };
 
-typedef JaniceContextType* JaniceContext;
-
-JANICE_EXPORT JaniceError janice_create_context(JaniceDetectionPolicy policy,
-                                                uint32_t min_object_size,
-                                                JaniceEnrollmentType role,
-                                                double threshold,
-                                                uint32_t max_returns,
-                                                double hint,
-                                                JaniceContext* context);
-
-JANICE_EXPORT JaniceError janice_free_context(JaniceContext* context);
+JANICE_EXPORT JaniceError janice_init_default_context(JaniceContext* context);
 
 // ----------------------------------------------------------------------------
 // Buffer
@@ -105,7 +95,10 @@ typedef struct JaniceDetectionType* JaniceDetection;
 
 struct JaniceRect
 {
-    uint32_t x, y, width, height;
+    int x;
+    int y;
+    int width; 
+    int height;
 };
 
 struct JaniceTrack

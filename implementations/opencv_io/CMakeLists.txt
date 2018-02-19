@@ -14,7 +14,7 @@ message("Got libs ${OpenCV_LIBS}")
 message("Got path ${OpenCV_DIR}")
 
 
-add_library(janice_io_opencv SHARED janice_io_opencv.cpp)
+add_library(janice_io_opencv SHARED janice_io_opencv.cpp janice_io_opencv_sparse.cpp)
 set_target_properties(janice_io_opencv PROPERTIES
                                        DEFINE_SYMBOL JANICE_LIBRARY
                                        VERSION ${JANICE_VERSION_MAJOR}.${JANICE_VERSION_MINOR}.${JANICE_VERSION_PATCH}
