@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 
     // Initialize the API
     // TODO: Right now we only allow a single GPU to be used
-    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1))
+    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1));
 
     // Unused defaults for context parameters
     JaniceEnrollmentType role = Janice1NProbe;
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
     double hint = 0;
 
     JaniceContext context = nullptr;
-    JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, max_returns, hint, &context))
+    JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, max_returns, hint, &context));
 
     // Parse the images file
     io::CSVReader<1> images(images_file);
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
     std::string filename;
     while (images.read_row(filename)) {
         JaniceMediaIterator it;
-        JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + filename).c_str(), &it))
+        JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + filename).c_str(), &it));
 
         filenames.push_back(filename);
         media.push_back(it);
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 
     // Run batch detection
     JaniceDetectionsGroup detections_group;
-    JANICE_ASSERT(janice_detect_batch(media_list, context, &detections_group))
+    JANICE_ASSERT(janice_detect_batch(media_list, context, &detections_group));
 
     // Assert we got the correct number of detections (1 list for each media)
     if (detections_group.length != media.size()) {
@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 
     // Free the media objects
     for (JaniceMediaIterator& it : media)
-        JANICE_ASSERT(it->free(&it))
+      JANICE_ASSERT(it->free(&it));
     
     // Write the detection files to disk
     FILE* output = fopen(output_file.c_str(), "w+");
@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
         JaniceDetections detections = detections_group.group[i];
         for (size_t j = 0; j < detections.length; ++j) {
             JaniceTrack track;
-            JANICE_ASSERT(janice_detection_get_track(detections.detections[j], &track))
+            JANICE_ASSERT(janice_detection_get_track(detections.detections[j], &track));
 
             const std::string filename = filenames[i];
             for (size_t k = 0; k < track.length; ++k) {
@@ -118,15 +118,15 @@ int main(int argc, char* argv[])
             }
 
             // Free the track
-            JANICE_ASSERT(janice_clear_track(&track))
+            JANICE_ASSERT(janice_clear_track(&track));
         }
     }
 
     // Free the detections
-    JANICE_ASSERT(janice_clear_detections_group(&detections_group))
+    JANICE_ASSERT(janice_clear_detections_group(&detections_group));
 
     // Finalize the API
-    JANICE_ASSERT(janice_finalize())
+    JANICE_ASSERT(janice_finalize());
 
     return 0;
 }

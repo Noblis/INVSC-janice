@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
 
     // Initialize the API
     // TODO: Right now we only allow a single GPU to be used
-    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1))
+    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1));
 
     JaniceDetectionPolicy policy = JaniceDetectAll; // This is ignored
     uint32_t min_object_size = 0;
@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
     double hint = 0.0;
 
     JaniceContext context = nullptr;
-    JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, num_returns, hint, &context))
+    JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, num_returns, hint, &context));
 
     JaniceGallery gallery = nullptr;
     { // Create an empty gallery
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
         JaniceTemplateIds ids;
         ids.ids = nullptr;
         ids.length = 0;
-        JANICE_ASSERT(janice_create_gallery(tmpls, ids, &gallery))
+        JANICE_ASSERT(janice_create_gallery(tmpls, ids, &gallery));
     }
 
     // Load the gallery
@@ -81,13 +81,13 @@ int main(int argc, char* argv[])
     int template_id, subject_id;
     while (gallery_metadata.read_row(filename, template_id, subject_id)) {
         JaniceTemplate tmpl;
-        JANICE_ASSERT(janice_read_template(filename.c_str(), &tmpl))
+        JANICE_ASSERT(janice_read_template(filename.c_str(), &tmpl));
 
-        JANICE_ASSERT(janice_gallery_insert(gallery, tmpl, template_id))
+        JANICE_ASSERT(janice_gallery_insert(gallery, tmpl, template_id));
 
         subject_id_lut[template_id] = subject_id;
 
-        JANICE_ASSERT(janice_free_template(&tmpl))
+        JANICE_ASSERT(janice_free_template(&tmpl));
     }
 
     // Keep
@@ -107,11 +107,11 @@ int main(int argc, char* argv[])
 
     while (probe_metadata.read_row(filename, template_id, subject_id)) {
         JaniceTemplate tmpl;
-        JANICE_ASSERT(janice_read_template(filename.c_str(), &tmpl))
+        JANICE_ASSERT(janice_read_template(filename.c_str(), &tmpl));
 
         JaniceSimilarities similarities;
         JaniceTemplateIds ids;
-        JANICE_ASSERT(janice_search(tmpl, gallery, context, &similarities, &ids))
+        JANICE_ASSERT(janice_search(tmpl, gallery, context, &similarities, &ids));
 
         fprintf(cand_list, "%d", template_id);
         for (size_t i = 0; i < similarities.length; ++i) {
@@ -120,15 +120,15 @@ int main(int argc, char* argv[])
         }
         fprintf(cand_list, "\n");
 
-        JANICE_ASSERT(janice_clear_similarities(&similarities))
-        JANICE_ASSERT(janice_clear_template_ids(&ids))
-        JANICE_ASSERT(janice_free_template(&tmpl))
+        JANICE_ASSERT(janice_clear_similarities(&similarities));
+        JANICE_ASSERT(janice_clear_template_ids(&ids));
+        JANICE_ASSERT(janice_free_template(&tmpl));
     }
 
-    JANICE_ASSERT(janice_free_gallery(&gallery))
-    JANICE_ASSERT(janice_free_context(&context))
+    JANICE_ASSERT(janice_free_gallery(&gallery));
+    JANICE_ASSERT(janice_free_context(&context));
 
-    JANICE_ASSERT(janice_finalize())
+    JANICE_ASSERT(janice_finalize());
 
     return 0;
 }

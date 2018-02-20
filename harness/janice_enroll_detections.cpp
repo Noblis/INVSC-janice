@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 
     // Initialize the API
     // TODO: Right now we only allow a single GPU to be used
-    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1))
+    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1));
 
     // Unused defaults for context parameters
     JaniceDetectionPolicy policy = JaniceDetectAll;
@@ -63,7 +63,7 @@ int main(int argc, char* argv[])
     double hint = 0;
 
     JaniceContext context = nullptr;
-    JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, max_returns, hint, &context))
+    JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, max_returns, hint, &context));
 
     // Parse the metadata file
     io::CSVReader<7> metadata(input_file);
@@ -78,10 +78,10 @@ int main(int argc, char* argv[])
     JaniceRect rect;
     while (metadata.read_row(filename, template_id, subject_id, rect.x, rect.y, rect.width, rect.height)) {
         JaniceMediaIterator media;
-        JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + filename).c_str(), &media))
+        JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + filename).c_str(), &media));
 
         JaniceDetection detection;
-        JANICE_ASSERT(janice_create_detection_from_rect(media, rect, 0, &detection))
+        JANICE_ASSERT(janice_create_detection_from_rect(media, rect, 0, &detection));
 
         if (detections_lut.find(template_id) == detections_lut.end()) {
             detections_lut.insert(std::make_pair(template_id, std::vector<JaniceDetection>{detection}));
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 
         subject_id_lut[template_id] = subject_id;
 
-        JANICE_ASSERT(media->free(&media))
+        JANICE_ASSERT(media->free(&media));
     }
 
     // Convert the LUT into a detections group object
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
 
     // Run batch enrollment
     JaniceTemplates tmpls;
-    JANICE_ASSERT(janice_enroll_from_detections_batch(detections_group, context, &tmpls))
+    JANICE_ASSERT(janice_enroll_from_detections_batch(detections_group, context, &tmpls));
 
     // Assert we got the correct number of templates (1 list for each media)
     if (tmpls.length != detections_group.length) {
@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
     // Clear the detections
     for (size_t i = 0; i < detections_group.length; ++i) {
         for (size_t j = 0; j < detections_group.group[i].length; ++j)
-            JANICE_ASSERT(janice_free_detection(&detections_group.group[i].detections[j]));
+          JANICE_ASSERT(janice_free_detection(&detections_group.group[i].detections[j]));
         delete[] detections_group.group[i].detections;
     }
     delete[] detections_group.group;
@@ -136,16 +136,16 @@ int main(int argc, char* argv[])
 
     for (size_t i = 0; i < tmpls.length; ++i) {
         std::string tmpl_file = output_path + "/" + std::to_string(template_ids[i]) + ".tmpl";
-        JANICE_ASSERT(janice_write_template(tmpls.tmpls[i], tmpl_file.c_str()))
+        JANICE_ASSERT(janice_write_template(tmpls.tmpls[i], tmpl_file.c_str()));
 
         fprintf(output, "%s,%d,%d\n", tmpl_file.c_str(), template_ids[i], subject_id_lut[template_ids[i]]);
     }
 
     // Free the templates
-    JANICE_ASSERT(janice_clear_templates(&tmpls))
+    JANICE_ASSERT(janice_clear_templates(&tmpls));
 
     // Finalize the API
-    JANICE_ASSERT(janice_finalize())
+    JANICE_ASSERT(janice_finalize());
 
     return 0;
 }

@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 
     // Initialize the API
     // TODO: Right now we only allow a single GPU to be used
-    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1))
+    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1));
 
     // Unused defaults for context parameters
     JaniceDetectionPolicy policy = JaniceDetectAll;
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
     JaniceEnrollmentType role = JaniceCluster;
 
     JaniceContext context = nullptr;
-    JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, max_returns, hint, &context))
+    JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, max_returns, hint, &context));
 
     // Parse the metadata file
     io::CSVReader<1> metadata(input_file);
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
     media.length = filenames.size();
     media.media  = new JaniceMediaIterator[media.length];
     for( size_t i=0; i < media.length; i++) {
-        JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + "/" + filenames[i]).c_str(), &media.media[i]));
+      JANICE_ASSERT(janice_io_opencv_create_media_iterator((std::string(data_path) + "/" + filenames[i]).c_str(), &media.media[i]));
     }
 
     JaniceClusterIdsGroup cluster_ids;
@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
     delete [] media.media;
 
     // Finalize the API
-    JANICE_ASSERT(janice_finalize())
+    JANICE_ASSERT(janice_finalize());
 
     return 0;
 }
