@@ -156,5 +156,5 @@ Parameters
 +---------+------------------------+----------------------------+
 |  Name   |          Type          |        Description         |
 +=========+========================+============================+
-| context | :ref:`JaniceContext\*` | The context to initialize. |
+| context | :ref:`JaniceContext`\* | The context to initialize. |
 +---------+------------------------+----------------------------+

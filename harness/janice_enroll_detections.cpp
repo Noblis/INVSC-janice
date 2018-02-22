@@ -89,25 +89,24 @@ int main(int argc, char* argv[])
         }
     }
 
-    std::unordered_map<JaniceTemplateId, std::vector<std::pair<JaniceMediaIterator, JaniceTrack>>> template_id_media_it_lut;
+    std::unordered_map<JaniceTemplateId, std::vector<std::pair<JaniceMediaIterator, JaniceDetection>>> template_id_media_it_lut;
 
     for (auto entry : sighting_id_filename_lut) {
         JaniceMediaIterator it;
-
-        JaniceTrack track;
-        track.rects = new JaniceRect[entry.second.size()];
-        track.confidences = new float[entry.second.size()];
-        track.frames = new uint32_t[entry.second.size()];
-        track.length = entry.second.size();
+        JaniceDetection detection;
 
         if (entry.second.size() == 1) {
             JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].first.c_str(), &it));
-
-            track.rects[0] = entry.second[0].second;
-            track.confidences[0] = 1.0;
-            track.frames[0] = 0;
+            JANICE_ASSERT(janice_create_detection_from_rect(it, entry.second[0].second, 0, &detection))
         } else {
             const char** filenames = new const char*[entry.second.size()];
+
+            JaniceTrack track;
+            track.rects = new JaniceRect[entry.second.size()];
+            track.confidences = new float[entry.second.size()];
+            track.frames = new uint32_t[entry.second.size()];
+            track.length = entry.second.size();
+
             for (size_t i = 0; i < entry.second.size(); ++i) {
                 filenames[i] = entry.second[i].first.c_str();
 
@@ -117,11 +116,15 @@ int main(int argc, char* argv[])
             }
 
             JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, track.frames, track.length, &it));
+            JANICE_ASSERT(janice_create_detection_from_track(it, track, &detection))
 
             delete[] filenames;
+            delete[] track.rects;
+            delete[] track.confidences;
+            delete[] track.frames;
         }
 
-        template_id_media_it_lut[sighting_id_template_id_lut[entry.first]].push_back(std::make_pair(it, track));
+        template_id_media_it_lut[sighting_id_template_id_lut[entry.first]].push_back(std::make_pair(it, detection));
     }
 
     int num_batches = template_id_media_it_lut.size() / args::get(batch_size) + 1;
@@ -134,6 +137,10 @@ int main(int argc, char* argv[])
     for (int i = 0; i < num_batches; ++i) {
         int current_batch_size = std::min(args::get(batch_size), (int) template_id_media_it_lut.size() - pos);
 
+        JaniceMediaIteratorsGroup media_group;
+        media_group.group = new JaniceMediaIterators[current_batch_size];
+        media_group.length = current_batch_size;
+
         JaniceDetectionsGroup detections_group;
         detections_group.group = new JaniceDetections[current_batch_size];
         detections_group.length = current_batch_size;
@@ -141,15 +148,17 @@ int main(int argc, char* argv[])
         std::vector<int> batch_template_ids;
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
             const JaniceTemplateId& template_id = it->first;
-            const std::vector<std::pair<JaniceMediaIterator, JaniceTrack>>& d_info = it->second;
+            const std::vector<std::pair<JaniceMediaIterator, JaniceDetection>>& d_info = it->second;
+
+            media_group.group[batch_idx].media = new JaniceMediaIterator[d_info.size()];
+            media_group.group[batch_idx].length = d_info.size();
 
             detections_group.group[batch_idx].detections = new JaniceDetection[d_info.size()];
             detections_group.group[batch_idx].length     = d_info.size();
 
             for (int detection_idx = 0; detection_idx < d_info.size(); ++detection_idx) {
-                JaniceDetection detection;
-                JANICE_ASSERT(janice_create_detection_from_track(d_info[detection_idx].first, d_info[detection_idx].second, &detection))
-                detections_group.group[batch_idx].detections[detection_idx] = detection;
+                media_group.group[batch_idx].media[detection_idx] = d_info[detection_idx].first;
+                detections_group.group[batch_idx].detections[detection_idx] = d_info[detection_idx].second;
             }
 
             batch_template_ids.push_back(template_id);
@@ -157,7 +166,7 @@ int main(int argc, char* argv[])
         }
 
         JaniceTemplates tmpls;
-        JANICE_ASSERT(janice_enroll_from_detections_batch(detections_group, context, &tmpls))
+        JANICE_ASSERT(janice_enroll_from_detections_batch(media_group, detections_group, context, &tmpls))
 
         // Assert we got the correct number of templates (1 tmpl per detection subgroup)
         if (tmpls.length != current_batch_size) {
@@ -174,10 +183,11 @@ int main(int argc, char* argv[])
 
         // Cleanup detections group
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
-            for (size_t detection_idx = 0; detection_idx < detections_group.group[batch_idx].length; ++detection_idx)
-                JANICE_ASSERT(janice_free_detection(&detections_group.group[batch_idx].detections[detection_idx]))
+            delete[] media_group.group[batch_idx].media;
             delete[] detections_group.group[batch_idx].detections;
         }
+
+        delete[] media_group.group;
         delete[] detections_group.group;
 
         JANICE_ASSERT(janice_clear_templates(&tmpls))
@@ -186,11 +196,9 @@ int main(int argc, char* argv[])
     }
 
     for (auto& entry : template_id_media_it_lut) {
-        for (std::pair<JaniceMediaIterator, JaniceTrack>& tmpl : entry.second) {
+        for (std::pair<JaniceMediaIterator, JaniceDetection>& tmpl : entry.second) {
             JANICE_ASSERT(tmpl.first->free(&tmpl.first))
-            delete[] tmpl.second.rects;
-            delete[] tmpl.second.confidences;
-            delete[] tmpl.second.frames;
+            JANICE_ASSERT(janice_free_detection(&tmpl.second))
         }
     }
 

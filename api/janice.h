@@ -109,18 +109,6 @@ struct JaniceTrack
     size_t length;
 };
 
-struct JaniceTracks
-{
-    JaniceTrack* tracks;
-    size_t length;
-};
-
-struct JaniceTracksGroup
-{
-    JaniceTracks* group;
-    size_t length;
-};
-
 struct JaniceDetections
 {
     JaniceDetection* detections;
@@ -184,17 +172,13 @@ JANICE_EXPORT JaniceError janice_clear_detections_group(JaniceDetectionsGroup* g
 
 JANICE_EXPORT JaniceError janice_clear_track(JaniceTrack* track);
 
-JANICE_EXPORT JaniceError janice_clear_tracks(JaniceTracks* tracks);
-
-JANICE_EXPORT JaniceError janice_clear_tracks_group(JaniceTracksGroup* group);
-
 JANICE_EXPORT JaniceError janice_free_attribute(JaniceAttribute* value);
 
 // ----------------------------------------------------------------------------
 // Training
 
 JANICE_EXPORT JaniceError janice_fine_tune(JaniceMediaIterators media,
-                                           JaniceTracksGroup tracks,
+                                           JaniceDetectionsGroup detections,
                                            int** labels,
                                            const char* output_prefix);
 
@@ -220,18 +204,20 @@ struct JaniceTemplatesGroup
 JANICE_EXPORT JaniceError janice_enroll_from_media(JaniceMediaIterator media,
                                                    JaniceContext context,
                                                    JaniceTemplates* tmpls,
-                                                   JaniceTracks* tracks);
+                                                   JaniceDetections* detections);
 
 JANICE_EXPORT JaniceError janice_enroll_from_media_batch(JaniceMediaIterators media,
                                                          JaniceContext context,
                                                          JaniceTemplatesGroup* tmpls,
-                                                         JaniceTracksGroup* tracks);
+                                                         JaniceDetectionsGroup* detections);
 
-JANICE_EXPORT JaniceError janice_enroll_from_detections(JaniceDetections detections,
+JANICE_EXPORT JaniceError janice_enroll_from_detections(JaniceMediaIterators media,
+                                                        JaniceDetections detections,
                                                         JaniceContext context,
                                                         JaniceTemplate* tmpl);
 
-JANICE_EXPORT JaniceError janice_enroll_from_detections_batch(JaniceDetectionsGroup detections,
+JANICE_EXPORT JaniceError janice_enroll_from_detections_batch(JaniceMediaIteratorsGroup media,
+                                                              JaniceDetectionsGroup detections,
                                                               JaniceContext context,
                                                               JaniceTemplates* tmpls);
 
@@ -418,7 +404,7 @@ JANICE_EXPORT JaniceError janice_cluster_media(JaniceMediaIterators media,
                                                JaniceContext context,
                                                JaniceClusterIdsGroup* cluster_ids,
                                                JaniceClusterConfidencesGroup* cluster_confidences,
-                                               JaniceTracksGroup* tracks);
+                                               JaniceDetectionsGroup* detections);
 
 JANICE_EXPORT JaniceError janice_cluster_templates(JaniceTemplates tmpls,
                                                    JaniceContext context,

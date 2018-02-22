@@ -81,42 +81,6 @@ Fields
 | length      | size\_t             | The number of rectangles, confidences, and frames in this structure.                                                                                                                   |
 +-------------+---------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-.. _JaniceTracks:
-
-JaniceTracks
-~~~~~~~~~~~~
-
-A structure representing a list of :ref:`JaniceTrack` objects.
-
-Fields
-^^^^^^
-
-+--------+----------------------+------------------------------------+
-|  Name  |         Type         |            Description             |
-+========+======================+====================================+
-| tracks | :ref:`JaniceTrack`\* | An array of track objects          |
-+--------+----------------------+------------------------------------+
-| length | size\_t              | The number of elements in *tracks* |
-+--------+----------------------+------------------------------------+
-
-.. _JaniceTracksGroup:
-
-JaniceTracksGroup
-~~~~~~~~~~~~~~~~~
-
-A structure representing a list of :ref:`JaniceTracks` objects.
-
-Fields
-^^^^^^
-
-+--------+-----------------------+-----------------------------------+
-|  Name  |         Type          |            Description            |
-+========+=======================+===================================+
-| group  | :ref:`JaniceTracks`\* | An array of tracks objects        |
-+--------+-----------------------+-----------------------------------+
-| length | size\_t               | The number of elements in *group* |
-+--------+-----------------------+-----------------------------------+
-
 .. _JaniceBuffer:
 
 JaniceBuffer
@@ -838,57 +802,6 @@ Parameters
 +=======+====================+============================+
 | track | :ref:`JaniceTrack` | The track object to clear. |
 +-------+--------------------+----------------------------+
-
-.. _janice_clear_tracks:
-
-janice\_clear\_tracks
-~~~~~~~~~~~~~~~~~~~~~
-
-Free any memory associated with a of :ref:`JaniceTracks` object.
-
-Signature
-^^^^^^^^^
-
-::
-
-    JANICE_EXPORT JaniceError janice_clear_tracks(JaniceTracks* tracks);
-
-Thread Safety
-^^^^^^^^^^^^^
-
-This function is :ref:`reentrant`.
-
-Parameters
-^^^^^^^^^^
-
-+--------+-----------------------+----------------------------+
-|  Name  |         Type          |        Description         |
-+========+=======================+============================+
-| tracks | :ref:`JaniceTracks`\* | A tracks objects to clear. |
-+--------+-----------------------+----------------------------+
-
-.. _janice_clear_tracks_group:
-
-janice\_clear\_tracks\_group
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Free any memory associated with a :ref:`JaniceTracksGroup` object.
-
-Signature
-^^^^^^^^^
-
-::
-
-    JANICE_EXPORT JaniceError janice_clear_tracks_group(JaniceTracksGroup* group);
-
-Parameters
-^^^^^^^^^^
-
-+-------+----------------------------+--------------------------+
-| Name  |            Type            |       Description        |
-+=======+============================+==========================+
-| group | :ref:`JaniceTracksGroup`\* | A tracks group to clear. |
-+-------+----------------------------+--------------------------+
 
 .. _janice_free_attribute:
 

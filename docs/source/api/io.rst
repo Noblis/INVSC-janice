@@ -142,3 +142,21 @@ Fields
 +--------+------------------------------+-------------------------------------+
 | length | size_t                       | The number of elements in *media*   |
 +--------+------------------------------+-------------------------------------+
+
+.. _JaniceMediaIteratorsGroup:
+
+JaniceMediaIteratorsGroup
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A structure to represent a list of :ref:`JaniceMediaIterators` objects.
+
+Fields
+^^^^^^
+
++--------+-----------------------------+-----------------------------------+
+|  Name  |            Type             |            Description            |
++========+=============================+===================================+
+| group  | :ref:`JaniceMediaIterators` | An array of media objects.        |
++--------+-----------------------------+-----------------------------------+
+| length | size\_t                     | The number of elements in *group* |
++--------+-----------------------------+-----------------------------------+

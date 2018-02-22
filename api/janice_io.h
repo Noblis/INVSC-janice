@@ -56,6 +56,13 @@ struct JaniceMediaIterators
     uint32_t length;
 };
 
+struct JaniceMediaIteratorsGroup
+{
+    JaniceMediaIterators* group;
+    size_t length;
+};
+
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

@@ -130,9 +130,9 @@ int main(int argc, char* argv[])
         media_list.length = current_batch_size;
 
         // Run batch enrollment
-        JaniceTemplatesGroup tmpls_group;
-        JaniceTracksGroup    tracks_group;
-        JANICE_ASSERT(janice_enroll_from_media_batch(media_list, context, &tmpls_group, &tracks_group))
+        JaniceTemplatesGroup  tmpls_group;
+        JaniceDetectionsGroup detections_group;
+        JANICE_ASSERT(janice_enroll_from_media_batch(media_list, context, &tmpls_group, &detections_group))
     
         // Assert we got the correct number of templates (1 list for each media)
         if (tmpls_group.length != current_batch_size) {
@@ -142,8 +142,8 @@ int main(int argc, char* argv[])
         
         size_t tid = 0;
         for (size_t i = 0; i < tmpls_group.length; ++i) {
-            const JaniceTemplates& tmpls = tmpls_group.group[i];
-            const JaniceTracks& tracks   = tracks_group.group[i];
+            const JaniceTemplates&  tmpls      = tmpls_group.group[i];
+            const JaniceDetections& detections = detections_group.group[i];
             for (size_t j = 0; j < tmpls.length; ++j) {
                 JaniceTemplate tmpl = tmpls.tmpls[j];
         
@@ -151,7 +151,8 @@ int main(int argc, char* argv[])
                 std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(tid++) + ".tmpl";
                 JANICE_ASSERT(janice_write_template(tmpl, tmpl_file.c_str()));
     
-                JaniceTrack track = tracks.tracks[j];
+                JaniceTrack track;
+                JANICE_ASSERT(janice_detection_get_track(detections.detections[j], &track))
     
                 for (size_t k = 0; k < track.length; ++k) {
                     JaniceRect rect  = track.rects[k];
@@ -160,12 +161,14 @@ int main(int argc, char* argv[])
                     
                     fprintf(output, "%s,%d,%u,%u,%u,%u,%u,%f,%zu\n", tmpl_file.c_str(), sighting_ids[pos + i], frame, rect.x, rect.y, rect.width, rect.height, confidence, (tid-1));
                 }
+
+                JANICE_ASSERT(janice_clear_track(&track))
             }
         }
     
         // Clean up
         JANICE_ASSERT(janice_clear_templates_group(&tmpls_group))
-        JANICE_ASSERT(janice_clear_tracks_group(&tracks_group))
+        JANICE_ASSERT(janice_clear_detections_group(&detections_group))
 
         pos += current_batch_size;
     }
