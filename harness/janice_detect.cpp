@@ -51,10 +51,10 @@ int main(int argc, char* argv[])
                                     args::get(algorithm).c_str(), 
                                     args::get(num_threads), 
                                     args::get(gpus).data(), 
-                                    args::get(gpus).size()))
+                                    args::get(gpus).size()));
 
     JaniceContext context;
-    JANICE_ASSERT(janice_init_default_context(&context))
+    JANICE_ASSERT(janice_init_default_context(&context));
 
     if      (args::get(policy) == "All")     context.policy = JaniceDetectAll;
     else if (args::get(policy) == "Largest") context.policy = JaniceDetectLargest;
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
         std::string filename;
         while (metadata.read_row(filename)) {
             JaniceMediaIterator it;
-            JANICE_ASSERT(janice_io_opencv_create_media_iterator((args::get(data_path) + filename).c_str(), &it))
+            JANICE_ASSERT(janice_io_opencv_create_media_iterator((args::get(data_path) + filename).c_str(), &it));
 
             filenames.push_back(filename);
             media.push_back(it);
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 
         // Run batch detection
         JaniceDetectionsGroup detections_group;
-        JANICE_ASSERT(janice_detect_batch(media_list, context, &detections_group))
+        JANICE_ASSERT(janice_detect_batch(media_list, context, &detections_group));
 
         // Assert we got the correct number of detections (1 list for each media)
         if (detections_group.length != current_batch_size) {
@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
             JaniceDetections detections = detections_group.group[i];
             for (size_t j = 0; j < detections.length; ++j) {
                 JaniceTrack track;
-                JANICE_ASSERT(janice_detection_get_track(detections.detections[j], &track))
+                JANICE_ASSERT(janice_detection_get_track(detections.detections[j], &track));
 
                 const std::string filename = filenames[i];
                 for (size_t k = 0; k < track.length; ++k) {
@@ -125,22 +125,22 @@ int main(int argc, char* argv[])
                 }
 
                 // Free the track
-                JANICE_ASSERT(janice_clear_track(&track))
+                JANICE_ASSERT(janice_clear_track(&track));
             }
         }
 
         // Free the detections
-        JANICE_ASSERT(janice_clear_detections_group(&detections_group))
+        JANICE_ASSERT(janice_clear_detections_group(&detections_group));
 
         pos += current_batch_size;
     }
 
     // Free the media iterators
     for (size_t i = 0; i < media.size(); ++i)
-        JANICE_ASSERT(media[i]->free(&media[i]))
+        JANICE_ASSERT(media[i]->free(&media[i]));
 
     // Finalize the API
-    JANICE_ASSERT(janice_finalize())
+    JANICE_ASSERT(janice_finalize());
 
     return 0;
 }

@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
                                     args::get(algorithm).c_str(),
                                     args::get(num_threads),
                                     args::get(gpus).data(),
-                                    args::get(gpus).size()))
+                                    args::get(gpus).size()));
 
     // Load the reference set
     io::CSVReader<2> reference_metadata(args::get(reference_file));
@@ -108,28 +108,28 @@ int main(int argc, char* argv[])
         verifications.length = current_batch_size;
 
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
-            JANICE_ASSERT(janice_read_template((reference_filenames[pos + batch_idx]).c_str(), &references.tmpls[batch_idx]))
-            JANICE_ASSERT(janice_read_template((verification_filenames[pos + batch_idx]).c_str(), &verifications.tmpls[batch_idx]))
+            JANICE_ASSERT(janice_read_template((reference_filenames[pos + batch_idx]).c_str(), &references.tmpls[batch_idx]));
+            JANICE_ASSERT(janice_read_template((verification_filenames[pos + batch_idx]).c_str(), &verifications.tmpls[batch_idx]));
         }
 
         JaniceSimilarities scores;
-        JANICE_ASSERT(janice_verify_batch(references, verifications, &scores))
+        JANICE_ASSERT(janice_verify_batch(references, verifications, &scores));
 
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
             fprintf(results, "%zu,%zu,%f\n", reference_template_ids[pos + batch_idx], verification_template_ids[pos + batch_idx], scores.similarities[batch_idx]);
 
-        JANICE_ASSERT(janice_clear_similarities(&scores))
+        JANICE_ASSERT(janice_clear_similarities(&scores));
 
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
-            JANICE_ASSERT(janice_free_template(&references.tmpls[batch_idx]))
-            JANICE_ASSERT(janice_free_template(&verifications.tmpls[batch_idx]))
+            JANICE_ASSERT(janice_free_template(&references.tmpls[batch_idx]));
+            JANICE_ASSERT(janice_free_template(&verifications.tmpls[batch_idx]));
         }
 
         delete[] references.tmpls;
         delete[] verifications.tmpls;
     }
 
-    JANICE_ASSERT(janice_finalize())
+    JANICE_ASSERT(janice_finalize());
 
     return 0;
 }

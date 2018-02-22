@@ -52,10 +52,10 @@ int main(int argc, char* argv[])
                                     args::get(algorithm).c_str(),
                                     args::get(num_threads),
                                     args::get(gpus).data(),
-                                    args::get(gpus).size()))
+                                    args::get(gpus).size()));
 
     JaniceContext context;
-    JANICE_ASSERT(janice_init_default_context(&context))
+    JANICE_ASSERT(janice_init_default_context(&context));
 
     if      (args::get(role) == "Reference11")    context.role = Janice11Reference;
     else if (args::get(role) == "Verification11") context.role = Janice11Verification;
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
 
         if (entry.second.size() == 1) {
             JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].first.c_str(), &it));
-            JANICE_ASSERT(janice_create_detection_from_rect(it, entry.second[0].second, 0, &detection))
+            JANICE_ASSERT(janice_create_detection_from_rect(it, entry.second[0].second, 0, &detection));
         } else {
             const char** filenames = new const char*[entry.second.size()];
 
@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
             }
 
             JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, track.frames, track.length, &it));
-            JANICE_ASSERT(janice_create_detection_from_track(it, track, &detection))
+            JANICE_ASSERT(janice_create_detection_from_track(it, track, &detection));
 
             delete[] filenames;
             delete[] track.rects;
@@ -166,7 +166,7 @@ int main(int argc, char* argv[])
         }
 
         JaniceTemplates tmpls;
-        JANICE_ASSERT(janice_enroll_from_detections_batch(media_group, detections_group, context, &tmpls))
+        JANICE_ASSERT(janice_enroll_from_detections_batch(media_group, detections_group, context, &tmpls));
 
         // Assert we got the correct number of templates (1 tmpl per detection subgroup)
         if (tmpls.length != current_batch_size) {
@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
 
         for (int tmpl_idx = 0; tmpl_idx < tmpls.length; ++tmpl_idx) {
             std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(batch_template_ids[tmpl_idx]) + ".tmpl";
-            JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()))
+            JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()));
 
             fprintf(output, "%s,%d,%d\n", tmpl_file.c_str(), batch_template_ids[i], template_id_subject_id_lut[batch_template_ids[i]]);
         }
@@ -190,20 +190,20 @@ int main(int argc, char* argv[])
         delete[] media_group.group;
         delete[] detections_group.group;
 
-        JANICE_ASSERT(janice_clear_templates(&tmpls))
+        JANICE_ASSERT(janice_clear_templates(&tmpls));
 
         pos += current_batch_size;
     }
 
     for (auto& entry : template_id_media_it_lut) {
         for (std::pair<JaniceMediaIterator, JaniceDetection>& tmpl : entry.second) {
-            JANICE_ASSERT(tmpl.first->free(&tmpl.first))
-            JANICE_ASSERT(janice_free_detection(&tmpl.second))
+            JANICE_ASSERT(tmpl.first->free(&tmpl.first));
+            JANICE_ASSERT(janice_free_detection(&tmpl.second));
         }
     }
 
     // Finalize the API
-    JANICE_ASSERT(janice_finalize())
+    JANICE_ASSERT(janice_finalize());
 
     return 0;
 }

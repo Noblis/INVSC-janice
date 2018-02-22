@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
                                     args::get(algorithm).c_str(),
                                     args::get(num_threads),
                                     args::get(gpus).data(),
-                                    args::get(gpus).size()))
+                                    args::get(gpus).size()));
 
     // Parse the media file
     io::CSVReader<2> metadata(args::get(template_file));
@@ -75,9 +75,9 @@ int main(int argc, char* argv[])
     ids.length = 0; // Set to 0 to create an empty gallery
 
     JaniceGallery gallery;
-    JANICE_ASSERT(janice_create_gallery(tmpls, ids, &gallery))
+    JANICE_ASSERT(janice_create_gallery(tmpls, ids, &gallery));
 
-    JANICE_ASSERT(janice_gallery_reserve(gallery, filenames.size()))
+    JANICE_ASSERT(janice_gallery_reserve(gallery, filenames.size()));
 
     int num_batches = filenames.size() / args::get(batch_size) + 1;
 
@@ -89,23 +89,23 @@ int main(int argc, char* argv[])
         ids.length = current_batch_size;
 
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
-            JANICE_ASSERT(janice_read_template(filenames[pos + batch_idx].c_str(), &tmpls.tmpls[batch_idx]))
+            JANICE_ASSERT(janice_read_template(filenames[pos + batch_idx].c_str(), &tmpls.tmpls[batch_idx]));
             ids.ids[batch_idx] = template_ids[pos + batch_idx];
         }
 
-        JANICE_ASSERT(janice_gallery_insert_batch(gallery, tmpls, ids))
+        JANICE_ASSERT(janice_gallery_insert_batch(gallery, tmpls, ids));
 
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
-            JANICE_ASSERT(janice_free_template(&tmpls.tmpls[batch_idx]))
+            JANICE_ASSERT(janice_free_template(&tmpls.tmpls[batch_idx]));
     }
 
     delete[] tmpls.tmpls;
     delete[] ids.ids;
 
-    JANICE_ASSERT(janice_write_gallery(gallery, args::get(gallery_file).c_str()))
-    JANICE_ASSERT(janice_free_gallery(&gallery))
+    JANICE_ASSERT(janice_write_gallery(gallery, args::get(gallery_file).c_str()));
+    JANICE_ASSERT(janice_free_gallery(&gallery));
 
-    JANICE_ASSERT(janice_finalize())
+    JANICE_ASSERT(janice_finalize());
 
     return 0;
 }

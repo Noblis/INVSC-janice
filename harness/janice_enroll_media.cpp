@@ -54,10 +54,10 @@ int main(int argc, char* argv[])
                                     args::get(algorithm).c_str(),
                                     args::get(num_threads),
                                     args::get(gpus).data(),
-                                    args::get(gpus).size()))
+                                    args::get(gpus).size()));
 
     JaniceContext context;
-    JANICE_ASSERT(janice_init_default_context(&context))
+    JANICE_ASSERT(janice_init_default_context(&context));
 
     if      (args::get(policy) == "All")     context.policy = JaniceDetectAll;
     else if (args::get(policy) == "Largest") context.policy = JaniceDetectLargest;
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
     for (auto entry : sighting_id_filename_lut) {
         JaniceMediaIterator it;
         if (entry.second.size() == 1) {
-            JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].c_str(), &it))
+            JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].c_str(), &it));
         } else {
             const char** filenames = new const char*[entry.second.size()];
             uint32_t* frames = new uint32_t[entry.second.size()];
@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
                 frames[i] = i;
             }
 
-            JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, frames, entry.second.size(), &it))
+            JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, frames, entry.second.size(), &it));
 
             delete[] filenames;
             delete[] frames;
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
         // Run batch enrollment
         JaniceTemplatesGroup  tmpls_group;
         JaniceDetectionsGroup detections_group;
-        JANICE_ASSERT(janice_enroll_from_media_batch(media_list, context, &tmpls_group, &detections_group))
+        JANICE_ASSERT(janice_enroll_from_media_batch(media_list, context, &tmpls_group, &detections_group));
     
         // Assert we got the correct number of templates (1 list for each media)
         if (tmpls_group.length != current_batch_size) {
@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
                 JANICE_ASSERT(janice_write_template(tmpl, tmpl_file.c_str()));
     
                 JaniceTrack track;
-                JANICE_ASSERT(janice_detection_get_track(detections.detections[j], &track))
+                JANICE_ASSERT(janice_detection_get_track(detections.detections[j], &track));
     
                 for (size_t k = 0; k < track.length; ++k) {
                     JaniceRect rect  = track.rects[k];
@@ -162,23 +162,23 @@ int main(int argc, char* argv[])
                     fprintf(output, "%s,%d,%u,%u,%u,%u,%u,%f,%zu\n", tmpl_file.c_str(), sighting_ids[pos + i], frame, rect.x, rect.y, rect.width, rect.height, confidence, (tid-1));
                 }
 
-                JANICE_ASSERT(janice_clear_track(&track))
+                JANICE_ASSERT(janice_clear_track(&track));
             }
         }
     
         // Clean up
-        JANICE_ASSERT(janice_clear_templates_group(&tmpls_group))
-        JANICE_ASSERT(janice_clear_detections_group(&detections_group))
+        JANICE_ASSERT(janice_clear_templates_group(&tmpls_group));
+        JANICE_ASSERT(janice_clear_detections_group(&detections_group));
 
         pos += current_batch_size;
     }
 
     // Free the media iterators
     for (size_t i = 0; i < media.size(); ++i)
-        JANICE_ASSERT(media[i]->free(&media[i]))
+        JANICE_ASSERT(media[i]->free(&media[i]));
 
     // Finalize the API
-    JANICE_ASSERT(janice_finalize())
+    JANICE_ASSERT(janice_finalize());
 
     return 0;
 }

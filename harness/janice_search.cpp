@@ -52,16 +52,16 @@ int main(int argc, char* argv[])
                                     args::get(algorithm).c_str(),
                                     args::get(num_threads),
                                     args::get(gpus).data(),
-                                    args::get(gpus).size()))
+                                    args::get(gpus).size()));
 
     JaniceContext context;
-    JANICE_ASSERT(janice_init_default_context(&context))
+    JANICE_ASSERT(janice_init_default_context(&context));
 
     context.threshold = args::get(threshold);
     context.max_returns = args::get(max_returns);
 
     JaniceGallery gallery;
-    JANICE_ASSERT(janice_read_gallery(args::get(gallery_file).c_str(), &gallery))
+    JANICE_ASSERT(janice_read_gallery(args::get(gallery_file).c_str(), &gallery));
 
     // Load the gallery
     io::CSVReader<2> metadata(args::get(probe_file));
@@ -94,30 +94,30 @@ int main(int argc, char* argv[])
         probes.length = current_batch_size;
 
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
-            JANICE_ASSERT(janice_read_template(filenames[pos + batch_idx].c_str(), &probes.tmpls[batch_idx]))
+            JANICE_ASSERT(janice_read_template(filenames[pos + batch_idx].c_str(), &probes.tmpls[batch_idx]));
 
         JaniceSimilaritiesGroup search_scores;
         JaniceTemplateIdsGroup search_ids;
-        JANICE_ASSERT(janice_search_batch(probes, gallery, context, &search_scores, &search_ids))
+        JANICE_ASSERT(janice_search_batch(probes, gallery, context, &search_scores, &search_ids));
 
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
             for (int search_idx = 0; search_idx < search_scores.group[batch_idx].length; ++search_idx)
                 fprintf(candidates, "%zu,%zu,%f\n", template_ids[pos + batch_idx], search_ids.group[batch_idx].ids[search_idx], search_scores.group[batch_idx].similarities[search_idx]);
 
-        JANICE_ASSERT(janice_clear_similarities_group(&search_scores))
-        JANICE_ASSERT(janice_clear_template_ids_group(&search_ids))
+        JANICE_ASSERT(janice_clear_similarities_group(&search_scores));
+        JANICE_ASSERT(janice_clear_template_ids_group(&search_ids));
 
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
-            JANICE_ASSERT(janice_free_template(&probes.tmpls[batch_idx]))
+            JANICE_ASSERT(janice_free_template(&probes.tmpls[batch_idx]));
 
         delete[] probes.tmpls;
 
         pos += current_batch_size;
     }
 
-    JANICE_ASSERT(janice_free_gallery(&gallery))
+    JANICE_ASSERT(janice_free_gallery(&gallery));
 
-    JANICE_ASSERT(janice_finalize())
+    JANICE_ASSERT(janice_finalize());
 
     return 0;
 }
