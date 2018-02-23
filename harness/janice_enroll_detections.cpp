@@ -33,7 +33,8 @@ int main(int argc, char* argv[])
     std::string output_path = argv[6];
 
     std::string algorithm;
-    int num_threads, gpu;
+    int num_threads = 0;
+    int gpu = 0;
     if (!parse_optional_args(argc, argv, min_args, max_args, algorithm, num_threads, gpu))
         exit(EXIT_FAILURE);
     
