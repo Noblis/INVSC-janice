@@ -97,6 +97,8 @@ int main(int argc, char* argv[])
 
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
             JANICE_ASSERT(janice_free_template(&tmpls.tmpls[batch_idx]));
+
+        pos += current_batch_size;
     }
 
     delete[] tmpls.tmpls;
