@@ -189,11 +189,13 @@ JaniceError tell(JaniceMediaIterator it, uint32_t* frame)
 
 JaniceError free_image(JaniceImage* image)
 {
-    if ((*image)->owner)
-        free((*image)->data);
-    delete (*image);
-
-    return JANICE_SUCCESS;
+  if ((*image)->owner) {
+    free((*image)->data);
+    (*image)->data = nullptr;
+  }
+  delete (*image);
+  *image = nullptr;
+  return JANICE_SUCCESS;
 }
 
 JaniceError free_iterator(JaniceMediaIterator* it)

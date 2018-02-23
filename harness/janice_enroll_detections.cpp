@@ -6,6 +6,10 @@
 
 #include <unordered_map>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 void print_usage()
 {
     printf("Usage: janice_enroll_detections sdk_path temp_path data_path input_file role output_path [-algorithm <algorithm>] [-threads <int>] [-gpu <int>]\n");
@@ -26,10 +30,11 @@ int main(int argc, char* argv[])
     const std::string data_path   = argv[3];
     const std::string input_file  = argv[4];
     const std::string role_str    = argv[5];
-    const std::string output_path = argv[6];
+    std::string output_path = argv[6];
 
     std::string algorithm;
-    int num_threads, gpu;
+    int num_threads = 0;
+    int gpu = 0;
     if (!parse_optional_args(argc, argv, min_args, max_args, algorithm, num_threads, gpu))
         exit(EXIT_FAILURE);
     
@@ -67,7 +72,7 @@ int main(int argc, char* argv[])
 
     // Parse the metadata file
     io::CSVReader<7> metadata(input_file);
-    metadata.read_header(io::ignore_extra_column, "file", "templateId", "subjectId", "Face_X", "Face_Y", "Face_Width", "Face_Height");
+    metadata.read_header(io::ignore_extra_column, "FILENAME", "TEMPLATE_ID", "SUBJECT_ID", "FACE_X", "FACE_Y", "FACE_WIDTH", "FACE_HEIGHT");
 
     std::unordered_map<int, std::vector<JaniceDetection>> detections_lut;
     std::unordered_map<int, int> subject_id_lut;
@@ -122,6 +127,8 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
+    janice_clear_detections_group(&detections_group);
+#if 0
     // Clear the detections
     for (size_t i = 0; i < detections_group.length; ++i) {
         for (size_t j = 0; j < detections_group.group[i].length; ++j)
@@ -129,10 +136,28 @@ int main(int argc, char* argv[])
         delete[] detections_group.group[i].detections;
     }
     delete[] detections_group.group;
+#endif
 
     // Write the templates to disk
-    FILE* output = fopen((output_path + "/templates.csv").c_str(), "w+");
-    fprintf(output, "file,templateId,subjectId\n");
+    struct stat stat_buf;
+    if (*(output_path.end()) == '/') {
+      output_path = output_path.substr(0, output_path.length() - 1);
+    }
+    std::string output_file_name(output_path);
+    // taa: If we were given the name of an existing directory, we'll append "templates.csv"
+    // and use that. Otherwise, we take the output_path as a file name, and use it unmodified.
+    if (stat(output_path.c_str(), &stat_buf) == 0 &&
+        (stat_buf.st_mode & S_IFDIR) != 0) {
+      output_file_name = output_path + "/templates.csv";
+    }
+    else {
+      size_t last_slash = output_path.rfind("/");
+      // We need the directory part to write the templates.
+      output_path = output_path.substr(0, last_slash);
+    }
+    FILE* output = fopen(output_file_name.c_str(), "w+");
+    // taa: Use old-style headers.
+    fprintf(output, "FILENAME,TEMPLATE_ID,SUBJECT_ID\n");
 
     for (size_t i = 0; i < tmpls.length; ++i) {
         std::string tmpl_file = output_path + "/" + std::to_string(template_ids[i]) + ".tmpl";
@@ -140,6 +165,9 @@ int main(int argc, char* argv[])
 
         fprintf(output, "%s,%d,%d\n", tmpl_file.c_str(), template_ids[i], subject_id_lut[template_ids[i]]);
     }
+
+    // Close the file
+    fclose(output);
 
     // Free the templates
     JANICE_ASSERT(janice_clear_templates(&tmpls));
