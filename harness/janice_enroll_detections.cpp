@@ -117,6 +117,7 @@ int main(int argc, char* argv[])
 
             JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, track.length, &it));
             JANICE_ASSERT(janice_create_detection_from_track(it, track, &detection));
+            JANICE_ASSERT(it->reset(it));
 
             delete[] filenames;
             delete[] track.rects;
