@@ -100,16 +100,13 @@ int main(int argc, char* argv[])
             JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].c_str(), &it));
         } else {
             const char** filenames = new const char*[entry.second.size()];
-            uint32_t* frames = new uint32_t[entry.second.size()];
             for (size_t i = 0; i < entry.second.size(); ++i) {
                 filenames[i] = entry.second[i].c_str();
-                frames[i] = i;
             }
 
-            JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, frames, entry.second.size(), &it));
+            JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, entry.second.size(), &it));
 
             delete[] filenames;
-            delete[] frames;
         }
 
         media.push_back(it);

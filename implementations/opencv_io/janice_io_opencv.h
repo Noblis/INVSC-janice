@@ -33,7 +33,6 @@ JANICE_EXPORT JaniceError janice_io_opencv_create_media_iterator(const char* fil
  *          an error code.
  */
 JANICE_EXPORT JaniceError janice_io_opencv_create_sparse_media_iterator(const char** filenames,
-                                                                        uint32_t* frames,
                                                                         size_t num_files,
                                                                         JaniceMediaIterator* it);
 

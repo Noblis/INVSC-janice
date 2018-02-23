@@ -33,8 +33,6 @@ static inline JaniceError cv_mat_to_janice_image(cv::Mat& m, JaniceImage* _image
 struct JaniceMediaIteratorStateType
 {
     std::vector<std::string> filenames;
-    std::vector<uint32_t> frames;
-
     size_t pos;
 };
 
@@ -68,14 +66,33 @@ JaniceError next(JaniceMediaIterator it, JaniceImage* image)
     return JANICE_SUCCESS;
 }
 
-JaniceError seek(JaniceMediaIterator, uint32_t)
+JaniceError seek(JaniceMediaIterator it, uint32_t frame)
 {
-    return JANICE_INVALID_MEDIA;
+    JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
+
+    if (frame >= state->filenames.size())
+        return JANICE_BAD_ARGUMENT;
+
+    state->pos = frame;
+
+    return JANICE_SUCCESS;
 }
 
-JaniceError get(JaniceMediaIterator, JaniceImage*, uint32_t)
+JaniceError get(JaniceMediaIterator it, JaniceImage* image, uint32_t frame)
 {
-    return JANICE_INVALID_MEDIA;
+    JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
+
+    if (frame >= state->filenames.size())
+        return JANICE_BAD_ARGUMENT;
+
+    try {
+        cv::Mat cv_img = cv::imread(state->filenames[frame], cv::IMREAD_ANYCOLOR);
+        cv_mat_to_janice_image(cv_img, image);
+    } catch (...) {
+        return JANICE_UNKNOWN_ERROR;
+    }
+
+    return JANICE_SUCCESS;
 }
 
 JaniceError tell(JaniceMediaIterator it, uint32_t* frame)
@@ -85,7 +102,7 @@ JaniceError tell(JaniceMediaIterator it, uint32_t* frame)
     if (state->pos == state->filenames.size())
         return JANICE_MEDIA_AT_END;
 
-    *frame = state->frames[state->pos];
+    *frame = state->pos;
 
     return JANICE_SUCCESS;
 }
@@ -123,7 +140,7 @@ JaniceError reset(JaniceMediaIterator it)
 // ----------------------------------------------------------------------------
 // OpenCV I/O only, create a sparse opencv_io media iterator
 
-JaniceError janice_io_opencv_create_sparse_media_iterator(const char** filenames, uint32_t* frames, size_t num_files, JaniceMediaIterator *_it)
+JaniceError janice_io_opencv_create_sparse_media_iterator(const char** filenames, size_t num_files, JaniceMediaIterator *_it)
 {
     JaniceMediaIterator it = new JaniceMediaIteratorType();
 
@@ -143,7 +160,6 @@ JaniceError janice_io_opencv_create_sparse_media_iterator(const char** filenames
     JaniceMediaIteratorStateType* state = new JaniceMediaIteratorStateType();
     for (size_t i = 0; i < num_files; ++i) {
         state->filenames.push_back(std::string(filenames[i]));
-        state->frames.push_back(frames[i]);
     }
     state->pos = 0;
 
