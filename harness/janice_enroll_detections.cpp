@@ -98,6 +98,7 @@ int main(int argc, char* argv[])
         if (entry.second.size() == 1) {
             JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].first.c_str(), &it));
             JANICE_ASSERT(janice_create_detection_from_rect(it, entry.second[0].second, 0, &detection));
+            JANICE_ASSERT(it->reset(it));
         } else {
             const char** filenames = new const char*[entry.second.size()];
 
@@ -179,7 +180,7 @@ int main(int argc, char* argv[])
             std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(batch_template_ids[tmpl_idx]) + ".tmpl";
             JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()));
 
-            fprintf(output, "%s,%d,%d\n", tmpl_file.c_str(), batch_template_ids[i], template_id_subject_id_lut[batch_template_ids[i]]);
+            fprintf(output, "%s,%d,%d\n", tmpl_file.c_str(), batch_template_ids[tmpl_idx], template_id_subject_id_lut[batch_template_ids[i]]);
         }
 
         // Cleanup detections group
