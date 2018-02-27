@@ -134,11 +134,11 @@ JANICE_EXPORT JaniceError janice_create_detection_from_track(JaniceMediaIterator
                                                              JaniceDetection* detection);
 
 JANICE_EXPORT JaniceError janice_detect(JaniceMediaIterator media,
-                                        JaniceContext context,
+                                        const JaniceContext* context,
                                         JaniceDetections* detections);
 
 JANICE_EXPORT JaniceError janice_detect_batch(JaniceMediaIterators media,
-                                              JaniceContext context,
+                                              const JaniceContext* context,
                                               JaniceDetectionsGroup* detections);
 
 JANICE_EXPORT JaniceError janice_detection_get_track(JaniceDetection detection,
@@ -202,23 +202,23 @@ struct JaniceTemplatesGroup
 
 // Functions
 JANICE_EXPORT JaniceError janice_enroll_from_media(JaniceMediaIterator media,
-                                                   JaniceContext context,
+                                                   const JaniceContext* context,
                                                    JaniceTemplates* tmpls,
                                                    JaniceDetections* detections);
 
 JANICE_EXPORT JaniceError janice_enroll_from_media_batch(JaniceMediaIterators media,
-                                                         JaniceContext context,
+                                                         const JaniceContext* context,
                                                          JaniceTemplatesGroup* tmpls,
                                                          JaniceDetectionsGroup* detections);
 
 JANICE_EXPORT JaniceError janice_enroll_from_detections(JaniceMediaIterators media,
                                                         JaniceDetections detections,
-                                                        JaniceContext context,
+                                                        const JaniceContext* context,
                                                         JaniceTemplate* tmpl);
 
 JANICE_EXPORT JaniceError janice_enroll_from_detections_batch(JaniceMediaIteratorsGroup media,
                                                               JaniceDetectionsGroup detections,
-                                                              JaniceContext context,
+                                                              const JaniceContext* context,
                                                               JaniceTemplates* tmpls);
 
 JANICE_EXPORT JaniceError janice_template_is_fte(JaniceTemplate tmpl,
@@ -357,13 +357,13 @@ JANICE_EXPORT JaniceError janice_clear_template_ids_group(JaniceTemplateIdsGroup
 
 JANICE_EXPORT JaniceError janice_search(JaniceTemplate probe,
                                         JaniceGallery gallery,
-                                        JaniceContext context,
+                                        const JaniceContext* context,
                                         JaniceSimilarities* similarities,
                                         JaniceTemplateIds* ids);
 
 JANICE_EXPORT JaniceError janice_search_batch(JaniceTemplates probes,
                                               JaniceGallery gallery,
-                                              JaniceContext context,
+                                              const JaniceContext* context,
                                               JaniceSimilaritiesGroup* similarities,
                                               JaniceTemplateIdsGroup* ids);
 
@@ -401,13 +401,13 @@ struct JaniceClusterConfidencesGroup
 
 // Functions
 JANICE_EXPORT JaniceError janice_cluster_media(JaniceMediaIterators media,
-                                               JaniceContext context,
+                                               const JaniceContext* context,
                                                JaniceClusterIdsGroup* cluster_ids,
                                                JaniceClusterConfidencesGroup* cluster_confidences,
                                                JaniceDetectionsGroup* detections);
 
 JANICE_EXPORT JaniceError janice_cluster_templates(JaniceTemplates tmpls,
-                                                   JaniceContext context,
+                                                   const JaniceContext* context,
                                                    JaniceClusterIds* cluster_ids,
                                                    JaniceClusterConfidences* cluster_confidences);
 
