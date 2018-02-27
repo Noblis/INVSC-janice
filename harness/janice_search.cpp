@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
 
         JaniceSimilaritiesGroup search_scores;
         JaniceTemplateIdsGroup search_ids;
-        JANICE_ASSERT(janice_search_batch(probes, gallery, context, &search_scores, &search_ids));
+        JANICE_ASSERT(janice_search_batch(probes, gallery, &context, &search_scores, &search_ids));
 
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
             for (int search_idx = 0; search_idx < search_scores.group[batch_idx].length; ++search_idx)

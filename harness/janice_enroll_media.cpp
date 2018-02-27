@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
         // Run batch enrollment
         JaniceTemplatesGroup  tmpls_group;
         JaniceDetectionsGroup detections_group;
-        JANICE_ASSERT(janice_enroll_from_media_batch(media_list, context, &tmpls_group, &detections_group));
+        JANICE_ASSERT(janice_enroll_from_media_batch(media_list, &context, &tmpls_group, &detections_group));
     
         // Assert we got the correct number of templates (1 list for each media)
         if (tmpls_group.length != current_batch_size) {
