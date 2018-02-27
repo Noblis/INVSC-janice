@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
     args::ValueFlag<std::string> data_path(parser, "string", "A path to prepend to all image files before loading them", {'d', "data_path"}, "./");
     args::ValueFlag<float>       threshold(parser, "float", "A score threshold for search. All returned matches will have a score over the threshold.", {'f', "threshold"}, 0.0);
-    args::ValueFlag<int>         max_returns(parser, "int", "The maximum number of matches to return from a search.", {'m', "max_returns"}, 0);
+    args::ValueFlag<int>         max_returns(parser, "int", "The maximum number of matches to return from a search.", {'m', "max_returns"}, 50);
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
     args::ValueFlag<int>         batch_size(parser, "int", "The size of a single batch. A larger batch size may run faster but will use more CPU resources.", {'b', "batch_size"}, 128);
