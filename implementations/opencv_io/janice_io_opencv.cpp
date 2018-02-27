@@ -155,8 +155,14 @@ JaniceError seek(JaniceMediaIterator it, uint32_t frame)
     }
     
     // Image - return INVALID_MEDIA
-    if (!state->video.isOpened())
+    if (!state->video.isOpened()) {
+      // taa: Allow seek to 0 even on images. It used to work, and there's no reason why it shouldn't now.
+      if (frame != 0) {
         return JANICE_INVALID_MEDIA;
+      }
+      state->at_end = false;
+      return JANICE_SUCCESS;
+    }
     
     if (frame >= state->video.get(CV_CAP_PROP_FRAME_COUNT)) // invalid index
         return JANICE_OUT_OF_BOUNDS_ACCESS;
