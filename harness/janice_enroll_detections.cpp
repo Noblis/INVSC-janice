@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
         }
 
         JaniceTemplates tmpls;
-        JANICE_ASSERT(janice_enroll_from_detections_batch(media_group, detections_group, context, &tmpls));
+        JANICE_ASSERT(janice_enroll_from_detections_batch(media_group, detections_group, &context, &tmpls));
 
         // Assert we got the correct number of templates (1 tmpl per detection subgroup)
         if (tmpls.length != current_batch_size) {

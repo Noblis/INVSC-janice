@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 
         // Run batch detection
         JaniceDetectionsGroup detections_group;
-        JANICE_ASSERT(janice_detect_batch(media_list, context, &detections_group));
+        JANICE_ASSERT(janice_detect_batch(media_list, &context, &detections_group));
 
         // Assert we got the correct number of detections (1 list for each media)
         if (detections_group.length != current_batch_size) {
