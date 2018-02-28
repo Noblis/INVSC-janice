@@ -64,24 +64,23 @@ int main(int argc, char* argv[])
     JANICE_ASSERT(janice_read_gallery(args::get(gallery_file).c_str(), &gallery));
 
     // Load the gallery
-    io::CSVReader<2> metadata(args::get(probe_file));
-    metadata.read_header(io::ignore_extra_column, "FILENAME", "TEMPLATE_ID");
+    io::CSVReader<1> metadata(args::get(probe_file));
+    metadata.read_header(io::ignore_extra_column, "TEMPLATE_ID");
 
     std::vector<std::string> filenames;
     std::vector<JaniceTemplateId> template_ids;
 
     {
-        std::string filename;
         int template_id;
-        while (metadata.read_row(filename, template_id)) {
-            filenames.push_back(args::get(data_path) + "/" + filename);
+        while (metadata.read_row(template_id)) {
+            filenames.push_back(args::get(data_path) + "/" + std::to_string(template_id) + ".tmpl");
             template_ids.push_back(template_id);
         }
     }
 
     // Open the candidate list file
     FILE* candidates = fopen(args::get(candidate_file).c_str(), "w+");
-    fprintf(candidates, "PROBE_ID,GALLERY_ID,SCORE\n");
+    fprintf(candidates, "SEARCH_TEMPLATE_ID,RANK,ERROR_CODE,GALLERY_TEMPLATE_ID,SCORE,SEARCH_TIME\n");
 
     int num_batches = filenames.size() / args::get(batch_size) + 1;
 
@@ -102,7 +101,7 @@ int main(int argc, char* argv[])
 
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
             for (int search_idx = 0; search_idx < search_scores.group[batch_idx].length; ++search_idx)
-                fprintf(candidates, "%zu,%zu,%f\n", template_ids[pos + batch_idx], search_ids.group[batch_idx].ids[search_idx], search_scores.group[batch_idx].similarities[search_idx]);
+                fprintf(candidates, "%zu,%d,0,%zu,%f,-1\n", template_ids[pos + batch_idx], search_idx, search_ids.group[batch_idx].ids[search_idx], search_scores.group[batch_idx].similarities[search_idx]);
 
         JANICE_ASSERT(janice_clear_similarities_group(&search_scores));
         JANICE_ASSERT(janice_clear_template_ids_group(&search_ids));

@@ -51,17 +51,16 @@ int main(int argc, char* argv[])
                                     args::get(gpus).size()));
 
     // Parse the media file
-    io::CSVReader<2> metadata(args::get(template_file));
-    metadata.read_header(io::ignore_extra_column, "FILENAME", "TEMPLATE_ID");
+    io::CSVReader<1> metadata(args::get(template_file));
+    metadata.read_header(io::ignore_extra_column, "TEMPLATE_ID");
 
     std::vector<std::string> filenames;
     std::vector<JaniceTemplateId> template_ids;
 
     {
-        std::string filename;
         int template_id;
-        while (metadata.read_row(filename, template_id)) {
-            filenames.push_back(args::get(data_path) + "/" + filename);
+        while (metadata.read_row(template_id)) {
+            filenames.push_back(args::get(data_path) + "/" + std::to_string(template_id) + ".tmpl");
             template_ids.push_back(template_id);
         }
     }

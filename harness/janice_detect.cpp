@@ -87,9 +87,9 @@ int main(int argc, char* argv[])
     int num_batches = media.size() / args::get(batch_size) + 1;
 
     FILE* output = fopen(args::get(output_file).c_str(), "w+");
-    fprintf(output, "FILENAME,FRAME_NUM,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE\n");
+    fprintf(output, "TEMPLATE_ID,FILENAME,FRAME_NUM,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE,DETECTION_TIME\n");
 
-    int pos = 0;
+    int template_id = 0, pos = 0;
     for (int i = 0; i < num_batches; ++i) {
         int current_batch_size = std::min(args::get(batch_size), (int) media.size() - pos);
 
@@ -109,19 +109,19 @@ int main(int argc, char* argv[])
 
 
         // Write the detection files to disk
-        for (size_t i = 0; i < detections_group.length; ++i) {
-            JaniceDetections detections = detections_group.group[i];
-            for (size_t j = 0; j < detections.length; ++j) {
+        for (size_t group_idx = 0; group_idx < detections_group.length; ++group_idx) {
+            JaniceDetections detections = detections_group.group[group_idx];
+            for (size_t detection_idx = 0; detection_idx < detections.length; ++detection_idx) {
                 JaniceTrack track;
-                JANICE_ASSERT(janice_detection_get_track(detections.detections[j], &track));
+                JANICE_ASSERT(janice_detection_get_track(detections.detections[detection_idx], &track));
 
-                const std::string filename = filenames[i];
-                for (size_t k = 0; k < track.length; ++k) {
-                    JaniceRect rect  = track.rects[k];
-                    float confidence = track.confidences[k];
-                    uint32_t frame   = track.frames[k];
+                const std::string filename = filenames[pos + group_idx];
+                for (size_t track_idx = 0; track_idx < track.length; ++track_idx) {
+                    JaniceRect rect  = track.rects[track_idx];
+                    float confidence = track.confidences[track_idx];
+                    uint32_t frame   = track.frames[track_idx];
                 
-                    fprintf(output, "%s,%u,%u,%u,%u,%u,%f\n", filename.c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence);
+                    fprintf(output, "%d,%s,%u,%u,%u,%u,%u,%f,-1\n", template_id++, filename.c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence);
                 }
 
                 // Free the track

@@ -92,6 +92,7 @@ int main(int argc, char* argv[])
             sighting_id_filename_lut[sighting_id].push_back(args::get(data_path) + "/" + filename);
     }
 
+    std::vector<std::string> first_filenames;
     std::vector<JaniceMediaIterator> media;
     std::vector<int> sighting_ids;
     for (auto entry : sighting_id_filename_lut) {
@@ -109,6 +110,7 @@ int main(int argc, char* argv[])
             delete[] filenames;
         }
 
+        first_filenames.push_back(entry.second[0]);
         media.push_back(it);
         sighting_ids.push_back(entry.first);
     }
@@ -116,9 +118,9 @@ int main(int argc, char* argv[])
     int num_batches = media.size() / args::get(batch_size) + 1;
 
     FILE* output = fopen(args::get(output_file).c_str(), "w+");
-    fprintf(output, "FILENAME,SIGHTING_ID,FRAME_NUM,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE,TEMPLATE_ID\n");
+    fprintf(output, "TEMPLATE_ID,FILENAME,FRAME_NUM,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE,DETECTION_TIME\n");
 
-    int pos = 0;
+    int template_id = 0, pos = 0;
     for (int i = 0; i < num_batches; ++i) {
         int current_batch_size = std::min(args::get(batch_size), (int) media.size() - pos);
 
@@ -137,7 +139,6 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
         
-        size_t tid = 0;
         for (size_t i = 0; i < tmpls_group.length; ++i) {
             const JaniceTemplates&  tmpls      = tmpls_group.group[i];
             const JaniceDetections& detections = detections_group.group[i];
@@ -145,7 +146,7 @@ int main(int argc, char* argv[])
                 JaniceTemplate tmpl = tmpls.tmpls[j];
         
                 // Write the template to disk
-                std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(tid++) + ".tmpl";
+                std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(template_id) + ".tmpl";
                 JANICE_ASSERT(janice_write_template(tmpl, tmpl_file.c_str()));
     
                 JaniceTrack track;
@@ -156,7 +157,7 @@ int main(int argc, char* argv[])
                     float confidence = track.confidences[k];
                     uint32_t frame   = track.frames[k];
                     
-                    fprintf(output, "%s,%d,%u,%u,%u,%u,%u,%f,%zu\n", tmpl_file.c_str(), sighting_ids[pos + i], frame, rect.x, rect.y, rect.width, rect.height, confidence, (tid-1));
+                    fprintf(output, "%d,%s,%u,%u,%u,%u,%u,%f,-1\n", template_id++, first_filenames[pos + i].c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence);
                 }
 
                 JANICE_ASSERT(janice_clear_track(&track));

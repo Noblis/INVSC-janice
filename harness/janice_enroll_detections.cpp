@@ -71,8 +71,11 @@ int main(int argc, char* argv[])
     io::CSVReader<8> metadata(args::get(media_file));
     metadata.read_header(io::ignore_extra_column, "FILENAME", "TEMPLATE_ID", "SUBJECT_ID", "SIGHTING_ID", "FACE_X", "FACE_Y", "FACE_WIDTH", "FACE_HEIGHT");
 
-    std::unordered_map<int, std::vector<std::pair<std::string, JaniceRect>>> sighting_id_filename_lut;
-    std::unordered_map<int, JaniceTemplateId> sighting_id_template_id_lut;
+    /*
+     * The metadata is arranged in 2 levels. First, by template ID which is the outer map.
+     * Second by sighting ID which is the inner map.
+     */
+    std::unordered_map<JaniceTemplateId, std::unordered_map<int, std::vector<std::pair<std::string, JaniceRect>>>> template_id_metadata_lut;
     std::unordered_map<JaniceTemplateId, int> template_id_subject_id_lut;
 
     {
@@ -83,56 +86,61 @@ int main(int argc, char* argv[])
         JaniceRect rect;
 
         while (metadata.read_row(filename, template_id, subject_id, sighting_id, rect.x, rect.y, rect.width, rect.height)) {
-            sighting_id_filename_lut[sighting_id].push_back(std::make_pair(args::get(data_path) + filename, rect));
-            sighting_id_template_id_lut[sighting_id] = template_id;
+            template_id_metadata_lut[template_id][sighting_id].push_back(std::make_pair(args::get(data_path) + "/" + filename, rect));
             template_id_subject_id_lut[template_id] = subject_id;
         }
     }
 
+    /*
+     * With the metadata organized, we can create 1 media iterator per sighting ID and track relevant
+     * detections
+     */
     std::unordered_map<JaniceTemplateId, std::vector<std::pair<JaniceMediaIterator, JaniceDetection>>> template_id_media_it_lut;
 
-    for (auto entry : sighting_id_filename_lut) {
-        JaniceMediaIterator it;
-        JaniceDetection detection;
+    for (auto tmpl : template_id_metadata_lut) {
+        for (auto entry : tmpl.second) {
+            JaniceMediaIterator it;
+            JaniceDetection detection;
 
-        if (entry.second.size() == 1) {
-            JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].first.c_str(), &it));
-            JANICE_ASSERT(janice_create_detection_from_rect(it, entry.second[0].second, 0, &detection));
-            JANICE_ASSERT(it->reset(it));
-        } else {
-            const char** filenames = new const char*[entry.second.size()];
+            if (entry.second.size() == 1) {
+                JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].first.c_str(), &it));
+                JANICE_ASSERT(janice_create_detection_from_rect(it, entry.second[0].second, 0, &detection));
+                JANICE_ASSERT(it->reset(it));
+            } else {
+                const char** filenames = new const char*[entry.second.size()];
 
-            JaniceTrack track;
-            track.rects = new JaniceRect[entry.second.size()];
-            track.confidences = new float[entry.second.size()];
-            track.frames = new uint32_t[entry.second.size()];
-            track.length = entry.second.size();
+                JaniceTrack track;
+                track.rects = new JaniceRect[entry.second.size()];
+                track.confidences = new float[entry.second.size()];
+                track.frames = new uint32_t[entry.second.size()];
+                track.length = entry.second.size();
 
-            for (size_t i = 0; i < entry.second.size(); ++i) {
-                filenames[i] = entry.second[i].first.c_str();
+                for (size_t i = 0; i < entry.second.size(); ++i) {
+                    filenames[i] = entry.second[i].first.c_str();
 
-                track.rects[i] = entry.second[i].second;
-                track.confidences[i] = 1.0;
-                track.frames[i] = i;
+                    track.rects[i] = entry.second[i].second;
+                    track.confidences[i] = 1.0;
+                    track.frames[i] = i;
+                }
+
+                JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, track.length, &it));
+                JANICE_ASSERT(janice_create_detection_from_track(it, track, &detection));
+                JANICE_ASSERT(it->reset(it));
+
+                delete[] filenames;
+                delete[] track.rects;
+                delete[] track.confidences;
+                delete[] track.frames;
             }
 
-            JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, track.length, &it));
-            JANICE_ASSERT(janice_create_detection_from_track(it, track, &detection));
-            JANICE_ASSERT(it->reset(it));
-
-            delete[] filenames;
-            delete[] track.rects;
-            delete[] track.confidences;
-            delete[] track.frames;
+            template_id_media_it_lut[tmpl.first].push_back(std::make_pair(it, detection));
         }
-
-        template_id_media_it_lut[sighting_id_template_id_lut[entry.first]].push_back(std::make_pair(it, detection));
     }
 
     int num_batches = template_id_media_it_lut.size() / args::get(batch_size) + 1;
 
     FILE* output = fopen(args::get(output_file).c_str(), "w+");
-    fprintf(output, "FILENAME,TEMPLATE_ID,SUBJECT_ID\n");
+    fprintf(output, "TEMPLATE_ID,SUBJECT_ID,TEMPLATE_ROLE,ERROR_CODE,TEMPLATE_CREATION_TIME,TEMPLATE_SIZE\n");
 
     auto it = template_id_media_it_lut.begin();
     int pos = 0;
@@ -147,7 +155,7 @@ int main(int argc, char* argv[])
         detections_group.group = new JaniceDetections[current_batch_size];
         detections_group.length = current_batch_size;
 
-        std::vector<int> batch_template_ids;
+        std::vector<JaniceTemplateId> batch_template_ids;
         for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
             const JaniceTemplateId& template_id = it->first;
             const std::vector<std::pair<JaniceMediaIterator, JaniceDetection>>& d_info = it->second;
@@ -180,7 +188,7 @@ int main(int argc, char* argv[])
             std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(batch_template_ids[tmpl_idx]) + ".tmpl";
             JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()));
 
-            fprintf(output, "%s,%d,%d\n", tmpl_file.c_str(), batch_template_ids[tmpl_idx], template_id_subject_id_lut[batch_template_ids[i]]);
+            fprintf(output, "%zu,%d,%d,0,-1,-1\n", batch_template_ids[tmpl_idx], template_id_subject_id_lut[batch_template_ids[tmpl_idx]], context.role);
         }
 
         // Cleanup detections group
