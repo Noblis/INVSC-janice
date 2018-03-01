@@ -55,7 +55,7 @@ JaniceError next(JaniceMediaIterator it, JaniceImage* image)
         return JANICE_MEDIA_AT_END;
 
     try {
-        cv::Mat cv_img = cv::imread(state->filenames[state->pos], cv::IMREAD_ANYCOLOR);
+        cv::Mat cv_img = cv::imread(state->filenames[state->pos], cv::IMREAD_ANYCOLOR | cv::IMREAD_IGNORE_ORIENTATION);
         cv_mat_to_janice_image(cv_img, image);
     } catch (...) {
         return JANICE_UNKNOWN_ERROR;
@@ -86,7 +86,7 @@ JaniceError get(JaniceMediaIterator it, JaniceImage* image, uint32_t frame)
         return JANICE_BAD_ARGUMENT;
 
     try {
-        cv::Mat cv_img = cv::imread(state->filenames[frame], cv::IMREAD_ANYCOLOR);
+        cv::Mat cv_img = cv::imread(state->filenames[frame], cv::IMREAD_ANYCOLOR | cv::IMREAD_IGNORE_ORIENTATION);
         cv_mat_to_janice_image(cv_img, image);
     } catch (...) {
         return JANICE_UNKNOWN_ERROR;

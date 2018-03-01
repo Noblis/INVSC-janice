@@ -28,8 +28,11 @@ static inline JaniceError initialize_media_iterator(JaniceMediaIterator it, cv::
 
     state->initialized = true;
 
-    // attempt imread
-    img = cv::imread(state->filename, cv::IMREAD_ANYCOLOR); // We use ANYCOLOR to load either RGB or Grayscale images
+    /*
+     * Attempt imread. We use ANYCOLOR to load either RGB or Grayscale images.
+     * IGNORE_ORIENTATION will not rotate the image based on EXIF data.
+     */
+    img = cv::imread(state->filename, cv::IMREAD_ANYCOLOR | cv::IMREAD_IGNORE_ORIENTATION); //
 
     // if this succeeds, we are confident the file is just an image and can
     // return immediately.
@@ -114,7 +117,7 @@ JaniceError next(JaniceMediaIterator it, JaniceImage* image)
     // this can happen if: we do the initial read, then seek 0 on the still
     // which unsets at_end. 
     if (!state->video.isOpened()) {
-        cv::Mat cv_image = cv::imread(state->filename, cv::IMREAD_ANYCOLOR);
+        cv::Mat cv_image = cv::imread(state->filename, cv::IMREAD_ANYCOLOR | cv::IMREAD_IGNORE_ORIENTATION);
         cv_mat_to_janice_image(cv_image, image);
         state->at_end = true;
 	
