@@ -14,12 +14,12 @@ int main(int argc, char* argv[])
     args::HelpFlag help(parser, "help", "Display this help menu.", {'h', "help"});
 
     args::Positional<std::string> media_file(parser, "media_file", "A path to an IJB-C compliant csv file. The IJB-C file format is defined at https://noblis.github.io/janice/harness.html#fileformat");
+    args::Positional<std::string> media_path(parser, "media_path", "A prefix path to append to all media before loading them");
     args::Positional<std::string> dst_path(parser, "dst_path", "A path to an existing directory where the enrolled templates will be written. The directory must be writable.");
     args::Positional<std::string> output_file(parser, "output_file", "A path to an output file. A file will be created if it doesn't already exist. The file location must be writable.");
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
-    args::ValueFlag<std::string> data_path(parser, "string", "A path to prepend to all image files before loading them", {'d', "data_path"}, "./");
     args::ValueFlag<int>         min_object_size(parser, "int", "The minimum sized object that should be detected", {'m', "min_object_size"}, -1);
     args::ValueFlag<std::string> policy(parser, "string", "The detection policy the algorithm should use. Options are '[All | Largest | Best]'", {'p', "policy"}, "All");
     args::ValueFlag<std::string> role(parser, "string", "The enrollment role the algorithm should use. Options are [Reference11 | Verification11 | Probe1N | Gallery1N | Cluster]", {'r', "role"}, "Probe1N");
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if (!media_file || !dst_path || !output_file) {
+    if (!media_file || !media_path || !dst_path || !output_file) {
         std::cout << parser;
         return 1;
     }
@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
 
     context.min_object_size = args::get(min_object_size);
 
-    if      (args::get(role) == "Reference11") context.role = Janice11Reference;
+    if      (args::get(role) == "Reference11")    context.role = Janice11Reference;
     else if (args::get(role) == "Verification11") context.role = Janice11Verification;
     else if (args::get(role) == "Probe1N")        context.role = Janice1NProbe;
     else if (args::get(role) == "Gallery1N")      context.role = Janice1NGallery;
@@ -88,8 +88,9 @@ int main(int argc, char* argv[])
     { // Load filenames into a vector
         std::string filename;
         int sighting_id;
-        while (metadata.read_row(filename, sighting_id))
-            sighting_id_filename_lut[sighting_id].push_back(args::get(data_path) + "/" + filename);
+        while (metadata.read_row(filename, sighting_id)) {
+            sighting_id_filename_lut[sighting_id].push_back(args::get(media_path) + "/" + filename);
+        }
     }
 
     std::vector<std::string> first_filenames;
@@ -139,25 +140,25 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
         
-        for (size_t i = 0; i < tmpls_group.length; ++i) {
-            const JaniceTemplates&  tmpls      = tmpls_group.group[i];
-            const JaniceDetections& detections = detections_group.group[i];
-            for (size_t j = 0; j < tmpls.length; ++j) {
-                JaniceTemplate tmpl = tmpls.tmpls[j];
+        for (size_t group_idx = 0; group_idx < tmpls_group.length; ++group_idx) {
+            const JaniceTemplates&  tmpls      = tmpls_group.group[group_idx];
+            const JaniceDetections& detections = detections_group.group[group_idx];
+            for (size_t tmpl_idx = 0; tmpl_idx < tmpls.length; ++tmpl_idx) {
+                JaniceTemplate tmpl = tmpls.tmpls[tmpl_idx];
         
                 // Write the template to disk
-                std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(template_id) + ".tmpl";
+                std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(template_id++) + ".tmpl";
                 JANICE_ASSERT(janice_write_template(tmpl, tmpl_file.c_str()));
     
                 JaniceTrack track;
-                JANICE_ASSERT(janice_detection_get_track(detections.detections[j], &track));
+                JANICE_ASSERT(janice_detection_get_track(detections.detections[tmpl_idx], &track));
     
-                for (size_t k = 0; k < track.length; ++k) {
-                    JaniceRect rect  = track.rects[k];
-                    float confidence = track.confidences[k];
-                    uint32_t frame   = track.frames[k];
+                for (size_t track_idx = 0; track_idx < track.length; ++track_idx) {
+                    JaniceRect rect  = track.rects[track_idx];
+                    float confidence = track.confidences[track_idx];
+                    uint32_t frame   = track.frames[track_idx];
                     
-                    fprintf(output, "%d,%s,%u,%u,%u,%u,%u,%f,-1\n", template_id++, first_filenames[pos + i].c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence);
+                    fprintf(output, "%d,%s,%u,%u,%u,%u,%u,%f,-1\n", template_id, first_filenames[pos + group_idx].c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence);
                 }
 
                 JANICE_ASSERT(janice_clear_track(&track));

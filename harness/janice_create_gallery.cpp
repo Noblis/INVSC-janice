@@ -12,11 +12,11 @@ int main(int argc, char* argv[])
     args::HelpFlag help(parser, "help", "Display this help menu.", {'h', "help"});
 
     args::Positional<std::string> template_file(parser, "template_file", "A path to a template file. The file should list the templates to enroll. Both `janice_enroll_media` and `janice_enroll_detection` produce suitable files for this function.");
+    args::Positional<std::string> template_path(parser, "template_path", "A prefix path to prepend to all template files before loading them.");
     args::Positional<std::string> gallery_file(parser, "gallery_file", "A path to a gallery file. A file will be created if it doesn't already exist. The file location must be writable.");
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
-    args::ValueFlag<std::string> data_path(parser, "string", "A path to prepend to all image files before loading them", {'d', "data_path"}, "./");
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
     args::ValueFlag<int>         batch_size(parser, "int", "The size of a single batch. A larger batch size may run faster but will use more CPU resources.", {'b', "batch_size"}, 128);
@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if (!template_file || !gallery_file) {
+    if (!template_file || !template_path || !gallery_file) {
         std::cout << parser;
         return 1;
     }
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
     {
         int template_id;
         while (metadata.read_row(template_id)) {
-            filenames.push_back(args::get(data_path) + "/" + std::to_string(template_id) + ".tmpl");
+            filenames.push_back(args::get(template_path) + "/" + std::to_string(template_id) + ".tmpl");
             template_ids.push_back(template_id);
         }
     }

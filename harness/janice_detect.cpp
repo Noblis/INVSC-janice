@@ -13,11 +13,11 @@ int main(int argc, char* argv[])
     args::HelpFlag help(parser, "help", "Display this help menu.", {'h', "help"});
 
     args::Positional<std::string> media_file(parser, "media_file", "A path to an IJB-C compliant csv file. The IJB-C file format is defined at https://noblis.github.io/janice/harness.html#fileformat");
+    args::Positional<std::string> media_path(parser, "media_path", "A prefix path to append to all media before loading them");
     args::Positional<std::string> output_file(parser, "output_file", "A path to an output file. A file will be created if it doesn't already exist. The file location must be writable.");
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
-    args::ValueFlag<std::string> data_path(parser, "string", "A path to prepend to all image files before loading them", {'d', "data_path"}, "./");
     args::ValueFlag<int>         min_object_size(parser, "int", "The minimum sized object that should be detected", {'m', "min_object_size"}, -1);
     args::ValueFlag<std::string> policy(parser, "string", "The detection policy the algorithm should use. Options are '[All | Largest | Best]'", {'p', "policy"}, "All");
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if (!media_file || !output_file) {
+    if (!media_file || !media_path || !output_file) {
         std::cout << parser;
         return 1;
     }
@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
         std::string filename;
         while (metadata.read_row(filename)) {
             JaniceMediaIterator it;
-            JANICE_ASSERT(janice_io_opencv_create_media_iterator((args::get(data_path) + filename).c_str(), &it));
+            JANICE_ASSERT(janice_io_opencv_create_media_iterator((args::get(media_path) + filename).c_str(), &it));
 
             filenames.push_back(filename);
             media.push_back(it);

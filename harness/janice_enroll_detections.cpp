@@ -14,12 +14,12 @@ int main(int argc, char* argv[])
     args::HelpFlag help(parser, "help", "Display this help menu.", {'h', "help"});
 
     args::Positional<std::string> media_file(parser, "media_file", "A path to an IJB-C compliant csv file. The IJB-C file format is defined at https://noblis.github.io/janice/harness.html#fileformat");
+    args::Positional<std::string> media_path(parser, "media_path", "A prefix path to append to all media before loading them");
     args::Positional<std::string> dst_path(parser, "dst_path", "A path to an existing directory where the enrolled templates will be written. The directory must be writable.");
     args::Positional<std::string> output_file(parser, "output_file", "A path to an output file. A file will be created if it doesn't already exist. The file location must be writable.");
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
-    args::ValueFlag<std::string> data_path(parser, "string", "A path to prepend to all image files before loading them", {'d', "data_path"}, "./");
     args::ValueFlag<std::string> role(parser, "string", "The enrollment role the algorithm should use. Options are [Reference11 | Verification11 | Probe1N | Gallery1N | Cluster]", {'r', "role"}, "Probe1N");
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if (!media_file || !dst_path || !output_file) {
+    if (!media_file || !media_path || !dst_path || !output_file) {
         std::cout << parser;
         return 1;
     }
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
         JaniceRect rect;
 
         while (metadata.read_row(filename, template_id, subject_id, sighting_id, rect.x, rect.y, rect.width, rect.height)) {
-            template_id_metadata_lut[template_id][sighting_id].push_back(std::make_pair(args::get(data_path) + "/" + filename, rect));
+            template_id_metadata_lut[template_id][sighting_id].push_back(std::make_pair(args::get(media_path) + "/" + filename, rect));
             template_id_subject_id_lut[template_id] = subject_id;
         }
     }

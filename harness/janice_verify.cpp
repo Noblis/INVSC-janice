@@ -13,14 +13,14 @@ int main(int argc, char* argv[])
     args::HelpFlag help(parser, "help", "Display this help menu.", {'h', "help"});
 
     args::Positional<std::string> reference_file(parser, "reference_file", "A path to a template file. The file should list the templates to enroll. Both `janice_enroll_media` and `janice_enroll_detection` produce suitable files for this function.");
+    args::Positional<std::string> reference_path(parser, "reference_path", "A prefix path to append to all reference templates before loading them");
     args::Positional<std::string> verification_file(parser, "verification_file", "A path to a template file. The file should list the templates to enroll. Both `janice_enroll_media` and `janice_enroll_detection` produce suitable files for this function.");
+    args::Positional<std::string> verification_path(parser, "verification_path", "A prefix path to append to all verification templates before loading them");
     args::Positional<std::string> matches_file(parser, "matches_file", "A path to a list of matches to run verification with.");
     args::Positional<std::string> results_file(parser, "output_file", "A path to a candidate file. A file will be created if it doesn't already exist. The file location must be writable.");
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
-    args::ValueFlag<std::string> reference_path(parser, "string", "A path to prepend to reference template files before loading them", {'r', "reference_path"}, "./");
-    args::ValueFlag<std::string> verification_path(parser, "string", "A path to prepend to all verification template files before loading them", {'v', "verification_path"}, "./");
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
     args::ValueFlag<int>         batch_size(parser, "int", "The size of a single batch. A larger batch size may run faster but will use more CPU resources.", {'b', "batch_size"}, 128);
@@ -41,7 +41,11 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if (!reference_file || !verification_file || !results_file) {
+    if (!reference_file
+         || !reference_path
+         || !verification_file
+         || !verification_path
+         || !results_file) {
         std::cout << parser;
         return 1;
     }
