@@ -7,6 +7,7 @@
 
 #include <unordered_map>
 #include <iostream>
+#include <chrono>
 
 int main(int argc, char* argv[])
 {
@@ -24,6 +25,7 @@ int main(int argc, char* argv[])
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
     args::ValueFlag<int>         batch_size(parser, "int", "The size of a single batch. A larger batch size may run faster but will use more CPU resources.", {'b', "batch_size"}, 128);
+    args::Flag                   include_size(parser, "include_size", "Compute and include the template size in the output of this program. If false, 0 is used.", {'s', "include_size"});
     args::ValueFlag<std::vector<int>, GPUReader> gpus(parser, "int,int,int", "The GPU indices of the CUDA-compliant GPU cards the implementation should use while running detection", {'g', "gpus"}, std::vector<int>());
 
     try {
@@ -57,12 +59,17 @@ int main(int argc, char* argv[])
     JaniceContext context;
     JANICE_ASSERT(janice_init_default_context(&context));
 
-    if      (args::get(role) == "Reference11")    context.role = Janice11Reference;
-    else if (args::get(role) == "Verification11") context.role = Janice11Verification;
-    else if (args::get(role) == "Probe1N")        context.role = Janice1NProbe;
-    else if (args::get(role) == "Gallery1N")      context.role = Janice1NGallery;
-    else if (args::get(role) == "Cluster")        context.role = JaniceCluster;
-    else {
+    if (args::get(role) == "Reference11") {
+        context.role = Janice11Reference;
+    } else if (args::get(role) == "Verification11") {
+        context.role = Janice11Verification;
+    } else if (args::get(role) == "Probe1N") {
+        context.role = Janice1NProbe;
+    } else if (args::get(role) == "Gallery1N") {
+        context.role = Janice1NGallery;
+    } else if (args::get(role) == "Cluster") {
+        context.role = JaniceCluster;
+    } else {
         printf("Invalid enrollment role. Valid enrollment role are [Reference11, Verification11, Probe1N, Gallery1N, Cluster]\n");
         exit(EXIT_FAILURE);
     }
@@ -140,11 +147,11 @@ int main(int argc, char* argv[])
     int num_batches = template_id_media_it_lut.size() / args::get(batch_size) + 1;
 
     FILE* output = fopen(args::get(output_file).c_str(), "w+");
-    fprintf(output, "TEMPLATE_ID,SUBJECT_ID,TEMPLATE_ROLE,ERROR_CODE,TEMPLATE_CREATION_TIME,TEMPLATE_SIZE\n");
+    fprintf(output, "TEMPLATE_ID,SUBJECT_ID,TEMPLATE_ROLE,ERROR_CODE,BATCH_IDX,TEMPLATE_CREATION_TIME,TEMPLATE_SIZE\n");
 
     auto it = template_id_media_it_lut.begin();
     int pos = 0;
-    for (int i = 0; i < num_batches; ++i) {
+    for (int batch_idx = 0; batch_idx < num_batches; ++batch_idx) {
         int current_batch_size = std::min(args::get(batch_size), (int) template_id_media_it_lut.size() - pos);
 
         JaniceMediaIteratorsGroup media_group;
@@ -156,19 +163,19 @@ int main(int argc, char* argv[])
         detections_group.length = current_batch_size;
 
         std::vector<JaniceTemplateId> batch_template_ids;
-        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
+        for (int group_idx = 0; group_idx < current_batch_size; ++group_idx) {
             const JaniceTemplateId& template_id = it->first;
             const std::vector<std::pair<JaniceMediaIterator, JaniceDetection>>& d_info = it->second;
 
-            media_group.group[batch_idx].media = new JaniceMediaIterator[d_info.size()];
-            media_group.group[batch_idx].length = d_info.size();
+            media_group.group[group_idx].media = new JaniceMediaIterator[d_info.size()];
+            media_group.group[group_idx].length = d_info.size();
 
-            detections_group.group[batch_idx].detections = new JaniceDetection[d_info.size()];
-            detections_group.group[batch_idx].length     = d_info.size();
+            detections_group.group[group_idx].detections = new JaniceDetection[d_info.size()];
+            detections_group.group[group_idx].length     = d_info.size();
 
             for (int detection_idx = 0; detection_idx < d_info.size(); ++detection_idx) {
-                media_group.group[batch_idx].media[detection_idx] = d_info[detection_idx].first;
-                detections_group.group[batch_idx].detections[detection_idx] = d_info[detection_idx].second;
+                media_group.group[group_idx].media[detection_idx] = d_info[detection_idx].first;
+                detections_group.group[group_idx].detections[detection_idx] = d_info[detection_idx].second;
             }
 
             batch_template_ids.push_back(template_id);
@@ -176,7 +183,10 @@ int main(int argc, char* argv[])
         }
 
         JaniceTemplates tmpls;
+
+        auto start = std::chrono::high_resolution_clock::now();
         JANICE_ASSERT(janice_enroll_from_detections_batch(media_group, detections_group, &context, &tmpls));
+        double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         // Assert we got the correct number of templates (1 tmpl per detection subgroup)
         if (tmpls.length != current_batch_size) {
@@ -185,16 +195,23 @@ int main(int argc, char* argv[])
         }
 
         for (int tmpl_idx = 0; tmpl_idx < tmpls.length; ++tmpl_idx) {
+            size_t tmpl_size = 0;
+            if (include_size) {
+                JaniceBuffer buffer;
+                JANICE_ASSERT(janice_serialize_template(tmpls.tmpls[tmpl_idx], &buffer, &tmpl_size));
+                JANICE_ASSERT(janice_free_buffer(&buffer));
+            }
+
             std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(batch_template_ids[tmpl_idx]) + ".tmpl";
             JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()));
 
-            fprintf(output, "%zu,%d,%d,0,-1,-1\n", batch_template_ids[tmpl_idx], template_id_subject_id_lut[batch_template_ids[tmpl_idx]], context.role);
+            fprintf(output, "%zu,%d,%d,0,%d,%f,%zu\n", batch_template_ids[tmpl_idx], template_id_subject_id_lut[batch_template_ids[tmpl_idx]], context.role, batch_idx, elapsed, tmpl_size);
         }
 
         // Cleanup detections group
-        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
-            delete[] media_group.group[batch_idx].media;
-            delete[] detections_group.group[batch_idx].detections;
+        for (int group_idx = 0; group_idx < current_batch_size; ++group_idx) {
+            delete[] media_group.group[group_idx].media;
+            delete[] detections_group.group[group_idx].detections;
         }
 
         delete[] media_group.group;

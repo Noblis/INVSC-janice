@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <chrono>
 
 int main(int argc, char* argv[])
 {
@@ -26,6 +27,7 @@ int main(int argc, char* argv[])
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
     args::ValueFlag<int>         batch_size(parser, "int", "The size of a single batch. A larger batch size may run faster but will use more CPU resources.", {'b', "batch_size"}, 128);
+    args::Flag                   include_size(parser, "include_size", "Compute and include the template size in the output of this program. If false, 0 is used.", {'s', "include_size"});
     args::ValueFlag<std::vector<int>, GPUReader> gpus(parser, "int,int,int", "The GPU indices of the CUDA-compliant GPU cards the implementation should use while running detection", {'g', "gpus"}, std::vector<int>());
 
     try {
@@ -59,22 +61,30 @@ int main(int argc, char* argv[])
     JaniceContext context;
     JANICE_ASSERT(janice_init_default_context(&context));
 
-    if      (args::get(policy) == "All")     context.policy = JaniceDetectAll;
-    else if (args::get(policy) == "Largest") context.policy = JaniceDetectLargest;
-    else if (args::get(policy) == "Best")    context.policy = JaniceDetectBest;
-    else {
+    if (args::get(policy) == "All") {
+        context.policy = JaniceDetectAll;
+    } else if (args::get(policy) == "Largest") {
+        context.policy = JaniceDetectLargest;
+    } else if (args::get(policy) == "Best") {
+        context.policy = JaniceDetectBest;
+    } else {
         printf("Invalid detection policy. Valid detection policies are [All | Largest | Best]\n");
         exit(EXIT_FAILURE);
     }
 
     context.min_object_size = args::get(min_object_size);
 
-    if      (args::get(role) == "Reference11")    context.role = Janice11Reference;
-    else if (args::get(role) == "Verification11") context.role = Janice11Verification;
-    else if (args::get(role) == "Probe1N")        context.role = Janice1NProbe;
-    else if (args::get(role) == "Gallery1N")      context.role = Janice1NGallery;
-    else if (args::get(role) == "Cluster")        context.role = JaniceCluster;
-    else {
+    if (args::get(role) == "Reference11") {
+        context.role = Janice11Reference;
+    } else if (args::get(role) == "Verification11") {
+        context.role = Janice11Verification;
+    } else if (args::get(role) == "Probe1N") {
+        context.role = Janice1NProbe;
+    } else if (args::get(role) == "Gallery1N") {
+        context.role = Janice1NGallery;
+    } else if (args::get(role) == "Cluster") {
+        context.role = JaniceCluster;
+    } else {
         printf("Invalid enrollment role. Valid enrollment role are [Reference11, Verification11, Probe1N, Gallery1N, Cluster]\n");
         exit(EXIT_FAILURE);
     }
@@ -119,10 +129,10 @@ int main(int argc, char* argv[])
     int num_batches = media.size() / args::get(batch_size) + 1;
 
     FILE* output = fopen(args::get(output_file).c_str(), "w+");
-    fprintf(output, "TEMPLATE_ID,FILENAME,FRAME_NUM,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE,DETECTION_TIME\n");
+    fprintf(output, "TEMPLATE_ID,FILENAME,FRAME_NUM,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE,BATCH_IDX,TEMPLATE_CREATION_TIME,TEMPLATE_SIZE\n");
 
     int template_id = 0, pos = 0;
-    for (int i = 0; i < num_batches; ++i) {
+    for (int batch_idx = 0; batch_idx < num_batches; ++batch_idx) {
         int current_batch_size = std::min(args::get(batch_size), (int) media.size() - pos);
 
         JaniceMediaIterators media_list;
@@ -132,8 +142,11 @@ int main(int argc, char* argv[])
         // Run batch enrollment
         JaniceTemplatesGroup  tmpls_group;
         JaniceDetectionsGroup detections_group;
+
+        auto start = std::chrono::high_resolution_clock::now();
         JANICE_ASSERT(janice_enroll_from_media_batch(media_list, &context, &tmpls_group, &detections_group));
-    
+        double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
+
         // Assert we got the correct number of templates (1 list for each media)
         if (tmpls_group.length != current_batch_size) {
             printf("Incorrect return value. The number of template lists should match the current batch size\n");
@@ -144,11 +157,16 @@ int main(int argc, char* argv[])
             const JaniceTemplates&  tmpls      = tmpls_group.group[group_idx];
             const JaniceDetections& detections = detections_group.group[group_idx];
             for (size_t tmpl_idx = 0; tmpl_idx < tmpls.length; ++tmpl_idx) {
-                JaniceTemplate tmpl = tmpls.tmpls[tmpl_idx];
-        
+                size_t tmpl_size = 0;
+                if (include_size) {
+                    JaniceBuffer buffer;
+                    JANICE_ASSERT(janice_serialize_template(tmpls.tmpls[tmpl_idx], &buffer, &tmpl_size));
+                    JANICE_ASSERT(janice_free_buffer(&buffer));
+                }
+
                 // Write the template to disk
                 std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(template_id++) + ".tmpl";
-                JANICE_ASSERT(janice_write_template(tmpl, tmpl_file.c_str()));
+                JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()));
     
                 JaniceTrack track;
                 JANICE_ASSERT(janice_detection_get_track(detections.detections[tmpl_idx], &track));
@@ -158,7 +176,7 @@ int main(int argc, char* argv[])
                     float confidence = track.confidences[track_idx];
                     uint32_t frame   = track.frames[track_idx];
                     
-                    fprintf(output, "%d,%s,%u,%u,%u,%u,%u,%f,-1\n", template_id, first_filenames[pos + group_idx].c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence);
+                    fprintf(output, "%d,%s,%u,%u,%u,%u,%u,%f,%d,%f,%zu\n", template_id, first_filenames[pos + group_idx].c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence, batch_idx, elapsed, tmpl_size);
                 }
 
                 JANICE_ASSERT(janice_clear_track(&track));
@@ -173,8 +191,9 @@ int main(int argc, char* argv[])
     }
 
     // Free the media iterators
-    for (size_t i = 0; i < media.size(); ++i)
+    for (size_t i = 0; i < media.size(); ++i) {
         JANICE_ASSERT(media[i]->free(&media[i]));
+    }
 
     // Finalize the API
     JANICE_ASSERT(janice_finalize());

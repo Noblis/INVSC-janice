@@ -6,6 +6,7 @@
 #include <fast-cpp-csv-parser/csv.h>
 
 #include <iostream>
+#include <chrono>
 
 int main(int argc, char* argv[])
 {
@@ -105,12 +106,12 @@ int main(int argc, char* argv[])
 
     // Open the candidate list file
     FILE* results = fopen(args::get(results_file).c_str(), "w+");
-    fprintf(results, "TEMPLATE_ID1,TEMPLATE_ID2,ERROR_CODE,SCORE,VERIFY_TIME\n");
+    fprintf(results, "TEMPLATE_ID1,TEMPLATE_ID2,ERROR_CODE,SCORE,BATCH_IDX,VERIFY_TIME\n");
 
     int num_batches = matches.size() / args::get(batch_size) + 1;
 
     int pos = 0;
-    for (int i = 0; i < num_batches; ++i) {
+    for (int batch_idx = 0; batch_idx < num_batches; ++batch_idx) {
         int current_batch_size = std::min(args::get(batch_size), int(matches.size()) - pos);
 
         JaniceTemplates references;
@@ -127,10 +128,14 @@ int main(int argc, char* argv[])
         }
 
         JaniceSimilarities scores;
-        JANICE_ASSERT(janice_verify_batch(references, verifications, &scores));
 
-        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
-            fprintf(results, "%zu,%zu,0,%f,-1\n", matches[pos + batch_idx].first, matches[pos + batch_idx].second, scores.similarities[batch_idx]);
+        auto start = std::chrono::high_resolution_clock::now();
+        JANICE_ASSERT(janice_verify_batch(references, verifications, &scores));
+        double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
+
+        for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
+            fprintf(results, "%zu,%zu,0,%f,%d,%f\n", matches[pos + tmpl_idx].first, matches[pos + tmpl_idx].second, scores.similarities[tmpl_idx], batch_idx, elapsed);
+        }
 
         JANICE_ASSERT(janice_clear_similarities(&scores));
 
@@ -138,10 +143,13 @@ int main(int argc, char* argv[])
         delete[] verifications.tmpls;
     }
 
-    for (auto entry : reference_tmpls)
+    for (auto entry : reference_tmpls) {
         JANICE_ASSERT(janice_free_template(&entry.second));
-    for (auto entry : verification_tmpls)
+    }
+
+    for (auto entry : verification_tmpls) {
         JANICE_ASSERT(janice_free_template(&entry.second));
+    }
 
     JANICE_ASSERT(janice_finalize());
 

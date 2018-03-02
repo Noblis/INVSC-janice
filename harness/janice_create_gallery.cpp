@@ -81,21 +81,22 @@ int main(int argc, char* argv[])
     int num_batches = filenames.size() / args::get(batch_size) + 1;
 
     int pos = 0;
-    for (int i = 0; i < num_batches; ++i) {
+    for (int batch_idx = 0; batch_idx < num_batches; ++batch_idx) {
         int current_batch_size = std::min(args::get(batch_size), (int) filenames.size() - pos);
 
         tmpls.length = current_batch_size;
         ids.length = current_batch_size;
 
-        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
-            JANICE_ASSERT(janice_read_template(filenames[pos + batch_idx].c_str(), &tmpls.tmpls[batch_idx]));
-            ids.ids[batch_idx] = template_ids[pos + batch_idx];
+        for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
+            JANICE_ASSERT(janice_read_template(filenames[pos + tmpl_idx].c_str(), &tmpls.tmpls[tmpl_idx]));
+            ids.ids[tmpl_idx] = template_ids[pos + tmpl_idx];
         }
 
         JANICE_ASSERT(janice_gallery_insert_batch(gallery, tmpls, ids));
 
-        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
-            JANICE_ASSERT(janice_free_template(&tmpls.tmpls[batch_idx]));
+        for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
+            JANICE_ASSERT(janice_free_template(&tmpls.tmpls[tmpl_idx]));
+        }
 
         pos += current_batch_size;
     }

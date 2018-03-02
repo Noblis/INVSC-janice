@@ -6,6 +6,7 @@
 #include <fast-cpp-csv-parser/csv.h>
 
 #include <iostream>
+#include <chrono>
 
 int main(int argc, char* argv[])
 {
@@ -56,10 +57,13 @@ int main(int argc, char* argv[])
     JaniceContext context;
     JANICE_ASSERT(janice_init_default_context(&context));
 
-    if      (args::get(policy) == "All")     context.policy = JaniceDetectAll;
-    else if (args::get(policy) == "Largest") context.policy = JaniceDetectLargest;
-    else if (args::get(policy) == "Best")    context.policy = JaniceDetectBest;
-    else {
+    if (args::get(policy) == "All") {
+        context.policy = JaniceDetectAll;
+    } else if (args::get(policy) == "Largest") {
+        context.policy = JaniceDetectLargest;
+    } else if (args::get(policy) == "Best") {
+        context.policy = JaniceDetectBest;
+    } else {
         printf("Invalid detection policy. Valid detection policies are [All | Largest | Best]\n");
         exit(EXIT_FAILURE);
     }
@@ -77,7 +81,7 @@ int main(int argc, char* argv[])
         std::string filename;
         while (metadata.read_row(filename)) {
             JaniceMediaIterator it;
-            JANICE_ASSERT(janice_io_opencv_create_media_iterator((args::get(media_path) + filename).c_str(), &it));
+            JANICE_ASSERT(janice_io_opencv_create_media_iterator((args::get(media_path) + "/" + filename).c_str(), &it));
 
             filenames.push_back(filename);
             media.push_back(it);
@@ -87,10 +91,10 @@ int main(int argc, char* argv[])
     int num_batches = media.size() / args::get(batch_size) + 1;
 
     FILE* output = fopen(args::get(output_file).c_str(), "w+");
-    fprintf(output, "TEMPLATE_ID,FILENAME,FRAME_NUM,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE,DETECTION_TIME\n");
+    fprintf(output, "TEMPLATE_ID,FILENAME,FRAME_NUM,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE,BATCH_IDX,DETECTION_TIME\n");
 
     int template_id = 0, pos = 0;
-    for (int i = 0; i < num_batches; ++i) {
+    for (int batch_idx = 0; batch_idx < num_batches; ++batch_idx) {
         int current_batch_size = std::min(args::get(batch_size), (int) media.size() - pos);
 
         JaniceMediaIterators media_list;
@@ -99,7 +103,10 @@ int main(int argc, char* argv[])
 
         // Run batch detection
         JaniceDetectionsGroup detections_group;
+
+        auto start = std::chrono::high_resolution_clock::now();
         JANICE_ASSERT(janice_detect_batch(media_list, &context, &detections_group));
+        double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         // Assert we got the correct number of detections (1 list for each media)
         if (detections_group.length != current_batch_size) {
@@ -121,7 +128,7 @@ int main(int argc, char* argv[])
                     float confidence = track.confidences[track_idx];
                     uint32_t frame   = track.frames[track_idx];
                 
-                    fprintf(output, "%d,%s,%u,%u,%u,%u,%u,%f,-1\n", template_id++, filename.c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence);
+                    fprintf(output, "%d,%s,%u,%u,%u,%u,%u,%f,%d,%f\n", template_id++, filename.c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence, batch_idx, elapsed);
                 }
 
                 // Free the track
@@ -136,8 +143,9 @@ int main(int argc, char* argv[])
     }
 
     // Free the media iterators
-    for (size_t i = 0; i < media.size(); ++i)
+    for (size_t i = 0; i < media.size(); ++i) {
         JANICE_ASSERT(media[i]->free(&media[i]));
+    }
 
     // Finalize the API
     JANICE_ASSERT(janice_finalize());

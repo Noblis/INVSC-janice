@@ -6,6 +6,7 @@
 #include <fast-cpp-csv-parser/csv.h>
 
 #include <iostream>
+#include <chrono>
 
 int main(int argc, char* argv[])
 {
@@ -80,34 +81,41 @@ int main(int argc, char* argv[])
 
     // Open the candidate list file
     FILE* candidates = fopen(args::get(candidate_file).c_str(), "w+");
-    fprintf(candidates, "SEARCH_TEMPLATE_ID,RANK,ERROR_CODE,GALLERY_TEMPLATE_ID,SCORE,SEARCH_TIME\n");
+    fprintf(candidates, "SEARCH_TEMPLATE_ID,RANK,ERROR_CODE,GALLERY_TEMPLATE_ID,SCORE,BATCH_IDX,SEARCH_TIME\n");
 
     int num_batches = filenames.size() / args::get(batch_size) + 1;
 
     int pos = 0;
-    for (int i = 0; i < num_batches; ++i) {
+    for (int batch_idx = 0; batch_idx < num_batches; ++batch_idx) {
         int current_batch_size = std::min(args::get(batch_size), (int) filenames.size() - pos);
 
         JaniceTemplates probes;
         probes.tmpls = new JaniceTemplate[current_batch_size];
         probes.length = current_batch_size;
 
-        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
-            JANICE_ASSERT(janice_read_template(filenames[pos + batch_idx].c_str(), &probes.tmpls[batch_idx]));
+        for (int probe_idx = 0; probe_idx < current_batch_size; ++probe_idx) {
+            JANICE_ASSERT(janice_read_template(filenames[pos + probe_idx].c_str(), &probes.tmpls[probe_idx]));
+        }
 
         JaniceSimilaritiesGroup search_scores;
         JaniceTemplateIdsGroup search_ids;
-        JANICE_ASSERT(janice_search_batch(probes, gallery, &context, &search_scores, &search_ids));
 
-        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
-            for (int search_idx = 0; search_idx < search_scores.group[batch_idx].length; ++search_idx)
-                fprintf(candidates, "%zu,%d,0,%zu,%f,-1\n", template_ids[pos + batch_idx], search_idx, search_ids.group[batch_idx].ids[search_idx], search_scores.group[batch_idx].similarities[search_idx]);
+        auto start = std::chrono::high_resolution_clock::now();
+        JANICE_ASSERT(janice_search_batch(probes, gallery, &context, &search_scores, &search_ids));
+        double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
+
+        for (int probe_idx = 0; probe_idx < current_batch_size; ++probe_idx) {
+            for (int search_idx = 0; search_idx < search_scores.group[probe_idx].length; ++search_idx) {
+                fprintf(candidates, "%zu,%d,0,%zu,%f,%d,%f\n", template_ids[pos + probe_idx], search_idx, search_ids.group[probe_idx].ids[search_idx], search_scores.group[probe_idx].similarities[search_idx], batch_idx, elapsed);
+            }
+        }
 
         JANICE_ASSERT(janice_clear_similarities_group(&search_scores));
         JANICE_ASSERT(janice_clear_template_ids_group(&search_ids));
 
-        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx)
+        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
             JANICE_ASSERT(janice_free_template(&probes.tmpls[batch_idx]));
+        }
 
         delete[] probes.tmpls;
 
