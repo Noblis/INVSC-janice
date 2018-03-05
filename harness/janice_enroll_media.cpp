@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
     int num_batches = media.size() / args::get(batch_size) + 1;
 
     FILE* output = fopen(args::get(output_file).c_str(), "w+");
-    fprintf(output, "TEMPLATE_ID,FILENAME,FRAME_NUM,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE,BATCH_IDX,TEMPLATE_CREATION_TIME,TEMPLATE_SIZE\n");
+    fprintf(output, "TEMPLATE_ID,TEMPLATE_ROLE,FILENAME,FRAME_NUM,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE,BATCH_IDX,TEMPLATE_CREATION_TIME,TEMPLATE_SIZE\n");
 
     int template_id = 0, pos = 0;
     for (int batch_idx = 0; batch_idx < num_batches; ++batch_idx) {
@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
                     float confidence = track.confidences[track_idx];
                     uint32_t frame   = track.frames[track_idx];
                     
-                    fprintf(output, "%d,%s,%u,%u,%u,%u,%u,%f,%d,%f,%zu\n", template_id, first_filenames[pos + group_idx].c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence, batch_idx, elapsed, tmpl_size);
+                    fprintf(output, "%d,%d,%s,%u,%u,%u,%u,%u,%f,%d,%f,%zu\n", template_id, context.role, first_filenames[pos + group_idx].c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence, batch_idx, elapsed, tmpl_size);
                 }
 
                 JANICE_ASSERT(janice_clear_track(&track));
