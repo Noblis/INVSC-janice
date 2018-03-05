@@ -22,7 +22,7 @@ struct JaniceMediaIteratorStateType
 
 // initialize the iterator, for still images, img will be filled in, for
 // videos it will not, for videos the video capture (video) will be open
-static inline JaniceError initialize_media_iterator(JaniceMediaIterator it, cv::Mat& img)
+static JaniceError initialize_media_iterator(JaniceMediaIterator it, cv::Mat& img)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
 
@@ -158,8 +158,14 @@ JaniceError seek(JaniceMediaIterator it, uint32_t frame)
     }
     
     // Image - return INVALID_MEDIA
-    if (!state->video.isOpened())
+    if (!state->video.isOpened()) {
+      // taa: Allow seek to 0 even on images. It used to work, and there's no reason why it shouldn't now.
+      if (frame != 0) {
         return JANICE_INVALID_MEDIA;
+      }
+      state->at_end = false;
+      return JANICE_SUCCESS;
+    }
     
     if (frame >= state->video.get(CV_CAP_PROP_FRAME_COUNT)) // invalid index
         return JANICE_OUT_OF_BOUNDS_ACCESS;
@@ -184,22 +190,27 @@ JaniceError get(JaniceMediaIterator it, JaniceImage* image, uint32_t frame)
             return rc;
     }
 
+    uint32_t curr_frame = 0;
     // Image - return INVALID_MEDIA
-    if (!state->video.isOpened())
+    if (!state->video.isOpened()) {
+      if (frame != 0) {
         return JANICE_INVALID_MEDIA;
-
-    uint32_t curr_frame = (uint32_t) state->video.get(CV_CAP_PROP_POS_FRAMES);
+      }
+    }
+    else {
+      curr_frame = (uint32_t) state->video.get(CV_CAP_PROP_POS_FRAMES);
+    }
 
     // First we seek
     JaniceError ret = seek(it, frame);
-    if (ret != JANICE_SUCCESS)
+    if (ret != JANICE_SUCCESS) {
         return ret; // This leaves the iterator in an undefined state
-
+    }
     // Then we get the frame
     ret = next(it, image);
-    if (ret != JANICE_SUCCESS)
+    if (ret != JANICE_SUCCESS) {
         return ret; // This leaves the iterator in an undefined state
-
+    }
     // Then we reset the position
     return seek(it, curr_frame);
 }
