@@ -5,6 +5,7 @@
 #include <fast-cpp-csv-parser/csv.h>
 
 #include <iostream>
+#include <chrono>
 
 int main(int argc, char* argv[])
 {
@@ -14,6 +15,7 @@ int main(int argc, char* argv[])
     args::Positional<std::string> template_file(parser, "template_file", "A path to a template file. The file should list the templates to enroll. Both `janice_enroll_media` and `janice_enroll_detection` produce suitable files for this function.");
     args::Positional<std::string> template_path(parser, "template_path", "A prefix path to prepend to all template files before loading them.");
     args::Positional<std::string> gallery_file(parser, "gallery_file", "A path to a gallery file. A file will be created if it doesn't already exist. The file location must be writable.");
+    args::Positional<std::string> output_file(parser, "output_file", "A path to an output file. A file will be created if it doesn't already exist. The file location must be writable.");
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
@@ -76,7 +78,13 @@ int main(int argc, char* argv[])
     JaniceGallery gallery;
     JANICE_ASSERT(janice_create_gallery(tmpls, ids, &gallery));
 
+    auto start = std::chrono::high_resolution_clock::now();
     JANICE_ASSERT(janice_gallery_reserve(gallery, filenames.size()));
+    double reserve_time = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
+
+    // Open the candidate list file
+    FILE* output = fopen(args::get(output_file).c_str(), "w+");
+    fprintf(output, "RESERVE_TIME,TEMPLATE_ID,BATCH_IDX,INSERT_TIME\n");
 
     int num_batches = filenames.size() / args::get(batch_size) + 1;
 
@@ -92,7 +100,13 @@ int main(int argc, char* argv[])
             ids.ids[tmpl_idx] = template_ids[pos + tmpl_idx];
         }
 
+        auto start = std::chrono::high_resolution_clock::now();
         JANICE_ASSERT(janice_gallery_insert_batch(gallery, tmpls, ids));
+        double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
+
+        for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
+            fprintf(output, "%f,%zu,%d,%f\n", reserve_time, ids.ids[tmpl_idx], batch_idx, elapsed);
+        }
 
         for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
             JANICE_ASSERT(janice_free_template(&tmpls.tmpls[tmpl_idx]));
