@@ -141,6 +141,8 @@ int main(int argc, char* argv[])
 
         delete[] references.tmpls;
         delete[] verifications.tmpls;
+
+        pos += current_batch_size;
     }
 
     for (auto entry : reference_tmpls) {
