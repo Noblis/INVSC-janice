@@ -41,4 +41,7 @@ add_subdirectory(interfaces)
 add_subdirectory(implementations)
 
 # Optionally build the test harness
-add_subdirectory(harness)
+if(NOT JANICE_SKIP_HARNESS)
+  add_subdirectory(harness)
+endif()
+
