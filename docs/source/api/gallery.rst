@@ -457,7 +457,7 @@ Parameters
 +---------+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | data    | :ref:`JaniceBuffer`  | An uninitialized buffer to hold the flattened data. The implementor allocate this object during the function call. The user is responsible for freeing this object by calling :ref:`janice_free_buffer`. |
 +---------+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| len     | size\_t\*            | The length of the flat buffer after it is allocated.                                                                                                                                                     |
+| len     | size\_t\*            | The length of the flat buffer after it is allocated. Memory for the object should be managed by the user. The implementation should assume this points to a valid object.                                |
 +---------+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Example 
