@@ -1,5 +1,4 @@
 #include <janice.h>
-#include <janice_io_opencv.h>
 #include <janice_harness.h>
 
 #include <arg_parser/args.hpp>
@@ -10,18 +9,16 @@
 
 int main(int argc, char* argv[])
 {
-    args::ArgumentParser parser("Search a gallery with a set of probes.");
+    args::ArgumentParser parser("Run detection on a set of media.");
     args::HelpFlag help(parser, "help", "Display this help menu.", {'h', "help"});
 
-    args::Positional<std::string> probe_file(parser, "probe_file", "A path to a template file. The file should list the templates to enroll. Both `janice_enroll_media` and `janice_enroll_detection` produce suitable files for this function.");
-    args::Positional<std::string> probe_path(parser, "probe_path", "A prefix path to append to all probe templates before loading them");
-    args::Positional<std::string> gallery_file(parser, "gallery_file", "A path to a JanICE gallery saved on disk.");
-    args::Positional<std::string> candidate_file(parser, "candidate_file", "A path to a candidate file. A file will be created if it doesn't already exist. The file location must be writable.");
+    args::Positional<std::string> template_file(parser, "template_file", "A path to a template file. The file should list the templates to enroll. Both `janice_enroll_media` and `janice_enroll_detection` produce suitable files for this function.");
+    args::Positional<std::string> template_path(parser, "template_path", "A prefix path to prepend to all template files before loading them.");
+    args::Positional<std::string> gallery_file(parser, "gallery_file", "A path to a gallery file. A file will be created if it doesn't already exist. The file location must be writable.");
+    args::Positional<std::string> output_file(parser, "output_file", "A path to an output file. A file will be created if it doesn't already exist. The file location must be writable.");
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
-    args::ValueFlag<float>       threshold(parser, "float", "A score threshold for search. All returned matches will have a score over the threshold.", {'f', "threshold"}, 0.0);
-    args::ValueFlag<int>         max_returns(parser, "int", "The maximum number of matches to return from a search.", {'m', "max_returns"}, 50);
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
     args::ValueFlag<int>         batch_size(parser, "int", "The size of a single batch. A larger batch size may run faster but will use more CPU resources.", {'b', "batch_size"}, 128);
@@ -42,7 +39,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if (!probe_file || !gallery_file || !candidate_file) {
+    if (!template_file || !template_path || !gallery_file) {
         std::cout << parser;
         return 1;
     }
@@ -55,17 +52,8 @@ int main(int argc, char* argv[])
                                     args::get(gpus).data(),
                                     args::get(gpus).size()));
 
-    JaniceContext context;
-    JANICE_ASSERT(janice_init_default_context(&context));
-
-    context.threshold = args::get(threshold);
-    context.max_returns = args::get(max_returns);
-
-    JaniceGallery gallery;
-    JANICE_ASSERT(janice_read_gallery(args::get(gallery_file).c_str(), &gallery));
-
-    // Load the gallery
-    io::CSVReader<1> metadata(args::get(probe_file));
+    // Parse the media file
+    io::CSVReader<1> metadata(args::get(template_file));
     metadata.read_header(io::ignore_extra_column, "TEMPLATE_ID");
 
     std::vector<std::string> filenames;
@@ -74,14 +62,29 @@ int main(int argc, char* argv[])
     {
         int template_id;
         while (metadata.read_row(template_id)) {
-            filenames.push_back(args::get(probe_path) + "/" + std::to_string(template_id) + ".tmpl");
+            filenames.push_back(args::get(template_path) + "/" + std::to_string(template_id) + ".tmpl");
             template_ids.push_back(template_id);
         }
     }
 
+    JaniceTemplates tmpls;
+    tmpls.tmpls = new JaniceTemplate[args::get(batch_size)]; // Pre-allocate
+    tmpls.length = 0; // Set to 0 to create an empty gallery
+
+    JaniceTemplateIds ids;
+    ids.ids = new JaniceTemplateId[args::get(batch_size)]; // Pre-allocate
+    ids.length = 0; // Set to 0 to create an empty gallery
+
+    JaniceGallery gallery;
+    JANICE_ASSERT(janice_create_gallery(tmpls, ids, &gallery));
+
+    auto start = std::chrono::high_resolution_clock::now();
+    JANICE_ASSERT(janice_gallery_reserve(gallery, filenames.size()));
+    double reserve_time = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
+
     // Open the candidate list file
-    FILE* candidates = fopen(args::get(candidate_file).c_str(), "w+");
-    fprintf(candidates, "SEARCH_TEMPLATE_ID,RANK,ERROR_CODE,GALLERY_TEMPLATE_ID,SCORE,BATCH_IDX,SEARCH_TIME\n");
+    FILE* output = fopen(args::get(output_file).c_str(), "w+");
+    fprintf(output, "RESERVE_TIME,TEMPLATE_ID,BATCH_IDX,INSERT_TIME\n");
 
     int num_batches = filenames.size() / args::get(batch_size) + 1;
 
@@ -89,39 +92,33 @@ int main(int argc, char* argv[])
     for (int batch_idx = 0; batch_idx < num_batches; ++batch_idx) {
         int current_batch_size = std::min(args::get(batch_size), (int) filenames.size() - pos);
 
-        JaniceTemplates probes;
-        probes.tmpls = new JaniceTemplate[current_batch_size];
-        probes.length = current_batch_size;
+        tmpls.length = current_batch_size;
+        ids.length = current_batch_size;
 
-        for (int probe_idx = 0; probe_idx < current_batch_size; ++probe_idx) {
-            JANICE_ASSERT(janice_read_template(filenames[pos + probe_idx].c_str(), &probes.tmpls[probe_idx]));
+        for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
+            JANICE_ASSERT(janice_read_template(filenames[pos + tmpl_idx].c_str(), &tmpls.tmpls[tmpl_idx]));
+            ids.ids[tmpl_idx] = template_ids[pos + tmpl_idx];
         }
-
-        JaniceSimilaritiesGroup search_scores;
-        JaniceTemplateIdsGroup search_ids;
 
         auto start = std::chrono::high_resolution_clock::now();
-        JANICE_ASSERT(janice_search_batch(probes, gallery, &context, &search_scores, &search_ids));
+        JANICE_ASSERT(janice_gallery_insert_batch(gallery, tmpls, ids));
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
-        for (int probe_idx = 0; probe_idx < current_batch_size; ++probe_idx) {
-            for (int search_idx = 0; search_idx < search_scores.group[probe_idx].length; ++search_idx) {
-                fprintf(candidates, "%zu,%d,0,%zu,%f,%d,%f\n", template_ids[pos + probe_idx], search_idx, search_ids.group[probe_idx].ids[search_idx], search_scores.group[probe_idx].similarities[search_idx], batch_idx, elapsed);
-            }
+        for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
+            fprintf(output, "%f,%zu,%d,%f\n", reserve_time, ids.ids[tmpl_idx], batch_idx, elapsed);
         }
 
-        JANICE_ASSERT(janice_clear_similarities_group(&search_scores));
-        JANICE_ASSERT(janice_clear_template_ids_group(&search_ids));
-
-        for (int batch_idx = 0; batch_idx < current_batch_size; ++batch_idx) {
-            JANICE_ASSERT(janice_free_template(&probes.tmpls[batch_idx]));
+        for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
+            JANICE_ASSERT(janice_free_template(&tmpls.tmpls[tmpl_idx]));
         }
-
-        delete[] probes.tmpls;
 
         pos += current_batch_size;
     }
 
+    delete[] tmpls.tmpls;
+    delete[] ids.ids;
+
+    JANICE_ASSERT(janice_write_gallery(gallery, args::get(gallery_file).c_str()));
     JANICE_ASSERT(janice_free_gallery(&gallery));
 
     JANICE_ASSERT(janice_finalize());
