@@ -31,7 +31,7 @@ struct GPUReader
     void operator()(const std::string& name, const std::string& value, std::vector<int>& gpus)
     {
         size_t pos = 0;
-        while (pos + 1 < value.size()) {
+        while (pos < value.size()) {
             size_t comma_location = 0;
             gpus.push_back(std::stoi(std::string(value, pos), &comma_location));
             pos += comma_location + 1;

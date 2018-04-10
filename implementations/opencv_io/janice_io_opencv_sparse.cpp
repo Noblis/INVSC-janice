@@ -1,9 +1,22 @@
-#include <janice_io_opencv.h>
+#include <janice_io.h>
 
 #include <opencv2/highgui.hpp>
 
 #include <string>
 #include <vector>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+JANICE_EXPORT JaniceError janice_io_opencv_create_sparse_media_iterator(const char** filenames,
+                                                                        size_t num_files,
+                                                                        JaniceMediaIterator* it);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
+
+
 
 namespace
 {
@@ -45,6 +58,11 @@ JaniceError is_video(JaniceMediaIterator it, bool* video)
 JaniceError get_frame_rate(JaniceMediaIterator, float*)
 {
     return JANICE_INVALID_MEDIA;
+}
+
+JaniceError get_physical_frame_rate(JaniceMediaIterator it, float* frame_rate)
+{
+    return get_frame_rate(it, frame_rate);
 }
 
 JaniceError next(JaniceMediaIterator it, JaniceImage* image)
@@ -107,6 +125,17 @@ JaniceError tell(JaniceMediaIterator it, uint32_t* frame)
     return JANICE_SUCCESS;
 }
 
+// Map a logical frame number (as from tell) to a physical frame number, allowing
+// for downsampling, clipping, etc. on videos. Here, we just return the physical frame.
+JaniceError physical_frame(JaniceMediaIterator it, uint32_t logical, uint32_t *physical)
+{
+  if (physical == nullptr) {
+    return JANICE_BAD_ARGUMENT;
+  }
+  *physical = logical;
+  return JANICE_SUCCESS;
+}
+
 JaniceError free_image(JaniceImage* image)
 {
     if (image && (*image)->owner)
@@ -146,11 +175,13 @@ JaniceError janice_io_opencv_create_sparse_media_iterator(const char** filenames
 
     it->is_video = &is_video;
     it->get_frame_rate =  &get_frame_rate;
+    it->get_physical_frame_rate =  &get_physical_frame_rate;
 
     it->next = &next;
     it->seek = &seek;
     it->get  = &get;
     it->tell = &tell;
+    it->physical_frame = &physical_frame;
 
     it->free_image = &free_image;
     it->free       = &free_iterator;
