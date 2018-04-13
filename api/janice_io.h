@@ -35,12 +35,15 @@ struct JANICE_EXPORT JaniceMediaIteratorType
 {
     JaniceError (*is_video)(JaniceMediaIteratorType*, bool*);
     JaniceError (*get_frame_rate)(JaniceMediaIteratorType*, float*);
+    JaniceError (*get_physical_frame_rate)(JaniceMediaIteratorType*, float*);
 
     JaniceError (*next)(JaniceMediaIteratorType*, JaniceImage*);
     JaniceError (*seek)(JaniceMediaIteratorType*, uint32_t);
     JaniceError (* get)(JaniceMediaIteratorType*, JaniceImage*, uint32_t);
     JaniceError (*tell)(JaniceMediaIteratorType*, uint32_t*);
     JaniceError (*reset)(JaniceMediaIteratorType*);
+
+    JaniceError (*physical_frame)(JaniceMediaIteratorType*, uint32_t, uint32_t *);
 
     JaniceError (*free_image)(JaniceImage*);
     JaniceError (*free)(JaniceMediaIteratorType**);
