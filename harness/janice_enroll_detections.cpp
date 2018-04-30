@@ -182,10 +182,14 @@ int main(int argc, char* argv[])
             ++it;
         }
 
+	JaniceTemplateIds logging_ids;
+	logging_ids.length = batch_template_ids.size();
+	logging_ids.ids = batch_template_ids.data();
+
         JaniceTemplates tmpls;
 
         auto start = std::chrono::high_resolution_clock::now();
-        JANICE_ASSERT(janice_enroll_from_detections_batch(media_group, detections_group, &context, &tmpls));
+        JANICE_ASSERT(janice_enroll_from_detections_batch(media_group, detections_group, logging_ids, &context, &tmpls));
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         // Assert we got the correct number of templates (1 tmpl per detection subgroup)
