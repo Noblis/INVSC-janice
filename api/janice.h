@@ -232,9 +232,9 @@ JANICE_EXPORT JaniceError janice_enroll_from_detections(JaniceMediaIterators med
 
 JANICE_EXPORT JaniceError janice_enroll_from_detections_batch(JaniceMediaIteratorsGroup media,
                                                               JaniceDetectionsGroup detections,
-							      JaniceTemplateIds ids,
                                                               const JaniceContext* context,
-                                                              JaniceTemplates* tmpls);
+                                                              JaniceTemplates* tmpls,
+							      const JaniceTemplateIds* ids = nullptr);
 
 JANICE_EXPORT JaniceError janice_template_is_fte(JaniceTemplate tmpl,
                                                  int* fte);
