@@ -9,7 +9,7 @@
 
 int main(int argc, char* argv[])
 {
-    args::ArgumentParser parser("Run detection on a set of media.");
+    args::ArgumentParser parser("Create a gallery from a list of templates.");
     args::HelpFlag help(parser, "help", "Display this help menu.", {'h', "help"});
 
     args::Positional<std::string> template_file(parser, "template_file", "A path to a template file. The file should list the templates to enroll. Both `janice_enroll_media` and `janice_enroll_detection` produce suitable files for this function.");
