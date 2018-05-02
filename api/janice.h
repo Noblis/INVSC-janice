@@ -200,6 +200,20 @@ struct JaniceTemplatesGroup
     size_t length;
 };
 
+typedef size_t JaniceTemplateId;
+
+struct JaniceTemplateIds
+{
+    JaniceTemplateId* ids;
+    size_t length;
+};
+
+struct JaniceTemplateIdsGroup
+{
+    JaniceTemplateIds* group;
+    size_t length;
+};
+
 // Functions
 JANICE_EXPORT JaniceError janice_enroll_from_media(JaniceMediaIterator media,
                                                    const JaniceContext* context,
@@ -219,7 +233,8 @@ JANICE_EXPORT JaniceError janice_enroll_from_detections(JaniceMediaIterators med
 JANICE_EXPORT JaniceError janice_enroll_from_detections_batch(JaniceMediaIteratorsGroup media,
                                                               JaniceDetectionsGroup detections,
                                                               const JaniceContext* context,
-                                                              JaniceTemplates* tmpls);
+                                                              JaniceTemplates* tmpls,
+							      const JaniceTemplateIds* ids = nullptr);
 
 JANICE_EXPORT JaniceError janice_template_is_fte(JaniceTemplate tmpl,
                                                  int* fte);
@@ -287,20 +302,6 @@ JANICE_EXPORT JaniceError janice_clear_similarities_group(JaniceSimilaritiesGrou
 
 // Structs
 typedef struct JaniceGalleryType* JaniceGallery;
-
-typedef size_t JaniceTemplateId;
-
-struct JaniceTemplateIds
-{
-    JaniceTemplateId* ids;
-    size_t length;
-};
-
-struct JaniceTemplateIdsGroup
-{
-    JaniceTemplateIds* group;
-    size_t length;
-};
 
 // Functions
 JANICE_EXPORT JaniceError janice_create_gallery(JaniceTemplates tmpls,
