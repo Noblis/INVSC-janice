@@ -123,6 +123,8 @@ struct JaniceDetectionsGroup
 
 typedef char* JaniceAttribute;
 
+typedef JaniceError (*DetectionCallback)(JaniceDetection, void*);
+
 // Functions
 JANICE_EXPORT JaniceError janice_create_detection_from_rect(JaniceMediaIterator media,
                                                             const JaniceRect rect,
@@ -140,6 +142,11 @@ JANICE_EXPORT JaniceError janice_detect(JaniceMediaIterator media,
 JANICE_EXPORT JaniceError janice_detect_batch(JaniceMediaIterators media,
                                               const JaniceContext* context,
                                               JaniceDetectionsGroup* detections);
+
+JANICE_EXPORT JaniceError janice_detect_stream(JaniceMediaIterator media,
+                                               const JaniceContext* context,
+                                               DetectionCallback callback,
+                                               void* user_data);
 
 JANICE_EXPORT JaniceError janice_detection_get_track(JaniceDetection detection,
                                                      JaniceTrack* track);
@@ -200,6 +207,8 @@ struct JaniceTemplatesGroup
     size_t length;
 };
 
+typedef JaniceError (*EnrollmentCallback)(JaniceTemplate, JaniceDetections, void*);
+
 // Functions
 JANICE_EXPORT JaniceError janice_enroll_from_media(JaniceMediaIterator media,
                                                    const JaniceContext* context,
@@ -210,6 +219,11 @@ JANICE_EXPORT JaniceError janice_enroll_from_media_batch(JaniceMediaIterators me
                                                          const JaniceContext* context,
                                                          JaniceTemplatesGroup* tmpls,
                                                          JaniceDetectionsGroup* detections);
+
+JANICE_EXPORT JaniceError janice_enroll_from_stream(JaniceMediaIterator media,
+                                                    const JaniceContext* context,
+                                                    EnrollmentCallback callback,
+                                                    void* user_data);
 
 JANICE_EXPORT JaniceError janice_enroll_from_detections(JaniceMediaIterators media,
                                                         JaniceDetections detections,
