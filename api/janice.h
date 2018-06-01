@@ -439,11 +439,9 @@ JANICE_EXPORT JaniceError janice_search_batch(const JaniceTemplates* probes,
 // Cluster
 
 // Structs
-typedef size_t JaniceClusterId;
-
 struct JaniceClusterIds
 {
-    JaniceClusterId* ids;
+    uint64_t* ids;
     size_t length;
 };
 
@@ -453,11 +451,9 @@ struct JaniceClusterIdsGroup
     size_t length;
 };
 
-typedef double JaniceClusterConfidence;
-
 struct JaniceClusterConfidences
 {
-    JaniceClusterConfidence* confidences;
+    double* confidences;
     size_t length;
 };
 
