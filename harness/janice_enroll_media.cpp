@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
+    args::ValueFlag<std::string> log_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'l', "log_path"}, "./");
     args::ValueFlag<int>         min_object_size(parser, "int", "The minimum sized object that should be detected", {'m', "min_object_size"}, -1);
     args::ValueFlag<std::string> policy(parser, "string", "The detection policy the algorithm should use. Options are '[All | Largest | Best]'", {'p', "policy"}, "All");
     args::ValueFlag<std::string> role(parser, "string", "The enrollment role the algorithm should use. Options are [Reference11 | Verification11 | Probe1N | Gallery1N | Cluster]", {'r', "role"}, "Probe1N");
@@ -53,6 +54,7 @@ int main(int argc, char* argv[])
     // Initialize the API
     JANICE_ASSERT(janice_initialize(args::get(sdk_path).c_str(),
                                     args::get(temp_path).c_str(),
+                                    args::get(log_path).c_str(),
                                     args::get(algorithm).c_str(),
                                     args::get(num_threads),
                                     args::get(gpus).data(),
@@ -144,7 +146,7 @@ int main(int argc, char* argv[])
         JaniceDetectionsGroup detections_group;
 
         auto start = std::chrono::high_resolution_clock::now();
-        JANICE_ASSERT(janice_enroll_from_media_batch(media_list, &context, &tmpls_group, &detections_group));
+        JANICE_ASSERT(janice_enroll_from_media_batch(&media_list, &context, &tmpls_group, &detections_group));
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         // Assert we got the correct number of templates (1 list for each media)
@@ -159,7 +161,7 @@ int main(int argc, char* argv[])
             for (size_t tmpl_idx = 0; tmpl_idx < tmpls.length; ++tmpl_idx) {
                 size_t tmpl_size = 0;
                 if (include_size) {
-                    JaniceBuffer buffer;
+                    uint8_t* buffer;
                     JANICE_ASSERT(janice_serialize_template(tmpls.tmpls[tmpl_idx], &buffer, &tmpl_size));
                     JANICE_ASSERT(janice_free_buffer(&buffer));
                 }
@@ -192,7 +194,7 @@ int main(int argc, char* argv[])
 
     // Free the media iterators
     for (size_t i = 0; i < media.size(); ++i) {
-        JANICE_ASSERT(media[i]->free(&media[i]));
+        JANICE_ASSERT(media[i].free(&media[i]));
     }
 
     // Finalize the API

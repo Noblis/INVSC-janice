@@ -21,6 +21,7 @@ int main(int argc, char* argv[])
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
+    args::ValueFlag<std::string> log_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'l', "log_path"}, "./");
     args::ValueFlag<std::string> role(parser, "string", "The enrollment role the algorithm should use. Options are [Reference11 | Verification11 | Probe1N | Gallery1N | Cluster]", {'r', "role"}, "Probe1N");
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
@@ -51,6 +52,7 @@ int main(int argc, char* argv[])
     // Initialize the API
     JANICE_ASSERT(janice_initialize(args::get(sdk_path).c_str(),
                                     args::get(temp_path).c_str(),
+                                    args::get(log_path).c_str(),
                                     args::get(algorithm).c_str(),
                                     args::get(num_threads),
                                     args::get(gpus).data(),
@@ -82,12 +84,12 @@ int main(int argc, char* argv[])
      * The metadata is arranged in 2 levels. First, by template ID which is the outer map.
      * Second by sighting ID which is the inner map.
      */
-    std::unordered_map<JaniceTemplateId, std::unordered_map<int, std::vector<std::pair<std::string, JaniceRect>>>> template_id_metadata_lut;
-    std::unordered_map<JaniceTemplateId, int> template_id_subject_id_lut;
+    std::unordered_map<uint64_t, std::unordered_map<int, std::vector<std::pair<std::string, JaniceRect>>>> template_id_metadata_lut;
+    std::unordered_map<uint64_t, int> template_id_subject_id_lut;
 
     {
         std::string filename;
-        JaniceTemplateId template_id;
+        uint64_t template_id;
         int subject_id;
         int sighting_id;
         JaniceRect rect;
@@ -102,7 +104,7 @@ int main(int argc, char* argv[])
      * With the metadata organized, we can create 1 media iterator per sighting ID and track relevant
      * detections
      */
-    std::unordered_map<JaniceTemplateId, std::vector<std::pair<JaniceMediaIterator, JaniceDetection>>> template_id_media_it_lut;
+    std::unordered_map<uint64_t, std::vector<std::pair<JaniceMediaIterator, JaniceDetection>>> template_id_media_it_lut;
 
     for (auto tmpl : template_id_metadata_lut) {
         for (auto entry : tmpl.second) {
@@ -111,8 +113,8 @@ int main(int argc, char* argv[])
 
             if (entry.second.size() == 1) {
                 JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].first.c_str(), &it));
-                JANICE_ASSERT(janice_create_detection_from_rect(it, entry.second[0].second, 0, &detection));
-                JANICE_ASSERT(it->reset(it));
+                JANICE_ASSERT(janice_create_detection_from_rect(&it, &entry.second[0].second, 0, &detection));
+                JANICE_ASSERT(it.reset(&it));
             } else {
                 const char** filenames = new const char*[entry.second.size()];
 
@@ -131,8 +133,8 @@ int main(int argc, char* argv[])
                 }
 
                 JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, track.length, &it));
-                JANICE_ASSERT(janice_create_detection_from_track(it, track, &detection));
-                JANICE_ASSERT(it->reset(it));
+                JANICE_ASSERT(janice_create_detection_from_track(&it, &track, &detection));
+                JANICE_ASSERT(it.reset(&it));
 
                 delete[] filenames;
                 delete[] track.rects;
@@ -162,9 +164,9 @@ int main(int argc, char* argv[])
         detections_group.group = new JaniceDetections[current_batch_size];
         detections_group.length = current_batch_size;
 
-        std::vector<JaniceTemplateId> batch_template_ids;
+        std::vector<uint64_t> batch_template_ids;
         for (int group_idx = 0; group_idx < current_batch_size; ++group_idx) {
-            const JaniceTemplateId& template_id = it->first;
+            const int64_t& template_id = it->first;
             const std::vector<std::pair<JaniceMediaIterator, JaniceDetection>>& d_info = it->second;
 
             media_group.group[group_idx].media = new JaniceMediaIterator[d_info.size()];
@@ -182,10 +184,14 @@ int main(int argc, char* argv[])
             ++it;
         }
 
+        JaniceTemplateIds logging_ids;
+        logging_ids.length = batch_template_ids.size();
+        logging_ids.ids = batch_template_ids.data();
+
         JaniceTemplates tmpls;
 
         auto start = std::chrono::high_resolution_clock::now();
-        JANICE_ASSERT(janice_enroll_from_detections_batch(media_group, detections_group, &context, &tmpls));
+        JANICE_ASSERT(janice_enroll_from_detections_batch(&media_group, &detections_group, &logging_ids, &context, &tmpls));
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         // Assert we got the correct number of templates (1 tmpl per detection subgroup)
@@ -197,7 +203,7 @@ int main(int argc, char* argv[])
         for (int tmpl_idx = 0; tmpl_idx < tmpls.length; ++tmpl_idx) {
             size_t tmpl_size = 0;
             if (include_size) {
-                JaniceBuffer buffer;
+                uint8_t* buffer;
                 JANICE_ASSERT(janice_serialize_template(tmpls.tmpls[tmpl_idx], &buffer, &tmpl_size));
                 JANICE_ASSERT(janice_free_buffer(&buffer));
             }
@@ -205,7 +211,7 @@ int main(int argc, char* argv[])
             std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(batch_template_ids[tmpl_idx]) + ".tmpl";
             JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()));
 
-            fprintf(output, "%zu,%d,%d,0,%d,%f,%zu\n", batch_template_ids[tmpl_idx], template_id_subject_id_lut[batch_template_ids[tmpl_idx]], context.role, batch_idx, elapsed, tmpl_size);
+            fprintf(output, "%llu,%d,%d,0,%d,%f,%zu\n", batch_template_ids[tmpl_idx], template_id_subject_id_lut[batch_template_ids[tmpl_idx]], context.role, batch_idx, elapsed, tmpl_size);
         }
 
         // Cleanup detections group
@@ -224,7 +230,7 @@ int main(int argc, char* argv[])
 
     for (auto& entry : template_id_media_it_lut) {
         for (std::pair<JaniceMediaIterator, JaniceDetection>& tmpl : entry.second) {
-            JANICE_ASSERT(tmpl.first->free(&tmpl.first));
+            JANICE_ASSERT(tmpl.first.free(&tmpl.first));
             JANICE_ASSERT(janice_free_detection(&tmpl.second));
         }
     }

@@ -1,4 +1,5 @@
 #include <janice_io_opencv.h>
+#include <janice_io_opencv_utils.hpp>
 
 #include <opencv2/highgui/highgui.hpp>
 
@@ -22,9 +23,9 @@ struct JaniceMediaIteratorStateType
 
 // initialize the iterator, for still images, img will be filled in, for
 // videos it will not, for videos the video capture (video) will be open
-static JaniceError initialize_media_iterator(JaniceMediaIterator it, cv::Mat& img)
+static JaniceError initialize_media_iterator(JaniceMediaIterator& it, cv::Mat& img)
 {
-    JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
+    JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it._internal;
 
     state->initialized = true;
 
@@ -50,26 +51,7 @@ static JaniceError initialize_media_iterator(JaniceMediaIterator it, cv::Mat& im
     return JANICE_SUCCESS;
 }
 
-static inline JaniceError cv_mat_to_janice_image(cv::Mat& m, JaniceImage* _image)
-{
-    // Allocate a new image
-    JaniceImage image = new JaniceImageType();
-
-    // Set up the dimensions
-    image->channels = m.channels();
-    image->rows = m.rows;
-    image->cols = m.cols;
-
-    image->data = (uint8_t*) malloc(m.channels() * m.rows * m.cols);
-    memcpy(image->data, m.data, m.channels() * m.rows * m.cols);
-    image->owner = true;
-
-    *_image = image;
-
-    return JANICE_SUCCESS;
-}
-
-JaniceError is_video(JaniceMediaIterator it, bool* video)
+JaniceError is_video(JaniceMediaIterator* it, bool* video)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
     *video = state->video.isOpened();
@@ -77,7 +59,7 @@ JaniceError is_video(JaniceMediaIterator it, bool* video)
     return JANICE_SUCCESS;
 }
 
-JaniceError get_frame_rate(JaniceMediaIterator it, float* frame_rate)
+JaniceError get_frame_rate(JaniceMediaIterator* it, float* frame_rate)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
 
@@ -89,13 +71,12 @@ JaniceError get_frame_rate(JaniceMediaIterator it, float* frame_rate)
     return JANICE_SUCCESS;
 }
 
-JaniceError get_physical_frame_rate(JaniceMediaIterator it, float* frame_rate)
+JaniceError get_physical_frame_rate(JaniceMediaIterator* it, float* frame_rate)
 {
     return get_frame_rate(it, frame_rate);
 }
 
-
-JaniceError next(JaniceMediaIterator it, JaniceImage* image)
+JaniceError next(JaniceMediaIterator* it, JaniceImage* image)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
     // if we are currently at the end, just return.
@@ -105,13 +86,13 @@ JaniceError next(JaniceMediaIterator it, JaniceImage* image)
     if (!state->initialized) {
         // are we an image or a video?
         cv::Mat buffer;
-        JaniceError rc = initialize_media_iterator(it, buffer);
+        JaniceError rc = initialize_media_iterator(*it, buffer);
 
         // we do an initial read on images, but not videos.
         // if this is a still (video not opened by init), just convert the
         // image we read to the output type, and return.
         if (!state->video.isOpened()) {
-            JaniceError conv_rc = cv_mat_to_janice_image(buffer, image);
+            JaniceError conv_rc = ocv_utils::cv_mat_to_janice_image(buffer, *image);
             return conv_rc;
         }
 
@@ -124,7 +105,7 @@ JaniceError next(JaniceMediaIterator it, JaniceImage* image)
     // which unsets at_end. 
     if (!state->video.isOpened()) {
         cv::Mat cv_image = cv::imread(state->filename, cv::IMREAD_ANYCOLOR | cv::IMREAD_IGNORE_ORIENTATION);
-        cv_mat_to_janice_image(cv_image, image);
+        ocv_utils::cv_mat_to_janice_image(cv_image, *image);
         state->at_end = true;
 	
         return JANICE_SUCCESS;
@@ -137,7 +118,7 @@ JaniceError next(JaniceMediaIterator it, JaniceImage* image)
         return JANICE_INVALID_MEDIA;
 
     // convert the frame we got to the output type.
-    JaniceError ret = cv_mat_to_janice_image(cv_frame, image);
+    JaniceError ret = ocv_utils::cv_mat_to_janice_image(cv_frame, *image);
     // could fail the conversion...
     if (ret != JANICE_SUCCESS)
         return ret;
@@ -152,13 +133,13 @@ JaniceError next(JaniceMediaIterator it, JaniceImage* image)
 }
 
 // seek to the specified frame number
-JaniceError seek(JaniceMediaIterator it, uint32_t frame)
+JaniceError seek(JaniceMediaIterator* it, uint32_t frame)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
 
     if (!state->initialized) {
         cv::Mat useless;
-        JaniceError rc = initialize_media_iterator(it, useless);
+        JaniceError rc = initialize_media_iterator(*it, useless);
     	if (rc != JANICE_SUCCESS)
             return rc;
     }
@@ -185,13 +166,13 @@ JaniceError seek(JaniceMediaIterator it, uint32_t frame)
 
 // get the specified frame. This is a stateless operation so it resets the
 // frame position after the get.
-JaniceError get(JaniceMediaIterator it, JaniceImage* image, uint32_t frame)
+JaniceError get(JaniceMediaIterator* it, JaniceImage* image, uint32_t frame)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
 
     if (!state->initialized) {
         cv::Mat useless;
-        JaniceError rc = initialize_media_iterator(it, useless);
+        JaniceError rc = initialize_media_iterator(*it, useless);
         if (rc != JANICE_SUCCESS)
             return rc;
     }
@@ -222,13 +203,13 @@ JaniceError get(JaniceMediaIterator it, JaniceImage* image, uint32_t frame)
 }
 
 // say what frame we are currently on.
-JaniceError tell(JaniceMediaIterator it, uint32_t* frame)
+JaniceError tell(JaniceMediaIterator* it, uint32_t* frame)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
 
     if (!state->initialized) {
         cv::Mat useless;
-        JaniceError rc = initialize_media_iterator(it, useless);
+        JaniceError rc = initialize_media_iterator(*it, useless);
     	if (rc != JANICE_SUCCESS)
 	      return rc;
     }
@@ -242,42 +223,42 @@ JaniceError tell(JaniceMediaIterator it, uint32_t* frame)
 
 // Map a logical frame number (as from tell) to a physical frame number, allowing
 // for downsampling, clipping, etc. on videos. Here, we just return the physical frame.
-JaniceError physical_frame(JaniceMediaIterator it, uint32_t logical, uint32_t *physical)
+JaniceError physical_frame(JaniceMediaIterator*, uint32_t logical, uint32_t *physical)
 {
-  if (physical == nullptr) {
-    return JANICE_BAD_ARGUMENT;
-  }
-  *physical = logical;
-  return JANICE_SUCCESS;
+    if (physical == nullptr) {
+        return JANICE_BAD_ARGUMENT;
+    }
+
+    *physical = logical;
+    return JANICE_SUCCESS;
 }
 
 JaniceError free_image(JaniceImage* image)
 {
-    if (image && (*image)->owner)
-        free((*image)->data);
-    delete (*image);
+    if (image && image->owner) {
+        free(image->data);
+    }
 
     return JANICE_SUCCESS;
 }
 
 JaniceError free_iterator(JaniceMediaIterator* it)
 {
-    if (it && (*it)->_internal) {
-        delete (JaniceMediaIteratorStateType*) (*it)->_internal;
-        delete (*it);
-        *it = nullptr;
+    if (it && it->_internal) {
+        delete (JaniceMediaIteratorStateType*) it->_internal;
     }
 
     return JANICE_SUCCESS;
 }
 
-JaniceError reset(JaniceMediaIterator it)
+JaniceError reset(JaniceMediaIterator* it)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
 
     // If not initialized the next use of the class will initialize so don't need to reset
-    if (!state->initialized)
+    if (!state->initialized) {
         return JANICE_SUCCESS;
+    }
 
     if (!state->video.isOpened()) {
         state->at_end = false; // Reload the image next time
@@ -292,10 +273,8 @@ JaniceError reset(JaniceMediaIterator it)
 // ----------------------------------------------------------------------------
 // OpenCV I/O only, create an opencv_io media iterator 
 
-JaniceError janice_io_opencv_create_media_iterator(const char* filename, JaniceMediaIterator* _it)
+JaniceError janice_io_opencv_create_media_iterator(const char* filename, JaniceMediaIterator* it)
 {
-    JaniceMediaIterator it = new JaniceMediaIteratorType();
-
     it->is_video = &is_video;
     it->get_frame_rate =  &get_frame_rate;
     it->get_physical_frame_rate =  &get_physical_frame_rate;
@@ -317,8 +296,6 @@ JaniceError janice_io_opencv_create_media_iterator(const char* filename, JaniceM
     state->at_end = false;
 
     it->_internal = (void*) (state);
-
-    *_it = it;
 
     return JANICE_SUCCESS;
 }

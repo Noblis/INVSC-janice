@@ -20,6 +20,7 @@ int main(int argc, char* argv[])
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
+    args::ValueFlag<std::string> log_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'l', "log_path"}, "./");
     args::ValueFlag<float>       threshold(parser, "float", "A score threshold for search. All returned matches will have a score over the threshold.", {'f', "threshold"}, 0.0);
     args::ValueFlag<int>         max_returns(parser, "int", "The maximum number of matches to return from a search.", {'m', "max_returns"}, 50);
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
@@ -50,6 +51,7 @@ int main(int argc, char* argv[])
     // Initialize the API
     JANICE_ASSERT(janice_initialize(args::get(sdk_path).c_str(),
                                     args::get(temp_path).c_str(),
+                                    args::get(log_path).c_str(),
                                     args::get(algorithm).c_str(),
                                     args::get(num_threads),
                                     args::get(gpus).data(),
@@ -69,10 +71,10 @@ int main(int argc, char* argv[])
     metadata.read_header(io::ignore_extra_column, "TEMPLATE_ID");
 
     std::vector<std::string> filenames;
-    std::vector<JaniceTemplateId> template_ids;
+    std::vector<uint64_t> template_ids;
 
     {
-        int template_id;
+        uint64_t template_id;
         while (metadata.read_row(template_id)) {
             filenames.push_back(args::get(probe_path) + "/" + std::to_string(template_id) + ".tmpl");
             template_ids.push_back(template_id);
@@ -101,12 +103,12 @@ int main(int argc, char* argv[])
         JaniceTemplateIdsGroup search_ids;
 
         auto start = std::chrono::high_resolution_clock::now();
-        JANICE_ASSERT(janice_search_batch(probes, gallery, &context, &search_scores, &search_ids));
+        JANICE_ASSERT(janice_search_batch(&probes, gallery, &context, &search_scores, &search_ids));
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         for (int probe_idx = 0; probe_idx < current_batch_size; ++probe_idx) {
             for (int search_idx = 0; search_idx < search_scores.group[probe_idx].length; ++search_idx) {
-                fprintf(candidates, "%zu,%d,0,%zu,%f,%d,%f\n", template_ids[pos + probe_idx], search_idx, search_ids.group[probe_idx].ids[search_idx], search_scores.group[probe_idx].similarities[search_idx], batch_idx, elapsed);
+                fprintf(candidates, "%llu,%d,0,%llu,%f,%d,%f\n", template_ids[pos + probe_idx], search_idx, search_ids.group[probe_idx].ids[search_idx], search_scores.group[probe_idx].similarities[search_idx], batch_idx, elapsed);
             }
         }
 

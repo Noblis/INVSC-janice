@@ -29,6 +29,7 @@ enum JaniceError
 {
     JANICE_SUCCESS = 0           , // No error
     JANICE_UNKNOWN_ERROR         , // Catch all error code
+    JANICE_INTERNAL_ERROR        , // An internal SDK error was encountered
     JANICE_OUT_OF_MEMORY         , // Out of memory error
     JANICE_INVALID_SDK_PATH      , // Invalid SDK location
     JANICE_BAD_SDK_CONFIG        , // Invalid SDK configuration
@@ -59,7 +60,8 @@ static inline const char* janice_error_to_string(JaniceError error)
 {
     if      (error == JANICE_SUCCESS)                return "Success";
     else if (error == JANICE_UNKNOWN_ERROR)          return "Unknown error";
-    else if (error == JANICE_UNKNOWN_ERROR)          return "Out of memory error";
+    else if (error == JANICE_INTERNAL_ERROR)         return "Internal SDK error";
+    else if (error == JANICE_OUT_OF_MEMORY)          return "Out of memory error";
     else if (error == JANICE_INVALID_SDK_PATH)       return "Invalid SDK path";
     else if (error == JANICE_BAD_SDK_CONFIG)         return "Bad SDK configuration";
     else if (error == JANICE_BAD_LICENSE)            return "Bad license";

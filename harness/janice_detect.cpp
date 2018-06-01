@@ -19,6 +19,7 @@ int main(int argc, char* argv[])
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
+    args::ValueFlag<std::string> log_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'l', "log_path"}, "./");
     args::ValueFlag<uint32_t>    min_object_size(parser, "uint32", "The minimum sized object that should be detected", {'m', "min_object_size"}, 0);
     args::ValueFlag<std::string> policy(parser, "string", "The detection policy the algorithm should use. Options are '[All | Largest | Best]'", {'p', "policy"}, "All");
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
@@ -48,7 +49,8 @@ int main(int argc, char* argv[])
 
     // Initialize the API
     JANICE_ASSERT(janice_initialize(args::get(sdk_path).c_str(), 
-                                    args::get(temp_path).c_str(), 
+                                    args::get(temp_path).c_str(),
+                                    args::get(log_path).c_str(),
                                     args::get(algorithm).c_str(), 
                                     args::get(num_threads), 
                                     args::get(gpus).data(), 
@@ -93,9 +95,9 @@ int main(int argc, char* argv[])
     FILE* output = fopen(args::get(output_file).c_str(), "w+");
     fprintf(output, "TEMPLATE_ID,FILENAME,FRAME_NUM,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,CONFIDENCE,BATCH_IDX,DETECTION_TIME\n");
 
-    int template_id = 0, pos = 0;
+    uint64_t template_id = 0, pos = 0;
     for (int batch_idx = 0; batch_idx < num_batches; ++batch_idx) {
-        int current_batch_size = std::min(args::get(batch_size), (int) media.size() - pos);
+        int current_batch_size = std::min(args::get(batch_size), int(media.size() - pos));
 
         JaniceMediaIterators media_list;
         media_list.media  = media.data() + pos;
@@ -105,7 +107,7 @@ int main(int argc, char* argv[])
         JaniceDetectionsGroup detections_group;
 
         auto start = std::chrono::high_resolution_clock::now();
-        JANICE_ASSERT(janice_detect_batch(media_list, &context, &detections_group));
+        JANICE_ASSERT(janice_detect_batch(&media_list, &context, &detections_group));
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         // Assert we got the correct number of detections (1 list for each media)
@@ -128,7 +130,7 @@ int main(int argc, char* argv[])
                     float confidence = track.confidences[track_idx];
                     uint32_t frame   = track.frames[track_idx];
                 
-                    fprintf(output, "%d,%s,%u,%u,%u,%u,%u,%f,%d,%f\n", template_id++, filename.c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence, batch_idx, elapsed);
+                    fprintf(output, "%llu,%s,%u,%u,%u,%u,%u,%f,%d,%f\n", template_id++, filename.c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence, batch_idx, elapsed);
                 }
 
                 // Free the track
@@ -144,7 +146,7 @@ int main(int argc, char* argv[])
 
     // Free the media iterators
     for (size_t i = 0; i < media.size(); ++i) {
-        JANICE_ASSERT(media[i]->free(&media[i]));
+        JANICE_ASSERT(media[i].free(&media[i]));
     }
 
     // Finalize the API

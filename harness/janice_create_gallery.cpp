@@ -19,6 +19,7 @@ int main(int argc, char* argv[])
 
     args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
     args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
+    args::ValueFlag<std::string> log_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'l', "log_path"}, "./");
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
     args::ValueFlag<int>         batch_size(parser, "int", "The size of a single batch. A larger batch size may run faster but will use more CPU resources.", {'b', "batch_size"}, 128);
@@ -47,6 +48,7 @@ int main(int argc, char* argv[])
     // Initialize the API
     JANICE_ASSERT(janice_initialize(args::get(sdk_path).c_str(),
                                     args::get(temp_path).c_str(),
+                                    args::get(log_path).c_str(),
                                     args::get(algorithm).c_str(),
                                     args::get(num_threads),
                                     args::get(gpus).data(),
@@ -57,7 +59,7 @@ int main(int argc, char* argv[])
     metadata.read_header(io::ignore_extra_column, "TEMPLATE_ID");
 
     std::vector<std::string> filenames;
-    std::vector<JaniceTemplateId> template_ids;
+    std::vector<uint64_t> template_ids;
 
     {
         int template_id;
@@ -72,11 +74,11 @@ int main(int argc, char* argv[])
     tmpls.length = 0; // Set to 0 to create an empty gallery
 
     JaniceTemplateIds ids;
-    ids.ids = new JaniceTemplateId[args::get(batch_size)]; // Pre-allocate
+    ids.ids = new uint64_t[args::get(batch_size)]; // Pre-allocate
     ids.length = 0; // Set to 0 to create an empty gallery
 
     JaniceGallery gallery;
-    JANICE_ASSERT(janice_create_gallery(tmpls, ids, &gallery));
+    JANICE_ASSERT(janice_create_gallery(&tmpls, &ids, &gallery));
 
     auto start = std::chrono::high_resolution_clock::now();
     JANICE_ASSERT(janice_gallery_reserve(gallery, filenames.size()));
@@ -101,11 +103,11 @@ int main(int argc, char* argv[])
         }
 
         auto start = std::chrono::high_resolution_clock::now();
-        JANICE_ASSERT(janice_gallery_insert_batch(gallery, tmpls, ids));
+        JANICE_ASSERT(janice_gallery_insert_batch(gallery, &tmpls, &ids));
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
-            fprintf(output, "%f,%zu,%d,%f\n", reserve_time, ids.ids[tmpl_idx], batch_idx, elapsed);
+            fprintf(output, "%f,%llu,%d,%f\n", reserve_time, ids.ids[tmpl_idx], batch_idx, elapsed);
         }
 
         for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {

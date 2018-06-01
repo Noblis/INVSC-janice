@@ -40,50 +40,50 @@ using namespace std;
 
 int check_media_iterator(const char* filename)
 {
-    JaniceMediaIterator it = nullptr;
+    JaniceMediaIterator it;
     JANICE_CALL(janice_io_opencv_create_media_iterator(filename, &it),
                 // Cleanup
                 [](){})
 
     // Variables to be filled during iterator calls
-    JaniceImage image = nullptr;
+    JaniceImage image;
     uint32_t frame;
-    CHECK(it->next(it, &image) == JANICE_SUCCESS,
+    CHECK(it.next(&it, &image) == JANICE_SUCCESS,
           "Calling next on a media iterator for an image should return JANICE_SUCCESS",
           // Cleanup
           [&]() {
-              it->free(&it);
+              it.free(&it);
           })
 
     // We will check the actual image later. Just delete it now
-    JANICE_CALL(it->free_image(&image),
+    JANICE_CALL(it.free_image(&image),
                 // Cleanup
                 [&]() {
-                    it->free(&it);
+                    it.free(&it);
                 })
 
-    CHECK(it->seek(it, 100) == JANICE_INVALID_MEDIA,
+    CHECK(it.seek(&it, 100) == JANICE_INVALID_MEDIA,
           "Calling seek on a media iterator for an image should always return JANICE_INVALID_MEDIA",
           // Cleanup
           [&]() {
-            it->free(&it);
+            it.free(&it);
           })
 
-    CHECK(it->get(it, &image, 100) == JANICE_INVALID_MEDIA,
+    CHECK(it.get(&it, &image, 100) == JANICE_INVALID_MEDIA,
           "Calling get on a media iterator for an image should always return JANICE_INVALID_MEDIA",
           // Cleanup
           [&]() {
-            it->free(&it);
+            it.free(&it);
           })
 
-    CHECK(it->tell(it, &frame) == JANICE_INVALID_MEDIA,
+    CHECK(it.tell(&it, &frame) == JANICE_INVALID_MEDIA,
           "Calling tell on a media iterator for an image should always return JANICE_INVALID_MEDIA",
           // Cleanup
           [&]() {
-            it->free(&it);
+            it.free(&it);
           })
 
-    it->free(&it);
+    it.free(&it);
 
     return 0;
 }
@@ -91,29 +91,24 @@ int check_media_iterator(const char* filename)
 // ----------------------------------------------------------------------------
 // Check image pixel values
 
-static inline int check_pixel(JaniceImage image,
-                               uint32_t x,
-                               uint32_t y,
-                               uint8_t red,
-                               uint8_t green,
-                               uint8_t blue)
+static inline int check_pixel(const JaniceImage* image, uint32_t x, uint32_t y, uint8_t red, uint8_t green, uint8_t blue)
 {
-    auto get_pixel = [](JaniceImage image, int channel, int row, int col) {
-        return image->data[(row * image->cols * image->channels) + (col * image->channels) + channel];
+    auto get_pixel = [&](int channel) {
+        return image->data[(y * image->cols * image->channels) + (x * image->channels) + channel];
     };
 
     // Check the blue pixel first, remember OpenCV stores images in BGR order
-    CHECK(get_pixel(image, 0, y, x) == blue,
+    CHECK(get_pixel(0) == blue,
           "Blue pixel doesn't match.",
           [](){})
 
     // Check the green pixel
-    CHECK(get_pixel(image, 1, y, x) == green,
+    CHECK(get_pixel(1) == green,
           "Green pixel doesn't match.",
           [](){})
 
     // Check the red pixel
-    CHECK(get_pixel(image, 2, y, x) == red,
+    CHECK(get_pixel(2) == red,
           "Red pixel doesn't match.",
           [](){})
 
@@ -122,54 +117,58 @@ static inline int check_pixel(JaniceImage image,
 
 int check_media_pixel_values(const char* filename)
 {
-    JaniceMediaIterator it = nullptr;
+    JaniceMediaIterator it;
     JANICE_CALL(janice_io_opencv_create_media_iterator(filename, &it),
                 // Cleanup
                 [](){})
 
     // Variables to be filled during iterator calls
-    JaniceImage image = nullptr;
+    JaniceImage image;
 
-    CHECK(it->next(it, &image) == JANICE_MEDIA_AT_END,
-          "Calling next on a media iterator for an image should return JANICE_MEDIA_AT_END",
+    CHECK(it.next(&it, &image) == JANICE_SUCCESS,
+          "Calling next on a media iterator for an image should return JANICE_SUCCESS",
           // Cleanup
           [&]() {
-              it->free(&it);
+              it.free(&it);
           })
 
     // Utility function to free image and iterator memory if a check fails
     auto cleanup = [&]() {
-        it->free_image(&image);
-        it->free(&it);
+        it.free_image(&image);
+        it.free(&it);
     };
+
+    CHECK(it.next(&it, nullptr) == JANICE_MEDIA_AT_END,
+          "Calling next twice on a media iterator for an image should return JANICE_MEDIA_AT_END",
+          cleanup)
 
     // Our test image is a 3x3 grid of 100px x 100px blocks, each of which
     // is a different, solid, color.
-    CHECK(check_pixel(image,  50,  50,   0,   0, 255) == 0,
+    CHECK(check_pixel(&image,  50,  50,   0,   0, 255) == 0,
           "Pixel mismatch",
           cleanup)
-    CHECK(check_pixel(image, 150,  50,   0, 255,   0) == 0,
+    CHECK(check_pixel(&image, 150,  50,   0, 255,   0) == 0,
           "Pixel mismatch",
           cleanup)
-    CHECK(check_pixel(image, 250,  50, 255,   0,   0) == 0,
+    CHECK(check_pixel(&image, 250,  50, 255,   0,   0) == 0,
           "Pixel mismatch",
           cleanup)
-    CHECK(check_pixel(image,  50, 150,   0, 127, 127) == 0,
+    CHECK(check_pixel(&image,  50, 150,   0, 127, 127) == 0,
           "Pixel mismatch",
           cleanup)
-    CHECK(check_pixel(image, 150, 150, 127, 127,   0) == 0,
+    CHECK(check_pixel(&image, 150, 150, 127, 127,   0) == 0,
           "Pixel mismatch",
           cleanup)
-    CHECK(check_pixel(image, 250, 150, 127,   0, 127) == 0,
+    CHECK(check_pixel(&image, 250, 150, 127,   0, 127) == 0,
           "Pixel mismatch",
           cleanup)
-    CHECK(check_pixel(image,  50, 250,   0,   0,   0) == 0,
+    CHECK(check_pixel(&image,  50, 250,   0,   0,   0) == 0,
           "Pixel mismatch",
           cleanup)
-    CHECK(check_pixel(image, 150, 250, 127, 127, 127) == 0,
+    CHECK(check_pixel(&image, 150, 250, 127, 127, 127) == 0,
           "Pixel mismatch",
           cleanup)
-    CHECK(check_pixel(image, 250, 250, 255, 255, 255) == 0,
+    CHECK(check_pixel(&image, 250, 250, 255, 255, 255) == 0,
           "Pixel mismatch",
           cleanup)
 
