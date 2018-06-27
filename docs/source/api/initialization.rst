@@ -1,6 +1,70 @@
 Initialization
 ==============
 
+Enumerations
+------------
+
+.. _JaniceLogLevel:
+
+JaniceLogLevel
+~~~~~~~~~~~~~~
+
+A enumeration to control the logging fidelity of JanICE applications. Possible
+log levels are:
+
++-------------------+---------------------------------------------------------------------+
+|       Level       |                             Description                             |
++===================+=====================================================================+
+| JaniceLogDebug    | Output fine-grained informational events useful for debugging.      |
++-------------------+---------------------------------------------------------------------+
+| JaniceLogInfo     | Output course-grained events indicating progress.                   |
++-------------------+---------------------------------------------------------------------+
+| JaniceLogWarning  | Output warning events that might lead to a failure.                 |
++-------------------+---------------------------------------------------------------------+
+| JaniceLogError    | Output failure events that don't stop the application from running. |
++-------------------+---------------------------------------------------------------------+
+| JaniceLogCritical | Output events that will cause the application to abort.             |
++-------------------+---------------------------------------------------------------------+
+
+Structs
+-------
+
+.. _JaniceConfigurationItem:
+
+JaniceConfigurationItem
+~~~~~~~~~~~~~~~~~~~~~~~
+
+A key-value pair representing a single configuration setting
+
+Fields
+^^^^^^
+
++-------+--------+---------------------------------------+
+| Name  |  Type  |              Description              |
++=======+========+=======================================+
+| key   | char\* | A null-terminated configuration key   |
++-------+--------+---------------------------------------+
+| value | char\* | A null-terminated configuration value |
++-------+--------+---------------------------------------+
+
+.. _JaniceConfiguration:
+
+JaniceConfiguration
+~~~~~~~~~~~~~~~~~~~
+
+A structure representing a list of :ref:`JaniceConfigurationItem` objects.
+
+Fields
+^^^^^^
+
++--------+----------------------------------+------------------------------------------+
+|  Name  |               Type               |               Description                |
++========+==================================+==========================================+
+| values | :ref:`JaniceConfigurationItem`\* | An array of configuration objects        |
++--------+----------------------------------+------------------------------------------+
+| length | size\_t                          | The number of elements in :code:`values` |
++--------+----------------------------------+------------------------------------------+
+
 Functions
 ---------
 
@@ -48,6 +112,35 @@ Parameters
 +--------------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | num\_gpus    | const int    | The length of the :code:`gpus` array. If no GPUs are available this should be set to 0.                                                                                                                                                                                                                                          |
 +--------------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. _janice_set_log_level:
+
+janice\_set\_log\_level
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Set the global log level for the implementation. By default, the log level is
+set to :code:`JaniceLogWarning`.
+
+Signature
+^^^^^^^^^
+
+:: 
+
+    JANICE_EXPORT JaniceError janice_set_log_level(JaniceLogLevel level);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is :ref:`thread_unsafe`.
+
+Parameters
+^^^^^^^^^^
+
++-------+-----------------------+------------------------------------------+
+| Name  |         Type          |               Description                |
++=======+=======================+==========================================+
+| level | :ref:`JaniceLogLevel` | The new log level for the implementation |
++-------+-----------------------+------------------------------------------+
 
 .. _janice_api_version:
 
@@ -117,6 +210,29 @@ Parameters
 | patch | uint32\_t\* | The patch version of the SDK. Memory for the object should be managed by the user. The implementation should assume this points to a valid object. |
 +-------+-------------+----------------------------------------------------------------------------------------------------------------------------------------------------+
 
+.. _janice_get_current_configuration:
+
+janice\_get\_current\_configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Get the current implementation configuration as a list of key value pairs
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_get_current_configuration(JaniceConfiguration* configuration);
+
+Parameters
+^^^^^^^^^^
+
++---------------+------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|     Name      |             Type             |                                                                                                                                                                Description                                                                                                                                                                |
++===============+==============================+===========================================================================================================================================================================================================================================================================================================================================+
+| configuration | :ref:`JaniceConfiguration`\* | A list to hold the current configuration settings of the implementation. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is responsible for clearing the object by calling :ref:`janice_clear_configuration`. |
++---------------+------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
 .. _janice_finalize:
 
 janice\_finalize
@@ -136,3 +252,31 @@ Thread Safety
 ^^^^^^^^^^^^^
 
 This function is :ref:`thread_unsafe`.
+
+.. _janice_clear_configuration:
+
+janice\_clear\_configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Free any memory associated with a :ref:`JaniceConfiguration` object.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_clear_configuration(JaniceConfiguration* configuration);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is :ref:`reentrant`.
+
+Parameters
+^^^^^^^^^^
+
++---------------+------------------------------+----------------------------------+
+|     Name      |             Type             |           Description            |
++===============+==============================+==================================+
+| configuration | :ref:`JaniceConfiguration`\* | A configuration object to clear. |
++---------------+------------------------------+----------------------------------+
