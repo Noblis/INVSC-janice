@@ -188,7 +188,8 @@ JANICE_EXPORT JaniceError janice_detect_batch(const JaniceMediaIterators* media,
 JANICE_EXPORT JaniceError janice_detect_batch_with_callback(const JaniceMediaIterators* media,
                                                             const JaniceContext* context,
                                                             JaniceDetectionCallback callback,
-                                                            void* user_data);
+                                                            void* user_data,
+							    JaniceErrors* errors);
 
 JANICE_EXPORT JaniceError janice_detection_get_track(const JaniceDetection detection,
                                                      JaniceTrack* track);
@@ -288,7 +289,8 @@ JANICE_EXPORT JaniceError janice_enroll_from_media_batch(const JaniceMediaIterat
 JANICE_EXPORT JaniceError janice_enroll_from_media_batch_with_callback(const JaniceMediaIterators* media,
                                                                        const JaniceContext* context,
                                                                        JaniceEnrollMediaCallback callback,
-                                                                       void* user_data);
+                                                                       void* user_data,
+								       JaniceErrors* errors);
 
 JANICE_EXPORT JaniceError janice_enroll_from_detections(const JaniceMediaIterators* media,
                                                         const JaniceDetections* detections,
@@ -306,7 +308,8 @@ JANICE_EXPORT JaniceError janice_enroll_from_detections_batch_with_callback(cons
                                                                             const JaniceDetectionsGroup* detections,
                                                                             const JaniceContext* context,
                                                                             JaniceEnrollDetectionsCallback callback,
-                                                                            void* user_data);
+                                                                            void* user_data,
+									    JaniceErrors* errors);
 
 JANICE_EXPORT JaniceError janice_template_is_fte(const JaniceTemplate tmpl,
                                                  int* fte);

@@ -54,6 +54,7 @@ enum JaniceError
     JANICE_FAILURE_TO_DESERIALIZE    , // Could not deserialize a data structure
     JANICE_BATCH_ABORTED_EARLY       , // Batch call aborted early due to error
     JANICE_BATCH_FINISHED_WITH_ERRORS, // Batch call finished, but with errors
+    JANICE_CALLBACK_EXIT_IMMEDIATELY , // Callback error indicating processing should stop immediately
     JANICE_NOT_IMPLEMENTED           , // Optional function return
     JANICE_NUM_ERRORS                  // Utility to iterate over all errors
 };
@@ -95,6 +96,7 @@ static inline const char* janice_error_to_string(JaniceError error)
     else if (error == JANICE_FAILURE_TO_DESERIALIZE)     return "Unable to deserialize an API object";
     else if (error == JANICE_BATCH_ABORTED_EARLY)        return "Batch call aborted early due to an error";
     else if (error == JANICE_BATCH_FINISHED_WITH_ERRORS) return "Batch call finished but with errors";
+    else if (error == JANICE_CALLBACK_EXIT_IMMEDIATELY)  return "A callback requested its parent exit immediately";
     else if (error == JANICE_NOT_IMPLEMENTED)            return "Optional function is not implemented";
     else if (error == JANICE_NUM_ERRORS)                 return "The total number of errors. This shouldn't have been returned...";
 
