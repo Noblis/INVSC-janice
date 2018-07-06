@@ -31,17 +31,17 @@ typedef void* JaniceMediaIteratorState;
 
 struct JANICE_EXPORT JaniceMediaIterator
 {
-    JaniceError (*is_video)(JaniceMediaIterator*, bool*);
-    JaniceError (*get_frame_rate)(JaniceMediaIterator*, float*);
-    JaniceError (*get_physical_frame_rate)(JaniceMediaIterator*, float*);
+    JaniceError (*is_video)(const JaniceMediaIterator*, bool*);
+    JaniceError (*get_frame_rate)(const JaniceMediaIterator*, float*);
+    JaniceError (*get_physical_frame_rate)(const JaniceMediaIterator*, float*);
 
-    JaniceError (*next)(JaniceMediaIterator*, JaniceImage*);
-    JaniceError (*seek)(JaniceMediaIterator*, uint32_t);
-    JaniceError (* get)(JaniceMediaIterator*, JaniceImage*, uint32_t);
-    JaniceError (*tell)(JaniceMediaIterator*, uint32_t*);
-    JaniceError (*reset)(JaniceMediaIterator*);
+    JaniceError (*next)(const JaniceMediaIterator*, JaniceImage*);
+    JaniceError (*seek)(const JaniceMediaIterator*, uint32_t);
+    JaniceError (* get)(const JaniceMediaIterator*, JaniceImage*, uint32_t);
+    JaniceError (*tell)(const JaniceMediaIterator*, uint32_t*);
+    JaniceError (*reset)(const JaniceMediaIterator*);
 
-    JaniceError (*physical_frame)(JaniceMediaIterator*, uint32_t, uint32_t *);
+    JaniceError (*physical_frame)(const JaniceMediaIterator*, uint32_t, uint32_t *);
 
     JaniceError (*free_image)(JaniceImage*);
     JaniceError (*free)(JaniceMediaIterator*);

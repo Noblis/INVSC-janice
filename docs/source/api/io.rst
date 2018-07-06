@@ -78,7 +78,7 @@ A function pointer with signature:
 
 ::
 
-    JaniceError(JaniceMediaIterator* it, bool* video)
+    JaniceError(const JaniceMediaIterator* it, bool* video)
 
 The function sets :code:`video` to True if :code:`it` is a video. Otherwise, it
 sets :code:`video` to False. :code:`it` should be considered a video if multiple
@@ -95,7 +95,7 @@ A function pointer with signature:
 
 ::
 
-    JaniceError(JaniceMediaIterator* it, float* frame_rate)
+    JaniceError(const JaniceMediaIterator* it, float* frame_rate)
 
 The function sets :code:`frame_rate` to the frame rate of :code:`it`, if that
 information is available. If :code:`frame_rate` can be set to a value this
@@ -112,7 +112,7 @@ A function pointer with signature:
 
 ::
 
-    JaniceError(JaniceMediaIterator* it, float* physical_frame_rate)
+    JaniceError(const JaniceMediaIterator* it, float* physical_frame_rate)
 
 The physical frame rate is the actual frame rate of the video, independent of
 processing done by media iterator. The function sets :code:`physical_frame_rate`
@@ -129,7 +129,7 @@ A function pointer with signature:
 
 ::
 
-    JaniceError(JaniceMediaIterator* it, JaniceImage* img)
+    JaniceError(const JaniceMediaIterator* it, JaniceImage* img)
 
 The functions sets :code:`img` to the next still image or frame from :code:`it`
 and and advances :code:`it` one position. If :code:`img` is successfully set
@@ -147,7 +147,7 @@ A function pointer with signature:
 
 ::
 
-    JaniceError(JaniceMediaIterator* it, uint32_t frame)
+    JaniceError(const JaniceMediaIterator* it, uint32_t frame)
 
 
 The function sets the internal state of :code:`it` such that a successive call
@@ -167,7 +167,7 @@ A function pointer with signature:
 
 ::
 
-    JaniceError(JaniceMediaIterator* it, JaniceImage* img, uint32_t frame)
+    JaniceError(const JaniceMediaIterator* it, JaniceImage* img, uint32_t frame)
 
 This function gets a specific frame from :code:`it` and stores it in
 :code:`img`. It should not modify the internal state of :code:`it`. If
@@ -188,7 +188,7 @@ A function pointer with signature:
 
 ::
 
-    JaniceError(JaniceMediaIterator* it, uint32_t* frame)
+    JaniceError(const JaniceMediaIterator* it, uint32_t* frame)
 
 Get the current position of :code:`it` and store it in :code:`frame`. If
 :code:`it` is an image, this function should return
@@ -205,7 +205,7 @@ A function pointer with signature:
 
 ::
 
-    JaniceError(JaniceMediaIterator* it)
+    JaniceError(const JaniceMediaIterator* it)
 
 Reset :code:`it` to an initial valid state. This function should return
 :code:`JANICE_SUCCESS` if :code:`it` can be reset, otherwise an appropriate
@@ -220,7 +220,7 @@ A function pointer with signature:
 
 ::
 
-    JaniceError(JaniceMediaIterator* it, uint32_t frame, uint32_t* physical_frame)
+    JaniceError(const JaniceMediaIterator* it, uint32_t frame, uint32_t* physical_frame)
 
 Map an observed frame to a physical frame. If a mapping is possible this
 function should return :code:`JANICE_SUCCESS`. Otherwise, an appropriate error
@@ -263,23 +263,23 @@ Fields
 +----------------------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
 |            Name            |                                        Type                                         |                                                          Description                                                           |
 +============================+=====================================================================================+================================================================================================================================+
-| is\_video                  | :ref:`JaniceError`\(:ref:`JaniceMediaIterator`\*, bool\*\)                          | See :ref:`is_video`.                                                                                                           |
+| is\_video                  | :ref:`JaniceError`\(const :ref:`JaniceMediaIterator`\*, bool\*\)                          | See :ref:`is_video`.                                                                                                           |
 +----------------------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| get\_frame\_rate           | :ref:`JaniceError`\(:ref:`JaniceMediaIterator`\*, float\*\)                         | See :ref:`get_frame_rate`.                                                                                                     |
+| get\_frame\_rate           | :ref:`JaniceError`\(const :ref:`JaniceMediaIterator`\*, float\*\)                         | See :ref:`get_frame_rate`.                                                                                                     |
 +----------------------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| get\_physical\_frame\_rate | :ref:`JaniceError`\(:ref:`JaniceMediaIterator`\*, float\*\)                         | See :ref:`get_physical_frame_rate`.                                                                                            |
+| get\_physical\_frame\_rate | :ref:`JaniceError`\(const :ref:`JaniceMediaIterator`\*, float\*\)                         | See :ref:`get_physical_frame_rate`.                                                                                            |
 +----------------------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| next                       | :ref:`JaniceError`\(:ref:`JaniceMediaIterator`\*, :ref:`JaniceImage`\*\)            | See :ref:`next`.                                                                                                               |
+| next                       | :ref:`JaniceError`\(const :ref:`JaniceMediaIterator`\*, :ref:`JaniceImage`\*\)            | See :ref:`next`.                                                                                                               |
 +----------------------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| seek                       | :ref:`JaniceError`\(:ref:`JaniceMediaIterator`\*, uint32\_t\)                       | See :ref:`seek`.                                                                                                               |
+| seek                       | :ref:`JaniceError`\(const :ref:`JaniceMediaIterator`\*, uint32\_t\)                       | See :ref:`seek`.                                                                                                               |
 +----------------------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| get                        | :ref:`JaniceError`\(:ref:`JaniceMediaIterator`\*, :ref:`JaniceImage`\*, uint32\_t\) | See :ref:`get`.                                                                                                                |
+| get                        | :ref:`JaniceError`\(const :ref:`JaniceMediaIterator`\*, :ref:`JaniceImage`\*, uint32\_t\) | See :ref:`get`.                                                                                                                |
 +----------------------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| tell                       | :ref:`JaniceError`\(:ref:`JaniceMediaIterator`\*, uint32\_t\*\)                     | See :ref:`tell`.                                                                                                               |
+| tell                       | :ref:`JaniceError`\(const :ref:`JaniceMediaIterator`\*, uint32\_t\*\)                     | See :ref:`tell`.                                                                                                               |
 +----------------------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| reset                      | :ref:`JaniceError`\(:ref:`JaniceMediaIterator`\*\)                                  | See :ref:`reset`.                                                                                                              |
+| reset                      | :ref:`JaniceError`\(const :ref:`JaniceMediaIterator`\*\)                                  | See :ref:`reset`.                                                                                                              |
 +----------------------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| physical\_frame            | :ref:`JaniceError`\(:ref:`JaniceMediaIterator`\*, uint32\_t, uint32\_t\*\)          | See :ref:`physical_frame`.                                                                                                     |
+| physical\_frame            | :ref:`JaniceError`\(const :ref:`JaniceMediaIterator`\*, uint32\_t, uint32\_t\*\)          | See :ref:`physical_frame`.                                                                                                     |
 +----------------------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
 | free\_image                | :ref:`JaniceError`\(:ref:`JaniceImage`\*\)                                          | See :ref:`free_image`.                                                                                                         |
 +----------------------------+-------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------+
