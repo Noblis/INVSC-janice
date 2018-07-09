@@ -162,20 +162,20 @@ struct JaniceDetectionsGroup
 typedef JaniceError (*JaniceDetectionCallback)(const JaniceDetection*, size_t, void*);
 
 // Functions
-JANICE_EXPORT JaniceError janice_create_detection_from_rect(const JaniceMediaIterator* media,
+JANICE_EXPORT JaniceError janice_create_detection_from_rect(JaniceMediaIterator* media,
                                                             const JaniceRect* rect,
                                                             const uint32_t frame,
                                                             JaniceDetection* detection);
 
-JANICE_EXPORT JaniceError janice_create_detection_from_track(const JaniceMediaIterator* media,
+JANICE_EXPORT JaniceError janice_create_detection_from_track(JaniceMediaIterator* media,
                                                              const JaniceTrack* track,
                                                              JaniceDetection* detection);
 
-JANICE_EXPORT JaniceError janice_detect(const JaniceMediaIterator* media,
+JANICE_EXPORT JaniceError janice_detect(JaniceMediaIterator* media,
                                         const JaniceContext* context,
                                         JaniceDetections* detections);
 
-JANICE_EXPORT JaniceError janice_detect_with_callback(const JaniceMediaIterator* media,
+JANICE_EXPORT JaniceError janice_detect_with_callback(JaniceMediaIterator* media,
                                                       const JaniceContext* context,
                                                       JaniceDetectionCallback callback,
                                                       void* user_data);
@@ -270,12 +270,12 @@ typedef JaniceError (*JaniceEnrollMediaCallback)(const JaniceTemplate*, const Ja
 typedef JaniceError (*JaniceEnrollDetectionsCallback)(const JaniceTemplate*, size_t, void*);
 
 // Functions
-JANICE_EXPORT JaniceError janice_enroll_from_media(const JaniceMediaIterator* media,
+JANICE_EXPORT JaniceError janice_enroll_from_media(JaniceMediaIterator* media,
                                                    const JaniceContext* context,
                                                    JaniceTemplates* tmpls,
                                                    JaniceDetections* detections);
 
-JANICE_EXPORT JaniceError janice_enroll_from_media_with_callback(const JaniceMediaIterator* media,
+JANICE_EXPORT JaniceError janice_enroll_from_media_with_callback(JaniceMediaIterator* media,
                                                                  const JaniceContext* context,
                                                                  JaniceEnrollMediaCallback callback,
                                                                  void* user_data);
