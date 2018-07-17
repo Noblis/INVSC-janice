@@ -25,7 +25,8 @@ int main(int argc, char* argv[])
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
     args::ValueFlag<int>         batch_size(parser, "int", "The size of a single batch. A larger batch size may run faster but will use more CPU resources.", {'b', "batch_size"}, 128);
-    args::ValueFlag<std::vector<int>, GPUReader> gpus(parser, "int,int,int", "The GPU indices of the CUDA-compliant GPU cards the implementation should use while running detection", {'g', "gpus"}, std::vector<int>());
+    args::ValueFlag<std::vector<int>, ListReader<int>> gpus(parser, "int,int,int", "The GPU indices of the CUDA-compliant GPU cards the implementation should use while running detection", {'g', "gpus"}, std::vector<int>());
+    args::ValueFlag<std::vector<std::string>, ListReader<std::string>> nonfatal_errors(parser, "JaniceError,JaniceError", "Comma-separated list of nonfatal JanusError codes", {'n', "nonfatal_errors"}, std::vector<std::string>());
 
     try {
         parser.ParseCLI(argc, argv);
@@ -47,6 +48,10 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    // Register nonfatal errors
+    std::set<JaniceError> ignored_errors;
+    janice_harness_register_nonfatal_errors(args::get(nonfatal_errors), ignored_errors);
+
     // Initialize the API
     JANICE_ASSERT(janice_initialize(args::get(sdk_path).c_str(), 
                                     args::get(temp_path).c_str(),
@@ -54,10 +59,10 @@ int main(int argc, char* argv[])
                                     args::get(algorithm).c_str(), 
                                     args::get(num_threads), 
                                     args::get(gpus).data(), 
-                                    args::get(gpus).size()));
+                                    args::get(gpus).size()), ignored_errors);
 
     JaniceContext context;
-    JANICE_ASSERT(janice_init_default_context(&context));
+    JANICE_ASSERT(janice_init_default_context(&context), ignored_errors);
 
     if (args::get(policy) == "All") {
         context.policy = JaniceDetectAll;
@@ -71,6 +76,7 @@ int main(int argc, char* argv[])
     }
 
     context.min_object_size = args::get(min_object_size);
+    context.batch_policy = JaniceFlagAndFinish;
 
     // Parse the media file
     io::CSVReader<1> metadata(args::get(media_file));
@@ -83,7 +89,7 @@ int main(int argc, char* argv[])
         std::string filename;
         while (metadata.read_row(filename)) {
             JaniceMediaIterator it;
-            JANICE_ASSERT(janice_io_opencv_create_media_iterator((args::get(media_path) + "/" + filename).c_str(), &it));
+            JANICE_ASSERT(janice_io_opencv_create_media_iterator((args::get(media_path) + "/" + filename).c_str(), &it), ignored_errors);
 
             filenames.push_back(filename);
             media.push_back(it);
@@ -105,10 +111,27 @@ int main(int argc, char* argv[])
 
         // Run batch detection
         JaniceDetectionsGroup detections_group;
+        JaniceErrors batch_errors;
 
         auto start = std::chrono::high_resolution_clock::now();
-        JANICE_ASSERT(janice_detect_batch(&media_list, &context, &detections_group));
+        JaniceError ret = janice_detect_batch(&media_list, &context, &detections_group, &batch_errors);
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
+
+        if (ret == JANICE_BATCH_FINISHED_WITH_ERRORS) {
+            for (size_t err_idx = 0; err_idx < batch_errors.length; ++err_idx) {
+                JaniceError e = batch_errors.errors[err_idx];
+                if (e != JANICE_SUCCESS) {
+                    std::cerr << "Janice batch function failed!" << std::endl
+                              << "    Error: " << janice_error_to_string(e) << std::endl
+                              << "    Batch index: " << err_idx << std::endl
+                              << "    Location: " << __FILE__ << ":" << __LINE__ << std::endl;
+
+                    if (ignored_errors.find(e) != ignored_errors.end()) {
+                        exit(EXIT_FAILURE);
+                    }
+                }
+            }
+        }
 
         // Assert we got the correct number of detections (1 list for each media)
         if (detections_group.length != current_batch_size) {
@@ -116,13 +139,12 @@ int main(int argc, char* argv[])
             exit(EXIT_FAILURE);
         }
 
-
         // Write the detection files to disk
         for (size_t group_idx = 0; group_idx < detections_group.length; ++group_idx) {
             JaniceDetections detections = detections_group.group[group_idx];
             for (size_t detection_idx = 0; detection_idx < detections.length; ++detection_idx) {
                 JaniceTrack track;
-                JANICE_ASSERT(janice_detection_get_track(detections.detections[detection_idx], &track));
+                JANICE_ASSERT(janice_detection_get_track(detections.detections[detection_idx], &track), ignored_errors);
 
                 const std::string filename = filenames[pos + group_idx];
                 for (size_t track_idx = 0; track_idx < track.length; ++track_idx) {
@@ -134,23 +156,23 @@ int main(int argc, char* argv[])
                 }
 
                 // Free the track
-                JANICE_ASSERT(janice_clear_track(&track));
+                JANICE_ASSERT(janice_clear_track(&track), ignored_errors);
             }
         }
 
         // Free the detections
-        JANICE_ASSERT(janice_clear_detections_group(&detections_group));
+        JANICE_ASSERT(janice_clear_detections_group(&detections_group), ignored_errors);
 
         pos += current_batch_size;
     }
 
     // Free the media iterators
     for (size_t i = 0; i < media.size(); ++i) {
-        JANICE_ASSERT(media[i].free(&media[i]));
+        JANICE_ASSERT(media[i].free(&media[i]), ignored_errors);
     }
 
     // Finalize the API
-    JANICE_ASSERT(janice_finalize());
+    JANICE_ASSERT(janice_finalize(), ignored_errors);
 
     return 0;
 }

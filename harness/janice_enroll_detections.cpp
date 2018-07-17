@@ -27,7 +27,8 @@ int main(int argc, char* argv[])
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
     args::ValueFlag<int>         batch_size(parser, "int", "The size of a single batch. A larger batch size may run faster but will use more CPU resources.", {'b', "batch_size"}, 128);
     args::Flag                   include_size(parser, "include_size", "Compute and include the template size in the output of this program. If false, 0 is used.", {'s', "include_size"});
-    args::ValueFlag<std::vector<int>, GPUReader> gpus(parser, "int,int,int", "The GPU indices of the CUDA-compliant GPU cards the implementation should use while running detection", {'g', "gpus"}, std::vector<int>());
+    args::ValueFlag<std::vector<int>, ListReader<int>> gpus(parser, "int,int,int", "The GPU indices of the CUDA-compliant GPU cards the implementation should use while running detection", {'g', "gpus"}, std::vector<int>());
+    args::ValueFlag<std::vector<std::string>, ListReader<std::string>> nonfatal_errors(parser, "JaniceError,JaniceError", "Comma-separated list of nonfatal JanusError codes", {'n', "nonfatal_errors"}, std::vector<std::string>());
 
     try {
         parser.ParseCLI(argc, argv);
@@ -49,6 +50,10 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    // Register nonfatal errors
+    std::set<JaniceError> ignored_errors;
+    janice_harness_register_nonfatal_errors(args::get(nonfatal_errors), ignored_errors);
+
     // Initialize the API
     JANICE_ASSERT(janice_initialize(args::get(sdk_path).c_str(),
                                     args::get(temp_path).c_str(),
@@ -56,10 +61,10 @@ int main(int argc, char* argv[])
                                     args::get(algorithm).c_str(),
                                     args::get(num_threads),
                                     args::get(gpus).data(),
-                                    args::get(gpus).size()));
+                                    args::get(gpus).size()), ignored_errors);
 
     JaniceContext context;
-    JANICE_ASSERT(janice_init_default_context(&context));
+    JANICE_ASSERT(janice_init_default_context(&context), ignored_errors);
 
     if (args::get(role) == "Reference11") {
         context.role = Janice11Reference;
@@ -72,9 +77,11 @@ int main(int argc, char* argv[])
     } else if (args::get(role) == "Cluster") {
         context.role = JaniceCluster;
     } else {
-        printf("Invalid enrollment role. Valid enrollment role are [Reference11, Verification11, Probe1N, Gallery1N, Cluster]\n");
+        std::cerr << "Invalid enrollment role. Valid enrollment role are [Reference11, Verification11, Probe1N, Gallery1N, Cluster]" << std::endl;
         exit(EXIT_FAILURE);
     }
+
+    context.batch_policy = JaniceFlagAndFinish;
 
     // Parse the metadata file
     io::CSVReader<8> metadata(args::get(media_file));
@@ -112,9 +119,9 @@ int main(int argc, char* argv[])
             JaniceDetection detection;
 
             if (entry.second.size() == 1) {
-                JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].first.c_str(), &it));
-                JANICE_ASSERT(janice_create_detection_from_rect(&it, &entry.second[0].second, 0, &detection));
-                JANICE_ASSERT(it.reset(&it));
+                JANICE_ASSERT(janice_io_opencv_create_media_iterator(entry.second[0].first.c_str(), &it), ignored_errors);
+                JANICE_ASSERT(janice_create_detection_from_rect(&it, &entry.second[0].second, 0, &detection), ignored_errors);
+                JANICE_ASSERT(it.reset(&it), ignored_errors);
             } else {
                 const char** filenames = new const char*[entry.second.size()];
 
@@ -132,9 +139,9 @@ int main(int argc, char* argv[])
                     track.frames[i] = i;
                 }
 
-                JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, track.length, &it));
-                JANICE_ASSERT(janice_create_detection_from_track(&it, &track, &detection));
-                JANICE_ASSERT(it.reset(&it));
+                JANICE_ASSERT(janice_io_opencv_create_sparse_media_iterator(filenames, track.length, &it), ignored_errors);
+                JANICE_ASSERT(janice_create_detection_from_track(&it, &track, &detection), ignored_errors);
+                JANICE_ASSERT(it.reset(&it), ignored_errors);
 
                 delete[] filenames;
                 delete[] track.rects;
@@ -184,19 +191,32 @@ int main(int argc, char* argv[])
             ++it;
         }
 
-        JaniceTemplateIds logging_ids;
-        logging_ids.length = batch_template_ids.size();
-        logging_ids.ids = batch_template_ids.data();
-
         JaniceTemplates tmpls;
+        JaniceErrors batch_errors;
 
         auto start = std::chrono::high_resolution_clock::now();
-        JANICE_ASSERT(janice_enroll_from_detections_batch(&media_group, &detections_group, &logging_ids, &context, &tmpls));
+        JaniceError ret = janice_enroll_from_detections_batch(&media_group, &detections_group, &context, &tmpls, &batch_errors);
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count();
+
+        if (ret == JANICE_BATCH_FINISHED_WITH_ERRORS) {
+            for (size_t err_idx = 0; err_idx < batch_errors.length; ++err_idx) {
+                JaniceError e = batch_errors.errors[err_idx];
+                if (e != JANICE_SUCCESS) {
+                    std::cerr << "Janice batch function failed!" << std::endl
+                              << "    Error: " << janice_error_to_string(e) << std::endl
+                              << "    Batch index: " << err_idx << std::endl
+                              << "    Location: " << __FILE__ << ":" << __LINE__ << std::endl;
+
+                    if (ignored_errors.find(e) != ignored_errors.end()) {
+                        exit(EXIT_FAILURE);
+                    }
+                }
+            }
+        }
 
         // Assert we got the correct number of templates (1 tmpl per detection subgroup)
         if (tmpls.length != current_batch_size) {
-            printf("Incorrect return value. The number of templates should match the current batch size\n");
+            std::cerr << "Incorrect return value. The number of templates should match the current batch size" << std::endl;
             exit(EXIT_FAILURE);
         }
 
@@ -204,12 +224,12 @@ int main(int argc, char* argv[])
             size_t tmpl_size = 0;
             if (include_size) {
                 uint8_t* buffer;
-                JANICE_ASSERT(janice_serialize_template(tmpls.tmpls[tmpl_idx], &buffer, &tmpl_size));
-                JANICE_ASSERT(janice_free_buffer(&buffer));
+                JANICE_ASSERT(janice_serialize_template(tmpls.tmpls[tmpl_idx], &buffer, &tmpl_size), ignored_errors);
+                JANICE_ASSERT(janice_free_buffer(&buffer), ignored_errors);
             }
 
             std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(batch_template_ids[tmpl_idx]) + ".tmpl";
-            JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()));
+            JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()), ignored_errors);
 
             fprintf(output, "%llu,%d,%d,0,%d,%f,%zu\n", batch_template_ids[tmpl_idx], template_id_subject_id_lut[batch_template_ids[tmpl_idx]], context.role, batch_idx, elapsed, tmpl_size);
         }
@@ -223,20 +243,20 @@ int main(int argc, char* argv[])
         delete[] media_group.group;
         delete[] detections_group.group;
 
-        JANICE_ASSERT(janice_clear_templates(&tmpls));
+        JANICE_ASSERT(janice_clear_templates(&tmpls), ignored_errors);
 
         pos += current_batch_size;
     }
 
     for (auto& entry : template_id_media_it_lut) {
         for (std::pair<JaniceMediaIterator, JaniceDetection>& tmpl : entry.second) {
-            JANICE_ASSERT(tmpl.first.free(&tmpl.first));
-            JANICE_ASSERT(janice_free_detection(&tmpl.second));
+            JANICE_ASSERT(tmpl.first.free(&tmpl.first), ignored_errors);
+            JANICE_ASSERT(janice_free_detection(&tmpl.second), ignored_errors);
         }
     }
 
     // Finalize the API
-    JANICE_ASSERT(janice_finalize());
+    JANICE_ASSERT(janice_finalize(), ignored_errors);
 
     return 0;
 }

@@ -26,7 +26,8 @@ int main(int argc, char* argv[])
     args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
     args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
     args::ValueFlag<int>         batch_size(parser, "int", "The size of a single batch. A larger batch size may run faster but will use more CPU resources.", {'b', "batch_size"}, 128);
-    args::ValueFlag<std::vector<int>, GPUReader> gpus(parser, "int,int,int", "The GPU indices of the CUDA-compliant GPU cards the implementation should use while running detection", {'g', "gpus"}, std::vector<int>());
+    args::ValueFlag<std::vector<int>, ListReader<int>> gpus(parser, "int,int,int", "The GPU indices of the CUDA-compliant GPU cards the implementation should use while running detection", {'g', "gpus"}, std::vector<int>());
+    args::ValueFlag<std::vector<std::string>, ListReader<std::string>> nonfatal_errors(parser, "JaniceError,JaniceError", "Comma-separated list of nonfatal JanusError codes", {'n', "nonfatal_errors"}, std::vector<std::string>());
 
     try {
         parser.ParseCLI(argc, argv);
@@ -52,6 +53,10 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    // Register nonfatal errors
+    std::set<JaniceError> ignored_errors;
+    janice_harness_register_nonfatal_errors(args::get(nonfatal_errors), ignored_errors);
+
     // Initialize the API
     JANICE_ASSERT(janice_initialize(args::get(sdk_path).c_str(),
                                     args::get(temp_path).c_str(),
@@ -59,7 +64,12 @@ int main(int argc, char* argv[])
                                     args::get(algorithm).c_str(),
                                     args::get(num_threads),
                                     args::get(gpus).data(),
-                                    args::get(gpus).size()));
+                                    args::get(gpus).size()), ignored_errors);
+
+    JaniceContext context;
+    JANICE_ASSERT(janice_init_default_context(&context), ignored_errors);
+
+    context.batch_policy = JaniceFlagAndFinish;
 
     // Load the reference set
     io::CSVReader<1> reference_metadata(args::get(reference_file));
@@ -71,7 +81,7 @@ int main(int argc, char* argv[])
         uint64_t template_id;
         while (reference_metadata.read_row(template_id)) {
             JaniceTemplate tmpl = nullptr;
-            JANICE_ASSERT(janice_read_template((args::get(reference_path) + "/" + std::to_string(template_id) + ".tmpl").c_str(), &tmpl));
+            JANICE_ASSERT(janice_read_template((args::get(reference_path) + "/" + std::to_string(template_id) + ".tmpl").c_str(), &tmpl), ignored_errors);
             reference_tmpls[template_id] = tmpl;
         }
     }
@@ -85,14 +95,9 @@ int main(int argc, char* argv[])
         uint64_t template_id;
         while (verification_metadata.read_row(template_id)) {
             JaniceTemplate tmpl = nullptr;
-            JANICE_ASSERT(janice_read_template((args::get(verification_path) + "/" + std::to_string(template_id) + ".tmpl").c_str(), &tmpl));
+            JANICE_ASSERT(janice_read_template((args::get(verification_path) + "/" + std::to_string(template_id) + ".tmpl").c_str(), &tmpl), ignored_errors);
             verification_tmpls[template_id] = tmpl;
         }
-    }
-
-    if (reference_tmpls.size() != verification_tmpls.size()) {
-        printf("Verify requires the same number of reference and verificaton templates\n");
-        exit(EXIT_FAILURE);
     }
 
     std::vector<std::pair<uint64_t, uint64_t>> matches;
@@ -130,16 +135,33 @@ int main(int argc, char* argv[])
         }
 
         JaniceSimilarities scores;
+        JaniceErrors batch_errors;
 
         auto start = std::chrono::high_resolution_clock::now();
-        JANICE_ASSERT(janice_verify_batch(&references, &verifications, &scores));
+        JaniceError ret = janice_verify_batch(&references, &verifications, &context, &scores, &batch_errors);
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
+        if (ret == JANICE_BATCH_FINISHED_WITH_ERRORS) {
+            for (size_t err_idx = 0; err_idx < batch_errors.length; ++err_idx) {
+                JaniceError e = batch_errors.errors[err_idx];
+                if (e != JANICE_SUCCESS) {
+                    std::cerr << "Janice batch function failed!" << std::endl
+                              << "    Error: " << janice_error_to_string(e) << std::endl
+                              << "    Batch index: " << err_idx << std::endl
+                              << "    Location: " << __FILE__ << ":" << __LINE__ << std::endl;
+
+                    if (ignored_errors.find(e) != ignored_errors.end()) {
+                        exit(EXIT_FAILURE);
+                    }
+                }
+            }
+        }
+        
         for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
             fprintf(results, "%llu,%llu,0,%f,%d,%f\n", matches[pos + tmpl_idx].first, matches[pos + tmpl_idx].second, scores.similarities[tmpl_idx], batch_idx, elapsed);
         }
 
-        JANICE_ASSERT(janice_clear_similarities(&scores));
+        JANICE_ASSERT(janice_clear_similarities(&scores), ignored_errors);
 
         delete[] references.tmpls;
         delete[] verifications.tmpls;
@@ -148,14 +170,14 @@ int main(int argc, char* argv[])
     }
 
     for (auto entry : reference_tmpls) {
-        JANICE_ASSERT(janice_free_template(&entry.second));
+        JANICE_ASSERT(janice_free_template(&entry.second), ignored_errors);
     }
 
     for (auto entry : verification_tmpls) {
-        JANICE_ASSERT(janice_free_template(&entry.second));
+        JANICE_ASSERT(janice_free_template(&entry.second), ignored_errors);
     }
 
-    JANICE_ASSERT(janice_finalize());
+    JANICE_ASSERT(janice_finalize(), ignored_errors);
 
     return 0;
 }
