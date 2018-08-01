@@ -62,6 +62,24 @@ the API are:
 | JaniceCluster        | The template will be used for clustering.             |
 +----------------------+-------------------------------------------------------+
 
+.. _JaniceBatchPolicy:
+
+JaniceBatchPolicy
+~~~~~~~~~~~~~~~~~
+
+The JanICE API offers batch calls to accelerate computation for certain operations.
+For large batches, it is often advantageous to set an error handling policy to 
+control if an application should fail immediately or flag and continue on an
+error. This is set explicity with the API batch policy. Possible policies are:
+
++---------------------+----------------------------------------------------------------+
+|       Policy        |                          Description                           |
++=====================+================================================================+
+| JaniceAbortEarly    | Stop processing immediately on an error                        |
++---------------------+----------------------------------------------------------------+
+| JaniceFlagAndFinish | Mark an error for the user but continue processing if possible |
++---------------------+----------------------------------------------------------------+
+
 Structs
 -------
 
@@ -125,6 +143,8 @@ Fields
 | max\_returns      | uint32\_t                    | The maximum number of results a single search should return                                             |
 +-------------------+------------------------------+---------------------------------------------------------------------------------------------------------+
 | hint              | double                       | A hint to a clustering algorithm. See :ref:`clustering_hint` for additional information                 |
++-------------------+------------------------------+---------------------------------------------------------------------------------------------------------+
+| batch_policy      | :ref:`JaniceBatchPolicy`     | The batch policy                                                                                        |
 +-------------------+------------------------------+---------------------------------------------------------------------------------------------------------+
 
 Functions

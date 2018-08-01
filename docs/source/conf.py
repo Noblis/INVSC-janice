@@ -31,8 +31,7 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.coverage',
-              'sphinx.ext.githubpages',
-              'rst2pdf.pdfbuilder']
+              'sphinx.ext.githubpages']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
@@ -197,4 +196,4 @@ epub_exclude_files = ['search.html']
 
 # -- Options for PDF output ----------------------------------------------------
 
-pdf_documents = [('index', u'JanICE', u'JanICE documentation', u'Noblis'),]
+#pdf_documents = [('index', u'JanICE', u'JanICE documentation', u'Noblis'),]

@@ -21,7 +21,7 @@ include(CTest)
 
 # Default initialize the library variables
 set(JANICE_IMPLEMENTATION CACHE STRING "A path to a library implementing the JanICE API")
-set(JANICE_IO_IMPLEMENTATION CACHE STRING "A path to a library implementating the JanICE I/O API")
+set(JANICE_IO_IMPLEMENTATION CACHE STRING "A path to a library or libraries implementating the JanICE I/O API")
 
 add_library(janice INTERFACE)
 target_include_directories(janice INTERFACE api)

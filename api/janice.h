@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-#define JANICE_VERSION_MAJOR 6
+#define JANICE_VERSION_MAJOR 7
 #define JANICE_VERSION_MINOR 0
 #define JANICE_VERSION_PATCH 0
 
@@ -26,10 +26,22 @@ extern "C" {
 
 JANICE_EXPORT JaniceError janice_initialize(const char* sdk_path,
                                             const char* temp_path,
+                                            const char* log_path,
                                             const char* algorithm,
                                             const int num_threads,
                                             const int* gpus,
                                             const int num_gpus);
+
+enum JaniceLogLevel
+{
+    JaniceLogDebug = 0,
+    JaniceLogInfo = 1,
+    JaniceLogWarning = 2,
+    JaniceLogError = 3,
+    JaniceLogCritical = 4
+};
+
+JANICE_EXPORT JaniceError janice_set_log_level(JaniceLogLevel level);
 
 // ----------------------------------------------------------------------------
 // Versioning
@@ -44,6 +56,25 @@ JANICE_EXPORT JaniceError janice_sdk_version(uint32_t* major,
 
 // ----------------------------------------------------------------------------
 // Configuration
+
+struct JaniceConfigurationItem
+{
+    char* key;
+    char* value;
+};
+
+struct JaniceConfiguration
+{
+    JaniceConfigurationItem* values;
+    size_t length;
+};
+
+JANICE_EXPORT JaniceError janice_get_current_configuration(JaniceConfiguration* configuration);
+
+JANICE_EXPORT JaniceError janice_clear_configuration(JaniceConfiguration* configuration);
+
+// ----------------------------------------------------------------------------
+// Context
 
 enum JaniceDetectionPolicy
 {
@@ -61,6 +92,12 @@ enum JaniceEnrollmentType
     JaniceCluster = 4
 };
 
+enum JaniceBatchPolicy
+{
+    JaniceAbortEarly = 0,
+    JaniceFlagAndFinish = 1
+};
+
 struct JaniceContext
 {
     // Detection parameters
@@ -76,6 +113,9 @@ struct JaniceContext
 
     // Cluster parameters
     double hint;
+
+    // Batch parameters
+    JaniceBatchPolicy batch_policy;
 };
 
 JANICE_EXPORT JaniceError janice_init_default_context(JaniceContext* context);
@@ -83,9 +123,7 @@ JANICE_EXPORT JaniceError janice_init_default_context(JaniceContext* context);
 // ----------------------------------------------------------------------------
 // Buffer
 
-typedef uint8_t* JaniceBuffer;
-
-JANICE_EXPORT JaniceError janice_free_buffer(JaniceBuffer* buffer);
+JANICE_EXPORT JaniceError janice_free_buffer(uint8_t** buffer);
 
 // ----------------------------------------------------------------------------
 // Detection
@@ -121,46 +159,58 @@ struct JaniceDetectionsGroup
     size_t length;
 };
 
-typedef char* JaniceAttribute;
+typedef JaniceError (*JaniceDetectionCallback)(const JaniceDetection*, size_t, void*);
 
 // Functions
-JANICE_EXPORT JaniceError janice_create_detection_from_rect(JaniceMediaIterator media,
-                                                            const JaniceRect rect,
-                                                            uint32_t frame,
+JANICE_EXPORT JaniceError janice_create_detection_from_rect(JaniceMediaIterator* media,
+                                                            const JaniceRect* rect,
+                                                            const uint32_t frame,
                                                             JaniceDetection* detection);
 
-JANICE_EXPORT JaniceError janice_create_detection_from_track(JaniceMediaIterator media,
-                                                             const JaniceTrack track,
+JANICE_EXPORT JaniceError janice_create_detection_from_track(JaniceMediaIterator* media,
+                                                             const JaniceTrack* track,
                                                              JaniceDetection* detection);
 
-JANICE_EXPORT JaniceError janice_detect(JaniceMediaIterator media,
+JANICE_EXPORT JaniceError janice_detect(JaniceMediaIterator* media,
                                         const JaniceContext* context,
                                         JaniceDetections* detections);
 
-JANICE_EXPORT JaniceError janice_detect_batch(JaniceMediaIterators media,
-                                              const JaniceContext* context,
-                                              JaniceDetectionsGroup* detections);
+JANICE_EXPORT JaniceError janice_detect_with_callback(JaniceMediaIterator* media,
+                                                      const JaniceContext* context,
+                                                      JaniceDetectionCallback callback,
+                                                      void* user_data);
 
-JANICE_EXPORT JaniceError janice_detection_get_track(JaniceDetection detection,
+JANICE_EXPORT JaniceError janice_detect_batch(const JaniceMediaIterators* media,
+                                              const JaniceContext* context,
+                                              JaniceDetectionsGroup* detections,
+                                              JaniceErrors* errors);
+
+JANICE_EXPORT JaniceError janice_detect_batch_with_callback(const JaniceMediaIterators* media,
+                                                            const JaniceContext* context,
+                                                            JaniceDetectionCallback callback,
+                                                            void* user_data,
+							    JaniceErrors* errors);
+
+JANICE_EXPORT JaniceError janice_detection_get_track(const JaniceDetection detection,
                                                      JaniceTrack* track);
 
-JANICE_EXPORT JaniceError janice_detection_get_attribute(JaniceDetection detection,
+JANICE_EXPORT JaniceError janice_detection_get_attribute(const JaniceDetection detection,
                                                          const char* key,
-                                                         JaniceAttribute* value);
+                                                         char** value);
 
 // I/O
-JANICE_EXPORT JaniceError janice_serialize_detection(JaniceDetection detection,
-                                                     JaniceBuffer* data,
+JANICE_EXPORT JaniceError janice_serialize_detection(const JaniceDetection detection,
+                                                     uint8_t** data,
                                                      size_t* len);
 
-JANICE_EXPORT JaniceError janice_deserialize_detection(const JaniceBuffer data,
-                                                       size_t len,
+JANICE_EXPORT JaniceError janice_deserialize_detection(const uint8_t* data,
+                                                       const size_t len,
                                                        JaniceDetection* detection);
 
 JANICE_EXPORT JaniceError janice_read_detection(const char* filename,
                                                 JaniceDetection* detection);
 
-JANICE_EXPORT JaniceError janice_write_detection(JaniceDetection detection,
+JANICE_EXPORT JaniceError janice_write_detection(const JaniceDetection detection,
                                                  const char* filename);
 
 // Cleanup
@@ -172,13 +222,13 @@ JANICE_EXPORT JaniceError janice_clear_detections_group(JaniceDetectionsGroup* g
 
 JANICE_EXPORT JaniceError janice_clear_track(JaniceTrack* track);
 
-JANICE_EXPORT JaniceError janice_free_attribute(JaniceAttribute* value);
+JANICE_EXPORT JaniceError janice_free_attribute(char** value);
 
 // ----------------------------------------------------------------------------
 // Training
 
-JANICE_EXPORT JaniceError janice_fine_tune(JaniceMediaIterators media,
-                                           JaniceDetectionsGroup detections,
+JANICE_EXPORT JaniceError janice_fine_tune(const JaniceMediaIterators* media,
+                                           const JaniceDetectionsGroup* detections,
                                            int** labels,
                                            const char* output_prefix);
 
@@ -186,6 +236,22 @@ JANICE_EXPORT JaniceError janice_fine_tune(JaniceMediaIterators media,
 // Enrollment
 
 // Structs
+enum JaniceFeatureVectorType
+{
+    JaniceInt8 = 0,
+    JaniceInt16 = 1,
+    JaniceInt32 = 2,
+    JaniceInt64 = 3,
+
+    JaniceUInt8 = 4,
+    JaniceUInt16 = 5,
+    JaniceUInt32 = 6,
+    JaniceUInt64 = 7,
+
+    JaniceFloat = 8,
+    JaniceDouble = 9
+};
+
 typedef struct JaniceTemplateType* JaniceTemplate;
 
 struct JaniceTemplates
@@ -200,47 +266,76 @@ struct JaniceTemplatesGroup
     size_t length;
 };
 
+typedef JaniceError (*JaniceEnrollMediaCallback)(const JaniceTemplate*, const JaniceDetection*, size_t, void*);
+typedef JaniceError (*JaniceEnrollDetectionsCallback)(const JaniceTemplate*, size_t, void*);
+
 // Functions
-JANICE_EXPORT JaniceError janice_enroll_from_media(JaniceMediaIterator media,
+JANICE_EXPORT JaniceError janice_enroll_from_media(JaniceMediaIterator* media,
                                                    const JaniceContext* context,
                                                    JaniceTemplates* tmpls,
                                                    JaniceDetections* detections);
 
-JANICE_EXPORT JaniceError janice_enroll_from_media_batch(JaniceMediaIterators media,
+JANICE_EXPORT JaniceError janice_enroll_from_media_with_callback(JaniceMediaIterator* media,
+                                                                 const JaniceContext* context,
+                                                                 JaniceEnrollMediaCallback callback,
+                                                                 void* user_data);
+
+JANICE_EXPORT JaniceError janice_enroll_from_media_batch(const JaniceMediaIterators* media,
                                                          const JaniceContext* context,
                                                          JaniceTemplatesGroup* tmpls,
-                                                         JaniceDetectionsGroup* detections);
+                                                         JaniceDetectionsGroup* detections,
+                                                         JaniceErrors* errors);
 
-JANICE_EXPORT JaniceError janice_enroll_from_detections(JaniceMediaIterators media,
-                                                        JaniceDetections detections,
+JANICE_EXPORT JaniceError janice_enroll_from_media_batch_with_callback(const JaniceMediaIterators* media,
+                                                                       const JaniceContext* context,
+                                                                       JaniceEnrollMediaCallback callback,
+                                                                       void* user_data,
+								       JaniceErrors* errors);
+
+JANICE_EXPORT JaniceError janice_enroll_from_detections(const JaniceMediaIterators* media,
+                                                        const JaniceDetections* detections,
                                                         const JaniceContext* context,
                                                         JaniceTemplate* tmpl);
 
-JANICE_EXPORT JaniceError janice_enroll_from_detections_batch(JaniceMediaIteratorsGroup media,
-                                                              JaniceDetectionsGroup detections,
+JANICE_EXPORT JaniceError janice_enroll_from_detections_batch(const JaniceMediaIteratorsGroup* media,
+                                                              const JaniceDetectionsGroup* detections,
                                                               const JaniceContext* context,
-                                                              JaniceTemplates* tmpls);
+                                                              JaniceTemplates* tmpls,
+                                                              JaniceErrors* errors);
 
-JANICE_EXPORT JaniceError janice_template_is_fte(JaniceTemplate tmpl,
+
+JANICE_EXPORT JaniceError janice_enroll_from_detections_batch_with_callback(const JaniceMediaIteratorsGroup* media,
+                                                                            const JaniceDetectionsGroup* detections,
+                                                                            const JaniceContext* context,
+                                                                            JaniceEnrollDetectionsCallback callback,
+                                                                            void* user_data,
+									    JaniceErrors* errors);
+
+JANICE_EXPORT JaniceError janice_template_is_fte(const JaniceTemplate tmpl,
                                                  int* fte);
 
-JANICE_EXPORT JaniceError janice_template_get_attribute(JaniceTemplate tmpl,
+JANICE_EXPORT JaniceError janice_template_get_attribute(const JaniceTemplate tmpl,
                                                         const char* key,
-                                                        JaniceAttribute* value);
+                                                        char** value);
+
+JANICE_EXPORT JaniceError janice_template_get_feature_vector(const JaniceTemplate tmpl,
+                                                             const JaniceFeatureVectorType feature_vector_type,
+                                                             void** feature_vector,
+                                                             size_t* length);
 
 // I/O
-JANICE_EXPORT JaniceError janice_serialize_template(JaniceTemplate tmpl,
-                                                    JaniceBuffer* data,
-                                                    size_t* len);
+JANICE_EXPORT JaniceError janice_serialize_template(const JaniceTemplate tmpl,
+                                                    uint8_t** data,
+                                                    size_t* length);
 
-JANICE_EXPORT JaniceError janice_deserialize_template(const JaniceBuffer data,
-                                                      size_t len,
+JANICE_EXPORT JaniceError janice_deserialize_template(const uint8_t* data,
+                                                      const size_t length,
                                                       JaniceTemplate* tmpl);
 
 JANICE_EXPORT JaniceError janice_read_template(const char* filename,
                                                JaniceTemplate* tmpl);
 
-JANICE_EXPORT JaniceError janice_write_template(JaniceTemplate tmpl,
+JANICE_EXPORT JaniceError janice_write_template(const JaniceTemplate tmpl,
                                                 const char* filename);
 
 // Cleanup
@@ -250,15 +345,15 @@ JANICE_EXPORT JaniceError janice_clear_templates(JaniceTemplates* tmpls);
 
 JANICE_EXPORT JaniceError janice_clear_templates_group(JaniceTemplatesGroup* group);
 
+JANICE_EXPORT JaniceError janice_free_feature_vector(void** feature_vector);
+
 // ----------------------------------------------------------------------------
 // Verification
 
 // Structs
-typedef double JaniceSimilarity;
-
 struct JaniceSimilarities
 {
-    JaniceSimilarity* similarities;
+    double* similarities;
     size_t length;
 };
 
@@ -269,13 +364,15 @@ struct JaniceSimilaritiesGroup
 };
 
 // Functions
-JANICE_EXPORT JaniceError janice_verify(JaniceTemplate reference,
-                                        JaniceTemplate verification,
-                                        JaniceSimilarity* similarity);
+JANICE_EXPORT JaniceError janice_verify(const JaniceTemplate reference,
+                                        const JaniceTemplate verification,
+                                        double* similarity);
 
-JANICE_EXPORT JaniceError janice_verify_batch(JaniceTemplates references,
-                                              JaniceTemplates verifications,
-                                              JaniceSimilarities* similarities);
+JANICE_EXPORT JaniceError janice_verify_batch(const JaniceTemplates* references,
+                                              const JaniceTemplates* verifications,
+                                              const JaniceContext* context,
+                                              JaniceSimilarities* similarities,
+                                              JaniceErrors* errors);
 
 // Cleanup
 JANICE_EXPORT JaniceError janice_clear_similarities(JaniceSimilarities* similarities);
@@ -288,11 +385,9 @@ JANICE_EXPORT JaniceError janice_clear_similarities_group(JaniceSimilaritiesGrou
 // Structs
 typedef struct JaniceGalleryType* JaniceGallery;
 
-typedef size_t JaniceTemplateId;
-
 struct JaniceTemplateIds
 {
-    JaniceTemplateId* ids;
+    uint64_t* ids;
     size_t length;
 };
 
@@ -303,26 +398,30 @@ struct JaniceTemplateIdsGroup
 };
 
 // Functions
-JANICE_EXPORT JaniceError janice_create_gallery(JaniceTemplates tmpls,
-                                                JaniceTemplateIds ids,
+JANICE_EXPORT JaniceError janice_create_gallery(const JaniceTemplates* tmpls,
+                                                const JaniceTemplateIds* ids,
                                                 JaniceGallery* gallery);
 
 JANICE_EXPORT JaniceError janice_gallery_reserve(JaniceGallery gallery,
-                                                 size_t n);
+                                                 const size_t n);
 
 JANICE_EXPORT JaniceError janice_gallery_insert(JaniceGallery gallery,
-                                                JaniceTemplate tmpl,
-                                                JaniceTemplateId id);
+                                                const JaniceTemplate tmpl,
+                                                const uint64_t id);
 
 JANICE_EXPORT JaniceError janice_gallery_insert_batch(JaniceGallery gallery,
-                                                      JaniceTemplates tmpls,
-                                                      JaniceTemplateIds ids);
+                                                      const JaniceTemplates* tmpls,
+                                                      const JaniceTemplateIds* ids,
+                                                      const JaniceContext* context,
+                                                      JaniceErrors* errors);
 
 JANICE_EXPORT JaniceError janice_gallery_remove(JaniceGallery gallery,
-                                                JaniceTemplateId id);
+                                                const uint64_t id);
 
 JANICE_EXPORT JaniceError janice_gallery_remove_batch(JaniceGallery gallery,
-                                                      JaniceTemplateIds ids);
+                                                      const JaniceTemplateIds* ids,
+                                                      const JaniceContext* context,
+                                                      JaniceErrors* errors);
 
 // This function prepares a gallery for search after it has been modified.
 // Please see
@@ -331,18 +430,18 @@ JANICE_EXPORT JaniceError janice_gallery_remove_batch(JaniceGallery gallery,
 JANICE_EXPORT JaniceError janice_gallery_prepare(JaniceGallery gallery);
 
 // I/O
-JANICE_EXPORT JaniceError janice_serialize_gallery(JaniceGallery gallery,
-                                                   JaniceBuffer* data,
-                                                   size_t* len);
+JANICE_EXPORT JaniceError janice_serialize_gallery(const JaniceGallery gallery,
+                                                   uint8_t** data,
+                                                   size_t* length);
 
-JANICE_EXPORT JaniceError janice_deserialize_gallery(const JaniceBuffer data,
-                                                     size_t len,
+JANICE_EXPORT JaniceError janice_deserialize_gallery(const uint8_t* data,
+                                                     const size_t length,
                                                      JaniceGallery* gallery);
 
 JANICE_EXPORT JaniceError janice_read_gallery(const char* filename,
                                               JaniceGallery* gallery);
 
-JANICE_EXPORT JaniceError janice_write_gallery(JaniceGallery gallery,
+JANICE_EXPORT JaniceError janice_write_gallery(const JaniceGallery gallery,
                                                const char* filename);
 
 // Cleanup
@@ -355,27 +454,26 @@ JANICE_EXPORT JaniceError janice_clear_template_ids_group(JaniceTemplateIdsGroup
 // ----------------------------------------------------------------------------
 // Search
 
-JANICE_EXPORT JaniceError janice_search(JaniceTemplate probe,
-                                        JaniceGallery gallery,
+JANICE_EXPORT JaniceError janice_search(const JaniceTemplate probe,
+                                        const JaniceGallery gallery,
                                         const JaniceContext* context,
                                         JaniceSimilarities* similarities,
                                         JaniceTemplateIds* ids);
 
-JANICE_EXPORT JaniceError janice_search_batch(JaniceTemplates probes,
-                                              JaniceGallery gallery,
+JANICE_EXPORT JaniceError janice_search_batch(const JaniceTemplates* probes,
+                                              const JaniceGallery gallery,
                                               const JaniceContext* context,
                                               JaniceSimilaritiesGroup* similarities,
-                                              JaniceTemplateIdsGroup* ids);
+                                              JaniceTemplateIdsGroup* ids,
+                                              JaniceErrors* errors);
 
 // ----------------------------------------------------------------------------
 // Cluster
 
 // Structs
-typedef size_t JaniceClusterId;
-
 struct JaniceClusterIds
 {
-    JaniceClusterId* ids;
+    uint64_t* ids;
     size_t length;
 };
 
@@ -385,11 +483,9 @@ struct JaniceClusterIdsGroup
     size_t length;
 };
 
-typedef double JaniceClusterConfidence;
-
 struct JaniceClusterConfidences
 {
-    JaniceClusterConfidence* confidences;
+    double* confidences;
     size_t length;
 };
 
@@ -400,13 +496,13 @@ struct JaniceClusterConfidencesGroup
 };
 
 // Functions
-JANICE_EXPORT JaniceError janice_cluster_media(JaniceMediaIterators media,
+JANICE_EXPORT JaniceError janice_cluster_media(const JaniceMediaIterators* media,
                                                const JaniceContext* context,
                                                JaniceClusterIdsGroup* cluster_ids,
                                                JaniceClusterConfidencesGroup* cluster_confidences,
                                                JaniceDetectionsGroup* detections);
 
-JANICE_EXPORT JaniceError janice_cluster_templates(JaniceTemplates tmpls,
+JANICE_EXPORT JaniceError janice_cluster_templates(const JaniceTemplates* tmpls,
                                                    const JaniceContext* context,
                                                    JaniceClusterIds* cluster_ids,
                                                    JaniceClusterConfidences* cluster_confidences);

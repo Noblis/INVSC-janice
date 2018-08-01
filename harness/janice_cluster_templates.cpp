@@ -2,58 +2,67 @@
 #include <janice_io_opencv.h>
 #include <janice_harness.h>
 
+#include <arg_parser/args.hpp>
+#include <fast-cpp-csv-parser/csv.h>
+
 #include <iostream>
 #include <fstream>
 
-#include <fast-cpp-csv-parser/csv.h>
-
-void print_usage()
-{
-    printf("Usage: janice_cluster_templates sdk_path temp_path data_path input_file output_file clustering_hint [-algorithm <algorithm>] [-threads <int>] [-gpu <int>]\n");
-}
-
 int main(int argc, char* argv[])
 {
-    const int min_args = 7;
-    const int max_args = 15;
+    args::ArgumentParser parser("Run clustering on a set of templates.");
+    args::HelpFlag help(parser, "help", "Display this help menu.", {'h', "help"});
 
-    if (argc < min_args || argc > max_args) {
-        print_usage();
-        exit(EXIT_FAILURE);
+    args::Positional<std::string> template_file(parser, "template_file", "A path to an IJB-C compliant csv file. The IJB-C file format is defined at https://noblis.github.io/janice/harness.html#fileformat");
+    args::Positional<std::string> template_path(parser, "template_path", "A prefix path to append to all templates before loading them");
+    args::Positional<std::string> output_file(parser, "output_file", "A path to an output file. A file will be created if it doesn't already exist. The file location must be writable.");
+
+    args::ValueFlag<std::string> sdk_path(parser, "string", "The path to the SDK of the implementation", {'s', "sdk_path"}, "./");
+    args::ValueFlag<std::string> temp_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'t', "temp_path"}, "./");
+    args::ValueFlag<std::string> log_path(parser, "string", "An existing directory on disk where the caller has read / write access.", {'l', "log_path"}, "./");
+    args::ValueFlag<float>       hint(parser, "float", "The hint parameter that should be given to the clustering algorithm", {'h', "hint"}, 0.5);
+    args::ValueFlag<std::string> algorithm(parser, "string", "Optional additional parameters for the implementation. The format and content of this string is implementation defined.", {'a', "algorithm"}, "");
+    args::ValueFlag<int>         num_threads(parser, "int", "The number of threads the implementation should use while running detection.", {'j', "num_threads"}, 1);
+    args::ValueFlag<std::vector<int>, ListReader<int>> gpus(parser, "int,int,int", "The GPU indices of the CUDA-compliant GPU cards the implementation should use while running detection", {'g', "gpus"}, std::vector<int>());
+    args::ValueFlag<std::vector<std::string>, ListReader<std::string>> nonfatal_errors(parser, "JaniceError,JaniceError", "Comma-separated list of nonfatal JanusError codes", {'n', "nonfatal_errors"}, std::vector<std::string>());
+
+    try {
+        parser.ParseCLI(argc, argv);
+    } catch (args::Help) {
+        std::cout << parser;
+        return 0;
+    } catch (args::ParseError& e) {
+        std::cerr << e.what() << std::endl;
+        std::cerr << parser;
+        return 1;
+    } catch (args::ValidationError& e) {
+        std::cerr << e.what() << std::endl;
+        std::cerr << parser;
+        return 1;
     }
 
-    const std::string sdk_path    = argv[1];
-    const std::string temp_path   = argv[2];
-    const std::string data_path   = argv[3];
-    const std::string input_file  = argv[4];
-    const std::string output_file = argv[5];
-    const std::string s_hint      = argv[6];
-
-    std::string algorithm;
-    int num_threads, gpu;
-    if (!parse_optional_args(argc, argv, min_args, max_args, algorithm, num_threads, gpu))
-        exit(EXIT_FAILURE);
-    
-    // Check input
-    if (get_ext(input_file) != std::string("csv")) {
-        printf("input_file must be \".csv\" format.\n");
-        exit(EXIT_FAILURE);
+    if (!template_file || !template_path || !output_file) {
+        std::cout << parser;
+        return 1;
     }
+
+    // Register nonfatal errors
+    std::set<JaniceError> ignored_errors;
+    janice_harness_register_nonfatal_errors(args::get(nonfatal_errors), ignored_errors);
 
     // Initialize the API
-    // TODO: Right now we only allow a single GPU to be used
-    JANICE_ASSERT(janice_initialize(sdk_path.c_str(), temp_path.c_str(), algorithm.c_str(), num_threads, &gpu, 1));
+    JANICE_ASSERT(janice_initialize(args::get(sdk_path).c_str(), 
+                                    args::get(temp_path).c_str(),
+                                    args::get(log_path).c_str(),
+                                    args::get(algorithm).c_str(), 
+                                    args::get(num_threads), 
+                                    args::get(gpus).data(), 
+                                    args::get(gpus).size()), ignored_errors);
 
-    // Unused defaults for context parameters
-    JaniceDetectionPolicy policy = JaniceDetectAll;
-    uint32_t min_object_size = 0;
-    double threshold = 0;
-    uint32_t max_returns = 0;
-    double hint = atof(s_hint.c_str());
-    JaniceEnrollmentType role = JaniceCluster;
+    JaniceContext context;
+    JANICE_ASSERT(janice_init_default_context(&context), ignored_errors);
 
-    JaniceContext context = nullptr;
-    JANICE_ASSERT(janice_create_context(policy, min_object_size, role, threshold, max_returns, hint, &context));
+    context.hint            = args::get(hint);
 
     // Parse the metadata file
     io::CSVReader<2> metadata(input_file);
@@ -76,18 +85,19 @@ int main(int argc, char* argv[])
     tmpls.tmpls = new JaniceTemplate[tmpls.length];
 
     for (size_t i=0; i < filenames.size(); i++) {
-        JANICE_ASSERT(janice_read_template(filenames[i].c_str(), &tmpls.tmpls[i]));
+        JANICE_ASSERT(janice_read_template(filenames[i].c_str(), &tmpls.tmpls[i]), ignored_errors);
     }
 
     JaniceClusterIds cluster_ids;
     JaniceClusterConfidences cluster_confidences;
 
-    JANICE_ASSERT(janice_cluster_templates(tmpls, context, &cluster_ids, &cluster_confidences));
+    JANICE_ASSERT(janice_cluster_templates(tmpls, context, &cluster_ids, &cluster_confidences), ignored_errors);
 
     if (cluster_ids.length != tmpls.length) {
         std::cerr << "Output cluster assignments did not match input templates length!" << std::endl;
         return -1;
     }
+
     if (cluster_confidences.length != tmpls.length) {
         std::cerr << "Output cluster confidences did not match input templates length!" << std::endl;
         return -1;
@@ -107,18 +117,18 @@ int main(int argc, char* argv[])
     fout.close();
 
     // clear output variables from janice_cluster_templtes
-    JANICE_ASSERT(janice_clear_cluster_ids(&cluster_ids));
-    JANICE_ASSERT(janice_clear_cluster_confidences(&cluster_confidences));
+    JANICE_ASSERT(janice_clear_cluster_ids(&cluster_ids), ignored_errors);
+    JANICE_ASSERT(janice_clear_cluster_confidences(&cluster_confidences), ignored_errors);
 
     // Free the templates, this was partially allocated by us, so 
     // can't just call janice_clear_templates
     for (size_t i =0; i < tmpls.length; i++) {
-        JANICE_ASSERT(janice_free_template(&tmpls.tmpls[i]));
+        JANICE_ASSERT(janice_free_template(&tmpls.tmpls[i]), ignored_errors);
     }
     delete [] tmpls.tmpls;
 
     // Finalize the API
-    JANICE_ASSERT(janice_finalize());
+    JANICE_ASSERT(janice_finalize(), ignored_errors);
 
     return 0;
 }

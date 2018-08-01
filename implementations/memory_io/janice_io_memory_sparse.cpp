@@ -1,21 +1,14 @@
-#include <janice_io.h>
-#include <janice_io_opencv.h>
-#include <janice_io_opencv_utils.hpp>
+#include <janice_io_memory.h>
+#include <janice_io_memory_utils.hpp>
 
-#include <opencv2/highgui.hpp>
-
-#include <string>
 #include <vector>
 
 namespace
 {
 
-// ----------------------------------------------------------------------------
-// JaniceMediaIterator
-
 struct JaniceMediaIteratorStateType
 {
-    std::vector<std::string> filenames;
+    std::vector<JaniceImage> images;
     size_t pos;
 };
 
@@ -39,27 +32,23 @@ JaniceError next(JaniceMediaIterator* it, JaniceImage* image)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
 
-    if (state->pos == state->filenames.size()) {
+    if (state->pos == state->images.size()) {
         return JANICE_MEDIA_AT_END;
     }
 
-    try {
-        cv::Mat cv_img = cv::imread(state->filenames[state->pos], cv::IMREAD_ANYCOLOR | cv::IMREAD_IGNORE_ORIENTATION);
-        ocv_utils::cv_mat_to_janice_image(cv_img, *image);
-    } catch (...) {
-        return JANICE_UNKNOWN_ERROR;
+    JaniceError ret = mem_utils::copy_janice_image(state->images[state->pos], *image);
+    if (ret == JANICE_SUCCESS) {
+        ++state->pos;
     }
 
-    ++state->pos;
-
-    return JANICE_SUCCESS;
+    return ret;
 }
 
 JaniceError seek(JaniceMediaIterator* it, uint32_t frame)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
 
-    if (frame >= state->filenames.size()) {
+    if (frame >= state->images.size()) {
         return JANICE_BAD_ARGUMENT;
     }
 
@@ -72,25 +61,18 @@ JaniceError get(JaniceMediaIterator* it, JaniceImage* image, uint32_t frame)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
 
-    if (frame >= state->filenames.size()) {
+    if (frame >= state->images.size()) {
         return JANICE_BAD_ARGUMENT;
     }
 
-    try {
-        cv::Mat cv_img = cv::imread(state->filenames[frame], cv::IMREAD_ANYCOLOR | cv::IMREAD_IGNORE_ORIENTATION);
-        ocv_utils::cv_mat_to_janice_image(cv_img, *image);
-    } catch (...) {
-        return JANICE_UNKNOWN_ERROR;
-    }
-
-    return JANICE_SUCCESS;
+    return mem_utils::copy_janice_image(state->images[frame], *image);
 }
 
 JaniceError tell(JaniceMediaIterator* it, uint32_t* frame)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
 
-    if (state->pos == state->filenames.size()) {
+    if (state->pos == state->images.size()) {
         return JANICE_MEDIA_AT_END;
     }
 
@@ -123,6 +105,11 @@ JaniceError free_image(JaniceImage* image)
 JaniceError free_iterator(JaniceMediaIterator* it)
 {
     if (it && it->_internal) {
+        JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
+        for (JaniceImage& image : state->images) {
+            free_image(&image);
+        }
+
         delete (JaniceMediaIteratorStateType*) it->_internal;
     }
 
@@ -142,7 +129,7 @@ JaniceError reset(JaniceMediaIterator* it)
 // ----------------------------------------------------------------------------
 // OpenCV I/O only, create a sparse opencv_io media iterator
 
-JaniceError janice_io_opencv_create_sparse_media_iterator(const char** filenames, size_t num_files, JaniceMediaIterator* it)
+JaniceError janice_io_memory_create_sparse_media_iterator(const JaniceImage* images, size_t num_images, JaniceMediaIterator* it)
 {
     it->is_video = &is_video;
     it->get_frame_rate =  &get_frame_rate;
@@ -160,8 +147,19 @@ JaniceError janice_io_opencv_create_sparse_media_iterator(const char** filenames
     it->reset      = &reset;
 
     JaniceMediaIteratorStateType* state = new JaniceMediaIteratorStateType();
-    for (size_t i = 0; i < num_files; ++i) {
-        state->filenames.push_back(std::string(filenames[i]));
+    for (size_t i = 0; i < num_images; ++i) {
+        JaniceImage image;
+        JaniceError ret = mem_utils::copy_janice_image(images[i], image);
+        if (ret != JANICE_SUCCESS) { // Try and clean up
+            for (size_t i = 0; i < state->images.size(); ++i) {
+                free_image(&state->images[i]);
+            }
+            delete state;
+
+            return ret;
+        }
+
+        state->images.push_back(image);
     }
     state->pos = 0;
 

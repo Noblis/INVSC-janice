@@ -14,7 +14,7 @@ extern "C" {
 // ----------------------------------------------------------------------------
 // Image
 
-struct JaniceImageType
+struct JaniceImage
 {
     uint32_t channels;
     uint32_t rows;
@@ -24,34 +24,30 @@ struct JaniceImageType
     bool owner;
 };
 
-typedef struct JaniceImageType* JaniceImage;
-
 // ----------------------------------------------------------------------------
 // Media Iterator
 
 typedef void* JaniceMediaIteratorState;
 
-struct JANICE_EXPORT JaniceMediaIteratorType
+struct JANICE_EXPORT JaniceMediaIterator
 {
-    JaniceError (*is_video)(JaniceMediaIteratorType*, bool*);
-    JaniceError (*get_frame_rate)(JaniceMediaIteratorType*, float*);
-    JaniceError (*get_physical_frame_rate)(JaniceMediaIteratorType*, float*);
+    JaniceError (*is_video)(JaniceMediaIterator*, bool*);
+    JaniceError (*get_frame_rate)(JaniceMediaIterator*, float*);
+    JaniceError (*get_physical_frame_rate)(JaniceMediaIterator*, float*);
 
-    JaniceError (*next)(JaniceMediaIteratorType*, JaniceImage*);
-    JaniceError (*seek)(JaniceMediaIteratorType*, uint32_t);
-    JaniceError (* get)(JaniceMediaIteratorType*, JaniceImage*, uint32_t);
-    JaniceError (*tell)(JaniceMediaIteratorType*, uint32_t*);
-    JaniceError (*reset)(JaniceMediaIteratorType*);
+    JaniceError (*next)(JaniceMediaIterator*, JaniceImage*);
+    JaniceError (*seek)(JaniceMediaIterator*, uint32_t);
+    JaniceError (* get)(JaniceMediaIterator*, JaniceImage*, uint32_t);
+    JaniceError (*tell)(JaniceMediaIterator*, uint32_t*);
+    JaniceError (*reset)(JaniceMediaIterator*);
 
-    JaniceError (*physical_frame)(JaniceMediaIteratorType*, uint32_t, uint32_t *);
+    JaniceError (*physical_frame)(JaniceMediaIterator*, uint32_t, uint32_t *);
 
     JaniceError (*free_image)(JaniceImage*);
-    JaniceError (*free)(JaniceMediaIteratorType**);
+    JaniceError (*free)(JaniceMediaIterator*);
 
     JaniceMediaIteratorState _internal;
 };
-
-typedef struct JaniceMediaIteratorType* JaniceMediaIterator;
 
 struct JaniceMediaIterators
 {
