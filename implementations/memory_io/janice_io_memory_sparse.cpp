@@ -97,6 +97,7 @@ JaniceError free_image(JaniceImage* image)
 {
     if (image && image->owner) {
         free(image->data);
+        image->data = nullptr;
     }
 
     return JANICE_SUCCESS;
