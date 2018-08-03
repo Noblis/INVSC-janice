@@ -113,12 +113,16 @@ int main(int argc, char* argv[])
         }
 
         JaniceErrors batch_errors;
+        // taa: Either the caller or the callee has to be guaranteed to do this, because
+        // you can't safely call janice_clear_errors on an uninitialized JaniceErrors struct.
+        memset(&batch_errors, '\0', sizeof(batch_errors));
 
         auto start = std::chrono::high_resolution_clock::now();
         JaniceError ret = janice_gallery_insert_batch(gallery, &tmpls, &ids, &context, &batch_errors);
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         if (ret == JANICE_BATCH_FINISHED_WITH_ERRORS) {
+            bool doExit = false;
             for (size_t err_idx = 0; err_idx < batch_errors.length; ++err_idx) {
                 JaniceError e = batch_errors.errors[err_idx];
                 if (e != JANICE_SUCCESS) {
@@ -128,11 +132,17 @@ int main(int argc, char* argv[])
                               << "    Location: " << __FILE__ << ":" << __LINE__ << std::endl;
 
                     if (ignored_errors.find(e) != ignored_errors.end()) {
-                        exit(EXIT_FAILURE);
+                        // This will report all of the batch errors before exiting.
+                        doExit = true;
                     }
                 }
             }
+            if (doExit) {
+                exit(EXIT_FAILURE);
+            }
         }
+        // taa: Don't leak the memory that might've been allocated here.
+        janice_clear_errors(&batch_errors);
 
         for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
             fprintf(output, "%f,%llu,%d,%f\n", reserve_time, ids.ids[tmpl_idx], batch_idx, elapsed);

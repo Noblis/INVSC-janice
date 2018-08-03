@@ -193,12 +193,14 @@ int main(int argc, char* argv[])
 
         JaniceTemplates tmpls;
         JaniceErrors batch_errors;
+        memset(&batch_errors, '\0', sizeof(batch_errors));
 
         auto start = std::chrono::high_resolution_clock::now();
         JaniceError ret = janice_enroll_from_detections_batch(&media_group, &detections_group, &context, &tmpls, &batch_errors);
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         if (ret == JANICE_BATCH_FINISHED_WITH_ERRORS) {
+            bool doExit = false;
             for (size_t err_idx = 0; err_idx < batch_errors.length; ++err_idx) {
                 JaniceError e = batch_errors.errors[err_idx];
                 if (e != JANICE_SUCCESS) {
@@ -208,11 +210,16 @@ int main(int argc, char* argv[])
                               << "    Location: " << __FILE__ << ":" << __LINE__ << std::endl;
 
                     if (ignored_errors.find(e) != ignored_errors.end()) {
-                        exit(EXIT_FAILURE);
+                        doExit = true;
                     }
                 }
             }
+            if (doExit) {
+                exit(EXIT_FAILURE);
+            }
         }
+
+        janice_clear_errors(&batch_errors);
 
         // Assert we got the correct number of templates (1 tmpl per detection subgroup)
         if (tmpls.length != current_batch_size) {
