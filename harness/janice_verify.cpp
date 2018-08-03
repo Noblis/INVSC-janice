@@ -136,12 +136,14 @@ int main(int argc, char* argv[])
 
         JaniceSimilarities scores;
         JaniceErrors batch_errors;
+        memset(&batch_errors, '\0', sizeof(batch_errors));
 
         auto start = std::chrono::high_resolution_clock::now();
         JaniceError ret = janice_verify_batch(&references, &verifications, &context, &scores, &batch_errors);
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         if (ret == JANICE_BATCH_FINISHED_WITH_ERRORS) {
+            bool doExit = false;
             for (size_t err_idx = 0; err_idx < batch_errors.length; ++err_idx) {
                 JaniceError e = batch_errors.errors[err_idx];
                 if (e != JANICE_SUCCESS) {
@@ -151,12 +153,17 @@ int main(int argc, char* argv[])
                               << "    Location: " << __FILE__ << ":" << __LINE__ << std::endl;
 
                     if (ignored_errors.find(e) != ignored_errors.end()) {
-                        exit(EXIT_FAILURE);
+                        doExit = true;
                     }
                 }
             }
+            if (doExit) {
+                exit(EXIT_FAILURE);
+            }
         }
         
+        janice_clear_errors(&batch_errors);
+
         for (int tmpl_idx = 0; tmpl_idx < current_batch_size; ++tmpl_idx) {
             fprintf(results, "%llu,%llu,0,%f,%d,%f\n", matches[pos + tmpl_idx].first, matches[pos + tmpl_idx].second, scores.similarities[tmpl_idx], batch_idx, elapsed);
         }
