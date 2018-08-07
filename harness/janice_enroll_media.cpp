@@ -158,7 +158,7 @@ int main(int argc, char* argv[])
         double elapsed = 10e-3 * std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start).count();
 
         if (ret == JANICE_BATCH_FINISHED_WITH_ERRORS) {
-            doExit = false;
+            bool doExit = false;
             for (size_t err_idx = 0; err_idx < batch_errors.length; ++err_idx) {
                 JaniceError e = batch_errors.errors[err_idx];
                 if (e != JANICE_SUCCESS) {
