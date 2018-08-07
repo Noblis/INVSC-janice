@@ -319,7 +319,7 @@ JANICE_EXPORT JaniceError janice_template_get_attribute(const JaniceTemplate tmp
                                                         char** value);
 
 JANICE_EXPORT JaniceError janice_template_get_feature_vector(const JaniceTemplate tmpl,
-                                                             const JaniceFeatureVectorType feature_vector_type,
+                                                             JaniceFeatureVectorType* feature_vector_type,
                                                              void** feature_vector,
                                                              size_t* length);
 
