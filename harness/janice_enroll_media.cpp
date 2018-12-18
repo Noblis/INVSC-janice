@@ -4,6 +4,7 @@
 
 #include <arg_parser/args.hpp>
 #include <fast-cpp-csv-parser/csv.h>
+#include <boost/filesystem.hpp>
 
 #include <iostream>
 #include <cstring>
@@ -107,7 +108,9 @@ int main(int argc, char* argv[])
         std::string filename;
         int sighting_id;
         while (metadata.read_row(filename, sighting_id)) {
-            sighting_id_filename_lut[sighting_id].push_back(args::get(media_path) + "/" + filename);
+            boost::filesystem::path media_file(args::get(media_path));
+            media_file /= filename;
+            sighting_id_filename_lut[sighting_id].push_back(media_file.string());
         }
     }
 
@@ -196,8 +199,9 @@ int main(int argc, char* argv[])
                 }
 
                 // Write the template to disk
-                std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(template_id++) + ".tmpl";
-                JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()), ignored_errors);
+                boost::filesystem::path tmpl_file(args::get(dst_path));
+                tmpl_file /= (std::to_string(template_id++) + ".tmpl");
+                JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.string().c_str()), ignored_errors);
     
                 JaniceTrack track;
                 JANICE_ASSERT(janice_detection_get_track(detections.detections[tmpl_idx], &track), ignored_errors);
