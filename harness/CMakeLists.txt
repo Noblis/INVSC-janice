@@ -15,7 +15,7 @@ if (${JANICE_WITH_EVAL_HARNESS} AND (JANICE_IO_IMPLEMENTATION) AND (JANICE_IMPLE
       janice_enroll_detections.cpp
       janice_search.cpp
       #janice_cluster_templates.cpp
-      #janice_cluster_media.cpp
+      janice_cluster_media.cpp
       janice_verify.cpp
       )
 
