@@ -1,5 +1,7 @@
-project(janice)
+project(janice LANGUAGES CXX)
 cmake_minimum_required(VERSION 3.0)
+
+set(CMAKE_CXX_STANDARD 11)
 
 # Extract version info from header file
 macro(janice_get_version VAR)
@@ -43,5 +45,10 @@ add_subdirectory(implementations)
 # Optionally build the test harness
 if(NOT JANICE_SKIP_HARNESS)
   add_subdirectory(harness)
+endif()
+
+# Optionally build the tests
+if(NOT JANICE_SKIP_TESTS)
+  add_subdirectory(test)
 endif()
 

@@ -15,6 +15,7 @@ set_target_properties(janice_io_opencv PROPERTIES
                                        DEFINE_SYMBOL JANICE_LIBRARY
                                        VERSION ${JANICE_VERSION_MAJOR}.${JANICE_VERSION_MINOR}.${JANICE_VERSION_PATCH}
                                        SOVERSION ${JANICE_VERSION_MAJOR}.${JANICE_VERSION_MINOR})
+target_include_directories(janice_io_opencv PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(janice_io_opencv ${OpenCV_LIBS})
 
 install(TARGETS janice_io_opencv RUNTIME DESTINATION bin
