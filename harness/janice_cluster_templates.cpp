@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     context.hint            = args::get(hint);
 
     // Parse the metadata file
-    io::CSVReader<2> metadata(input_file);
+    io::CSVReader<2> metadata(args::get(template_file));
     metadata.read_header(io::ignore_extra_column, "FILENAME","TEMPLATE_ID");
 
     std::vector<std::string> filenames;
@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
     std::string filename;
     size_t template_id;
     while (metadata.read_row(filename, template_id)) {
-        filenames.push_back(filename);
+        filenames.push_back(args::get(template_path) + filename);
         template_ids.push_back(template_id);
     }
 
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
     JaniceClusterIds cluster_ids;
     JaniceClusterConfidences cluster_confidences;
 
-    JANICE_ASSERT(janice_cluster_templates(tmpls, context, &cluster_ids, &cluster_confidences), ignored_errors);
+    JANICE_ASSERT(janice_cluster_templates(&tmpls, &context, &cluster_ids, &cluster_confidences), ignored_errors);
 
     if (cluster_ids.length != tmpls.length) {
         std::cerr << "Output cluster assignments did not match input templates length!" << std::endl;
@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    std::ofstream fout(output_file.c_str());
+    std::ofstream fout(args::get(output_file).c_str());
     if (!fout) {
         std::cerr << "Failed to open output file: "<< output_file << std::endl;
         return -1;
