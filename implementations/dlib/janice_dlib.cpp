@@ -409,6 +409,8 @@ JaniceError janice_detect_with_callback(JaniceMediaIterator* it, const JaniceCon
                 }
             }
         }
+
+        janice_clear_detections(&detections);
     }
     CATCH_AND_LOG(JANICE_UNKNOWN_ERROR, "Detection with callback failed");
 
@@ -483,9 +485,9 @@ JaniceError janice_detect_batch_with_callback(const JaniceMediaIterators* its, c
                         return callback_code;
                     }
                 }
-
-                janice_clear_detections(&detections);
             }
+
+            janice_clear_detections(&detections);
         }
     }
     CATCH_AND_LOG(JANICE_UNKNOWN_ERROR, "Batch detection failed");
@@ -960,6 +962,9 @@ JaniceError janice_enroll_from_media_batch_with_callback(const JaniceMediaIterat
                     return JANICE_BATCH_ABORTED_EARLY;
                 }
             }
+
+            janice_clear_detections(&detections);
+            janice_clear_templates(&tmpls);
         }
     }
     CATCH_AND_LOG(JANICE_UNKNOWN_ERROR, "Enroll from media batch with callback");
@@ -1078,9 +1083,8 @@ JaniceError janice_enroll_from_detections_batch(const JaniceMediaIteratorsGroup*
 
                     errors->errors[i] = err;
                     if (context->batch_policy == JaniceAbortEarly) {
-                        return_code = JANICE_BATCH_ABORTED_EARLY;
                         errors->length = i;
-                        return;
+                        return JANICE_BATCH_ABORTED_EARLY;
                     } else {
                         return_code = JANICE_BATCH_FINISHED_WITH_ERRORS;
                         break;
@@ -1095,9 +1099,8 @@ JaniceError janice_enroll_from_detections_batch(const JaniceMediaIteratorsGroup*
 
                 errors->errors[i] = JANICE_INVALID_MEDIA;
                 if (context->batch_policy == JaniceAbortEarly) {
-                    return_code = JANICE_BATCH_ABORTED_EARLY;
                     errors->length = i;
-                    return;
+                    return JANICE_BATCH_ABORTED_EARLY;
                 } else {
                     return_code = JANICE_BATCH_FINISHED_WITH_ERRORS;
                     break;
@@ -1105,7 +1108,7 @@ JaniceError janice_enroll_from_detections_batch(const JaniceMediaIteratorsGroup*
             }
 
             dlib::matrix<dlib::rgb_pixel> mat(img.rows, img.cols);
-            {
+            try {
                 const int row_step = img.cols * img.channels;
                 const int col_step = img.channels;
 
@@ -1118,6 +1121,17 @@ JaniceError janice_enroll_from_detections_batch(const JaniceMediaIteratorsGroup*
                         mat(r, c).blue  = img.data[r * row_step + c * col_step + 0];
                     }
                 }
+            } catch (const std::exception& e) {
+                std::cerr << "Failed to convert JanICE image to DLIB matrix. Error: [" << e.what() << "]" << std::endl;
+
+                errors->errors[i] = JANICE_INVALID_MEDIA;
+                if (context->batch_policy == JaniceAbortEarly) {
+                    errors->length = i;
+                    return JANICE_BATCH_ABORTED_EARLY;
+                } else {
+                    return_code = JANICE_BATCH_FINISHED_WITH_ERRORS;
+                    break;
+                }
             }
 
             JaniceTrack track = detections_group->group[i].detections[j]->track;
@@ -1125,30 +1139,53 @@ JaniceError janice_enroll_from_detections_batch(const JaniceMediaIteratorsGroup*
 
             dlib::rectangle drect(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
 
-            dlib::full_object_detection shape = _globals->sp(mat, drect);
-            dlib::matrix<dlib::rgb_pixel> face_chip;
-            dlib::extract_image_chip(mat, dlib::get_face_chip_details(shape, 150, 0.25), face_chip);
-            faces.push_back(std::move(face_chip));
+            try {
+                dlib::full_object_detection shape = _globals->sp(mat, drect);
+                dlib::matrix<dlib::rgb_pixel> face_chip;
+                dlib::extract_image_chip(mat, dlib::get_face_chip_details(shape, 150, 0.25), face_chip);
+                faces.push_back(std::move(face_chip));
+            } catch (const std::exception& e) {
+                std::cerr << "Failed to extract and align face crop. Error: [" << e.what() << "]" << std::endl;
+
+                errors->errors[i] = JANICE_UNKNOWN_ERROR;
+                if (context->batch_policy == JaniceAbortEarly) {
+                    errors->length = i;
+                    return JANICE_BATCH_ABORTED_EARLY;
+                } else {
+                    return_code = JANICE_BATCH_FINISHED_WITH_ERRORS;
+                    break;
+                }
+            }
 
             //dlib::point left_eye_left_corner = shape.part(0);
             //dlib::point left_eye_right_corner = shape.part(1);
         }
     }
 
-    std::vector<dlib::matrix<float,0,1>> feature_vectors = _globals->fe(faces);
+    try {
+        std::vector<dlib::matrix<float,0,1>> feature_vectors = _globals->fe(faces);
 
-    tmpls->length = its_group->length;
-    tmpls->tmpls = new JaniceTemplate[tmpls->length];
+        tmpls->length = its_group->length;
+        tmpls->tmpls = new JaniceTemplate[tmpls->length];
 
-    int idx = 0;
-    for (size_t i = 0; its_group->length; ++i) {
-        dlib::matrix<float, 0, 1> mean = feature_vectors[idx++];
-        for (size_t j = 1; j < its_group->length; ++j) {
-            mean += feature_vectors[idx++];
+        int idx = 0;
+        for (size_t i = 0; its_group->length; ++i) {
+            dlib::matrix<float, 0, 1> mean = feature_vectors[idx++];
+            for (size_t j = 1; j < its_group->group[i].length; ++j) {
+                mean += feature_vectors[idx++];
+            }
+
+            tmpls->tmpls[i] = new JaniceTemplateType();
+            tmpls->tmpls[i]->fv = (mean / its_group->group[i].length);
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Failed to enroll all faces. Error: [" << e.what() << "]" << std::endl;
+
+        for (size_t i = 0; i < errors->length; ++i) {
+            errors->errors[i] = JANICE_UNKNOWN_ERROR;
         }
 
-        tmpls->tmpls[i] = new JaniceTemplateType();
-        tmpls->tmpls[i]->fv = (mean / feature_vectors.size());
+        return_code = context->batch_policy == JaniceAbortEarly ? JANICE_BATCH_ABORTED_EARLY : JANICE_BATCH_FINISHED_WITH_ERRORS;
     }
 
     return return_code;
@@ -1156,7 +1193,148 @@ JaniceError janice_enroll_from_detections_batch(const JaniceMediaIteratorsGroup*
 
 JaniceError janice_enroll_from_detections_batch_with_callback(const JaniceMediaIteratorsGroup* its_group, const JaniceDetectionsGroup* detections_group, const JaniceContext* context, JaniceEnrollDetectionsCallback callback, void* user_data, JaniceErrors* errors)
 {
-    return JANICE_NOT_IMPLEMENTED;
+    assert(_globals);
+
+    assert(its_group != nullptr);
+    assert(detections_group != nullptr);
+    assert(context != nullptr);
+    assert(callback != nullptr);
+    assert(errors != nullptr);
+
+    JaniceError return_code = JANICE_SUCCESS;
+
+    if (its_group->length == 0 || detections_group->length == 0) {
+        std::cerr << "No media given to janice_enroll_from_detections_batch" << std::endl;
+        return JANICE_SUCCESS;
+    }
+
+    errors->length = its_group->length;
+    errors->errors = new JaniceError[errors->length];
+
+    std::vector<dlib::matrix<dlib::rgb_pixel>> faces;
+    for (size_t i = 0; i < its_group->length; ++i) {
+        for (size_t j = 0; j < its_group->group[i].length; ++j) {
+            JaniceImage img;
+            { // Get the next image from the iterator
+                JaniceMediaIterator it = its_group->group[i].media[j];
+                JaniceError err = it.next(&it, &img);
+                if (err != JANICE_SUCCESS) {
+                    std::cerr << "janice_detect => Failed to load image. Error in media: [" << i << "][" << j << "]. Error: [" << janice_error_to_string(err) << "]" << std::endl;
+
+                    errors->errors[i] = err;
+                    if (context->batch_policy == JaniceAbortEarly) {
+                        errors->length = i;
+                        return JANICE_BATCH_ABORTED_EARLY;
+                    } else {
+                        return_code = JANICE_BATCH_FINISHED_WITH_ERRORS;
+                        break;
+                    }
+                }
+
+                it.reset(&it);
+            }
+
+            if (img.channels != 3) {
+                std::cerr << "janice_detect => Invalid image. Requires 3 channel BGR (opencv-style) images. Got: [" << img.channels << "] channel image" << std::endl;
+
+                errors->errors[i] = JANICE_INVALID_MEDIA;
+                if (context->batch_policy == JaniceAbortEarly) {
+                    errors->length = i;
+                    return JANICE_BATCH_ABORTED_EARLY;
+                } else {
+                    return_code = JANICE_BATCH_FINISHED_WITH_ERRORS;
+                    break;
+                }
+            }
+
+            dlib::matrix<dlib::rgb_pixel> mat(img.rows, img.cols);
+            try {
+                const int row_step = img.cols * img.channels;
+                const int col_step = img.channels;
+
+                // Copy the data from img -> mat. img is in BGR order so we need to flip
+                // the pixels
+                for (size_t r = 0; r < img.rows; ++r) {
+                    for (size_t c = 0; c < img.cols; ++c) {
+                        mat(r, c).red   = img.data[r * row_step + c * col_step + 2];
+                        mat(r, c).green = img.data[r * row_step + c * col_step + 1];
+                        mat(r, c).blue  = img.data[r * row_step + c * col_step + 0];
+                    }
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "Failed to convert JanICE image to DLIB matrix. Error: [" << e.what() << "]" << std::endl;
+
+                errors->errors[i] = JANICE_INVALID_MEDIA;
+                if (context->batch_policy == JaniceAbortEarly) {
+                    errors->length = i;
+                    return JANICE_BATCH_ABORTED_EARLY;
+                } else {
+                    return_code = JANICE_BATCH_FINISHED_WITH_ERRORS;
+                    break;
+                }
+            }
+
+            JaniceTrack track = detections_group->group[i].detections[j]->track;
+            JaniceRect  rect  = track.rects[0];
+
+            dlib::rectangle drect(rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
+
+            try {
+                dlib::full_object_detection shape = _globals->sp(mat, drect);
+                dlib::matrix<dlib::rgb_pixel> face_chip;
+                dlib::extract_image_chip(mat, dlib::get_face_chip_details(shape, 150, 0.25), face_chip);
+                faces.push_back(std::move(face_chip));
+            } catch (const std::exception& e) {
+                std::cerr << "Failed to extract and align face crop. Error: [" << e.what() << "]" << std::endl;
+
+                errors->errors[i] = JANICE_UNKNOWN_ERROR;
+                if (context->batch_policy == JaniceAbortEarly) {
+                    errors->length = i;
+                    return JANICE_BATCH_ABORTED_EARLY;
+                } else {
+                    return_code = JANICE_BATCH_FINISHED_WITH_ERRORS;
+                    break;
+                }
+            }
+
+            //dlib::point left_eye_left_corner = shape.part(0);
+            //dlib::point left_eye_right_corner = shape.part(1);
+        }
+    }
+
+    try {
+        std::vector<dlib::matrix<float,0,1>> feature_vectors = _globals->fe(faces);
+
+        int idx = 0;
+        for (size_t i = 0; its_group->length; ++i) {
+            dlib::matrix<float, 0, 1> mean = feature_vectors[idx++];
+            for (size_t j = 1; j < its_group->group[i].length; ++j) {
+                mean += feature_vectors[idx++];
+            }
+
+            JaniceTemplate tmpl = new JaniceTemplateType();
+            tmpl->fv = (mean / its_group->group[i].length);
+
+            JaniceError err = callback(&tmpl, i, user_data);
+
+            delete tmpl;
+
+            if (err == JANICE_CALLBACK_EXIT_IMMEDIATELY) {
+                errors->length = i;
+                return err;
+            }
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Failed to enroll all faces. Error: [" << e.what() << "]" << std::endl;
+
+        for (size_t i = 0; i < errors->length; ++i) {
+            errors->errors[i] = JANICE_UNKNOWN_ERROR;
+        }
+
+        return_code = context->batch_policy == JaniceAbortEarly ? JANICE_BATCH_ABORTED_EARLY : JANICE_BATCH_FINISHED_WITH_ERRORS;
+    }
+
+    return return_code;
 }
 
 JaniceError janice_template_is_fte(const JaniceTemplate tmpl, int* fte)
