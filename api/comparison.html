@@ -4,23 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Comparison / Search &#8212; JanICE 4.0.1 documentation</title>
+    <title>Comparison / Search &#8212; JanICE 7.0.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '4.0.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Clustering" href="clustering.html" />
@@ -31,13 +24,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="comparison-search">
@@ -51,26 +45,16 @@ single number called a <a class="reference internal" href="#similarity-score"><s
 </div>
 <div class="section" id="structs">
 <h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="janicesimilarity">
-<span id="id1"></span><h3>JaniceSimilarity<a class="headerlink" href="#janicesimilarity" title="Permalink to this headline">¶</a></h3>
-<p>A number representing the similarity between two templates. See <a class="reference internal" href="#similarity-score"><span class="std std-ref">Similarity Score</span></a> for more information.</p>
-<div class="section" id="signature">
-<h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">double</span> <span class="n">JaniceSimilarity</span>
-</pre></div>
-</div>
-</div>
-</div>
 <div class="section" id="janicesimilarities">
-<span id="id2"></span><h3>JaniceSimilarities<a class="headerlink" href="#janicesimilarities" title="Permalink to this headline">¶</a></h3>
-<p>A structure representing a list of <a class="reference internal" href="#janicesimilarity"><span class="std std-ref">JaniceSimilarity</span></a> objects.</p>
+<span id="id1"></span><h3>JaniceSimilarities<a class="headerlink" href="#janicesimilarities" title="Permalink to this headline">¶</a></h3>
+<p>A structure representing a list of similarities.</p>
 <div class="section" id="fields">
 <h4>Fields<a class="headerlink" href="#fields" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="17%" />
-<col width="32%" />
-<col width="51%" />
+<col width="19%" />
+<col width="14%" />
+<col width="67%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -80,27 +64,27 @@ single number called a <a class="reference internal" href="#similarity-score"><s
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>similarities</td>
-<td><a class="reference internal" href="#janicesimilarity"><span class="std std-ref">JaniceSimilarity</span></a>*</td>
+<td>double*</td>
 <td>An array of similarity objects.</td>
 </tr>
 <tr class="row-odd"><td>length</td>
 <td>size_t</td>
-<td>The number of elements in <em>similarities</em>.</td>
+<td>The number of elements in <code class="code docutils literal notranslate"><span class="pre">similarities</span></code>.</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="janicesimilaritiesgroup">
-<span id="id3"></span><h3>JaniceSimilaritiesGroup<a class="headerlink" href="#janicesimilaritiesgroup" title="Permalink to this headline">¶</a></h3>
+<span id="id2"></span><h3>JaniceSimilaritiesGroup<a class="headerlink" href="#janicesimilaritiesgroup" title="Permalink to this headline">¶</a></h3>
 <p>A structure representing a list of <a class="reference internal" href="#janicesimilarities"><span class="std std-ref">JaniceSimilarities</span></a> objects.</p>
-<div class="section" id="id4">
-<h4>Fields<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id3">
+<h4>Fields<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="11%" />
-<col width="40%" />
-<col width="49%" />
+<col width="10%" />
+<col width="37%" />
+<col width="53%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -115,7 +99,7 @@ single number called a <a class="reference internal" href="#similarity-score"><s
 </tr>
 <tr class="row-odd"><td>length</td>
 <td>size_t</td>
-<td>The number of elements in <em>group</em>.</td>
+<td>The number of elements in <code class="code docutils literal notranslate"><span class="pre">group</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -125,14 +109,14 @@ single number called a <a class="reference internal" href="#similarity-score"><s
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="janice-verify">
-<span id="id5"></span><h3>janice_verify<a class="headerlink" href="#janice-verify" title="Permalink to this headline">¶</a></h3>
+<span id="id4"></span><h3>janice_verify<a class="headerlink" href="#janice-verify" title="Permalink to this headline">¶</a></h3>
 <p>Compare two templates with the difference expressed as a similarity
 score.</p>
-<div class="section" id="id6">
-<h4>Signature<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_verify</span><span class="p">(</span><span class="n">JaniceConstTemplate</span> <span class="n">reference</span><span class="p">,</span>
-                                        <span class="n">JaniceConstTemplate</span> <span class="n">verification</span><span class="p">,</span>
-                                        <span class="n">JaniceSimilarity</span><span class="o">*</span> <span class="n">similarity</span><span class="p">);</span>
+<div class="section" id="signature">
+<h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_verify</span><span class="p">(</span><span class="n">const</span> <span class="n">JaniceConstTemplate</span> <span class="n">reference</span><span class="p">,</span>
+                                        <span class="n">const</span> <span class="n">JaniceConstTemplate</span> <span class="n">verification</span><span class="p">,</span>
+                                        <span class="n">double</span><span class="o">*</span> <span class="n">similarity</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -141,7 +125,7 @@ score.</p>
 <p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
 <div class="section" id="similarity-score">
-<span id="id7"></span><h4>Similarity Score<a class="headerlink" href="#similarity-score" title="Permalink to this headline">¶</a></h4>
+<span id="id5"></span><h4>Similarity Score<a class="headerlink" href="#similarity-score" title="Permalink to this headline">¶</a></h4>
 <p>This API expects that the comparison of two templates results in a
 single value that quantifies the similarity between them. A similarity
 score is constrained by the following requirements:</p>
@@ -154,9 +138,9 @@ score is constrained by the following requirements:</p>
 <h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="10%" />
-<col width="20%" />
-<col width="70%" />
+<col width="6%" />
+<col width="12%" />
+<col width="82%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -166,23 +150,23 @@ score is constrained by the following requirements:</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>reference</td>
-<td><a class="reference internal" href="enrollment.html#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a></td>
-<td>A reference template. This template was created with the <em>Janice11Reference</em> role.</td>
+<td>const <a class="reference internal" href="enrollment.html#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a></td>
+<td>A reference template. This template was created with the <code class="code docutils literal notranslate"><span class="pre">Janice11Reference</span></code> role.</td>
 </tr>
 <tr class="row-odd"><td>verification</td>
-<td><a class="reference internal" href="enrollment.html#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a></td>
-<td>A verification template. This this template was created with the <em>Janice11Verification</em> role.</td>
+<td>const <a class="reference internal" href="enrollment.html#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a></td>
+<td>A verification template. This this template was created with the <code class="code docutils literal notranslate"><span class="pre">Janice11Verification</span></code> role.</td>
 </tr>
 <tr class="row-even"><td>similarity</td>
-<td><a class="reference internal" href="#janicesimilarity"><span class="std std-ref">JaniceSimilarity</span></a>*</td>
-<td>A similarity score. See <a class="reference internal" href="#similarity-score"><span class="std std-ref">Similarity Score</span></a>.</td>
+<td>double*</td>
+<td>A similarity score. See <a class="reference internal" href="#similarity-score"><span class="std std-ref">Similarity Score</span></a>. Memory for this object should be managed by the user. The implementation should assume this points to a valid object that it can overwrite.</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="example">
 <h4>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplate reference; // Where reference is a valid template object created
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>JaniceTemplate reference; // Where reference is a valid template object created
                           // previously
 JaniceTemplate verification; // Where verification is a valid template object
                              // created previously
@@ -194,30 +178,37 @@ if (janice_verify(reference, verification, &amp;similarity) != JANICE_SUCCESS)
 </div>
 </div>
 <div class="section" id="janice-verify-batch">
-<span id="id8"></span><h3>janice_verify_batch<a class="headerlink" href="#janice-verify-batch" title="Permalink to this headline">¶</a></h3>
+<span id="id6"></span><h3>janice_verify_batch<a class="headerlink" href="#janice-verify-batch" title="Permalink to this headline">¶</a></h3>
 <p>Compute a batch of reference templates with a batch of verification templates.
-The <em>ith</em> in the reference batch is compared with the <em>ith</em> template in the
+The <code class="code docutils literal notranslate"><span class="pre">ith</span></code> in the reference batch is compared with the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> template in the
 verification batch. Batch processing can often be more efficient than serial
-processing, particularly if a GPU or co-processor is being utilized.</p>
-<div class="section" id="id9">
-<h4>Signature<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_verify_batch</span><span class="p">(</span><span class="n">JaniceTemplates</span> <span class="n">references</span><span class="p">,</span>
-                                              <span class="n">JaniceTemplates</span> <span class="n">verifications</span><span class="p">,</span>
-                                              <span class="n">JaniceSimilarities</span><span class="o">*</span> <span class="n">similarities</span><span class="p">);</span>
+processing, particularly if a GPU or co-processor is being utilized. This function reports
+per-comparison error codes. Depending on the batch policy given, it will return one of
+<code class="code docutils literal notranslate"><span class="pre">JANICE_SUCCESS</span></code> if no errors occured, or <code class="code docutils literal notranslate"><span class="pre">JANICE_BATCH_ABORTED_EARLY</span></code> or
+<code class="code docutils literal notranslate"><span class="pre">JANICE_BATCH_FINISHED_WITH_ERRORS</span></code> if errors occured within the batch. In either
+case, any computation marked <code class="code docutils literal notranslate"><span class="pre">JANICE_SUCCESS</span></code> in the output should be considered
+valid output.</p>
+<div class="section" id="id7">
+<h4>Signature<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_verify_batch</span><span class="p">(</span><span class="n">const</span> <span class="n">JaniceTemplates</span><span class="o">*</span> <span class="n">references</span><span class="p">,</span>
+                                              <span class="n">const</span> <span class="n">JaniceTemplates</span><span class="o">*</span> <span class="n">verifications</span><span class="p">,</span>
+                                              <span class="n">const</span> <span class="n">JaniceContext</span><span class="o">*</span> <span class="n">context</span><span class="p">,</span>
+                                              <span class="n">JaniceSimilarities</span><span class="o">*</span> <span class="n">similarities</span><span class="p">,</span>
+                                              <span class="n">JaniceErrors</span><span class="o">*</span> <span class="n">errors</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id10">
-<h4>Thread Safety<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id8">
+<h4>Thread Safety<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
 <p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id11">
-<h4>Parameters<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id9">
+<h4>Parameters<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="4%" />
-<col width="8%" />
-<col width="88%" />
+<col width="3%" />
+<col width="5%" />
+<col width="92%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -227,61 +218,69 @@ processing, particularly if a GPU or co-processor is being utilized.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>references</td>
-<td><a class="reference internal" href="enrollment.html#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a></td>
-<td>An array of reference templates. Each template was created with the <em>Janice11Reference</em> role.</td>
+<td>const <a class="reference internal" href="enrollment.html#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a>*</td>
+<td>An array of reference templates. Each template was created with the <code class="code docutils literal notranslate"><span class="pre">Janice11Reference</span></code> role.</td>
 </tr>
 <tr class="row-odd"><td>verifications</td>
-<td><a class="reference internal" href="enrollment.html#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a></td>
-<td>An array of verification templates. Each template was created with the <em>Janice11Verification</em> role. The number of elements in <em>verifications</em> must equal the number of elements in <em>references</em>.</td>
+<td>const <a class="reference internal" href="enrollment.html#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a>*</td>
+<td>An array of verification templates. Each template was created with the <code class="code docutils literal notranslate"><span class="pre">Janice11Verification</span></code> role. The number of elements in <code class="code docutils literal notranslate"><span class="pre">verifications</span></code> must equal the number of elements in <code class="code docutils literal notranslate"><span class="pre">references</span></code>.</td>
 </tr>
-<tr class="row-even"><td>similarities</td>
+<tr class="row-even"><td>context</td>
+<td>const <a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a>*</td>
+<td>A context object with relevant hyperparameters set. Memory for the object should be managed by the user. The implementation should assume this points to a valid object.</td>
+</tr>
+<tr class="row-odd"><td>similarities</td>
 <td><a class="reference internal" href="#janicesimilarities"><span class="std std-ref">JaniceSimilarities</span></a>*</td>
-<td>A struct to hold the output similarity scores. There must be the same number of similarity scores output as there are <em>references</em> and <em>verifications</em>. The implementor should allocate the internal members of this object during the call. The user is responsible for clearing the object by calling <a class="reference internal" href="#janice-clear-similarities"><span class="std std-ref">janice_clear_similarities</span></a>.</td>
+<td>A struct to hold the output similarity scores. There must be the same number of similarity scores output as there are <code class="code docutils literal notranslate"><span class="pre">references</span></code> and <code class="code docutils literal notranslate"><span class="pre">verifications</span></code>. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is responsible for clearing the object by calling <a class="reference internal" href="#janice-clear-similarities"><span class="std std-ref">janice_clear_similarities</span></a>.</td>
+</tr>
+<tr class="row-even"><td>errors</td>
+<td><a class="reference internal" href="errors.html#janiceerrors"><span class="std std-ref">JaniceErrors</span></a>*</td>
+<td>A struct to hold per-comparison error codes. There must be the same number of errors as there are <code class="code docutils literal notranslate"><span class="pre">references</span></code> and <code class="code docutils literal notranslate"><span class="pre">verifications</span></code> unless the call aborted early, in which case there can be less. The <code class="code docutils literal notranslate"><span class="pre">ith</span></code> error code should give the status of the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> comparison. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is responsible for clearing the object by calling <a class="reference internal" href="errors.html#janice-clear-errors"><span class="std std-ref">janice_clear_errors</span></a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="janice-search">
-<span id="id12"></span><h3>janice_search<a class="headerlink" href="#janice-search" title="Permalink to this headline">¶</a></h3>
+<span id="id10"></span><h3>janice_search<a class="headerlink" href="#janice-search" title="Permalink to this headline">¶</a></h3>
 <p>Compute 1-N search results between a query template object and a target gallery
 object. When running searches, users will often only want the top N results, or
 will only want results above a predefined threshold. This function must respect
-the <em>threshold</em> and <em>max_returns</em> fields of a <a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a> object to
+the <code class="code docutils literal notranslate"><span class="pre">threshold</span></code> and <code class="code docutils literal notranslate"><span class="pre">max_returns</span></code> fields of a <a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a> object to
 facilitate these use cases. Implementors must always respect the passed threshold
 (i.e. a score below the given threshold should never be returned). If users would
-not like to specify a threshold they can set the member to <strong>-DOUBLE_MAX</strong>. If
-the <em>max_returns</em> member is non-zero implementors should respect both the threshold
+not like to specify a threshold they can set the member to <code class="code docutils literal notranslate"><span class="pre">-DOUBLE_MAX</span></code>. If
+the <code class="code docutils literal notranslate"><span class="pre">max_returns</span></code> member is non-zero implementors should respect both the threshold
 and the number of desired returns (i.e. return the top K scores above the given
-threshold). Users who would like to see all valid returns should set <em>max_returns</em>
+threshold). Users who would like to see all valid returns should set <code class="code docutils literal notranslate"><span class="pre">max_returns</span></code>
 to 0.</p>
 <p>This function allocates two structures with the same number of elements.
-<em>similarities</em> is a <a class="reference internal" href="#janicesimilarities"><span class="std std-ref">JaniceSimilarities</span></a> object with an arra of
+<code class="code docutils literal notranslate"><span class="pre">similarities</span></code> is a <a class="reference internal" href="#janicesimilarities"><span class="std std-ref">JaniceSimilarities</span></a> object with an arra of
 <a class="reference internal" href="#similarity-score"><span class="std std-ref">Similarity Score</span></a>, sorted in descending order. The second is a
-<a class="reference internal" href="gallery.html#janicetemplateids"><span class="std std-ref">JaniceTemplateIds</span></a> where the <em>ith</em> template id gives the unique
-identifier for the gallery template that produces the <em>ith</em> similarity
+<a class="reference internal" href="gallery.html#janicetemplateids"><span class="std std-ref">JaniceTemplateIds</span></a> where the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> template id gives the unique
+identifier for the gallery template that produces the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> similarity
 score when compared with the probe.</p>
-<div class="section" id="id13">
-<h4>Signature<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_search</span><span class="p">(</span><span class="n">JaniceConstTemplate</span> <span class="n">probe</span><span class="p">,</span>
-                                        <span class="n">JaniceConstGallery</span> <span class="n">gallery</span><span class="p">,</span>
-                                        <span class="n">JaniceContext</span> <span class="n">context</span><span class="p">,</span>
+<div class="section" id="id11">
+<h4>Signature<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_search</span><span class="p">(</span><span class="n">const</span> <span class="n">JaniceTemplate</span><span class="o">*</span> <span class="n">probe</span><span class="p">,</span>
+                                        <span class="n">const</span> <span class="n">JaniceGallery</span><span class="o">*</span> <span class="n">gallery</span><span class="p">,</span>
+                                        <span class="n">const</span> <span class="n">JaniceContext</span><span class="o">*</span> <span class="n">context</span><span class="p">,</span>
                                         <span class="n">JaniceSimilarities</span><span class="o">*</span> <span class="n">similarities</span><span class="p">,</span>
                                         <span class="n">JaniceTemplateIds</span><span class="o">*</span> <span class="n">ids</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id14">
-<h4>Thread Safety<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id12">
+<h4>Thread Safety<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h4>
 <p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id15">
-<h4>Parameters<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id13">
+<h4>Parameters<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="4%" />
-<col width="8%" />
-<col width="89%" />
+<col width="3%" />
+<col width="7%" />
+<col width="90%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -291,31 +290,31 @@ score when compared with the probe.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>probe</td>
-<td><a class="reference internal" href="enrollment.html#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a></td>
-<td>A query template. The template was created with the <em>Janice1NProbe</em> role.</td>
+<td>const <a class="reference internal" href="enrollment.html#janicetemplate"><span class="std std-ref">JaniceTemplate</span></a>*</td>
+<td>A query template. The template was created with the <code class="code docutils literal notranslate"><span class="pre">Janice1NProbe</span></code> role.</td>
 </tr>
 <tr class="row-odd"><td>gallery</td>
-<td><a class="reference internal" href="gallery.html#janicegallery"><span class="std std-ref">JaniceGallery</span></a></td>
+<td>const <a class="reference internal" href="gallery.html#janicegallery"><span class="std std-ref">JaniceGallery</span></a>*</td>
 <td>A gallery object to search against.</td>
 </tr>
 <tr class="row-even"><td>context</td>
-<td><a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a></td>
-<td>A context object with relevant hyperparameters set.</td>
+<td>const <a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a>*</td>
+<td>A context object with relevant hyperparameters set. Memory for the object should be managed by the user. The implementation should assume this points to a valid object.</td>
 </tr>
 <tr class="row-odd"><td>similarities</td>
 <td><a class="reference internal" href="#janicesimilarities"><span class="std std-ref">JaniceSimilarities</span></a>*</td>
-<td>A structure to hold the output similarity scores, sorted in descending order. This structure should have the same number of elements as <em>ids</em>. The implementor should allocate the internal members of this object during the call. The user is responsible for clearing the object by calling <a class="reference internal" href="#janice-clear-similarities"><span class="std std-ref">janice_clear_similarities</span></a>.</td>
+<td>A structure to hold the output similarity scores, sorted in descending order. This structure should have the same number of elements as <code class="code docutils literal notranslate"><span class="pre">ids</span></code>. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is responsible for clearing the object by calling <a class="reference internal" href="#janice-clear-similarities"><span class="std std-ref">janice_clear_similarities</span></a>.</td>
 </tr>
 <tr class="row-even"><td>ids</td>
 <td><a class="reference internal" href="gallery.html#janicetemplateids"><span class="std std-ref">JaniceTemplateIds</span></a>*</td>
-<td>A structure to hold the gallery template ids associated with the <em>similarities</em>. This structure should have the same number of elements as <em>similarities</em>. The implementor should allocate the internal members of this object during the call. The user is responsible for clearing the object by calling <a class="reference internal" href="gallery.html#janice-clear-template-ids"><span class="std std-ref">janice_clear_template_ids</span></a>.</td>
+<td>A structure to hold the gallery template ids associated with the <code class="code docutils literal notranslate"><span class="pre">similarities</span></code>. This structure should have the same number of elements as <code class="code docutils literal notranslate"><span class="pre">similarities</span></code>. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is responsible for clearing the object by calling <a class="reference internal" href="gallery.html#janice-clear-template-ids"><span class="std std-ref">janice_clear_template_ids</span></a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="section" id="id16">
-<h4>Example<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span>JaniceTemplate probe;  // Where probe is a valid template object created
+<div class="section" id="id14">
+<h4>Example<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>JaniceTemplate probe;  // Where probe is a valid template object created
                        // previously
 JaniceGallery gallery; // Where gallery is a valid gallery object created
                        // previously
@@ -341,35 +340,40 @@ if (janice_search(probe, gallery, context, &amp;similarities, &amp;ids) != JANIC
 </div>
 </div>
 <div class="section" id="janice-search-batch">
-<span id="id17"></span><h3>janice_search_batch<a class="headerlink" href="#janice-search-batch" title="Permalink to this headline">¶</a></h3>
+<span id="id15"></span><h3>janice_search_batch<a class="headerlink" href="#janice-search-batch" title="Permalink to this headline">¶</a></h3>
 <p>Compute 1-N search results between a batch of probe templates and a single
-gallery. Given <em>N</em> probe templates in a batch, this function should return
+gallery. Given <code class="code docutils literal notranslate"><span class="pre">N</span></code> probe templates in a batch, this function should return
 a single <a class="reference internal" href="#janicesimilaritiesgroup"><span class="std std-ref">JaniceSimilaritiesGroup</span></a> with N sublists and a single
 <a class="reference internal" href="gallery.html#janicetemplateidsgroup"><span class="std std-ref">JaniceTemplateIdsGroup</span></a> with N sublists. Each sublist must conform to
 the behavior defined in <a class="reference internal" href="#janice-search"><span class="std std-ref">janice_search</span></a>. Batch processing can often be
 more efficient than serial processing, particularly if a GPU or co-processor
-is being utilized.</p>
-<div class="section" id="id18">
-<h4>Signature<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_search_batch</span><span class="p">(</span><span class="n">JaniceTemplates</span> <span class="n">probes</span><span class="p">,</span>
-                                              <span class="n">JaniceGallery</span> <span class="n">gallery</span><span class="p">,</span>
-                                              <span class="n">JaniceContext</span> <span class="n">context</span><span class="p">,</span>
+is being utilized. This function reports per-comparison error codes. Depending on the
+batch policy given, it will return one of <code class="code docutils literal notranslate"><span class="pre">JANICE_SUCCESS</span></code> if no errors occured,
+or <code class="code docutils literal notranslate"><span class="pre">JANICE_BATCH_ABORTED_EARLY</span></code> or <code class="code docutils literal notranslate"><span class="pre">JANICE_BATCH_FINISHED_WITH_ERRORS</span></code> if
+errors occured within the batch. In either case, any computation marked <code class="code docutils literal notranslate"><span class="pre">JANICE_SUCCESS</span></code>
+in the output should be considered valid output.</p>
+<div class="section" id="id16">
+<h4>Signature<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_search_batch</span><span class="p">(</span><span class="n">const</span> <span class="n">JaniceTemplates</span><span class="o">*</span> <span class="n">probes</span><span class="p">,</span>
+                                              <span class="n">const</span> <span class="n">JaniceGallery</span><span class="o">*</span> <span class="n">gallery</span><span class="p">,</span>
+                                              <span class="n">const</span> <span class="n">JaniceContext</span><span class="o">*</span> <span class="n">context</span><span class="p">,</span>
                                               <span class="n">JaniceSimilaritiesGroup</span><span class="o">*</span> <span class="n">similarities</span><span class="p">,</span>
-                                              <span class="n">JaniceTemplateIdsGroup</span><span class="o">*</span> <span class="n">ids</span><span class="p">);</span>
+                                              <span class="n">JaniceTemplateIdsGroup</span><span class="o">*</span> <span class="n">ids</span><span class="p">,</span>
+                                              <span class="n">JaniceErrors</span><span class="o">*</span> <span class="n">errors</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id19">
-<h4>Thread Safety<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id17">
+<h4>Thread Safety<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h4>
 <p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id20">
-<h4>Parameters<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id18">
+<h4>Parameters<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="3%" />
-<col width="8%" />
-<col width="88%" />
+<col width="6%" />
+<col width="91%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -379,44 +383,48 @@ is being utilized.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>probes</td>
-<td><a class="reference internal" href="enrollment.html#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a></td>
-<td>An array of probe templates to search with. Each template was created with the <em>Janice1NProbe</em> role.</td>
+<td>const <a class="reference internal" href="enrollment.html#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a>*</td>
+<td>An array of probe templates to search with. Each template was created with the <code class="code docutils literal notranslate"><span class="pre">Janice1NProbe</span></code> role.</td>
 </tr>
 <tr class="row-odd"><td>gallery</td>
-<td><a class="reference internal" href="gallery.html#janicegallery"><span class="std std-ref">JaniceGallery</span></a></td>
+<td>const <a class="reference internal" href="gallery.html#janicegallery"><span class="std std-ref">JaniceGallery</span></a>*</td>
 <td>The gallery to search against.</td>
 </tr>
 <tr class="row-even"><td>context</td>
-<td><a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a></td>
-<td>A context object with relevant hyperparameters set.</td>
+<td>const <a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a>*</td>
+<td>A context object with relevant hyperparameters set. Memory for the object should be managed by the user. The implementation should assume this points to a valid object.</td>
 </tr>
 <tr class="row-odd"><td>similarities</td>
 <td><a class="reference internal" href="#janicesimilaritiesgroup"><span class="std std-ref">JaniceSimilaritiesGroup</span></a>*</td>
-<td>A structure to hold the output similarities. Given <em>N</em> probes, there should be <em>N</em> sublists in the output, where the <em>ith</em> sublist gives the similarity scores of the <em>ith</em> probe. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling <a class="reference internal" href="#janice-clear-similarities-group"><span class="std std-ref">janice_clear_similarities_group</span></a>.</td>
+<td>A structure to hold the output similarities. Given <code class="code docutils literal notranslate"><span class="pre">N</span></code> probes, there should be <code class="code docutils literal notranslate"><span class="pre">N</span></code> sublists in the output, where the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist gives the similarity scores of the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> probe. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is required to clear the struct by calling <a class="reference internal" href="#janice-clear-similarities-group"><span class="std std-ref">janice_clear_similarities_group</span></a>.</td>
 </tr>
 <tr class="row-even"><td>ids</td>
 <td><a class="reference internal" href="gallery.html#janicetemplateidsgroup"><span class="std std-ref">JaniceTemplateIdsGroup</span></a>*</td>
-<td>A structure to hold the output template ids. Given <em>N</em> probes, there should be <em>N</em> sublists in the output, where the <em>ith</em> sublist gives the gallery template ids of the <em>ith</em> probe. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling <a class="reference internal" href="gallery.html#janice-clear-template-ids-group"><span class="std std-ref">janice_clear_template_ids_group</span></a>.</td>
+<td>A structure to hold the output template ids. Given <code class="code docutils literal notranslate"><span class="pre">N</span></code> probes, there should be :code`N` sublists in the output, where the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist gives the gallery template ids of the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> probe. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is required to clear the struct by calling <a class="reference internal" href="gallery.html#janice-clear-template-ids-group"><span class="std std-ref">janice_clear_template_ids_group</span></a>.</td>
+</tr>
+<tr class="row-odd"><td>errors</td>
+<td><a class="reference internal" href="errors.html#janiceerrors"><span class="std std-ref">JaniceErrors</span></a>*</td>
+<td>A struct to hold per-search error codes. There must be the same number of errors as there are <code class="code docutils literal notranslate"><span class="pre">probes</span></code> unless the call aborted early, in which case there can be less. The <code class="code docutils literal notranslate"><span class="pre">ith</span></code> error code should give the status of the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> search. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is responsible for clearing the object by calling <a class="reference internal" href="errors.html#janice-clear-errors"><span class="std std-ref">janice_clear_errors</span></a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="janice-clear-similarities">
-<span id="id21"></span><h3>janice_clear_similarities<a class="headerlink" href="#janice-clear-similarities" title="Permalink to this headline">¶</a></h3>
+<span id="id19"></span><h3>janice_clear_similarities<a class="headerlink" href="#janice-clear-similarities" title="Permalink to this headline">¶</a></h3>
 <p>Free any memory associated with a <a class="reference internal" href="#janicesimilarities"><span class="std std-ref">JaniceSimilarities</span></a> object.</p>
-<div class="section" id="id22">
-<h4>Signature<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_similarities</span><span class="p">(</span><span class="n">JaniceSimilarities</span><span class="o">*</span> <span class="n">similarities</span><span class="p">);</span>
+<div class="section" id="id20">
+<h4>Signature<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_similarities</span><span class="p">(</span><span class="n">JaniceSimilarities</span><span class="o">*</span> <span class="n">similarities</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id23">
-<h4>Thread Safety<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id21">
+<h4>Thread Safety<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
 <p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id24">
-<h4>Parameters<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id22">
+<h4>Parameters<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="18%" />
@@ -439,16 +447,16 @@ is being utilized.</p>
 </div>
 </div>
 <div class="section" id="janice-clear-similarities-group">
-<span id="id25"></span><h3>janice_clear_similarities_group<a class="headerlink" href="#janice-clear-similarities-group" title="Permalink to this headline">¶</a></h3>
+<span id="id23"></span><h3>janice_clear_similarities_group<a class="headerlink" href="#janice-clear-similarities-group" title="Permalink to this headline">¶</a></h3>
 <p>Free any memory associated with a <a class="reference internal" href="#janicesimilaritiesgroup"><span class="std std-ref">JaniceSimilaritiesGroup</span></a> object.</p>
-<div class="section" id="id26">
-<h4>Signature<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_similarities_group</span><span class="p">(</span><span class="n">JaniceSimilaritiesGroup</span><span class="o">*</span> <span class="n">group</span><span class="p">);</span>
+<div class="section" id="id24">
+<h4>Signature<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_similarities_group</span><span class="p">(</span><span class="n">JaniceSimilaritiesGroup</span><span class="o">*</span> <span class="n">group</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id27">
-<h4>Parameters<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id25">
+<h4>Parameters<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="10%" />
@@ -475,6 +483,7 @@ is being utilized.</p>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -520,14 +529,24 @@ is being utilized.</p>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -536,8 +555,8 @@ is being utilized.</p>
       &copy;2017, Noblis.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/api/comparison.rst.txt"

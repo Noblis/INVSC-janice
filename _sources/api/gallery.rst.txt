@@ -30,7 +30,7 @@ Structs
 JaniceGalleryType 
 ~~~~~~~~~~~~~~~~~
 
-An opaque pointer to a struct that represents a gallery.
+A struct that represents a gallery.
 
 Typedefs
 --------
@@ -48,38 +48,24 @@ Signature
 ::
 
     typedef struct JaniceGalleryType* JaniceGallery;
-
-.. _JaniceTemplateId:
-
-JaniceTemplateId
-~~~~~~~~~~~~~~~~
-
-A unique identifier for a template.
-
-Signature
-^^^^^^^^^
-
-::
-
-    typedef size_t JaniceTemplateId;
     
 .. _JaniceTemplateIds:
 
 JaniceTemplateIds
 ~~~~~~~~~~~~~~~~~
 
-A structure representing a list of :ref:`JaniceTemplateId` objects.
+A structure representing a list of unique template ids.
 
 Fields
 ^^^^^^
 
-+--------+---------------------------+---------------------------------+
-|  Name  |           Type            |           Description           |
-+========+===========================+=================================+
-| ids    | :ref:`JaniceTemplateId`\* | An array of template id objects |
-+--------+---------------------------+---------------------------------+
-| length | size\_t                   | The number of elements in *ids* |
-+--------+---------------------------+---------------------------------+
++--------+-------------+---------------------------------------+
+|  Name  |    Type     |              Description              |
++========+=============+=======================================+
+| ids    | uint64\_t\* | An array of template id objects       |
++--------+-------------+---------------------------------------+
+| length | size\_t     | The number of elements in :code:`ids` |
++--------+-------------+---------------------------------------+
 
 .. _JaniceTemplateIdsGroup:
 
@@ -91,13 +77,13 @@ A structure representing a list of :ref:`JaniceTemplateIds` objects.
 Fields
 ^^^^^^
 
-+--------+----------------------------+-----------------------------------+
-|  Name  |            Type            |            Description            |
-+========+============================+===================================+
-| group  | :ref:`JaniceTemplateIds`\* | An array of template ids objects. |
-+--------+----------------------------+-----------------------------------+
-| length | size\_t                    | The number of elements in *group* |
-+--------+----------------------------+-----------------------------------+
++--------+----------------------------+-----------------------------------------+
+|  Name  |            Type            |               Description               |
++========+============================+=========================================+
+| group  | :ref:`JaniceTemplateIds`\* | An array of template ids objects.       |
++--------+----------------------------+-----------------------------------------+
+| length | size\_t                    | The number of elements in :code:`group` |
++--------+----------------------------+-----------------------------------------+
 
 Functions
 ---------
@@ -114,8 +100,8 @@ Signature
 
 ::
 
-    JANICE_EXPORT JaniceError janice_create_gallery(JaniceTemplates tmpls,
-                                                    JaniceTemplateIds ids,
+    JANICE_EXPORT JaniceError janice_create_gallery(const JaniceTemplates* tmpls,
+                                                    const JaniceTemplateIds* ids,
                                                     JaniceGallery* gallery);
 
 Thread Safety 
@@ -126,15 +112,15 @@ This function is :ref:`reentrant`.
 Parameters 
 ^^^^^^^^^^
 
-+---------+--------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|  Name   |           Type           |                                                                                                                                                           Description                                                                                                                                                            |
-+=========+==========================+==================================================================================================================================================================================================================================================================================================================================+
-| tmpls   | :ref:`JaniceTemplates`   | An array of templates to add to the gallery. This can be *NULL* which would create an empty gallery. Data should be copied into the gallery. It is valid to pass an array with length 0 into this function, in which case an empty gallery should be initialized. This structure must have the same number of elements as *ids*. |
-+---------+--------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ids     | :ref:`JaniceTemplateIds` | A set of unique indentifiers to associate with the templates in *tmpls*. The *ith* id in this array corresponds to the *ith* input template. This structure must have the same number of elements as *tmpls*.                                                                                                                    |
-+---------+--------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| gallery | :ref:`JaniceGallery`\*   | An uninitialized gallery object. The implementor should allocate this object during the function call. The user is required to free this object by calling :ref:`janice_free_gallery`.                                                                                                                                           |
-+---------+--------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++---------+----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|  Name   |               Type               |                                                                                                                                                                 Description                                                                                                                                                                  |
++=========+==================================+==============================================================================================================================================================================================================================================================================================================================================+
+| tmpls   | const :ref:`JaniceTemplates`\*   | An array of templates to add to the gallery. This can be :code:`NULL` which would create an empty gallery. Data should be copied into the gallery. It is valid to pass an array with length 0 into this function, in which case an empty gallery should be initialized. This structure must have the same number of elements as :code:`ids`. |
++---------+----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ids     | const :ref:`JaniceTemplateIds`\* | A set of unique indentifiers to associate with the templates in :code:`tmpls`. The :code:`ith` id in this array corresponds to the :code:`ith` input template. This structure must have the same number of elements as :code:`tmpls`.                                                                                                        |
++---------+----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| gallery | :ref:`JaniceGallery`\*           | An uninitialized gallery object. The implementor should allocate this object during the function call. The user is required to free this object by calling :ref:`janice_free_gallery`.                                                                                                                                                       |
++---------+----------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Example 
 ^^^^^^^
@@ -147,7 +133,7 @@ Example
                            // is the same length as tmpls
     JaniceGallery gallery = NULL; // best practice to initialize to NULL
 
-    if (janice_create_gallery(tmpls, ids, &gallery) != JANICE_SUCCESS)
+    if (janice_create_gallery(&tmpls, &ids, &gallery) != JANICE_SUCCESS)
         // ERROR!
 
 .. _janice_gallery_reserve:
@@ -197,8 +183,8 @@ Signature
 ::
 
     JANICE_EXPORT JaniceError janice_gallery_insert(JaniceGallery gallery,
-                                                    JaniceTemplate tmpl,
-                                                    JaniceTemplateId id);
+                                                    const JaniceTemplate tmpl,
+                                                    const uint64_t id);
 
 Thread Safety 
 ^^^^^^^^^^^^^
@@ -208,15 +194,15 @@ This function is :ref:`reentrant`.
 Parameters
 ^^^^^^^^^^
 
-+---------+-------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|  Name   |          Type           |                                                                                                        Description                                                                                                         |
-+=========+=========================+============================================================================================================================================================================================================================+
-| gallery | :ref:`JaniceGallery`    | A gallery object to insert the template into.                                                                                                                                                                              |
-+---------+-------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| tmpl    | :ref:`JaniceTemplate`   | A template object to insert into the gallery. The template was created with the *Janice1NGallery* role. The template should be copied into the gallery. This object must remain in a valid state after this function call. |
-+---------+-------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| id      | :ref:`JaniceTemplateId` | A unique id to associate with the input template. If the id is not unique the implementor should return *JANICE_DUPLICATE_ID*.                                                                                             |
-+---------+-------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++---------+-----------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|  Name   |            Type             |                                                                                                           Description                                                                                                            |
++=========+=============================+==================================================================================================================================================================================================================================+
+| gallery | :ref:`JaniceGallery`        | A gallery object to insert the template into.                                                                                                                                                                                    |
++---------+-----------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| tmpl    | const :ref:`JaniceTemplate` | A template object to insert into the gallery. The template was created with the :code:`Janice1NGallery` role. The template should be copied into the gallery. This object must remain in a valid state after this function call. |
++---------+-----------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| id      | const uint64_t              | A unique id to associate with the input template. If the id is not unique the implementor should return :code:`JANICE_DUPLICATE_ID`.                                                                                             |
++---------+-----------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Example 
 ^^^^^^^
@@ -225,7 +211,7 @@ Example
 
     JaniceTemplate tmpl; // Where tmpl is a valid template object created
                          // previously
-    JaniceTemplateId id; // Where id is a unique integer to associate with tmpl. This
+    uint64_t id; // Where id is a unique integer to associate with tmpl. This
                          // integer should not exist in the gallery
     JaniceGallery gallery; // Where gallery is a valid gallery object created
                            // previously
@@ -238,7 +224,14 @@ Example
 janice\_gallery\_insert\_batch
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Insert a batch of templates into a gallery.
+Insert a batch of templates into a gallery. Batch
+processing can often be more efficient then serial processing of a collection of
+data, particularly if a GPU or co-processor is being utilized. This function
+reports per template error codes. Depending on the batch policy given, it
+will return one of :code:`JANICE_SUCCESS` if no errors occured, or
+:code:`JANICE_BATCH_ABORTED_EARLY` or :code:`JANICE_BATCH_FINISHED_WITH_ERRORS`
+if errors occured within the batch. In either case, any computation marked
+:code:`JANICE_SUCCESS` in the output should be considered valid output.
 
 Signature
 ^^^^^^^^^
@@ -246,8 +239,10 @@ Signature
 ::
 
     JANICE_EXPORT JaniceError janice_gallery_insert_batch(JaniceGallery gallery,
-                                                          JaniceTemplates tmpls,
-                                                          JaniceTemplateIds ids);
+                                                          const JaniceTemplates* tmpls,
+                                                          const JaniceTemplateIds* ids,
+                                                          const JaniceContext* context,
+                                                          JaniceErrors* errors);
 
 Thread Safety
 ^^^^^^^^^^^^^
@@ -257,16 +252,19 @@ This function is :ref:`reentrant`.
 Parameters
 ^^^^^^^^^^
 
-+---------+--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|  Name   |           Type           |                                                                                                                                                 Description                                                                                                                                                 |
-+=========+==========================+=============================================================================================================================================================================================================================================================================================================+
-| gallery | :ref:`JaniceGallery`     | The gallery to insert the templates into.                                                                                                                                                                                                                                                                   |
-+---------+--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| tmpls   | :ref:`JaniceTemplates`   | The array of templates to insert in to the gallery. Each template was created with the *Janice1NGallery* role. Each template should be copied into the gallery by the implementor and must remain in a valid state after this function call. This structure must have the same number of elements as *ids*. |
-+---------+--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ids     | :ref:`JaniceTemplateIds` | The array of unique ids to associate with *tmpls*. The *ith* id in this structure corresponds to the *ith* template in *tmpls*. This structure must have the same number of elements as *tmpls*.                                                                                                            |
-+---------+--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-
++---------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|  Name   |               Type               |                                                                                                                                                                                                                                                             Description                                                                                                                                                                                                                                                             |
++=========+==================================+=====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
+| gallery | :ref:`JaniceGallery`             | The gallery to insert the templates into.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
++---------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| tmpls   | const :ref:`JaniceTemplates`\*   | The array of templates to insert in to the gallery. Each template was created with the :code:`Janice1NGallery` role. Each template should be copied into the gallery by the implementor and must remain in a valid state after this function call. This structure must have the same number of elements as :code:`ids`.                                                                                                                                                                                                             |
++---------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ids     | const :ref:`JaniceTemplateIds`\* | The array of unique ids to associate with :code:`tmpls`. The :code:`ith` id in this structure corresponds to the :code:`ith` template in :code:`tmpls`. This structure must have the same number of elements as :code:`tmpls`.                                                                                                                                                                                                                                                                                                      |
++---------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| context | const :ref:`JaniceContext`\*     | A context object with relevant hyperparameters set. Memory for the object should be managed by the user. The implementation should assume this points to a valid object.                                                                                                                                                                                                                                                                                                                                                            |
++---------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| errors  | :ref:`JaniceErrors`\*            | A struct to hold per-template error codes. There must be the same number of errors as there are :code:`tmpls` unless the call aborted early, in which case there can be less. The :code:`ith` error code should give the status of insertion on the :code:`ith` template. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is responsible for clearing the object by calling :ref:`janice_clear_errors`. |
++---------+----------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _janice_gallery_remove:
 
@@ -281,7 +279,7 @@ Signature
 ::
 
     JANICE_EXPORT JaniceError janice_gallery_remove(JaniceGallery gallery,
-                                                    JaniceTemplateId id);
+                                                    const uint64_t id);
 
 Thread Safety 
 ^^^^^^^^^^^^^
@@ -291,13 +289,13 @@ This function is :ref:`reentrant`.
 Parameters
 ^^^^^^^^^^
 
-+---------+-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|  Name   |          Type           |                                                                                 Description                                                                                  |
-+=========+=========================+==============================================================================================================================================================================+
-| gallery | :ref:`JaniceGallery`    | The gallery object to remove a template from.                                                                                                                                |
-+---------+-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| id      | :ref:`JaniceTemplateId` | The unique identifier for the template to remove from the gallery. If no template with the given ID is found in the gallery this function should return *JANICE_MISSING_ID*. |
-+---------+-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++---------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|  Name   |         Type         |                                                                                    Description                                                                                     |
++=========+======================+====================================================================================================================================================================================+
+| gallery | :ref:`JaniceGallery` | The gallery object to remove a template from.                                                                                                                                      |
++---------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| id      | const uint64_t       | The unique identifier for the template to remove from the gallery. If no template with the given ID is found in the gallery this function should return :code:`JANICE_MISSING_ID`. |
++---------+----------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Example
 ^^^^^^^
@@ -306,7 +304,7 @@ Example
 
     JaniceTemplate tmpl; // Where tmpl is a valid template object created
                          // previously
-    JaniceTemplateId id = 0; // A unique integer id to associate with tmpl.
+    uint64_t id = 0; // A unique integer id to associate with tmpl.
 
     JaniceGallery gallery; // Where gallery is a valid gallery object created
                            // previously that does not have a template with id '0'
@@ -325,7 +323,14 @@ Example
 janice\_gallery\_remove\_batch
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Remove a batch of templates from a gallery.
+Remove a batch of templates from a gallery. Batch processing can often be more
+efficient then serial processing of a collection of data, particularly if a GPU
+or co-processor is being utilized. This function reports per template error
+codes. Depending on the batch policy given, it will return one of
+:code:`JANICE_SUCCESS` if no errors occured, or
+:code:`JANICE_BATCH_ABORTED_EARLY` or :code:`JANICE_BATCH_FINISHED_WITH_ERRORS`
+if errors occured within the batch. In either case, any computation marked
+:code:`JANICE_SUCCESS` in the output should be considered valid output.
 
 Signature
 ^^^^^^^^^
@@ -333,7 +338,9 @@ Signature
 ::
 
     JANICE_EXPORT JaniceError janice_gallery_remove_batch(JaniceGallery gallery,
-                                                          JaniceTemplateIds ids);
+                                                          const JaniceTemplateIds* ids,
+                                                          const JaniceContext* context,
+                                                          JaniceErrors* errors);
 
 Thread Safety
 ^^^^^^^^^^^^^
@@ -343,13 +350,17 @@ This function is :ref:`reentrant`.
 Parameters
 ^^^^^^^^^^
 
-+---------+--------------------------+----------------------------------------------------------------------+
-|  Name   |           Type           |                             Description                              |
-+=========+==========================+======================================================================+
-| gallery | :ref:`JaniceGallery`     | The gallery object to remove the templates from.                     |
-+---------+--------------------------+----------------------------------------------------------------------+
-| ids     | :ref:`JaniceTemplateIds` | The unique identifiers for the templates to remove from the gallery. |
-+---------+--------------------------+----------------------------------------------------------------------+
++---------+----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|  Name   |               Type               |                                                                                                                                                                                                                                                     Description                                                                                                                                                                                                                                                     |
++=========+==================================+=====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================+
+| gallery | :ref:`JaniceGallery`             | The gallery object to remove the templates from.                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
++---------+----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ids     | const :ref:`JaniceTemplateIds`\* | The unique identifiers for the templates to remove from the gallery.                                                                                                                                                                                                                                                                                                                                                                                                                                                |
++---------+----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| context | const :ref:`JaniceContext`\*     | A context object with relevant hyperparameters set. Memory for the object should be managed by the user. The implementation should assume this points to a valid object.                                                                                                                                                                                                                                                                                                                                            |
++---------+----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| errors  | :ref:`JaniceErrors`\*            | A struct to hold per-id error codes. There must be the same number of errors as there are :code:`ids` unless the call aborted early, in which case there can be less. The :code:`ith` error code should give the status of removal on the :code:`ith` id. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is responsible for clearing the object by calling :ref:`janice_clear_errors`. |
++---------+----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _janice_gallery_prepare:
 
@@ -438,8 +449,8 @@ Signature
 
 ::
 
-    JANICE_EXPORT JaniceError janice_serialize_gallery(JaniceConstGallery gallery,
-                                                       JaniceBuffer* data,
+    JANICE_EXPORT JaniceError janice_serialize_gallery(const JaniceGallery gallery,
+                                                       uint8_t** data,
                                                        size_t* len);
 
 Thread Safety 
@@ -455,9 +466,9 @@ Parameters
 +=========+======================+==========================================================================================================================================================================================================+
 | gallery | :ref:`JaniceGallery` | A gallery object to serialize                                                                                                                                                                            |
 +---------+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| data    | :ref:`JaniceBuffer`  | An uninitialized buffer to hold the flattened data. The implementor allocate this object during the function call. The user is responsible for freeing this object by calling :ref:`janice_free_buffer`. |
+| data    | uint8\_t\*\*         | An uninitialized buffer to hold the flattened data. The implementor allocate this object during the function call. The user is responsible for freeing this object by calling :ref:`janice_free_buffer`. |
 +---------+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| len     | size\_t\*            | The length of the flat buffer after it is allocated.                                                                                                                                                     |
+| len     | size\_t\*            | The length of the flat buffer after it is allocated. Memory for the object should be managed by the user. The implementation should assume this points to a valid object.                                |
 +---------+----------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Example 
@@ -468,7 +479,7 @@ Example
     JaniceGallery gallery; // Where gallery is a valid gallery created
                            // previously.
 
-    JaniceBuffer buffer = NULL;
+    uint8_t\* buffer = NULL;
     size_t buffer_len;
     janice_serialize_gallery(gallery, &buffer, &buffer_len);
 
@@ -484,7 +495,7 @@ Signature
 
 ::
 
-    JANICE_EXPORT JaniceError janice_deserialize_gallery(const JaniceBuffer data,
+    JANICE_EXPORT JaniceError janice_deserialize_gallery(const uint8_t* data,
                                                          size_t len,
                                                          JaniceGallery* gallery);
 
@@ -496,15 +507,15 @@ This function is :ref:`reentrant`.
 Parameters
 ^^^^^^^^^^
 
-+---------+---------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|  Name   |           Type            |                                                                                         Description                                                                                          |
-+=========+===========================+==============================================================================================================================================================================================+
-| data    | const :ref:`JaniceBuffer` | A buffer containing data from a flattened gallery object.                                                                                                                                    |
-+---------+---------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| len     | size\_t                   | The length of the flat buffer.                                                                                                                                                               |
-+---------+---------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| gallery | :ref:`JaniceGallery`\*    | An uninitialized gallery object. The implementor should allocate this object during the function call. The user is responsible for freeing the object by calling :ref:`janice_free_gallery`. |
-+---------+---------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++---------+------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|  Name   |          Type          |                                                                                         Description                                                                                          |
++=========+========================+==============================================================================================================================================================================================+
+| data    | const uint8\_t\*       | A buffer containing data from a flattened gallery object.                                                                                                                                    |
++---------+------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| len     | size\_t                | The length of the flat buffer.                                                                                                                                                               |
++---------+------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| gallery | :ref:`JaniceGallery`\* | An uninitialized gallery object. The implementor should allocate this object during the function call. The user is responsible for freeing the object by calling :ref:`janice_free_gallery`. |
++---------+------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Example
 ^^^^^^^
@@ -533,7 +544,7 @@ equivalent to the following-
 ::
 
     const size_t buffer_len = K; // Where K is the known length of the buffer
-    JaniceBuffer buffer[buffer_len];
+    uint8_t buffer[buffer_len];
 
     FILE* file = fopen("serialized.gallery", "r");
     fread(buffer, 1, buffer_len, file);
@@ -591,7 +602,7 @@ equivalent to the following-
 
     JaniceGallery gallery; // Where gallery is a valid gallery created previously.
 
-    JaniceBuffer buffer = NULL;
+    uint8_t buffer = NULL;
     size_t buffer_len;
     janice_serialize_gallery(gallery, &buffer, &buffer_len);
 

@@ -4,23 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Errors &#8212; JanICE 4.0.1 documentation</title>
+    <title>Errors &#8212; JanICE 7.0.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '4.0.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Initialization" href="initialization.html" />
@@ -31,13 +24,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="errors">
@@ -56,8 +50,8 @@ The error codes are enumerated using the <a class="reference internal" href="#ja
 <p>The error codes defined in the JanICE <em>C</em> API</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="39%" />
-<col width="61%" />
+<col width="35%" />
+<col width="65%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Code</th>
@@ -71,71 +65,83 @@ The error codes are enumerated using the <a class="reference internal" href="#ja
 <tr class="row-odd"><td>JANICE_UNKNOWN_ERROR</td>
 <td>Catch all error code</td>
 </tr>
-<tr class="row-even"><td>JANICE_OUT_OF_MEMORY</td>
+<tr class="row-even"><td>JANICE_INTERNAL_ERROR</td>
+<td>Internal SDK error</td>
+</tr>
+<tr class="row-odd"><td>JANICE_OUT_OF_MEMORY</td>
 <td>Out of memory error</td>
 </tr>
-<tr class="row-odd"><td>JANICE_INVALID_SDK_PATH</td>
+<tr class="row-even"><td>JANICE_INVALID_SDK_PATH</td>
 <td>Invalid SDK location</td>
 </tr>
-<tr class="row-even"><td>JANICE_BAD_SDK_CONFIG</td>
+<tr class="row-odd"><td>JANICE_BAD_SDK_CONFIG</td>
 <td>Invalid SDK configuration</td>
 </tr>
-<tr class="row-odd"><td>JANICE_BAD_LICENSE</td>
+<tr class="row-even"><td>JANICE_BAD_LICENSE</td>
 <td>Incorrect license file</td>
 </tr>
-<tr class="row-even"><td>JANICE_MISSING_DATA</td>
+<tr class="row-odd"><td>JANICE_MISSING_DATA</td>
 <td>Missing SDK data</td>
 </tr>
-<tr class="row-odd"><td>JANICE_INVALID_GPU</td>
+<tr class="row-even"><td>JANICE_INVALID_GPU</td>
 <td>The GPU is not functioning</td>
 </tr>
-<tr class="row-even"><td>JANICE_BAD_ARGUMENT</td>
+<tr class="row-odd"><td>JANICE_BAD_ARGUMENT</td>
 <td>An argument to a JanICE function is invalid</td>
 </tr>
-<tr class="row-odd"><td>JANICE_OPEN_ERROR</td>
+<tr class="row-even"><td>JANICE_OPEN_ERROR</td>
 <td>Failed to open a file</td>
 </tr>
-<tr class="row-even"><td>JANICE_READ_ERROR</td>
+<tr class="row-odd"><td>JANICE_READ_ERROR</td>
 <td>Failed to read from a file</td>
 </tr>
-<tr class="row-odd"><td>JANICE_WRITE_ERROR</td>
+<tr class="row-even"><td>JANICE_WRITE_ERROR</td>
 <td>Failed to write to a file</td>
 </tr>
-<tr class="row-even"><td>JANICE_PARSE_ERROR</td>
+<tr class="row-odd"><td>JANICE_PARSE_ERROR</td>
 <td>Failed to parse a file</td>
 </tr>
-<tr class="row-odd"><td>JANICE_INVALID_MEDIA</td>
+<tr class="row-even"><td>JANICE_INVALID_MEDIA</td>
 <td>Failed to decode a media file</td>
 </tr>
-<tr class="row-even"><td>JANICE_OUT_OF_BOUNDS_ACCESS</td>
+<tr class="row-odd"><td>JANICE_OUT_OF_BOUNDS_ACCESS</td>
 <td>Out of bounds access into a buffer.</td>
 </tr>
-<tr class="row-odd"><td>JANICE_MEDIA_AT_END</td>
+<tr class="row-even"><td>JANICE_MEDIA_AT_END</td>
 <td>A media iterator has reached the end of its data.</td>
 </tr>
-<tr class="row-even"><td>JANICE_INVALID_ATTRIBUTE_KEY</td>
+<tr class="row-odd"><td>JANICE_INVALID_ATTRIBUTE_KEY</td>
 <td>An invalid attribute key was provided.</td>
 </tr>
-<tr class="row-odd"><td>JANICE_MISSING_ATTRIBUTE</td>
+<tr class="row-even"><td>JANICE_MISSING_ATTRIBUTE</td>
 <td>A value for a valid attribute key is not available.</td>
 </tr>
-<tr class="row-even"><td>JANICE_DUPLICATE_ID</td>
+<tr class="row-odd"><td>JANICE_DUPLICATE_ID</td>
 <td>Template id already exists in a gallery</td>
 </tr>
-<tr class="row-odd"><td>JANICE_MISSING_ID</td>
+<tr class="row-even"><td>JANICE_MISSING_ID</td>
 <td>Template id can’t be found</td>
 </tr>
-<tr class="row-even"><td>JANICE_MISSING_FILE_NAME</td>
+<tr class="row-odd"><td>JANICE_MISSING_FILE_NAME</td>
 <td>An expected file name is not given</td>
 </tr>
-<tr class="row-odd"><td>JANICE_INCORRECT_ROLE</td>
+<tr class="row-even"><td>JANICE_INCORRECT_ROLE</td>
 <td>Incorrect template role</td>
 </tr>
-<tr class="row-even"><td>JANICE_FAILURE_TO_SERIALIZE</td>
+<tr class="row-odd"><td>JANICE_FAILURE_TO_SERIALIZE</td>
 <td>Could not serialize a data structure</td>
 </tr>
-<tr class="row-odd"><td>JANICE_FAILURE_TO_DESERIALIZE</td>
+<tr class="row-even"><td>JANICE_FAILURE_TO_DESERIALIZE</td>
 <td>Could not deserialize a data structure</td>
+</tr>
+<tr class="row-odd"><td>JANICE_BATCH_ABORTED_EARLY</td>
+<td>Batch call aborted early due to encountered error</td>
+</tr>
+<tr class="row-even"><td>JANICE_BATCH_FINISHED_WITH_ERRORS</td>
+<td>Batch call finished but with errors.</td>
+</tr>
+<tr class="row-odd"><td>JANICE_CALLBACK_EXIT_IMMEDIATELY</td>
+<td>Special callback error indicating the parent should return immediately</td>
 </tr>
 <tr class="row-even"><td>JANICE_NOT_IMPLEMENTED</td>
 <td>Optional function return</td>
@@ -147,14 +153,47 @@ The error codes are enumerated using the <a class="reference internal" href="#ja
 </table>
 </div>
 </div>
+<div class="section" id="structs">
+<h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="janiceerrors">
+<span id="id3"></span><h3>JaniceErrors<a class="headerlink" href="#janiceerrors" title="Permalink to this headline">¶</a></h3>
+<p>A structure to represent a list of <a class="reference internal" href="#janiceerror"><span class="std std-ref">JaniceError</span></a> objects.</p>
+<div class="section" id="fields">
+<h4>Fields<a class="headerlink" href="#fields" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="31%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>errors</td>
+<td><a class="reference internal" href="#janiceerror"><span class="std std-ref">JaniceError</span></a>*</td>
+<td>An array of error objects.</td>
+</tr>
+<tr class="row-odd"><td>length</td>
+<td>size_t</td>
+<td>The number of elements in <code class="code docutils literal notranslate"><span class="pre">errors</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="janice-error-to-string">
-<span id="id3"></span><h3>janice_error_to_string<a class="headerlink" href="#janice-error-to-string" title="Permalink to this headline">¶</a></h3>
+<span id="id4"></span><h3>janice_error_to_string<a class="headerlink" href="#janice-error-to-string" title="Permalink to this headline">¶</a></h3>
 <p>Convert a <a class="reference internal" href="#janiceerror"><span class="std std-ref">JaniceError</span></a> into a string for printing.</p>
 <div class="section" id="signature">
 <h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">janice_error_to_string</span><span class="p">(</span><span class="n">JaniceError</span> <span class="n">error</span><span class="p">);</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">janice_error_to_string</span><span class="p">(</span><span class="n">JaniceError</span> <span class="n">error</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -191,11 +230,48 @@ The error codes are enumerated using the <a class="reference internal" href="#ja
 a null-terminated list of characters that describe the input error.</p>
 </div>
 </div>
+<div class="section" id="janice-clear-errors">
+<span id="id5"></span><h3>janice_clear_errors<a class="headerlink" href="#janice-clear-errors" title="Permalink to this headline">¶</a></h3>
+<p>Free any memory associated with a <a class="reference internal" href="#janiceerrors"><span class="std std-ref">JaniceErrors</span></a> object.</p>
+<div class="section" id="id6">
+<h4>Signature<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_errors</span><span class="p">(</span><span class="n">JaniceErrors</span><span class="o">*</span> <span class="n">errors</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id7">
+<h4>Thread Safety<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
+</div>
+<div class="section" id="id8">
+<h4>Parameters<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="38%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>errors</td>
+<td><a class="reference internal" href="#janiceerrors"><span class="std std-ref">JaniceErrors</span></a>*</td>
+<td>An errors objects to clear.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -215,6 +291,7 @@ a null-terminated list of characters that describe the input error.</p>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Errors</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#enumerations">Enumerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#structs">Structs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
 </ul>
 </li>
@@ -241,14 +318,24 @@ a null-terminated list of characters that describe the input error.</p>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -257,8 +344,8 @@ a null-terminated list of characters that describe the input error.</p>
       &copy;2017, Noblis.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/api/errors.rst.txt"

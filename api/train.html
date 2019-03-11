@@ -4,23 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Training &#8212; JanICE 4.0.1 documentation</title>
+    <title>Training &#8212; JanICE 7.0.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '4.0.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Detection" href="detection.html" />
@@ -31,13 +24,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="training">
@@ -48,12 +42,12 @@
 <span id="id1"></span><h3>janice_fine_tune<a class="headerlink" href="#janice-fine-tune" title="Permalink to this headline">¶</a></h3>
 <p>Fine tune an implementation using new data. This function can be used to adapt
 an algorithm to a new domain. It is optional and can return
-<em>JANICE_NOT_IMPLEMENTED</em>. Artifacts created from fine tuning should be stored
+<code class="code docutils literal notranslate"><span class="pre">JANICE_NOT_IMPLEMENTED</span></code>. Artifacts created from fine tuning should be stored
 on disk and will be loaded in a successive initialization of the API.</p>
 <div class="section" id="signature">
 <h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_fine_tune</span><span class="p">(</span><span class="n">JaniceMediaIterators</span> <span class="n">media</span><span class="p">,</span>
-                                           <span class="n">JaniceTracksGroup</span> <span class="n">group</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_fine_tune</span><span class="p">(</span><span class="n">const</span> <span class="n">JaniceMediaIterators</span><span class="o">*</span> <span class="n">media</span><span class="p">,</span>
+                                           <span class="n">const</span> <span class="n">JaniceDetectionsGroup</span><span class="o">*</span> <span class="n">detections</span><span class="p">,</span>
                                            <span class="nb">int</span><span class="o">**</span> <span class="n">labels</span><span class="p">,</span>
                                            <span class="n">const</span> <span class="n">char</span><span class="o">*</span> <span class="n">output_prefix</span><span class="p">);</span>
 </pre></div>
@@ -68,8 +62,8 @@ on disk and will be loaded in a successive initialization of the API.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="4%" />
-<col width="8%" />
-<col width="88%" />
+<col width="10%" />
+<col width="86%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -79,20 +73,20 @@ on disk and will be loaded in a successive initialization of the API.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>media</td>
-<td><a class="reference internal" href="io.html#janicemediaiterators"><span class="std std-ref">JaniceMediaIterators</span></a></td>
-<td>A list of media objects to fine tune with.</td>
+<td>const <a class="reference internal" href="io.html#janicemediaiterators"><span class="std std-ref">JaniceMediaIterators</span></a>*</td>
+<td>A list of media objects to fine tune with. After the function call, each iterator in the array will exist in an undefined state. A user should call <a class="reference internal" href="io.html#reset"><span class="std std-ref">reset</span></a> on each iterator before reusing them.</td>
 </tr>
-<tr class="row-odd"><td>tracks</td>
-<td><a class="reference internal" href="detection.html#janicetracksgroup"><span class="std std-ref">JaniceTracksGroup</span></a></td>
-<td>A collection of location information for objects in the fine tuning data. There must be the same number of sublists in this structure as there are elements in <em>media</em>. The tracks in the <em>ith</em> sublist of this structure give locations in the <em>ith</em> media object.</td>
+<tr class="row-odd"><td>detections</td>
+<td>const <a class="reference internal" href="detection.html#janicedetectionsgroup"><span class="std std-ref">JaniceDetectionsGroup</span></a>*</td>
+<td>A collection of location information for objects in the fine tuning data. There must be the same number of sublists in this structure as there are elements in <code class="code docutils literal notranslate"><span class="pre">media</span></code>. The tracks in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist of this structure give locations in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> media object.</td>
 </tr>
 <tr class="row-even"><td>labels</td>
 <td>int**</td>
-<td>A list of lists of labels for objects in the fine tuning data. <em>labels[i][j]</em> should give the label for the <em>jth</em> track in the <em>ith</em> sublist of <em>tracks</em>.</td>
+<td>A list of lists of labels for objects in the fine tuning data. <code class="code docutils literal notranslate"><span class="pre">labels[i][j]</span></code> should give the label for the <code class="code docutils literal notranslate"><span class="pre">jth</span></code> track in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist of <code class="code docutils literal notranslate"><span class="pre">tracks</span></code>.</td>
 </tr>
 <tr class="row-odd"><td>output_prefix</td>
 <td>const char*</td>
-<td>A path to an existing directory with write access for the application. After successful fine tuning, this directory should be populated with all files necessary to initialize the API. Future calls to the API can use the fine tuned algorithm by passing <em>output_prefix</em> as the <em>sdk_path</em> parameter in <a class="reference internal" href="initialization.html#janice-initialize"><span class="std std-ref">janice_initialize</span></a>.</td>
+<td>A path to an existing directory with write access for the application. After successful fine tuning, this directory should be populated with all files necessary to initialize the API. Future calls to the API can use the fine tuned algorithm by passing <code class="code docutils literal notranslate"><span class="pre">output_prefix</span></code> as the <code class="code docutils literal notranslate"><span class="pre">sdk_path</span></code> parameter in <a class="reference internal" href="initialization.html#janice-initialize"><span class="std std-ref">janice_initialize</span></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -103,6 +97,7 @@ on disk and will be loaded in a successive initialization of the API.</p>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -146,14 +141,24 @@ on disk and will be loaded in a successive initialization of the API.</p>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -162,8 +167,8 @@ on disk and will be loaded in a successive initialization of the API.</p>
       &copy;2017, Noblis.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/api/train.rst.txt"

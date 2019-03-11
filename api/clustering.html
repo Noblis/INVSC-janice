@@ -4,23 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Clustering &#8212; JanICE 4.0.1 documentation</title>
+    <title>Clustering &#8212; JanICE 7.0.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '4.0.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="License" href="../license.html" />
@@ -31,13 +24,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="clustering">
@@ -52,26 +46,16 @@ single individual are placed in a cluster.</p>
 </div>
 <div class="section" id="structs">
 <h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="janiceclusterid">
-<span id="id2"></span><h3>JaniceClusterId<a class="headerlink" href="#janiceclusterid" title="Permalink to this headline">¶</a></h3>
-<p>A unique identifier for a cluster</p>
-<div class="section" id="signature">
-<h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">size_t</span> <span class="n">JaniceClusterId</span><span class="p">;</span>
-</pre></div>
-</div>
-</div>
-</div>
 <div class="section" id="janiceclusterids">
-<span id="id3"></span><h3>JaniceClusterIds<a class="headerlink" href="#janiceclusterids" title="Permalink to this headline">¶</a></h3>
-<p>A structure to represent a list of <a class="reference internal" href="#janiceclusterid"><span class="std std-ref">JaniceClusterId</span></a> objects.</p>
+<span id="id2"></span><h3>JaniceClusterIds<a class="headerlink" href="#janiceclusterids" title="Permalink to this headline">¶</a></h3>
+<p>A structure to represent a list of cluster ids objects.</p>
 <div class="section" id="fields">
 <h4>Fields<a class="headerlink" href="#fields" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="39%" />
-<col width="49%" />
+<col width="13%" />
+<col width="22%" />
+<col width="65%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -81,27 +65,27 @@ single individual are placed in a cluster.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>ids</td>
-<td><a class="reference internal" href="#janiceclusterid"><span class="std std-ref">JaniceClusterId</span></a>*</td>
+<td>uint64_t*</td>
 <td>An array of cluster id objects.</td>
 </tr>
 <tr class="row-odd"><td>length</td>
 <td>size_t</td>
-<td>The number of elements in <em>ids</em></td>
+<td>The number of elements in <code class="code docutils literal notranslate"><span class="pre">ids</span></code></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="janiceclusteridsgroup">
-<span id="id4"></span><h3>JaniceClusterIdsGroup<a class="headerlink" href="#janiceclusteridsgroup" title="Permalink to this headline">¶</a></h3>
+<span id="id3"></span><h3>JaniceClusterIdsGroup<a class="headerlink" href="#janiceclusteridsgroup" title="Permalink to this headline">¶</a></h3>
 <p>A structure to represent a list of <a class="reference internal" href="#janiceclusterids"><span class="std std-ref">JaniceClusterIds</span></a> objects.</p>
-<div class="section" id="id5">
-<h4>Fields<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id4">
+<h4>Fields<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="11%" />
-<col width="39%" />
-<col width="50%" />
+<col width="36%" />
+<col width="54%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -116,32 +100,22 @@ single individual are placed in a cluster.</p>
 </tr>
 <tr class="row-odd"><td>length</td>
 <td>size_t</td>
-<td>The number of elements in <em>group</em></td>
+<td>The number of elements in <code class="code docutils literal notranslate"><span class="pre">group</span></code></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<div class="section" id="janiceclusterconfidence">
-<span id="id6"></span><h3>JaniceClusterConfidence<a class="headerlink" href="#janiceclusterconfidence" title="Permalink to this headline">¶</a></h3>
-<p>A value representing the confidence that an item belongs to a cluster.</p>
-<div class="section" id="id7">
-<h4>Signature<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">double</span> <span class="n">JaniceClusterConfidence</span><span class="p">;</span>
-</pre></div>
-</div>
-</div>
-</div>
 <div class="section" id="janiceclusterconfidences">
-<span id="id8"></span><h3>JaniceClusterConfidences<a class="headerlink" href="#janiceclusterconfidences" title="Permalink to this headline">¶</a></h3>
-<p>A structure to represent a list of <a class="reference internal" href="#janiceclusterconfidence"><span class="std std-ref">JaniceClusterConfidence</span></a> objects.</p>
-<div class="section" id="id9">
-<h4>Fields<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
+<span id="id5"></span><h3>JaniceClusterConfidences<a class="headerlink" href="#janiceclusterconfidences" title="Permalink to this headline">¶</a></h3>
+<p>A structure to represent a list of cluster confidence objects.</p>
+<div class="section" id="id6">
+<h4>Fields<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="15%" />
-<col width="39%" />
-<col width="47%" />
+<col width="19%" />
+<col width="14%" />
+<col width="67%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -151,22 +125,22 @@ single individual are placed in a cluster.</p>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>confidences</td>
-<td><a class="reference internal" href="#janiceclusterconfidence"><span class="std std-ref">JaniceClusterConfidence</span></a>*</td>
+<td>double*</td>
 <td>An array of cluster confidence objects.</td>
 </tr>
 <tr class="row-odd"><td>length</td>
 <td>size_t</td>
-<td>The number of elements in <em>confidences</em></td>
+<td>The number of elements in <code class="code docutils literal notranslate"><span class="pre">confidences</span></code></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="janiceclusterconfidencesgroup">
-<span id="id10"></span><h3>JaniceClusterConfidencesGroup<a class="headerlink" href="#janiceclusterconfidencesgroup" title="Permalink to this headline">¶</a></h3>
+<span id="id7"></span><h3>JaniceClusterConfidencesGroup<a class="headerlink" href="#janiceclusterconfidencesgroup" title="Permalink to this headline">¶</a></h3>
 <p>A structure to represent a list of <a class="reference internal" href="#janiceclusterconfidences"><span class="std std-ref">JaniceClusterConfidences</span></a> objects.</p>
-<div class="section" id="id11">
-<h4>Fields<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id8">
+<h4>Fields<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="9%" />
@@ -186,7 +160,7 @@ single individual are placed in a cluster.</p>
 </tr>
 <tr class="row-odd"><td>length</td>
 <td>size_t</td>
-<td>The number of elements in <em>group</em></td>
+<td>The number of elements in <code class="code docutils literal notranslate"><span class="pre">group</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -196,14 +170,14 @@ single individual are placed in a cluster.</p>
 <div class="section" id="function">
 <h2>Function<a class="headerlink" href="#function" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="janice-cluster-media">
-<span id="id12"></span><h3>janice_cluster_media<a class="headerlink" href="#janice-cluster-media" title="Permalink to this headline">¶</a></h3>
+<span id="id9"></span><h3>janice_cluster_media<a class="headerlink" href="#janice-cluster-media" title="Permalink to this headline">¶</a></h3>
 <p>Cluster a collection of media objects into groups. Each media object may
 contain 0 or more objects of interest. The output is arranged so that each
-output structure has <em>N</em> sublists where <em>N</em> is the number of input media
-and the <em>ith</em> sublist contains information for objects found in the <em>ith</em>
+output structure has <code class="code docutils literal notranslate"><span class="pre">N</span></code> sublists where <code class="code docutils literal notranslate"><span class="pre">N</span></code> is the number of input media
+and the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist contains information for objects found in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code>
 media.</p>
 <div class="section" id="cluster-confidence">
-<span id="id13"></span><h4>Cluster Confidence<a class="headerlink" href="#cluster-confidence" title="Permalink to this headline">¶</a></h4>
+<span id="id10"></span><h4>Cluster Confidence<a class="headerlink" href="#cluster-confidence" title="Permalink to this headline">¶</a></h4>
 <p>Along with a cluster assignment, this API supports the concept of a cluster
 confidence. A cluster confidence is a value indicating a liklihood that the
 object of interest actually belongs to a cluster. For example, one possible
@@ -218,13 +192,13 @@ relevant when being compared with other confidences generated by
 the same algorithm.</li>
 </ol>
 </div>
-<div class="section" id="id14">
-<h4>Signature<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_cluster_media</span><span class="p">(</span><span class="n">JaniceMediaIterators</span> <span class="n">media</span><span class="p">,</span>
-                                               <span class="n">JaniceContext</span> <span class="n">context</span><span class="p">,</span>
+<div class="section" id="signature">
+<h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_cluster_media</span><span class="p">(</span><span class="n">const</span> <span class="n">JaniceMediaIterators</span><span class="o">*</span> <span class="n">media</span><span class="p">,</span>
+                                               <span class="n">const</span> <span class="n">JaniceContext</span><span class="o">*</span> <span class="n">context</span><span class="p">,</span>
                                                <span class="n">JaniceClusterIdsGroup</span><span class="o">*</span> <span class="n">cluster_ids</span><span class="p">,</span>
                                                <span class="n">JaniceClusterConfidencesGroup</span><span class="o">*</span> <span class="n">cluster_confidences</span><span class="p">,</span>
-                                               <span class="n">JaniceTracksGroup</span><span class="o">*</span> <span class="n">tracks</span><span class="p">);</span>
+                                               <span class="n">JaniceDetectionsGroup</span><span class="o">*</span> <span class="n">detections</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -237,8 +211,8 @@ the same algorithm.</li>
 <table border="1" class="docutils">
 <colgroup>
 <col width="3%" />
-<col width="6%" />
-<col width="90%" />
+<col width="5%" />
+<col width="92%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -248,52 +222,52 @@ the same algorithm.</li>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>media</td>
-<td><a class="reference internal" href="io.html#janicemediaiterators"><span class="std std-ref">JaniceMediaIterators</span></a></td>
-<td>An array of media to cluster.</td>
+<td>const <a class="reference internal" href="io.html#janicemediaiterators"><span class="std std-ref">JaniceMediaIterators</span></a>*</td>
+<td>An array of media to cluster. After the function call, each iterator in the array will exist in an undefined state. A user should call <a class="reference internal" href="io.html#reset"><span class="std std-ref">reset</span></a> on each iterator before reusing them.</td>
 </tr>
 <tr class="row-odd"><td>context</td>
-<td><a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a></td>
-<td>A context object with relevant hyperparameters set.</td>
+<td>const <a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a>*</td>
+<td>A context object with relevant hyperparameters set. Memory for the object should be managed by the user. The implementation should assume this points to a valid object.</td>
 </tr>
 <tr class="row-even"><td>cluster_ids</td>
 <td><a class="reference internal" href="#janiceclusteridsgroup"><span class="std std-ref">JaniceClusterIdsGroup</span></a>*</td>
-<td>An output structure to hold cluster ids. Objects with the same cluster id are members of the same cluster. This structure must have <em>N</em> sublists, where <em>N</em> is the number of elements in <em>media</em>. The <em>ith</em> sublist contains cluster ids for all objects of interest found in the <em>ith</em> media. If no objects of interest are found in a media then the corresponding sublist should have length 0. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling <a class="reference internal" href="#janice-clear-cluster-ids-group"><span class="std std-ref">janice_clear_cluster_ids_group</span></a>.</td>
+<td>An output structure to hold cluster ids. Objects with the same cluster id are members of the same cluster. This structure must have <code class="code docutils literal notranslate"><span class="pre">N</span></code> sublists, where <code class="code docutils literal notranslate"><span class="pre">N</span></code> is the number of elements in <code class="code docutils literal notranslate"><span class="pre">media</span></code>. The <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist contains cluster ids for all objects of interest found in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> media. If no objects of interest are found in a media then the corresponding sublist should have length 0. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is required to clear the struct by calling <a class="reference internal" href="#janice-clear-cluster-ids-group"><span class="std std-ref">janice_clear_cluster_ids_group</span></a>.</td>
 </tr>
 <tr class="row-odd"><td>cluster_confidences</td>
 <td><a class="reference internal" href="#janiceclusterconfidencesgroup"><span class="std std-ref">JaniceClusterConfidencesGroup</span></a>*</td>
-<td>An output structure to hold <a class="reference internal" href="#cluster-confidence"><span class="std std-ref">Cluster Confidence</span></a>. This structure must have <em>N</em> sublists, where <em>N</em> is the number of elements in <em>media</em>. The <em>ith</em> sublist contains cluster confidences for all objects of interest found in the <em>ith</em> media. The <em>jth</em> confidence in the <em>ith</em> sublist refers to the same object as the <em>jth</em> id in the <em>ith</em> sublist of <em>ids</em>. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling <a class="reference internal" href="#janice-clear-cluster-confidences-group"><span class="std std-ref">janice_clear_cluster_confidences_group</span></a>.</td>
+<td>An output structure to hold <a class="reference internal" href="#cluster-confidence"><span class="std std-ref">Cluster Confidence</span></a>. This structure must have <code class="code docutils literal notranslate"><span class="pre">N</span></code> sublists, where <code class="code docutils literal notranslate"><span class="pre">N</span></code> is the number of elements in <code class="code docutils literal notranslate"><span class="pre">media</span></code>. The <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist contains cluster confidences for all objects of interest found in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> media. The <code class="code docutils literal notranslate"><span class="pre">jth</span></code> confidence in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist refers to the same object as the <code class="code docutils literal notranslate"><span class="pre">jth</span></code> id in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist of <code class="code docutils literal notranslate"><span class="pre">ids</span></code>. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is required to clear the struct by calling <a class="reference internal" href="#janice-clear-cluster-confidences-group"><span class="std std-ref">janice_clear_cluster_confidences_group</span></a>.</td>
 </tr>
-<tr class="row-even"><td>tracks</td>
-<td><a class="reference internal" href="detection.html#janicetracksgroup"><span class="std std-ref">JaniceTracksGroup</span></a>*</td>
-<td>Location information for each clustered object. This structure must have <em>N</em> sublists, where <em>N</em> is the number of elements in <em>media</em>. The <em>ith</em> sublist contains tracks for all objects of interest found in the <em>ith</em> media. The <em>jth</em> track in the <em>ith</em> sublist refers to the same object as the <em>jth</em> id in the <em>ith</em> sublist of <em>ids</em> and the <em>jth</em> confidence in the <em>ith</em> sublist of confidences. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling <a class="reference internal" href="detection.html#janice-clear-tracks-group"><span class="std std-ref">janice_clear_tracks_group</span></a>.</td>
+<tr class="row-even"><td>detections</td>
+<td><a class="reference internal" href="detection.html#janicedetectionsgroup"><span class="std std-ref">JaniceDetectionsGroup</span></a>*</td>
+<td>Location information for each clustered object. This structure must have <code class="code docutils literal notranslate"><span class="pre">N</span></code> sublists, where <code class="code docutils literal notranslate"><span class="pre">N</span></code> is the number of elements in <code class="code docutils literal notranslate"><span class="pre">media</span></code>. The <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist contains tracks for all objects of interest found in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> media. The <code class="code docutils literal notranslate"><span class="pre">jth</span></code> track in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist refers to the same object as the <code class="code docutils literal notranslate"><span class="pre">jth</span></code> id in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist of <code class="code docutils literal notranslate"><span class="pre">ids</span></code> and the <code class="code docutils literal notranslate"><span class="pre">jth</span></code> confidence in the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> sublist of <code class="code docutils literal notranslate"><span class="pre">cluster_confidences</span></code>. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is required to clear the struct by calling <a class="reference internal" href="detection.html#janice-clear-detections-group"><span class="std std-ref">janice_clear_detections_group</span></a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="janice-cluster-templates">
-<span id="id15"></span><h3>janice_cluster_templates<a class="headerlink" href="#janice-cluster-templates" title="Permalink to this headline">¶</a></h3>
+<span id="id11"></span><h3>janice_cluster_templates<a class="headerlink" href="#janice-cluster-templates" title="Permalink to this headline">¶</a></h3>
 <p>Cluster a collection of template objects into groups.</p>
-<div class="section" id="id16">
-<h4>Signature<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_cluster_templates</span><span class="p">(</span><span class="n">JaniceTemplates</span> <span class="n">tmpls</span><span class="p">,</span>
-                                                   <span class="n">JaniceContext</span> <span class="n">context</span><span class="p">,</span>
+<div class="section" id="id12">
+<h4>Signature<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_cluster_templates</span><span class="p">(</span><span class="n">const</span> <span class="n">JaniceTemplates</span><span class="o">*</span> <span class="n">tmpls</span><span class="p">,</span>
+                                                   <span class="n">const</span> <span class="n">JaniceContext</span><span class="o">*</span> <span class="n">context</span><span class="p">,</span>
                                                    <span class="n">JaniceClusterIds</span><span class="o">*</span> <span class="n">cluster_ids</span><span class="p">,</span>
                                                    <span class="n">JaniceClusterConfidences</span><span class="o">*</span> <span class="n">cluster_confidences</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id17">
-<h4>Thread Safety<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id13">
+<h4>Thread Safety<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
 <p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id18">
-<h4>Parameters<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id14">
+<h4>Parameters<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="4%" />
-<col width="6%" />
-<col width="89%" />
+<col width="3%" />
+<col width="5%" />
+<col width="91%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -303,40 +277,40 @@ the same algorithm.</li>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>tmpls</td>
-<td><a class="reference internal" href="enrollment.html#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a></td>
-<td>An array of templates to cluster. Each template was created with the <em>JaniceCluster</em> role.</td>
+<td>const <a class="reference internal" href="enrollment.html#janicetemplates"><span class="std std-ref">JaniceTemplates</span></a>*</td>
+<td>An array of templates to cluster. Each template was created with the <code class="code docutils literal notranslate"><span class="pre">JaniceCluster</span></code> role.</td>
 </tr>
 <tr class="row-odd"><td>context</td>
-<td><a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a></td>
-<td>A context object with relevant hyperparameters set.</td>
+<td>const <a class="reference internal" href="context.html#janicecontext"><span class="std std-ref">JaniceContext</span></a>*</td>
+<td>A context object with relevant hyperparameters set. Memory for the object should be managed by the user. The implementation should assume this points to a valid object.</td>
 </tr>
 <tr class="row-even"><td>cluster_ids</td>
 <td><a class="reference internal" href="#janiceclusterids"><span class="std std-ref">JaniceClusterIds</span></a>*</td>
-<td>An output structure to hold cluster ids. Templates assigned the same cluster id are members of the same cluster. This structure must have the same number of elements as <em>tmpls</em>. The <em>ith</em> cluster id corresponds to the <em>ith</em> template object. Objects that can’t be clustered should be assigned a unique cluster id. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling <a class="reference internal" href="#janice-clear-cluster-ids"><span class="std std-ref">janice_clear_cluster_ids</span></a>.</td>
+<td>An output structure to hold cluster ids. Templates assigned the same cluster id are members of the same cluster. This structure must have the same number of elements as <code class="code docutils literal notranslate"><span class="pre">tmpls</span></code>. The <code class="code docutils literal notranslate"><span class="pre">ith</span></code> cluster id corresponds to the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> template object. Objects that can’t be clustered should be assigned a unique cluster id. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is required to clear the struct by calling <a class="reference internal" href="#janice-clear-cluster-ids"><span class="std std-ref">janice_clear_cluster_ids</span></a>.</td>
 </tr>
 <tr class="row-odd"><td>cluster_confidences</td>
 <td><a class="reference internal" href="#janiceclusterconfidences"><span class="std std-ref">JaniceClusterConfidences</span></a>*</td>
-<td>An output structure to hold <a class="reference internal" href="#cluster-confidence"><span class="std std-ref">Cluster Confidence</span></a>. This structure must have the same number of elements as <em>tmpls</em>. The <em>ith</em> cluster confidence corresponds to the <em>ith</em> template object. Internal struct members should be initialized by the implementor as part of the call. The user is required to clear the struct by calling <a class="reference internal" href="#janice-clear-cluster-confidences"><span class="std std-ref">janice_clear_cluster_confidences</span></a>.</td>
+<td>An output structure to hold <a class="reference internal" href="#cluster-confidence"><span class="std std-ref">Cluster Confidence</span></a>. This structure must have the same number of elements as <code class="code docutils literal notranslate"><span class="pre">tmpls</span></code>. The <code class="code docutils literal notranslate"><span class="pre">ith</span></code> cluster confidence corresponds to the <code class="code docutils literal notranslate"><span class="pre">ith</span></code> template object. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is required to clear the struct by calling <a class="reference internal" href="#janice-clear-cluster-confidences"><span class="std std-ref">janice_clear_cluster_confidences</span></a>.</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="janice-clear-cluster-ids">
-<span id="id19"></span><h3>janice_clear_cluster_ids<a class="headerlink" href="#janice-clear-cluster-ids" title="Permalink to this headline">¶</a></h3>
+<span id="id15"></span><h3>janice_clear_cluster_ids<a class="headerlink" href="#janice-clear-cluster-ids" title="Permalink to this headline">¶</a></h3>
 <p>Free any memory associated with a of <a class="reference internal" href="#janiceclusterids"><span class="std std-ref">JaniceClusterIds</span></a> object.</p>
-<div class="section" id="id20">
-<h4>Signature<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_cluster_ids</span><span class="p">(</span><span class="n">JaniceClusterIds</span><span class="o">*</span> <span class="n">ids</span><span class="p">);</span>
+<div class="section" id="id16">
+<h4>Signature<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_cluster_ids</span><span class="p">(</span><span class="n">JaniceClusterIds</span><span class="o">*</span> <span class="n">ids</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id21">
-<h4>Thread Safety<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id17">
+<h4>Thread Safety<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h4>
 <p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id22">
-<h4>Parameters<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id18">
+<h4>Parameters<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="9%" />
@@ -359,16 +333,16 @@ the same algorithm.</li>
 </div>
 </div>
 <div class="section" id="janice-clear-cluster-ids-group">
-<span id="id23"></span><h3>janice_clear_cluster_ids_group<a class="headerlink" href="#janice-clear-cluster-ids-group" title="Permalink to this headline">¶</a></h3>
+<span id="id19"></span><h3>janice_clear_cluster_ids_group<a class="headerlink" href="#janice-clear-cluster-ids-group" title="Permalink to this headline">¶</a></h3>
 <p>Free any memory associated with a <a class="reference internal" href="#janiceclusteridsgroup"><span class="std std-ref">JaniceClusterIdsGroup</span></a> object.</p>
-<div class="section" id="id24">
-<h4>Signature<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_cluster_ids_group</span><span class="p">(</span><span class="n">JaniceClusterIdsGroup</span><span class="o">*</span> <span class="n">group</span><span class="p">);</span>
+<div class="section" id="id20">
+<h4>Signature<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_cluster_ids_group</span><span class="p">(</span><span class="n">JaniceClusterIdsGroup</span><span class="o">*</span> <span class="n">group</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id25">
-<h4>Parameters<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id21">
+<h4>Parameters<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="10%" />
@@ -391,20 +365,20 @@ the same algorithm.</li>
 </div>
 </div>
 <div class="section" id="janice-clear-cluster-confidences">
-<span id="id26"></span><h3>janice_clear_cluster_confidences<a class="headerlink" href="#janice-clear-cluster-confidences" title="Permalink to this headline">¶</a></h3>
+<span id="id22"></span><h3>janice_clear_cluster_confidences<a class="headerlink" href="#janice-clear-cluster-confidences" title="Permalink to this headline">¶</a></h3>
 <p>Free any memory associated with a of <a class="reference internal" href="#janiceclusterconfidences"><span class="std std-ref">JaniceClusterConfidences</span></a> object.</p>
-<div class="section" id="id27">
-<h4>Signature<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_cluster_confidences</span><span class="p">(</span><span class="n">JaniceClusterConfidences</span><span class="o">*</span> <span class="n">confidences</span><span class="p">);</span>
+<div class="section" id="id23">
+<h4>Signature<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_cluster_confidences</span><span class="p">(</span><span class="n">JaniceClusterConfidences</span><span class="o">*</span> <span class="n">confidences</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id28">
-<h4>Thread Safety<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id24">
+<h4>Thread Safety<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
 <p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
 </div>
-<div class="section" id="id29">
-<h4>Parameters<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id25">
+<h4>Parameters<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="15%" />
@@ -427,16 +401,16 @@ the same algorithm.</li>
 </div>
 </div>
 <div class="section" id="janice-clear-cluster-confidences-group">
-<span id="id30"></span><h3>janice_clear_cluster_confidences_group<a class="headerlink" href="#janice-clear-cluster-confidences-group" title="Permalink to this headline">¶</a></h3>
+<span id="id26"></span><h3>janice_clear_cluster_confidences_group<a class="headerlink" href="#janice-clear-cluster-confidences-group" title="Permalink to this headline">¶</a></h3>
 <p>Free any memory associated with a <a class="reference internal" href="#janiceclusterconfidencesgroup"><span class="std std-ref">JaniceClusterConfidencesGroup</span></a> object.</p>
-<div class="section" id="id31">
-<h4>Signature<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_cluster_confidences_group</span><span class="p">(</span><span class="n">JaniceClusterConfidencesGroup</span><span class="o">*</span> <span class="n">group</span><span class="p">);</span>
+<div class="section" id="id27">
+<h4>Signature<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_clear_cluster_confidences_group</span><span class="p">(</span><span class="n">JaniceClusterConfidencesGroup</span><span class="o">*</span> <span class="n">group</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id32">
-<h4>Parameters<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id28">
+<h4>Parameters<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
 <col width="8%" />
@@ -463,6 +437,7 @@ the same algorithm.</li>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -508,14 +483,24 @@ the same algorithm.</li>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -524,8 +509,8 @@ the same algorithm.</li>
       &copy;2017, Noblis.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/api/clustering.rst.txt"

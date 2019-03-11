@@ -4,23 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Context &#8212; JanICE 4.0.1 documentation</title>
+    <title>Context &#8212; JanICE 7.0.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '4.0.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Training" href="train.html" />
@@ -31,13 +24,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-  </head>
-  <body>
+  </head><body>
   
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="context">
@@ -119,12 +113,41 @@ searched against in 1:N search.</td>
 </tbody>
 </table>
 </div>
+<div class="section" id="janicebatchpolicy">
+<span id="id4"></span><h3>JaniceBatchPolicy<a class="headerlink" href="#janicebatchpolicy" title="Permalink to this headline">¶</a></h3>
+<p>The JanICE API offers batch calls to accelerate computation for certain operations.
+For large batches, it is often advantageous to set an error handling policy to
+control if an application should fail immediately or flag and continue on an
+error. This is set explicity with the API batch policy. Possible policies are:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Policy</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>JaniceAbortEarly</td>
+<td>Stop processing immediately on an error</td>
+</tr>
+<tr class="row-odd"><td>JaniceFlagAndFinish</td>
+<td>Mark an error for the user but continue processing if possible</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section" id="structs">
 <h2>Structs<a class="headerlink" href="#structs" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="janicecontexttype">
-<span id="id4"></span><h3>JaniceContextType<a class="headerlink" href="#janicecontexttype" title="Permalink to this headline">¶</a></h3>
-<p>A context object that manages hyperparameters for JanICE functions.</p>
+<div class="section" id="janicecontext">
+<span id="id5"></span><h3>JaniceContext<a class="headerlink" href="#janicecontext" title="Permalink to this headline">¶</a></h3>
+<p>A structure to hold hyperparameters. These hyperparameters may be set by the
+user to control execution of the implementation algorithms. Users should consult
+the relevant documentation for accepted values or ranges for these hyperparameters.
+Implementors should ensure the provided values are acceptable before using them.</p>
 <div class="section" id="minimum-object-size">
 <span id="detection-min-object-size"></span><h4>Minimum Object Size<a class="headerlink" href="#minimum-object-size" title="Permalink to this headline">¶</a></h4>
 <p>This function specifies a minimum object size as one of its parameters.
@@ -192,35 +215,24 @@ number of object types in the set.</li>
 <td>double</td>
 <td>A hint to a clustering algorithm. See <a class="reference internal" href="#clustering-hint"><span class="std std-ref">Hint</span></a> for additional information</td>
 </tr>
+<tr class="row-even"><td>batch_policy</td>
+<td><a class="reference internal" href="#janicebatchpolicy"><span class="std std-ref">JaniceBatchPolicy</span></a></td>
+<td>The batch policy</td>
+</tr>
 </tbody>
 </table>
-</div>
-</div>
-<div class="section" id="janicecontext">
-<span id="id5"></span><h3>JaniceContext<a class="headerlink" href="#janicecontext" title="Permalink to this headline">¶</a></h3>
-<p>A pointer to a <a class="reference internal" href="#janicecontexttype"><span class="std std-ref">JaniceContextType</span></a>.</p>
-<div class="section" id="signature">
-<h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">typedef</span> <span class="n">JaniceContextType</span><span class="o">*</span> <span class="n">JaniceContext</span><span class="p">;</span>
-</pre></div>
-</div>
 </div>
 </div>
 </div>
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="janice-create-context">
-<span id="id6"></span><h3>janice_create_context<a class="headerlink" href="#janice-create-context" title="Permalink to this headline">¶</a></h3>
-<p>Create a context object using the specified hyperparameters.</p>
-<div class="section" id="id7">
-<h4>Signature<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_create_context</span><span class="p">(</span><span class="n">JaniceDetectionPolicy</span> <span class="n">policy</span><span class="p">,</span>
-                                                <span class="n">uint32_t</span> <span class="n">min_object_size</span><span class="p">,</span>
-                                                <span class="n">JaniceEnrollmentType</span> <span class="n">role</span><span class="p">,</span>
-                                                <span class="n">double</span> <span class="n">threshold</span><span class="p">,</span>
-                                                <span class="n">uint32_t</span> <span class="n">max_returns</span><span class="p">,</span>
-                                                <span class="n">double</span> <span class="n">hint</span><span class="p">,</span>
-                                                <span class="n">JaniceContext</span><span class="o">*</span> <span class="n">context</span><span class="p">);</span>
+<div class="section" id="janice-init-default-context">
+<span id="id6"></span><h3>janice_init_default_context<a class="headerlink" href="#janice-init-default-context" title="Permalink to this headline">¶</a></h3>
+<p>Initialize hyperparameters of a context object with sensible defaults.
+The context object should be created by the user prior to calling this function.</p>
+<div class="section" id="signature">
+<h4>Signature<a class="headerlink" href="#signature" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_init_default_context</span><span class="p">(</span><span class="n">JaniceContext</span><span class="o">*</span> <span class="n">context</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -232,65 +244,9 @@ number of object types in the set.</li>
 <h4>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h4>
 <table border="1" class="docutils">
 <colgroup>
-<col width="12%" />
-<col width="19%" />
-<col width="68%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Type</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>policy</td>
-<td><a class="reference internal" href="#janicedetectionpolicy"><span class="std std-ref">JaniceDetectionPolicy</span></a></td>
-<td>The detection policy</td>
-</tr>
-<tr class="row-odd"><td>min_object_size</td>
-<td>uint32_t</td>
-<td>The minumum object size of a detection. See <a class="reference internal" href="#detection-min-object-size"><span class="std std-ref">Minimum Object Size</span></a> for additional information</td>
-</tr>
-<tr class="row-even"><td>role</td>
-<td><a class="reference internal" href="#janiceenrollmenttype"><span class="std std-ref">JaniceEnrollmentType</span></a></td>
-<td>The enrollment type for a template</td>
-</tr>
-<tr class="row-odd"><td>threshold</td>
-<td>double</td>
-<td>The minimum acceptable score for a search result.</td>
-</tr>
-<tr class="row-even"><td>max_returns</td>
-<td>uint32_t</td>
-<td>The maximum number of results a single search should return</td>
-</tr>
-<tr class="row-odd"><td>hint</td>
-<td>double</td>
-<td>A hint to a clustering algorithm. See <a class="reference internal" href="#clustering-hint"><span class="std std-ref">Hint</span></a> for additional information</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section" id="janice-free-context">
-<span id="id8"></span><h3>janice_free_context<a class="headerlink" href="#janice-free-context" title="Permalink to this headline">¶</a></h3>
-<p>Free a <a class="reference internal" href="#janicecontext"><span class="std std-ref">JaniceContext</span></a> object.</p>
-<div class="section" id="id9">
-<h4>Signature<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">JANICE_EXPORT</span> <span class="n">JaniceError</span> <span class="n">janice_free_context</span><span class="p">(</span><span class="n">JaniceContext</span><span class="o">*</span> <span class="n">context</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="id10">
-<h4>Thread Safety<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
-<p>This function is <a class="reference internal" href="concepts.html#reentrant"><span class="std std-ref">Reentrant</span></a>.</p>
-</div>
-<div class="section" id="id11">
-<h4>Parameters<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
-<table border="1" class="docutils">
-<colgroup>
-<col width="15%" />
-<col width="39%" />
-<col width="46%" />
+<col width="5%" />
+<col width="13%" />
+<col width="81%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Name</th>
@@ -301,7 +257,7 @@ number of object types in the set.</li>
 <tbody valign="top">
 <tr class="row-even"><td>context</td>
 <td><a class="reference internal" href="#janicecontext"><span class="std std-ref">JaniceContext</span></a>*</td>
-<td>The context object to free</td>
+<td>The context to initialize. Memory for the object should be managed by the user. The implementation should assume this points to a valid object.</td>
 </tr>
 </tbody>
 </table>
@@ -312,6 +268,7 @@ number of object types in the set.</li>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -357,14 +314,24 @@ number of object types in the set.</li>
 </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -373,8 +340,8 @@ number of object types in the set.</li>
       &copy;2017, Noblis.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="../_sources/api/context.rst.txt"

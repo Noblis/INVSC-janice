@@ -1,6 +1,70 @@
 Initialization
 ==============
 
+Enumerations
+------------
+
+.. _JaniceLogLevel:
+
+JaniceLogLevel
+~~~~~~~~~~~~~~
+
+A enumeration to control the logging fidelity of JanICE applications. Possible
+log levels are:
+
++-------------------+---------------------------------------------------------------------+
+|       Level       |                             Description                             |
++===================+=====================================================================+
+| JaniceLogDebug    | Output fine-grained informational events useful for debugging.      |
++-------------------+---------------------------------------------------------------------+
+| JaniceLogInfo     | Output course-grained events indicating progress.                   |
++-------------------+---------------------------------------------------------------------+
+| JaniceLogWarning  | Output warning events that might lead to a failure.                 |
++-------------------+---------------------------------------------------------------------+
+| JaniceLogError    | Output failure events that don't stop the application from running. |
++-------------------+---------------------------------------------------------------------+
+| JaniceLogCritical | Output events that will cause the application to abort.             |
++-------------------+---------------------------------------------------------------------+
+
+Structs
+-------
+
+.. _JaniceConfigurationItem:
+
+JaniceConfigurationItem
+~~~~~~~~~~~~~~~~~~~~~~~
+
+A key-value pair representing a single configuration setting
+
+Fields
+^^^^^^
+
++-------+--------+---------------------------------------+
+| Name  |  Type  |              Description              |
++=======+========+=======================================+
+| key   | char\* | A null-terminated configuration key   |
++-------+--------+---------------------------------------+
+| value | char\* | A null-terminated configuration value |
++-------+--------+---------------------------------------+
+
+.. _JaniceConfiguration:
+
+JaniceConfiguration
+~~~~~~~~~~~~~~~~~~~
+
+A structure representing a list of :ref:`JaniceConfigurationItem` objects.
+
+Fields
+^^^^^^
+
++--------+----------------------------------+------------------------------------------+
+|  Name  |               Type               |               Description                |
++========+==================================+==========================================+
+| values | :ref:`JaniceConfigurationItem`\* | An array of configuration objects        |
++--------+----------------------------------+------------------------------------------+
+| length | size\_t                          | The number of elements in :code:`values` |
++--------+----------------------------------+------------------------------------------+
+
 Functions
 ---------
 
@@ -33,21 +97,50 @@ This function is :ref:`thread_unsafe`.
 Parameters
 ^^^^^^^^^^
 
-+--------------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|     Name     |     Type     |                                                                                              Description                                                                                               |
-+==============+==============+========================================================================================================================================================================================================+
-| sdk\_path    | const char\* | Path to a *read-only* directory containing the JanICE compliant SDK as specified by the implementor.                                                                                                   |
-+--------------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| temp\_path   | const char\* | Path to an existing empty *read-write* directory for use as temporary file storage by the implementation. This path must be guaranteed until :ref:`janice_finalize`.                                   |
-+--------------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| algorithm    | const char\* | An empty string indicating the default algorithm, or an implementation defined containing an alternative configuration.                                                                                |
-+--------------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| num\_threads | const int    | The number of threads the implementation is allowed to use. A value of '-1' indicates that the implementation should use all available hardware.                                                       |
-+--------------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| gpus         | const int\*  | A list of indices of GPUs available to the implementation. The length of the list is given by *num\_gpus*. If the implementor does not require a GPU in their solution they can ignore this parameter. |
-+--------------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| num\_gpus    | const int    | The length of the *gpus* array. If no GPUs are available this should be set to 0.                                                                                                                      |
-+--------------+--------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++--------------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|     Name     |     Type     |                                                                                                                                                           Description                                                                                                                                                            |
++==============+==============+==================================================================================================================================================================================================================================================================================================================================+
+| sdk\_path    | const char\* | Path to a **read-only** directory containing the JanICE compliant SDK as specified by the implementor.                                                                                                                                                                                                                           |
++--------------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| temp\_path   | const char\* | Path to an existing empty **read-write** directory for use as temporary file storage by the implementation. This path must be guaranteed until :ref:`janice_finalize`.                                                                                                                                                           |
++--------------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| algorithm    | const char\* | An empty string indicating the default algorithm, or an implementation defined containing an alternative configuration.                                                                                                                                                                                                          |
++--------------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| num\_threads | const int    | The number of threads the implementation is allowed to use. A value of '-1' indicates that the implementation should use all available hardware.                                                                                                                                                                                 |
++--------------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| gpus         | const int\*  | A list of indices of GPUs available to the implementation. The length of the list is given by :code:`num_gpus`. If the implementor does not require a GPU in their solution they can ignore this parameter. Memory for the object should be managed by the user. The implementation should assume this points to a valid object. |
++--------------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| num\_gpus    | const int    | The length of the :code:`gpus` array. If no GPUs are available this should be set to 0.                                                                                                                                                                                                                                          |
++--------------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. _janice_set_log_level:
+
+janice\_set\_log\_level
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Set the global log level for the implementation. By default, the log level is
+set to :code:`JaniceLogWarning`.
+
+Signature
+^^^^^^^^^
+
+:: 
+
+    JANICE_EXPORT JaniceError janice_set_log_level(JaniceLogLevel level);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is :ref:`thread_unsafe`.
+
+Parameters
+^^^^^^^^^^
+
++-------+-----------------------+------------------------------------------+
+| Name  |         Type          |               Description                |
++=======+=======================+==========================================+
+| level | :ref:`JaniceLogLevel` | The new log level for the implementation |
++-------+-----------------------+------------------------------------------+
 
 .. _janice_api_version:
 
@@ -75,15 +168,15 @@ This function is :ref:`reentrant`.
 Parameters
 ^^^^^^^^^^
 
-+-------+-------------+-----------------------------------------+
-| Name  |    Type     |               Description               |
-+=======+=============+=========================================+
-| major | uint32\_t\* | The supported major version of the API. |
-+-------+-------------+-----------------------------------------+
-| minor | uint32\_t\* | The supported minor version of the API. |
-+-------+-------------+-----------------------------------------+
-| patch | uint32\_t\* | The supported patch version of the API. |
-+-------+-------------+-----------------------------------------+
++-------+-------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Name  |    Type     |                                                                         Description                                                                          |
++=======+=============+==============================================================================================================================================================+
+| major | uint32\_t\* | The supported major version of the API. Memory for the object should be managed by the user. The implementation should assume this points to a valid object. |
++-------+-------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| minor | uint32\_t\* | The supported minor version of the API. Memory for the object should be managed by the user. The implementation should assume this points to a valid object. |
++-------+-------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| patch | uint32\_t\* | The supported patch version of the API. Memory for the object should be managed by the user. The implementation should assume this points to a valid object. |
++-------+-------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 janice\_sdk\_version
 ~~~~~~~~~~~~~~~~~~~~
@@ -107,15 +200,38 @@ This function is :ref:`reentrant`.
 Parameters
 ^^^^^^^^^^
 
-+-------+-------------+-------------------------------+
-| Name  |    Type     |          Description          |
-+=======+=============+===============================+
-| major | uint32\_t\* | The major version of the SDK. |
-+-------+-------------+-------------------------------+
-| minor | uint32\_t\* | The minor version of the SDK. |
-+-------+-------------+-------------------------------+
-| patch | uint32\_t\* | The patch version of the SDK. |
-+-------+-------------+-------------------------------+
++-------+-------------+----------------------------------------------------------------------------------------------------------------------------------------------------+
+| Name  |    Type     |                                                                    Description                                                                     |
++=======+=============+====================================================================================================================================================+
+| major | uint32\_t\* | The major version of the SDK. Memory for the object should be managed by the user. The implementation should assume this points to a valid object. |
++-------+-------------+----------------------------------------------------------------------------------------------------------------------------------------------------+
+| minor | uint32\_t\* | The minor version of the SDK. Memory for the object should be managed by the user. The implementation should assume this points to a valid object. |
++-------+-------------+----------------------------------------------------------------------------------------------------------------------------------------------------+
+| patch | uint32\_t\* | The patch version of the SDK. Memory for the object should be managed by the user. The implementation should assume this points to a valid object. |
++-------+-------------+----------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. _janice_get_current_configuration:
+
+janice\_get\_current\_configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Get the current implementation configuration as a list of key value pairs
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_get_current_configuration(JaniceConfiguration* configuration);
+
+Parameters
+^^^^^^^^^^
+
++---------------+------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|     Name      |             Type             |                                                                                                                                                                Description                                                                                                                                                                |
++===============+==============================+===========================================================================================================================================================================================================================================================================================================================================+
+| configuration | :ref:`JaniceConfiguration`\* | A list to hold the current configuration settings of the implementation. The user is responsible for allocating memory for the struct before the function call. The implementor is responsbile for allocating and filling internal members. The user is responsible for clearing the object by calling :ref:`janice_clear_configuration`. |
++---------------+------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. _janice_finalize:
 
@@ -136,3 +252,31 @@ Thread Safety
 ^^^^^^^^^^^^^
 
 This function is :ref:`thread_unsafe`.
+
+.. _janice_clear_configuration:
+
+janice\_clear\_configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Free any memory associated with a :ref:`JaniceConfiguration` object.
+
+Signature
+^^^^^^^^^
+
+::
+
+    JANICE_EXPORT JaniceError janice_clear_configuration(JaniceConfiguration* configuration);
+
+Thread Safety
+^^^^^^^^^^^^^
+
+This function is :ref:`reentrant`.
+
+Parameters
+^^^^^^^^^^
+
++---------------+------------------------------+----------------------------------+
+|     Name      |             Type             |           Description            |
++===============+==============================+==================================+
+| configuration | :ref:`JaniceConfiguration`\* | A configuration object to clear. |
++---------------+------------------------------+----------------------------------+
