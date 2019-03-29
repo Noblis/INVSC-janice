@@ -13,8 +13,18 @@ find_package(BLAS REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-add_library(janice_dlib janice_dlib.cpp)
-target_include_directories(janice_dlib PRIVATE ${CMAKE_BINARY_DIR}/dlib_install/include ../../api/)
+set(SOURCES
+  core.cpp
+  detect.cpp
+  enroll.cpp
+  verify.cpp
+  gallery.cpp
+  search.cpp
+  cluster.cpp
+)
+
+add_library(janice_dlib ${SOURCES})
+target_include_directories(janice_dlib PRIVATE ${CMAKE_BINARY_DIR}/dlib_install/include ../../api/ ../)
 add_dependencies(janice_dlib dlib_src)
 set_target_properties(janice_dlib PROPERTIES
                                        DEFINE_SYMBOL JANICE_LIBRARY
@@ -25,3 +35,9 @@ target_link_libraries(janice_dlib ${BLAS_LIBRARIES} ${CMAKE_BINARY_DIR}/dlib_ins
 install(TARGETS janice_dlib RUNTIME DESTINATION bin
                             LIBRARY DESTINATION lib
                             ARCHIVE DESTINATION lib)
+
+enable_testing()
+
+if (${BUILD_TESTING})
+  add_subdirectory(test)
+endif()

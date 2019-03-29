@@ -1,0 +1,25 @@
+# Dlib JanICE Example SDK
+
+This is a reference implementation of the JanICE SDK using
+the algorithms in the open source DLib library.
+
+## Requirements
+
+1. OpenCV 3.X
+
+## Building
+
+$ cd <janice_root>
+$ mkdir build && cd build
+$ cmake -DJANICE_WITH_OPENCV_IO=ON -DJANICE_WITH_DLIB_FR=ON -DCMAKE_BUILD_TYPE=Release ..
+$ make -j8
+
+## Getting the models
+
+$ cd <janice_root>/scripts
+$ sh get_dlib_models.sh <dlib_sdk_path>
+
+## Running the tests
+
+$ cd <janice_root>/build
+$ JANICE_TEST_SDK_PATH=<dlib_sdk_path> ./implementations/dlib/test/janice_dlib_tests

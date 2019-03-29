@@ -46,9 +46,3 @@ add_subdirectory(implementations)
 if(NOT JANICE_SKIP_HARNESS)
   add_subdirectory(harness)
 endif()
-
-# Optionally build the tests
-if(NOT JANICE_SKIP_TESTS)
-  add_subdirectory(test)
-endif()
-
