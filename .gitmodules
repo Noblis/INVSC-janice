@@ -1,0 +1,3 @@
+[submodule "implementations/dlib/dlib"]
+	path = implementations/dlib/dlib
+	url = https://github.com/davisking/dlib.git

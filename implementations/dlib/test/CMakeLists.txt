@@ -15,7 +15,7 @@ set(TEST_SOURCES
 )
 
 set(TEST_INCLUDE_DIRS
-  ${CMAKE_BINARY_DIR}/dlib_install/include
+  ${PROJECT_SOURCE_DIR}/implementations/dlib/dlib
   ${PROJECT_SOURCE_DIR}/api
   ${PROJECT_SOURCE_DIR}/implementations/dlib
   ${PROJECT_SOURCE_DIR}/implementations/opencv_io
