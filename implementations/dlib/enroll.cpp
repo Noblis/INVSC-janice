@@ -10,6 +10,9 @@ JaniceError janice_enroll_from_media(JaniceMediaIterator* it, const JaniceContex
     assert(tmpls != nullptr);
     assert(detections != nullptr);
 
+    tmpls->length = 0;
+    detections->length = 0;
+
     try {
         JaniceImage img;
         { // Get the next image from the iterator
@@ -41,6 +44,8 @@ JaniceError janice_enroll_from_media(JaniceMediaIterator* it, const JaniceContex
                 }
             }
         }
+
+        it->free_image(&img);
 
         // DLibs minimum face size is ~40 pixels. Anything smaller than that and we
         // need to scale up the image
@@ -290,6 +295,8 @@ JaniceError janice_enroll_from_detections(const JaniceMediaIterators* its, const
                 }
             }
 
+            its->media[i].free_image(&img);
+
             JaniceTrack track = detections->detections[i]->track;
             JaniceRect  rect  = track.rects[0];
 
@@ -401,6 +408,8 @@ JaniceError janice_enroll_from_detections_batch(const JaniceMediaIteratorsGroup*
                     break;
                 }
             }
+
+            its_group->group[i].media[j].free_image(&img);
 
             JaniceTrack track = detections_group->group[i].detections[j]->track;
             JaniceRect  rect  = track.rects[0];

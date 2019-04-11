@@ -9,6 +9,9 @@ JaniceError janice_search(const JaniceTemplate probe, const JaniceGallery galler
     assert(similarities != nullptr);
     assert(ids != nullptr);
 
+    similarities->length = 0;
+    ids->length = 0;
+
     try {
         std::vector<std::pair<float, uint64_t>> score_ids;
         for (size_t i = 0; i < gallery->tmpls.size(); ++i) {

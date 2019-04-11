@@ -54,6 +54,8 @@ JaniceError janice_detect(JaniceMediaIterator* it, const JaniceContext* context,
     assert(context != nullptr);
     assert(detections != nullptr);
 
+    detections->length = 0;
+
     try {
         JaniceImage img;
         { // Get the next image from the iterator
@@ -85,6 +87,8 @@ JaniceError janice_detect(JaniceMediaIterator* it, const JaniceContext* context,
                 }
             }
         }
+
+        it->free_image(&img);
 
         // DLibs minimum face size is ~40 pixels. Anything smaller than that and we
         // need to scale up the image
