@@ -92,7 +92,9 @@ JaniceError janice_detect(JaniceMediaIterator* it, const JaniceContext* context,
 
         // DLibs minimum face size is ~40 pixels. Anything smaller than that and we
         // need to scale up the image
+        bool upscaled = false;
         if (context->min_object_size < 40) {
+            upscaled = true;
             dlib::pyramid_up(mat);
         }
 
@@ -141,6 +143,13 @@ JaniceError janice_detect(JaniceMediaIterator* it, const JaniceContext* context,
             rect.y = dets[i].rect.top();
             rect.width = dets[i].rect.width();
             rect.height = dets[i].rect.height();
+
+            if (upscaled) {
+                rect.x /= 2;
+                rect.y /= 2;
+                rect.width /= 2;
+                rect.height /= 2;
+            }
 
             detection->track.rects[0] = rect;
             detection->track.frames[0] = 0;
