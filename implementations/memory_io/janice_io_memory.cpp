@@ -107,6 +107,8 @@ JaniceError reset(JaniceMediaIterator* it)
 {
     JaniceMediaIteratorStateType* state = (JaniceMediaIteratorStateType*) it->_internal;
     state->at_end = false;
+
+    return JANICE_SUCCESS;
 }
 
 } // anoymous namespace

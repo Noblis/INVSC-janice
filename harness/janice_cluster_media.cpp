@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
     context.hint            = args::get(hint);
 
     // Parse the metadata file
-    io::CSVReader<1> metadata(input_file);
+    io::CSVReader<1> metadata(args::get(media_file));
     metadata.read_header(io::ignore_extra_column, "FILENAME");
 
     std::vector<std::string> filenames;
@@ -92,7 +92,6 @@ int main(int argc, char* argv[])
     }
 
     // build media iterators as input to clustering
-
     JaniceMediaIterators media;
     media.length = filenames.size();
     media.media  = new JaniceMediaIterator[media.length];
@@ -104,9 +103,9 @@ int main(int argc, char* argv[])
 
     JaniceClusterIdsGroup cluster_ids;
     JaniceClusterConfidencesGroup cluster_confidences;
-    JaniceTracksGroup tracks;
+    JaniceDetectionsGroup detections_group;
 
-    JANICE_ASSERT(janice_cluster_media(media, context, &cluster_ids, &cluster_confidences, &tracks), ignored_errors);
+    JANICE_ASSERT(janice_cluster_media(&media, &context, &cluster_ids, &cluster_confidences, &detections_group), ignored_errors);
 
     if (cluster_ids.length != media.length) {
         std::cerr << "Output cluster assignments did not match input templates size!" << std::endl;
@@ -118,54 +117,72 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    if (tracks.length != media.length) {
+    if (detections_group.length != media.length) {
         std::cerr << "Output tracks did not match input media size" << std::endl;
         return -1;
     }
 
-    std::ofstream fout(output_file.c_str());
+    std::ofstream fout(args::get(output_file).c_str());
     if (!fout) {
-        std::cerr << "Failed to open output file: "<< output_file << std::endl;
+        std::cerr << "Failed to open output file: "<< args::get(output_file) << std::endl;
         return -1;
     }
 
-    fout << "FILENAME,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,SIGHTING_ID,CLUSTER_ID,CLUSTER_CONFIDENCE" << std::endl;
+    fout << "FILENAME,FACE_X,FACE_Y,FACE_WIDTH,FACE_HEIGHT,FRAME_NUM,DETECTION_CONFIDENCE,SIGHTING_ID,CLUSTER_ID,CLUSTER_CONFIDENCE" << std::endl;
     size_t global_sighting_idx = 0;
     // output csv containing cluster assignments/confidences for each template
-    for(size_t media_idx=0; media_idx < tracks.length; media_idx++) {
-        if (tracks.group[media_idx].length != cluster_ids.group[media_idx].length) {
+    for(size_t media_idx=0; media_idx < detections_group.length; media_idx++) {
+        if (detections_group.group[media_idx].length != cluster_ids.group[media_idx].length) {
             std::cerr << "# tracks per media " << filenames[media_idx] << " did not match number of clustering assignments" << std::endl;
             return -1;
         }
 
-        if (tracks.group[media_idx].length != cluster_confidences.group[media_idx].length) {
+        if (detections_group.group[media_idx].length != cluster_confidences.group[media_idx].length) {
             std::cerr << "# tracks per media " << filenames[media_idx] << " did not match number of clustering confidences" << std::endl;
             return -1;
         }
 
-        for (size_t track_idx=0; track_idx < tracks.group[media_idx].length; track_idx++) {
-            size_t track_cluster_assignment = cluster_ids.group[media_idx].ids[track_idx];
-            
-            JaniceClusterConfidence current_confidence = cluster_confidences.group[media_idx].confidences[track_idx];
+        JaniceDetections &detections = detections_group.group[media_idx];
+        JaniceClusterConfidences &confidences = cluster_confidences.group[media_idx];
+        JaniceClusterIds &ids = cluster_ids.group[media_idx];
 
-            for (size_t detection_idx = 0; detection_idx < tracks.group[media_idx].tracks[track_idx].length; detection_idx++) {
-                JaniceRect current_rect = tracks.group[media_idx].tracks[track_idx].rects[detection_idx];
-                
-                fout << filenames[media_idx] << ',' << current_rect.x << ',' << current_rect.y << ',' << current_rect.width << ',' << current_rect.height << ',' << global_sighting_idx << ',' << track_cluster_assignment << "," << current_confidence << std::endl;
+        for (size_t track_idx=0; track_idx < detections.length; track_idx++) {
+            JaniceDetection &detection = detections.detections[track_idx];
+            size_t track_cluster_assignment = ids.ids[track_idx];
+            double current_confidence = confidences.confidences[track_idx];
+        
+            JaniceTrack track;
+            JANICE_ASSERT(janice_detection_get_track(detection, &track), ignored_errors);
 
+            for (size_t rect_idx = 0; rect_idx < track.length; rect_idx++) {
+                JaniceRect current_rect = track.rects[rect_idx];
+                float detection_confidence = track.confidences[rect_idx];
+                uint32_t frame_number = track.frames[rect_idx];
+                fout << filenames[media_idx]     << ','
+                     << current_rect.x           << ','
+                     << current_rect.y           << ','
+                     << current_rect.width       << ','
+                     << current_rect.height      << ','
+                     << frame_number             << ','
+                     << detection_confidence     << ','
+                     << global_sighting_idx      << ',' 
+                     << track_cluster_assignment << ','
+                     << current_confidence       << std::endl;
             }
+
+            JANICE_ASSERT(janice_clear_track(&track), ignored_errors);
             global_sighting_idx++;
         }
     }
     fout.close();
 
-    // clear output variables from janice_cluster_templtes
+    // clear output variables from janice_cluster_cluster_media
     JANICE_ASSERT(janice_clear_cluster_ids_group(&cluster_ids), ignored_errors);
     JANICE_ASSERT(janice_clear_cluster_confidences_group(&cluster_confidences), ignored_errors);
-    JANICE_ASSERT(janice_clear_tracks_group(&tracks), ignored_errors);
+    JANICE_ASSERT(janice_clear_detections_group(&detections_group), ignored_errors);
 
     for( size_t i=0; i < media.length; i++) {
-        JANICE_ASSERT(media.media[i]->free(&media.media[i]), ignored_errors);
+        JANICE_ASSERT(media.media[i].free(&media.media[i]), ignored_errors);
     }
     delete [] media.media;
 
