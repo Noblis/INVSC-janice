@@ -192,6 +192,9 @@ int main(int argc, char* argv[])
             const JaniceDetections& detections = detections_group.group[group_idx];
             for (size_t tmpl_idx = 0; tmpl_idx < tmpls.length; ++tmpl_idx) {
                 size_t tmpl_size = 0;
+                // taa: Move the  increment up here (was in the tmpl_file /= line below),
+                // so the output CSV file will match the actual template files.
+                ++template_id;
                 if (include_size) {
                     uint8_t* buffer;
                     JANICE_ASSERT(janice_serialize_template(tmpls.tmpls[tmpl_idx], &buffer, &tmpl_size), ignored_errors);
@@ -200,7 +203,7 @@ int main(int argc, char* argv[])
 
                 // Write the template to disk
                 boost::filesystem::path tmpl_file(args::get(dst_path));
-                tmpl_file /= (std::to_string(template_id++) + ".tmpl");
+                tmpl_file /= (std::to_string(template_id) + ".tmpl");
                 JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.string().c_str()), ignored_errors);
     
                 JaniceTrack track;

@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
     media.length = filenames.size();
     media.media  = new JaniceMediaIterator[media.length];
     for (size_t i=0; i < media.length; i++) {
-        boost::filesystem::path filename(data_path);
+        boost::filesystem::path filename(args::get(media_path));
         filename /= filenames[i];
         JANICE_ASSERT(janice_io_opencv_create_media_iterator(filename.string().c_str(), &media.media[i]), ignored_errors);
     }
