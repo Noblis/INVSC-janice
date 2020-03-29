@@ -4,6 +4,7 @@
 
 #include <arg_parser/args.hpp>
 #include <fast-cpp-csv-parser/csv.h>
+#include <boost/filesystem.hpp>
 
 #include <iostream>
 #include <chrono>
@@ -81,7 +82,9 @@ int main(int argc, char* argv[])
         uint64_t template_id;
         while (reference_metadata.read_row(template_id)) {
             JaniceTemplate tmpl = nullptr;
-            JANICE_ASSERT(janice_read_template((args::get(reference_path) + "/" + std::to_string(template_id) + ".tmpl").c_str(), &tmpl), ignored_errors);
+            boost::filesystem::path tmpl_file(args::get(reference_path));
+            tmpl_file /= (std::to_string(template_id) + ".tmpl");
+            JANICE_ASSERT(janice_read_template(tmpl_file.string().c_str(), &tmpl), ignored_errors);
             reference_tmpls[template_id] = tmpl;
         }
     }
@@ -95,7 +98,9 @@ int main(int argc, char* argv[])
         uint64_t template_id;
         while (verification_metadata.read_row(template_id)) {
             JaniceTemplate tmpl = nullptr;
-            JANICE_ASSERT(janice_read_template((args::get(verification_path) + "/" + std::to_string(template_id) + ".tmpl").c_str(), &tmpl), ignored_errors);
+            boost::filesystem::path tmpl_file(args::get(verification_path));
+            tmpl_file /= (std::to_string(template_id) + ".tmpl");
+            JANICE_ASSERT(janice_read_template(tmpl_file.string().c_str(), &tmpl), ignored_errors);
             verification_tmpls[template_id] = tmpl;
         }
     }

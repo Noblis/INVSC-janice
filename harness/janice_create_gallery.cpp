@@ -3,6 +3,7 @@
 
 #include <arg_parser/args.hpp>
 #include <fast-cpp-csv-parser/csv.h>
+#include <boost/filesystem.hpp>
 
 #include <iostream>
 #include <chrono>
@@ -74,7 +75,9 @@ int main(int argc, char* argv[])
     {
         int template_id;
         while (metadata.read_row(template_id)) {
-            filenames.push_back(args::get(template_path) + "/" + std::to_string(template_id) + ".tmpl");
+            boost::filesystem::path template_file(args::get(template_path));
+            template_file /= (std::to_string(template_id) + ".tmpl");
+            filenames.push_back(template_file.string());
             template_ids.push_back(template_id);
         }
     }

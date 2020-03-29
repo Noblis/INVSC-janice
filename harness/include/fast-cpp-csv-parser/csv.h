@@ -847,7 +847,8 @@ namespace io{
                 void parse_line(
                         char*line,
                         char**sorted_col,
-                        const std::vector<int>&col_order
+                        const std::vector<int>&col_order,
+                        ignore_column ignore_policy = ignore_no_column
                 ){
                         for(std::size_t i=0; i<col_order.size(); ++i){
                                 if(line == nullptr)
@@ -862,7 +863,7 @@ namespace io{
                                         sorted_col[col_order[i]] = col_begin;
                                 }
                         }
-                        if(line != nullptr)
+                        if(line != nullptr && ignore_policy != ignore_extra_column)
                                 throw ::io::error::too_many_columns();
                 }
 
@@ -1230,6 +1231,37 @@ namespace io{
                                        
                                         detail::parse_line<trim_policy, quote_policy>
                                                 (line, row, col_order);
+               
+                                        parse_helper(0, cols...);
+                                }catch(error::with_file_name&err){
+                                        err.set_file_name(in.get_truncated_file_name());
+                                        throw;
+                                }
+                        }catch(error::with_file_line&err){
+                                err.set_file_line(in.get_file_line());
+                                throw;
+                        }
+
+                        return true;
+                }
+                template<class ...ColType>
+                bool read_row(ignore_column ignore_policy, ColType& ...cols){
+                        static_assert(sizeof...(ColType)>=column_count,
+                                "not enough columns specified");
+                        static_assert(sizeof...(ColType)<=column_count,
+                                "too many columns specified");
+                        try{
+                                try{
+       
+                                        char*line;
+                                        do{
+                                                line = in.next_line();
+                                                if(!line)
+                                                        return false;
+                                        }while(comment_policy::is_comment(line));
+                                       
+                                        detail::parse_line<trim_policy, quote_policy>
+                                                (line, row, col_order, ignore_policy);
                
                                         parse_helper(0, cols...);
                                 }catch(error::with_file_name&err){

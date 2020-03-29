@@ -4,6 +4,7 @@
 
 #include <arg_parser/args.hpp>
 #include <fast-cpp-csv-parser/csv.h>
+#include <boost/filesystem.hpp>
 
 #include <iostream>
 #include <chrono>
@@ -89,7 +90,9 @@ int main(int argc, char* argv[])
         std::string filename;
         while (metadata.read_row(filename)) {
             JaniceMediaIterator it;
-            JANICE_ASSERT(janice_io_opencv_create_media_iterator((args::get(media_path) + "/" + filename).c_str(), &it), ignored_errors);
+            boost::filesystem::path media_file(args::get(media_path));
+            media_file /= filename;
+            JANICE_ASSERT(janice_io_opencv_create_media_iterator(media_file.string().c_str(), &it), ignored_errors);
 
             filenames.push_back(filename);
             media.push_back(it);

@@ -4,6 +4,7 @@
 
 #include <arg_parser/args.hpp>
 #include <fast-cpp-csv-parser/csv.h>
+#include <boost/filesystem.hpp>
 
 #include <unordered_map>
 #include <iostream>
@@ -102,7 +103,9 @@ int main(int argc, char* argv[])
         JaniceRect rect;
 
         while (metadata.read_row(filename, template_id, subject_id, sighting_id, rect.x, rect.y, rect.width, rect.height)) {
-            template_id_metadata_lut[template_id][sighting_id].push_back(std::make_pair(args::get(media_path) + "/" + filename, rect));
+            boost::filesystem::path input_file(args::get(media_path));
+            input_file /= filename;
+            template_id_metadata_lut[template_id][sighting_id].push_back(std::make_pair(input_file.string(), rect));
             template_id_subject_id_lut[template_id] = subject_id;
         }
     }
@@ -234,9 +237,9 @@ int main(int argc, char* argv[])
                 JANICE_ASSERT(janice_serialize_template(tmpls.tmpls[tmpl_idx], &buffer, &tmpl_size), ignored_errors);
                 JANICE_ASSERT(janice_free_buffer(&buffer), ignored_errors);
             }
-
-            std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(batch_template_ids[tmpl_idx]) + ".tmpl";
-            JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()), ignored_errors);
+            boost::filesystem::path tmpl_file(args::get(dst_path));
+            tmpl_file /= (std::to_string(batch_template_ids[tmpl_idx]) + ".tmpl");
+            JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.string().c_str()), ignored_errors);
 
             fprintf(output, "%llu,%d,%d,0,%d,%f,%zu\n", batch_template_ids[tmpl_idx], template_id_subject_id_lut[batch_template_ids[tmpl_idx]], context.role, batch_idx, elapsed, tmpl_size);
         }
