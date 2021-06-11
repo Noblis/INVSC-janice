@@ -196,7 +196,7 @@ int main(int argc, char* argv[])
                 }
 
                 // Write the template to disk
-                std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(template_id++) + ".tmpl";
+                std::string tmpl_file = args::get(dst_path) + "/" + std::to_string(template_id) + ".tmpl";
                 JANICE_ASSERT(janice_write_template(tmpls.tmpls[tmpl_idx], tmpl_file.c_str()), ignored_errors);
     
                 JaniceTrack track;
@@ -209,6 +209,7 @@ int main(int argc, char* argv[])
                     
                     fprintf(output, "%d,%d,%s,%u,%u,%u,%u,%u,%f,%d,%f,%zu\n", template_id, context.role, first_filenames[pos + group_idx].c_str(), frame, rect.x, rect.y, rect.width, rect.height, confidence, batch_idx, elapsed, tmpl_size);
                 }
+                template_id++;
 
                 JANICE_ASSERT(janice_clear_track(&track), ignored_errors);
             }
